@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="impostazioni">RÉGLAGES</string>
+    <string name="il_tuo_account">VOTRE ACCOUNT</string>
+    <string name="media_settings">PARAMÈTRES MÉDIAS</string>
+    <string name="impostazione_dei_contenuti">RÉGLAGE DU CONTENU</string>
+    <string name="impostazioni_avanzate">RÉGLAGES AVANCÉS</string>
+    <string name="informazioni_sullo_sviluppatore">INFORMATIONS POUR LE DÉVELOPPEUR</string>
+    <string name="generali">RÉGLAGES GÉNÉRAUX</string>
+    <string name="parametri_dei_giochi">PARAMÈTRES DE JEU</string>
+    <string name="importa_tabelle">"TABLEAUX D'IMPORTATION"</string>
+    <string name="esporta_tabelle">"TABLEAUX D'EXPORTATION"</string>
+    <string name="eccezioni_grammaticali">EXCEPTIONS GRAMMATICALES</string>
+    <string name="pittogrammi_da_modificare">PICTOGRAMMES A CHANGER</string>
+    <string name="impostazioni_data_import">PARAMÈTRES DATA IMPORT</string>
+    <string name="importa">IMPORT</string>
+    <string name="information_this_app_was_created_by">"Information : cette application a été créée par Renzo Sampietro et a pour but de créer un outil open source qui peut être utilisé comme aide pour les enfants d'âge préscolaire ayant des problèmes d'élocution"</string>
+    <string name="copyright_information">"Copyright :\nAuteur du pictogramme : Sergio Palao Origine : ARASAAC (http://arasaac.org) Licence : CC (BY-NC-SA) Propriété : Gouvernement d'Aragon.\nVerb-data - Une collection de verbes et de conjugaisons au format JSON à utiliser dans une application mobile. Origine : https://github.com/ian-hamlin/verb-data Licence : CC (BY-SA).\nImage utilisée pour le logo de l'application. Origine: https://commons.wikimedia.org/wiki/Category:Swings#/media/File:Myles_Tan_2016-04-16_(Unsplash).jpg"</string>
+
+</resources>

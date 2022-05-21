@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Settings.SettingsActivity">
+
+    <TextView
+        android:id="@+id/welcomephrasefirstpart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="48dp"
+        android:text="@string/frase_benvenuto_prima_parte"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edittextwelcomephrasefirstpart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/frase_benvenuto_prima_parte"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@+id/welcomephrasefirstpart"
+        app:layout_constraintTop_toBottomOf="@+id/welcomephrasefirstpart" />
+
+    <TextView
+        android:id="@+id/welcomephrasesecondpart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/frase_benvenuto_seconda_parte"
+        app:layout_constraintStart_toStartOf="@+id/edittextwelcomephrasefirstpart"
+        app:layout_constraintTop_toBottomOf="@+id/edittextwelcomephrasefirstpart" />
+
+    <EditText
+        android:id="@+id/edittextwelcomephrasesecondpart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/frase_benvenuto_seconda_parte"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@+id/welcomephrasesecondpart"
+        app:layout_constraintTop_toBottomOf="@+id/welcomephrasesecondpart" />
+
+    <TextView
+        android:id="@+id/reminderphrase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/frase_di_promemoria"
+        app:layout_constraintStart_toStartOf="@+id/edittextwelcomephrasesecondpart"
+        app:layout_constraintTop_toBottomOf="@+id/edittextwelcomephrasesecondpart" />
+
+    <EditText
+        android:id="@+id/edittextreminderphrase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/frase_di_promemoria"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@+id/reminderphrase"
+        app:layout_constraintTop_toBottomOf="@+id/reminderphrase" />
+
+    <TextView
+        android:id="@+id/reminderphraseplural"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/plurale_frase_di_promemoria"
+        app:layout_constraintStart_toStartOf="@+id/edittextreminderphrase"
+        app:layout_constraintTop_toBottomOf="@+id/edittextreminderphrase" />
+
+    <EditText
+        android:id="@+id/edittextreminderphraseplural"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint="@string/plurale_frase_di_promemoria"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@+id/reminderphraseplural"
+        app:layout_constraintTop_toBottomOf="@+id/reminderphraseplural" />
+
+    <Button
+        android:id="@+id/buttonPhrases"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:onClick="savePhrases"
+        android:text="@string/salva"
+        app:layout_constraintStart_toStartOf="@id/edittextreminderphraseplural"
+        app:layout_constraintTop_toBottomOf="@id/edittextreminderphraseplural" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

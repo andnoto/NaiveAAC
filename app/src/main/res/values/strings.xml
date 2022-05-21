@@ -1,0 +1,187 @@
+<resources>
+    <string name="abilita_stampa">Abilita stampa</string>
+    <string name="aggiungi">AGGIUNGI</string>
+    <string name="aggiungi_immagine">aggiungi immagine</string>
+    <string name="aggiungi_video">aggiungi video</string>
+    <string name="avanti">Avanti</string>
+    <string name="casuale">Casuale</string>
+    <string name="cerca_immagine">cerca immagine</string>
+    <string name="cerca_video">cerca video</string>
+    <string name="copyright_information">"Copyright:\nAuthor of the pictogram: Sergio Palao Origin: ARASAAC (http://arasaac.org) License: CC (BY-NC-SA) Ownership: Government of Aragon.\nVerb-data - A collection of verbs and conjugations in JSON format for use in a mobile application. Origin: https://github.com/ian-hamlin/verb-data License: CC (BY-SA).\nBalloon pop game - Pop Balloon is simple Android game. Origin: https://github.com/Vukan-Markovic/Pop_Balloon License: MIT License.\nImage used for app logo. Origin: https://commons.wikimedia.org/wiki/Category:Swings#/media/File:Myles_Tan_2016-04-16_(Unsplash).jpg"</string>
+    <string name="coppie_di_parole">COPPIE DI PAROLE</string>
+    <string name="eccezioni_grammaticali">ECCEZIONI GRAMMATICALI</string>
+    <string name="descrizione_immagine_da_inserire">descrizione immagine da inserire</string>
+    <string name="descrizione_video_da_inserire">descrizione video da inserire</string>
+    <string name="disabilita_stampa">Disabilita stampa</string>
+    <string name="disabilitata">Disabilitata</string>
+    <string name="eccezione_1">eccezione 1</string>
+    <string name="eccezione_2">eccezione 2</string>
+    <string name="eccezione_3">eccezione 3</string>
+    <string name="edit_message">Username</string>
+    <string name="esporta_tabelle">ESPORTA TABELLE</string>
+    <string name="frase_benvenuto_prima_parte">frase benvenuto prima parte</string>
+    <string name="frase_benvenuto_seconda_parte">frase benvenuto seconda parte</string>
+    <string name="frase_di_promemoria">frase di promemoria</string>
+    <string name="frase_nome_da_aggiungere_alla_storia">frase / nome da aggiungere alla storia</string>
+    <string name="game_settings">IMPOSTAZIONE DEI GIOCHI</string>
+    <string name="generali">GENERALI</string>
+    <string name="i_tuoi_video">I TUOI VIDEO</string>
+    <string name="id_pittogramma">id pittogramma</string>
+    <string name="il_tuo_account">IL TUO ACCOUNT</string>
+    <string name="importa">IMPORTA</string>
+    <string name="importa_tabelle">IMPORTA TABELLE</string>
+    <string name="impostazione_dei_contenuti">IMPOSTAZIONE DEI CONTENUTI</string>
+    <string name="impostazione_dei_giochi">IMPOSTAZIONE DEI GIOCHI</string>
+    <string name="impostazioni">IMPOSTAZIONI</string>
+    <string name="impostazioni_avanzate">IMPOSTAZIONI AVANZATE</string>
+    <string name="impostazioni_data_import">IMPOSTAZIONI DATA IMPORT</string>
+    <string name="impostazioni_generali">IMPOSTAZIONI GENERALI</string>
+    <string name="impostazioni_wordpairs">IMPOSTAZIONI WORDPAIRS</string>
+    <string name="indirizzo_video_premio_opzionale">indirizzo (video) premio (opzionale)</string>
+    <string name="info">info</string>
+    <string name="information_this_app_was_created_by">Information: this app was created by Renzo Sampietro and has the purpose of creating an open source tool that can be used as an aid for preschool children with speech problems</string>
+    <string name="informazioni_sullo_sviluppatore">INFORMAZIONI SULLO SVILUPPATORE</string>
+    <string name="inizia">inizia</string>
+    <string name="inserisci_il_risultato_per_verificare_che_sei_un_adulto">inserisci il risultato per verificare che sei un adulto</string>
+    <string name="le_tue_immagini">LE TUE IMMAGINI</string>
+    <string name="lista_di_nomi">LISTA DI NOMI</string>
+    <string name="media_settings">IMPOSTAZIONE DEI MEDIA</string>
+    <string name="modalita_elenco">Modalità Elenco</string>
+    <string name="mostra_elenco">mostra elenco</string>
+    <string name="nome_da_aggiungere_alla_lista">nome da aggiungere alla lista</string>
+    <string name="nome_storia">nome storia</string>
+    <string name="numero_frase">numero frase</string>
+    <string name="numero_parola">numero parola</string>
+    <string name="ordinato">Ordinato</string>
+    <string name="parametri_dei_giochi">PARAMETRI DEI GIOCHI</string>
+    <string name="parola_chiave">parola chiave</string>
+    <string name="percentuale_errori_consentita">percentuale errori consentita</string>
+    <string name="pittogrammi_da_modificare">PITTOGRAMMI DA MODIFICARE</string>
+    <string name="plurale_frase_di_promemoria">plurale frase di promemoria</string>
+    <string name="prima_con_seconda_parola">prima con seconda parola</string>
+    <string name="prima_parola">prima parola</string>
+    <string name="puoi_accedere">puoi accedere</string>
+    <string name="risultato">risultato</string>
+    <string name="salva">SALVA</string>
+    <string name="save_account">save account</string>
+    <string name="scegli_il_gioco_da_impostare">Scegli il gioco da impostare</string>
+    <string name="se_plurale_p">se plurale (P)</string>
+    <string name="search_image">search image</string>
+    <string name="search_video">search video</string>
+    <string name="seconda_parola">seconda parola</string>
+    <string name="storia">STORIA</string>
+    <string name="storie">STORIE</string>
+    <string name="this_is_the_title">This is the title</string>
+    <string name="tipo_di_video_premio_opzionale">tipo di (video) premio (opzionale)</string>
+    <string name="tipo_eccezione">tipo eccezione</string>
+    <string name="tipo_modifica_e_i_c">tipo modifica (E/I/C)</string>
+    <string name="tipo_uri_a_s_opzionale">tipo uri A/S (opzionale)</string>
+    <string name="uri_opzionale">uri (opzionale)</string>
+    <string name="voce_di_menu_opzionale">voce di menu (opzionale)</string>
+    <string name="welcome_phrase_first_part">welcome phrase first part</string>
+    <string name="welcome_phrase_second_part">welcome phrase second part</string>
+
+
+
+    <string name="_id" translatable="false">_id</string>
+    <string name="account_fragment" translatable="false">AccountFragment</string>
+    <string name="actionbar_fragment" translatable="false">ActionbarFragment</string>
+    <string name="adverb_of_place" translatable="false">adverb of place</string>
+    <string name="app_name" translatable="false">naive AAC</string>
+    <string name="article" translatable="false">article</string>
+    <string name="assertion_message" translatable="false">Expected 1 param for current level</string>
+    <string name="award_type" translatable="false">AWARD TYPE</string>
+    <string name="back_button" translatable="false">Back</string>
+    <string name="categories" translatable="false">categories</string>
+    <string name="character_comma" translatable="false">,</string>
+    <string name="character_a" translatable="false">A</string>
+    <string name="character_n" translatable="false">N</string>
+    <string name="character_s" translatable="false">S</string>
+    <string name="character_slash" translatable="false">/</string>
+    <string name="character_v" translatable="false">V</string>
+    <string name="character_y" translatable="false">Y</string>
+    <string name="choise_of_game_fragment" translatable="false">ChoiseOfGameFragment</string>
+    <string name="csv" translatable="false">csv</string>
+    <string name="descrizione" translatable="false">descrizione</string>
+    <string name="disabled" translatable="false">Disabled</string>
+    <string name="edit_message_password" translatable="false">password</string>
+    <string name="game1_second_level_fragment" translatable="false">Game1SecondLevelFragment</string>
+    <string name="game2_fragment" translatable="false">Game2Fragment</string>
+    <string name="game_fragment_hear" translatable="false">GameFragmentHear</string>
+    <string name="game_info" translatable="false">game info</string>
+    <string name="game_java_class" translatable="false">game java class</string>
+    <string name="game_life" translatable="false">Game life</string>
+    <string name="game_parameter" translatable="false">game parameter</string>
+    <string name="game_to_insert" translatable="false">game to insert</string>
+    <string name="height" translatable="false">height</string>
+    <string name="io">io</string>
+    <string name="is_menu_item" translatable="false">isMenuItem</string>
+    <string name="keyword" translatable="false">keyword</string>
+    <string name="keywords" translatable="false">keywords</string>
+    <string name="youtube_prize_fragment" translatable="false">YoutubePrizeFragment</string>
+    <string name="la_famiglia" translatable="false">la famiglia</string>
+    <string name="last_phrase_number" translatable="false">LAST PHRASE NUMBER</string>
+    <string name="left_column_content" translatable="false">LEFT COLUMN CONTENT</string>
+    <string name="left_column_content_url" translatable="false">LEFT COLUMN CONTENT URL</string>
+    <string name="left_column_content_url_type" translatable="false">LEFT COLUMN CONTENT URL TYPE</string>
+    <string name="left_column_menu_phrase_number" translatable="false">LEFT COLUMN MENU PHRASE NUMBER</string>
+    <string name="middle_column_content" translatable="false">MIDDLE COLUMN CONTENT</string>
+    <string name="middle_column_content_url" translatable="false">MIDDLE COLUMN CONTENT URL</string>
+    <string name="middle_column_content_url_type" translatable="false">MIDDLE COLUMN CONTENT URL TYPE</string>
+    <string name="middle_column_menu_phrase_number" translatable="false">MIDDLE COLUMN MENU PHRASE NUMBER</string>
+    <string name="nessuno" translatable="false">nessuno</string>
+    <string name="number" translatable="false">number</string>
+    <string name="number_1" translatable="false">1</string>
+    <string name="number_2" translatable="false">2</string>
+    <string name="number_3" translatable="false">3</string>
+    <string name="number_4" translatable="false">4</string>
+    <string name="number_6" translatable="false">6</string>
+    <string name="none" translatable="false">none</string>
+    <string name="non_trovata" translatable="false">non trovata</string>
+    <string name="non_trovato" translatable="false">non trovato</string>
+    <string name="p1" translatable="false">p1</string>
+    <string name="p3" translatable="false">p3</string>
+    <string name="parole_in_liberta" translatable="false">PAROLE IN LIBERTA\'</string>
+    <string name="pensieri_e_parole" translatable="false">PENSIERI E PAROLE</string>
+    <string name="permission" translatable="false">Permission</string>
+    <string name="permission_is_granted" translatable="false">Permission is granted</string>
+    <string name="permission_is_revoked" translatable="false">Permission is revoked</string>
+    <string name="permission_not_granted" translatable="false">permissions not granted</string>
+    <string name="phrase_number" translatable="false">phraseNumber</string>
+    <string name="plural" translatable="false">plural</string>
+    <string name="preference_allowed_margin_of_error" translatable="false">preference_AllowedMarginOfError</string>
+    <string name="preference_file_key" translatable="false">Username_file</string>
+    <string name="preference_last_phrase_number" translatable="false">preference_LastPhraseNumber</string>
+    <string name="preference_LastPlayer" translatable="false">preference_LastPlayer</string>
+    <string name="preference_LastSession" translatable="false">preference_LastSession</string>
+    <string name="preference_list_mode" translatable="false">preference_ListMode</string>
+    <string name="preference_print_permissions" translatable="false">preference_PrintPermissions</string>
+    <string name="preposition" translatable="false">preposition</string>
+    <string name="prize" translatable="false">prize</string>
+    <string name="prize_fragment" translatable="false">PrizeFragment</string>
+    <string name="random" translatable="false">Random</string>
+    <string name="reminder_phrase" translatable="false">reminder phrase</string>
+    <string name="reminder_phrase_plural" translatable="false">reminder phrase plural</string>
+    <string name="right_column_content" translatable="false">RIGHT COLUMN CONTENT</string>
+    <string name="right_column_content_url" translatable="false">RIGHT COLUMN CONTENT URL</string>
+    <string name="right_column_content_url_type" translatable="false">RIGHT COLUMN CONTENT URL TYPE</string>
+    <string name="right_column_menu_phrase_number" translatable="false">RIGHT COLUMN MENU PHRASE NUMBER</string>
+    <string name="rootdirectory" translatable="false">rootdirectory</string>
+    <string name="s1" translatable="false">s1</string>
+    <string name="s3" translatable="false">s3</string>
+    <string name="slm" translatable="false">SLM</string>
+    <string name="sorted" translatable="false">Sorted</string>
+    <string name="stampa_immagine1" translatable="false">stampaimmagine1</string>
+    <string name="tipo" translatable="false">tipo</string>
+    <string name="tlm" translatable="false">TLM</string>
+    <string name="type" translatable="false">type</string>
+    <string name="uri" translatable="false">URI</string>
+    <string name="uri_premium_video" translatable="false">URIPREMIUMVIDEO</string>
+    <string name="value" translatable="false">value</string>
+    <string name="width" translatable="false">width</string>
+    <string name="word1" translatable="false">word1</string>
+    <string name="word2" translatable="false">word2</string>
+    <string name="word_to_search_second_level_menu" translatable="false">WORD TO SEARCH SECOND LEVEL MENU</string>
+
+
+</resources>

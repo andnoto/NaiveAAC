@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.NaiveAAC"
+    android:installLocation="preferExternal">
+
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.20210823simsim">
+    <activity android:name="com.example.NaiveAAC.activities.Account.AccountActivity"
+        android:parentActivityName="com.example.NaiveAAC.activities.Main.MainActivity">
+        <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.NaiveAAC.activities.Main.MainActivity" />
+        </activity>
+        <activity android:name="com.example.NaiveAAC.activities.Settings.SettingsActivity"
+            android:parentActivityName="com.example.NaiveAAC.activities.Main.MainActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.NaiveAAC.activities.Main.MainActivity" />
+        </activity>
+        <activity android:name="com.example.NaiveAAC.activities.Game.Game1ViewPager.GameActivityGame1ViewPager"
+            android:parentActivityName="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
+        </activity>
+        <activity android:name="com.example.NaiveAAC.activities.Game.Game2.GameActivityGame2"
+            android:parentActivityName="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
+        </activity>
+        <activity android:name="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity"
+            android:parentActivityName="com.example.NaiveAAC.activities.Main.MainActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.NaiveAAC.activities.Main.MainActivity" />
+        </activity>
+        <activity android:name="com.example.NaiveAAC.activities.Main.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:parentActivityName="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity"
+            android:screenOrientation="sensorLandscape">
+        <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
+        </activity>
+    </application>
+
+</manifest>
