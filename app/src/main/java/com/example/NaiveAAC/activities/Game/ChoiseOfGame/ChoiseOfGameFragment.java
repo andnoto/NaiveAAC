@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.NaiveAAC.R;
 import com.example.NaiveAAC.activities.Game.GameParameters.GameParameters;
-import com.example.NaiveAAC.activities.Game.Utilities.GameFragmentAbstractClass;
+import com.example.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass;
 import com.example.NaiveAAC.activities.Graphics.Videos;
 
 import java.util.ArrayList;

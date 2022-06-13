@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+// import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -799,12 +799,13 @@ public class SettingsActivity extends AccountActivityAbstractClass
         //
         EditText textWord1=(EditText) findViewById(R.id.firstword);
         EditText textWord2=(EditText) findViewById(R.id.secondword);
-        EditText textWord3=(EditText) findViewById(R.id.firstwithsecondword);
+        EditText textWord3=(EditText) findViewById(R.id.complement);
         EditText textWord4=(EditText) findViewById(R.id.ismenuitem);
         EditText textWord5=(EditText) findViewById(R.id.awardtype);
-        EditText textWord6=(EditText) findViewById(R.id.uripremiumvideo);
+        TextView textWord6=(TextView) findViewById(R.id.uripremiumvideo);
+        EditText textWord7=(EditText) findViewById(R.id.linkyoutube);
         if ((textWord1 != null) && (textWord2 != null) && (textWord3 != null) && (textWord4 != null)
-                && (textWord5 != null) && (textWord6 != null))
+                && (textWord5 != null) && (textWord6 != null) && (textWord7 != null))
         {
             // check if the images of word1 and word 2 exist
             ResponseImageSearch image1 = null;
@@ -820,23 +821,42 @@ public class SettingsActivity extends AccountActivityAbstractClass
                 // set the fields here
                 wordPairs.setWord1(textWord1.getText().toString());
                 wordPairs.setWord2(textWord2.getText().toString());
-                wordPairs.setWord1WithWord2(textWord3.getText().toString());
+                wordPairs.setComplement(textWord3.getText().toString());
                 wordPairs.setIsMenuItem(textWord4.getText().toString());
                 wordPairs.setAwardType(textWord5.getText().toString());
-                wordPairs.setUriPremiumVideo(textWord6.getText().toString());
+                // if textword5 = V and textword6 = no video -> uripremiumvideo = prize otherwise see below
+                if (textWord5.getText().toString().equals(getString(R.string.character_v))
+                        && textWord6.getText().toString().equals(getString(R.string.nessun_video)))
+                    {
+                        wordPairs.setUriPremiumVideo(getString(R.string.prize));
+                    }
+                    else
+                    {
+                        // if textword5 = Y -> uripremiumvideo = linkyoutube otherwise see below
+                        if (textWord5.getText().toString().equals(getString(R.string.character_y)))
+                        {
+                            wordPairs.setUriPremiumVideo(textWord7.getText().toString());
+                        }
+                        else
+                        {
+                            wordPairs.setUriPremiumVideo(textWord6.getText().toString());
+                        }
+                    }
                 realm.commitTransaction();
+                // if textword5 = V and textword6 different from no video record video on realm
+                if (textWord5.getText().toString().equals("V")
+                        && !(textWord6.getText().toString().equals(getString(R.string.nessun_video))))
+                    {
+                        // Note that the realm object was generated with the createObject method
+                        // and not with the new operator.
+                        // The modification operations will be performed within a Transaction.
+                        realm.beginTransaction();
+                        Videos videos = realm.createObject(Videos.class);
+                        videos.setDescrizione(textWord6.getText().toString());
+                        videos.setUri(filePath);
+                        realm.commitTransaction();
+                    }
                 //
-                if ((!textWord4.getText().toString().equals(getString(R.string.tlm)))
-                        && (!textWord4.getText().toString().equals(getString(R.string.slm))))
-                {
-                    realm.beginTransaction();
-                    WordPairs wordPairs2 = realm.createObject(WordPairs.class);
-                    wordPairs2.setWord1(textWord2.getText().toString());
-                    wordPairs2.setWord2(textWord1.getText().toString());
-                    wordPairs2.setWord1WithWord2(textWord3.getText().toString());
-                    wordPairs2.setIsMenuItem(textWord4.getText().toString());
-                    realm.commitTransaction();
-                }
             }
         }
         // view the word pairs settings fragment initializing WordPairsFragment (FragmentTransaction
@@ -1105,11 +1125,20 @@ public class SettingsActivity extends AccountActivityAbstractClass
     public void generalSettingsSave(View view) {
         EditText textAllowedMarginOfError=(EditText) findViewById(R.id.allowedmarginoferror);
         String valueAllowedMarginOfError= textAllowedMarginOfError.getText().toString();
-        int finalValueAllowedMarginOfError=Integer.parseInt(valueAllowedMarginOfError);
+        //
+        sharedPref = this.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        int preference_AllowedMarginOfError =
+                sharedPref.getInt (getString(R.string.preference_allowed_margin_of_error), 20);
+        int finalValueAllowedMarginOfError;
+        try {
+            finalValueAllowedMarginOfError=Integer.parseInt(valueAllowedMarginOfError);
+        } catch (NumberFormatException e) {
+            finalValueAllowedMarginOfError = preference_AllowedMarginOfError;
+        }
+        //
         if (!(finalValueAllowedMarginOfError < 0) && !(finalValueAllowedMarginOfError > 100))
         {
-            sharedPref = this.getSharedPreferences(
-                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt(getString(R.string.preference_allowed_margin_of_error), finalValueAllowedMarginOfError);
             editor.apply();
@@ -1415,17 +1444,17 @@ public class SettingsActivity extends AccountActivityAbstractClass
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
+                // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
                 return true;
             } else {
 
-                Log.v(TAGPERMISSION,getString(R.string.permission_is_revoked));
+                // Log.v(TAGPERMISSION,getString(R.string.permission_is_revoked));
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 return false;
             }
         }
         else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
+            // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
             return true;
         }
     }

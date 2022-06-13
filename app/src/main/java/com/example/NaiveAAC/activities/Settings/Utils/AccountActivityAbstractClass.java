@@ -16,10 +16,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.util.Log;
+// import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -73,6 +74,7 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
     public Uri uri;
     public String stringUri;
     public String filePath;
+    public String fileName;
     public byte[] byteArray;
     //
     /**
@@ -283,6 +285,8 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
                             uri = null;
                             stringUri = null;
                             //
+                            EditText vidD=(EditText) findViewById(R.id.videoDescription);
+                            //
                             if (resultData != null) {
                                 uri = Objects.requireNonNull(resultData).getData();
                                 //
@@ -296,6 +300,16 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
                                 //
                                 VideosFragment frag= new VideosFragment();
                                 Bundle bundle = new Bundle();
+                                //
+                                if (vidD.length()>0)
+                                    {
+                                        bundle.putString(getString(R.string.descrizione), vidD.getText().toString());
+                                    }
+                                    else
+                                    {
+                                        bundle.putString(getString(R.string.descrizione), getString(R.string.nessuna));
+                                    }
+                                //
                                 bundle.putString(getString(R.string.uri), stringUri);
                                 frag.setArguments(bundle);
                                 FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
@@ -331,14 +345,21 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
                                 stringUri = uri.toString();
                                 //
                                 EditText awardType = findViewById(R.id.awardtype);
-                                EditText uriPremiumVideo = findViewById(R.id.uripremiumvideo);
+                                TextView uriPremiumVideo = findViewById(R.id.uripremiumvideo);
                                 try {
                                     filePath = getFilePath(context, uri);
+                                    //
+                                    assert filePath != null;
+                                    int cut = filePath.lastIndexOf('/');
+                                    if (cut != -1) {
+                                        fileName = filePath.substring(cut + 1);
+                                    }
+                                    //
                                 } catch (URISyntaxException e) {
                                     e.printStackTrace();
                                 }
                                 awardType.setText(getString(R.string.character_v));
-                                uriPremiumVideo.setText(filePath);
+                                uriPremiumVideo.setText(fileName);
                             }
                         }
                     }
@@ -448,18 +469,18 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
         }
         int height = bitmap.getHeight();
         int bounding = dpToPx(150);
-        Log.i("Test", "original width = " + Integer.toString(width));
-        Log.i("Test", "original height = " + Integer.toString(height));
-        Log.i("Test", "bounding = " + Integer.toString(bounding));
+        // Log.i("Test", "original width = " + Integer.toString(width));
+        // Log.i("Test", "original height = " + Integer.toString(height));
+        // Log.i("Test", "bounding = " + Integer.toString(bounding));
         // Determine how much to scale: the dimension requiring less scaling is
         // closer to the its side. This way the image always stays inside your
         // bounding box AND either x/y axis touches it.
         float xScale = ((float) bounding) / width;
         float yScale = ((float) bounding) / height;
         float scale = (xScale <= yScale) ? xScale : yScale;
-        Log.i("Test", "xScale = " + Float.toString(xScale));
-        Log.i("Test", "yScale = " + Float.toString(yScale));
-        Log.i("Test", "scale = " + Float.toString(scale));
+        // Log.i("Test", "xScale = " + Float.toString(xScale));
+        // Log.i("Test", "yScale = " + Float.toString(yScale));
+        // Log.i("Test", "scale = " + Float.toString(scale));
         // Create a matrix for the scaling and add the scaling data
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
@@ -468,8 +489,8 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
         width = scaledBitmap.getWidth(); // re-use
         height = scaledBitmap.getHeight(); // re-use
         BitmapDrawable result = new BitmapDrawable(context.getResources(),scaledBitmap);
-        Log.i("Test", "scaled width = " + Integer.toString(width));
-        Log.i("Test", "scaled height = " + Integer.toString(height));
+        // Log.i("Test", "scaled width = " + Integer.toString(width));
+        // Log.i("Test", "scaled height = " + Integer.toString(height));
         // Apply the scaled bitmap
         view.setImageDrawable(result);
         // Now change ImageView's dimensions to match the scaled image
@@ -477,7 +498,7 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
         params.width = width;
         params.height = height;
         view.setLayoutParams(params);
-        Log.i("Test", "done");
+        // Log.i("Test", "done");
     }
     /**
      * calculate the dimensions of desired bounding box.

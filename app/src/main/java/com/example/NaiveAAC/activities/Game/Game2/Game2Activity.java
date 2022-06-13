@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
+// import android.util.Log;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentTransaction;
@@ -393,7 +393,7 @@ public class Game2Activity extends GameActivityAbstractClass {
                 }
             //
             i++;
-            Log.d("TAG" + ": ", "some on result Response : " );
+            // Log.d("TAG" + ": ", "some on result Response : " );
         }
         return toBeRecordedInHistory;
     }

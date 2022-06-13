@@ -1,6 +1,9 @@
 package com.example.NaiveAAC.activities.Game.Utils;
 
+import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.findExternalStorageRoot;
+
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,6 +17,8 @@ import com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.example.NaiveAAC.activities.Game.Game1.Game1Activity;
 import com.example.NaiveAAC.activities.Settings.SettingsActivity;
 
+import java.io.File;
+
 /**
  * <h1>ActionbarFragment</h1>
  * <p><b>ActionbarFragment</b> UI for Action Bar
@@ -25,6 +30,8 @@ import com.example.NaiveAAC.activities.Settings.SettingsActivity;
  * @see Game1Activity
  */
 public class ActionbarFragment extends Fragment {
+    public File root;
+    public String rootPath;
     /**
      * inform the system that your app bar fragment is participating in the population of the options menu.
      * <p>
@@ -68,12 +75,28 @@ public class ActionbarFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), SettingsActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.MENU_MANUAL:
+                /*
+                navigate to manual
+                */
+                root = findExternalStorageRoot();
+                rootPath = root.getAbsolutePath();
+                File pdfFile = new File(rootPath + "/" + getString(R.string.app_name), "naive aac manuale istruzioni.pdf");
+                if (pdfFile.exists())
+                    {
+                    Uri pathPdfFile = Uri.fromFile(pdfFile);
+                    Intent intent1 = new Intent(Intent.ACTION_VIEW);
+                    intent1.setDataAndType(pathPdfFile, "application/pdf");
+                    intent1.setFlags(Intent. FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent1); //Starting the pdf viewer
+                    }
+                return true;
             case R.id.MENU_HOME:
                 /*
                 navigate to home screen (MainActivity)
                 */
-                Intent intent1 = new Intent(getActivity(), ChoiseOfGameActivity.class);
-                startActivity(intent1);
+                Intent intent2 = new Intent(getActivity(), ChoiseOfGameActivity.class);
+                startActivity(intent2);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -12,6 +12,7 @@
     <string name="eccezioni_grammaticali">ECCEZIONI GRAMMATICALI</string>
     <string name="descrizione_immagine_da_inserire">descrizione immagine da inserire</string>
     <string name="descrizione_video_da_inserire">descrizione video da inserire</string>
+    <string name="descrizione_video_opzionale">descrizione video (opzionale)</string>
     <string name="disabilita_stampa">Disabilita stampa</string>
     <string name="disabilitata">Disabilitata</string>
     <string name="eccezione_1">eccezione 1</string>
@@ -37,17 +38,18 @@
     <string name="impostazioni_data_import">IMPOSTAZIONI DATA IMPORT</string>
     <string name="impostazioni_generali">IMPOSTAZIONI GENERALI</string>
     <string name="impostazioni_wordpairs">IMPOSTAZIONI WORDPAIRS</string>
-    <string name="indirizzo_video_premio_opzionale">indirizzo (video) premio (opzionale)</string>
     <string name="info">info</string>
     <string name="information_this_app_was_created_by">Information: this app was created by Renzo Sampietro and has the purpose of creating an open source tool that can be used as an aid for preschool children with speech problems</string>
     <string name="informazioni_sullo_sviluppatore">INFORMAZIONI SULLO SVILUPPATORE</string>
     <string name="inizia">inizia</string>
     <string name="inserisci_il_risultato_per_verificare_che_sei_un_adulto">inserisci il risultato per verificare che sei un adulto</string>
     <string name="le_tue_immagini">LE TUE IMMAGINI</string>
+    <string name="link_youtube">link Youtube</string>
     <string name="lista_di_nomi">LISTA DI NOMI</string>
     <string name="media_settings">IMPOSTAZIONE DEI MEDIA</string>
     <string name="modalita_elenco">Modalità Elenco</string>
     <string name="mostra_elenco">mostra elenco</string>
+    <string name="nessuna">nessuna</string>
     <string name="nome_da_aggiungere_alla_lista">nome da aggiungere alla lista</string>
     <string name="nome_storia">nome storia</string>
     <string name="numero_frase">numero frase</string>
@@ -58,6 +60,7 @@
     <string name="percentuale_errori_consentita">percentuale errori consentita</string>
     <string name="pittogrammi_da_modificare">PITTOGRAMMI DA MODIFICARE</string>
     <string name="plurale_frase_di_promemoria">plurale frase di promemoria</string>
+    <string name="preposizione_seconda_parola_complemento">preposizione seconda parola / complemento</string>
     <string name="prima_con_seconda_parola">prima con seconda parola</string>
     <string name="prima_parola">prima parola</string>
     <string name="puoi_accedere">puoi accedere</string>
@@ -66,8 +69,8 @@
     <string name="save_account">save account</string>
     <string name="scegli_il_gioco_da_impostare">Scegli il gioco da impostare</string>
     <string name="se_plurale_p">se plurale (P)</string>
-    <string name="search_image">search image</string>
-    <string name="search_video">search video</string>
+    <string name="search_image">cerca immagine</string>
+    <string name="search_video">cerca video</string>
     <string name="seconda_parola">seconda parola</string>
     <string name="storia">STORIA</string>
     <string name="storie">STORIE</string>
@@ -77,6 +80,7 @@
     <string name="tipo_modifica_e_i_c">tipo modifica (E/I/C)</string>
     <string name="tipo_uri_a_s_opzionale">tipo uri A/S (opzionale)</string>
     <string name="uri_opzionale">uri (opzionale)</string>
+    <string name="video_premio_opzionale">(video) premio (opzionale)</string>
     <string name="voce_di_menu_opzionale">voce di menu (opzionale)</string>
     <string name="welcome_phrase_first_part">welcome phrase first part</string>
     <string name="welcome_phrase_second_part">welcome phrase second part</string>
@@ -129,6 +133,7 @@
     <string name="middle_column_content_url" translatable="false">MIDDLE COLUMN CONTENT URL</string>
     <string name="middle_column_content_url_type" translatable="false">MIDDLE COLUMN CONTENT URL TYPE</string>
     <string name="middle_column_menu_phrase_number" translatable="false">MIDDLE COLUMN MENU PHRASE NUMBER</string>
+    <string name="nessun_video" translatable="false">nessun video</string>
     <string name="nessuno" translatable="false">nessuno</string>
     <string name="number" translatable="false">number</string>
     <string name="number_1" translatable="false">1</string>
@@ -182,6 +187,7 @@
     <string name="word1" translatable="false">word1</string>
     <string name="word2" translatable="false">word2</string>
     <string name="word_to_search_second_level_menu" translatable="false">WORD TO SEARCH SECOND LEVEL MENU</string>
+
 
 
 </resources>

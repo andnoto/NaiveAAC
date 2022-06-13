@@ -7,32 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".activities.Game.Game1.Game1Activity">
 
-    <LinearLayout
-
+        <WebView
+        android:id="@+id/youtubevideoview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/youtubecontinuegamebutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginEnd="8dp"
-            android:onClick="youtubeContinueGameButton"
-            android:src="@drawable/ic_baseline_arrow_forward_ios_36" />
-
-        <WebView
-        android:id="@+id/youtubevideoview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp" />
-
-    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

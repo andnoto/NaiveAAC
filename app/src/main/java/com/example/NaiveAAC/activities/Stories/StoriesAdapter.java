@@ -2,7 +2,7 @@ package com.example.NaiveAAC.activities.Stories;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+// import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,10 +124,10 @@ public class StoriesAdapter extends BaseAdapter
             Stories l=(Stories) getItem(position);
             TextView txt=(TextView) v.findViewById(R.id.imageDescriptionRow);
             //
-            if ((l.getStory().equals("prova")) && (l.getPhraseNumber().equals("4")) && (l.getWordNumber().equals("1")))
-            {
-                Log.v("TAGSTORY","record finded");
-            }
+            // if ((l.getStory().equals("prova")) && (l.getPhraseNumber().equals("4")) && (l.getWordNumber().equals("1")))
+            // {
+            //    Log.v("TAGSTORY","record finded");
+            // }
             //
             txt.setText(l.getStory()+ "-" + l.getPhraseNumber()
                     + "-" + l.getWordNumber() + " " + l.getWord());

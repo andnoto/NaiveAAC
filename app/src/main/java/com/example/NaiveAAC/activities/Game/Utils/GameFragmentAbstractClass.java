@@ -38,7 +38,7 @@ import io.realm.Realm;
  * @see ChoiseOfGameFragment
  * @see Game1FirstLevelFragment
  * @see Game1SecondLevelFragment
- * @see com.example.NaiveAAC.activities.Game.Game2.GameFragmentGame2
+ * @see com.example.NaiveAAC.activities.Game.Game2.Game2Fragment
  */
 public abstract class GameFragmentAbstractClass extends Fragment {
     public Realm realm;

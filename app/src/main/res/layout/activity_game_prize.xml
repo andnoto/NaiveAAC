@@ -17,7 +17,7 @@
         android:text=""
         android:textIsSelectable="true"/>
 
-    <com.example.a20210823simsim.activities.Game.Utils.CenterVideoView
+    <com.example.NaiveAAC.activities.Game.Utils.CenterVideoView
         android:id="@+id/prizeVideoView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

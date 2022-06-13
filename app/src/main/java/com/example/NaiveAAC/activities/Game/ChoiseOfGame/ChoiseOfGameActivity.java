@@ -8,11 +8,11 @@ import android.widget.TextView;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.NaiveAAC.R;
-import com.example.NaiveAAC.activities.Game.Game1ViewPager.GameActivityGame1ViewPager;
-import com.example.NaiveAAC.activities.Game.Game2.GameActivityGame2;
+import com.example.NaiveAAC.activities.Game.Game1.Game1Activity;
+import com.example.NaiveAAC.activities.Game.Game2.Game2Activity;
 import com.example.NaiveAAC.activities.Game.GameParameters.GameParameters;
-import com.example.NaiveAAC.activities.Game.Utilities.ActionbarFragment;
-import com.example.NaiveAAC.activities.Game.Utilities.GameActivityAbstractClass;
+import com.example.NaiveAAC.activities.Game.Utils.ActionbarFragment;
+import com.example.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -108,8 +108,8 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
      * @see ChoiseOfGameRecyclerViewAdapterInterface
      * @see GameParameters
      * @see ChoiseOfGameRecyclerView
-     * @see GameActivityGame1ViewPager
-     * @see GameActivityGame2
+     * @see Game1Activity
+     * @see Game2Activity
      */
     @Override
     public void onItemClick(View view, int i) {
@@ -132,13 +132,13 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
                 switch(gameJavaClass) {
                     case "PENSIERI E PAROLE":
                         intent = new Intent(this,
-                                GameActivityGame1ViewPager.class);
+                                Game1Activity.class);
                         intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter);
                         startActivity(intent);
                         break;
                     case "PAROLE IN LIBERTA'":
                         intent = new Intent(this,
-                                GameActivityGame2.class);
+                                Game2Activity.class);
                         intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter);
                         startActivity(intent);
                         break;

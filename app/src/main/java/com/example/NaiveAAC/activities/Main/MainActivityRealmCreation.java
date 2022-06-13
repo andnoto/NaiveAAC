@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+// import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.NaiveAAC.R;
 import com.example.NaiveAAC.activities.Account.AccountActivityRealmCreation;
-import com.example.NaiveAAC.activities.Game.ChoiseOfGame.GameActivityChoiseOfGameMediaPlayer;
+import com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -107,7 +107,7 @@ public class MainActivityRealmCreation extends AppCompatActivity {
 //                            GameActivityChoiseOfGame.class);
 //                            GameActivityChoiseOfGameVideo.class);
 //                            GameActivityChoiseOfGameExoplayer.class);
-                            GameActivityChoiseOfGameMediaPlayer.class);
+                            ChoiseOfGameActivity.class);
 
 
                     //
@@ -194,17 +194,17 @@ public class MainActivityRealmCreation extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAGPERMISSION,"Permission is granted");
+                    // Log.v(TAGPERMISSION,"Permission is granted");
                     return true;
                 } else {
 
-                    Log.v(TAGPERMISSION,"Permission is revoked");
+                    // Log.v(TAGPERMISSION,"Permission is revoked");
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                     return false;
                 }
             }
             else { //permission is automatically granted on sdk<23 upon installation
-                Log.v(TAGPERMISSION,"Permission is granted");
+                // Log.v(TAGPERMISSION,"Permission is granted");
                 return true;
             }
         }

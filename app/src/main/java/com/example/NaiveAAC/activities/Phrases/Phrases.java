@@ -1,13 +1,13 @@
 package com.example.NaiveAAC.activities.Phrases;
 
-import static com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper.dataProcess;
-import static com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper.openFileInput;
-import static com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper.savBak;
+import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.dataProcess;
+import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.openFileInput;
+import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.savBak;
 
 import android.content.Context;
 
 import com.example.NaiveAAC.R;
-import com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper;
+import com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -9,6 +9,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.NaiveAAC.R;
@@ -98,8 +99,8 @@ public class VideosFragment extends SettingsFragmentAbstractClass implements Sur
      * prepares the ui also using a listview and a surfaceview and makes the callback to the activity
      *
      * @see androidx.fragment.app.Fragment#onCreateView
-     * @see com.example.NaiveAAC.activities.Graphics.Videos
-     * @see com.example.NaiveAAC.activities.Graphics.VideosAdapter
+     * @see com.example.a20210823simsim.activities.Graphics.Videos
+     * @see com.example.a20210823simsim.activities.Graphics.VideosAdapter
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -108,7 +109,15 @@ public class VideosFragment extends SettingsFragmentAbstractClass implements Sur
         // logic of fragment
         Bundle bundle = this.getArguments();
         String stringUri = null;
+        //
+        String descrizione = null;
+        //
         if (bundle != null) {
+            //
+            descrizione = bundle.getString("descrizione");
+            EditText vidD=(EditText) rootView.findViewById(R.id.videoDescription);
+            vidD.setText(descrizione);
+            //
             stringUri = bundle.getString("URI");
             if (!stringUri.equals("none")) {
                 uri = Uri.parse(stringUri);

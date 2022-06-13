@@ -1,16 +1,16 @@
 package com.example.NaiveAAC.activities.WordPairs;
 
-import static com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper.dataProcess;
-import static com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper.findExternalStorageRoot;
-import static com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper.openFileInput;
-import static com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper.savBak;
+import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.dataProcess;
+import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.findExternalStorageRoot;
+import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.openFileInput;
+import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.savBak;
 
 import android.content.Context;
 
 import com.example.NaiveAAC.R;
-import com.example.NaiveAAC.activities.Graphics.ImageSearchClass;
+import com.example.NaiveAAC.activities.Graphics.ImageSearchHelper;
 import com.example.NaiveAAC.activities.Graphics.ResponseImageSearch;
-import com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper;
+import com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,9 +46,12 @@ public class WordPairs extends RealmObject {
      */
     private String word2;
     /**
-     * if the case, <code>word1</code> with <code>word2</code>.
+     * if <code>word1</code> is a verb, the articles and prepositions for the object complement and
+     * the complements of motion to place and motion from place are automatically generated;
+     * if necessary, for other types of complement, indicate the complement itself (example
+     * andare - nonno insert "con il"
      */
-    private String word1WithWord2;
+    private String complement;
     /**
      * game1 is designed as a search engine where categories are represented by image menus.</p>
      * isMenuItem = TLM : <code>word1</code> is a top-level menu item of Game1
@@ -94,12 +97,12 @@ public class WordPairs extends RealmObject {
         return word2;
     }
     /**
-     * get <code>word1WithWord2</code>.
+     * get <code>complement</code>.
      *
-     * @return word1WithWord2 string data to get
+     * @return complement string data to get
      */
-    public String getWord1WithWord2() {
-        return word1WithWord2;
+    public String getComplement() {
+        return complement;
     }
     /**
      * get <code>isMenuItem</code>.
@@ -143,11 +146,11 @@ public class WordPairs extends RealmObject {
         this.word2 = word2;
     }
     /**
-     * set <code>word1WithWord2</code>.
+     * set <code>complement</code>.
      *
-     * @param word1WithWord2 string data to set
+     * @param complement string data to set
      */
-    public void setWord1WithWord2(String word1WithWord2) { this.word1WithWord2 = word1WithWord2; }
+    public void setComplement(String complement) { this.complement = complement; }
     /**
      * set <code>isMenuItem</code>.
      *
@@ -283,8 +286,8 @@ public class WordPairs extends RealmObject {
                     if (oneWord[0] != null && oneWord[1] != null) {
                         ResponseImageSearch image1 = null;
                         ResponseImageSearch image2 = null;
-                        image1 = ImageSearchClass.imageSearch(realm, oneWord[0]);
-                        image2 = ImageSearchClass.imageSearch(realm, oneWord[1]);
+                        image1 = ImageSearchHelper.imageSearch(realm, oneWord[0]);
+                        image2 = ImageSearchHelper.imageSearch(realm, oneWord[1]);
                         if (image1 !=null && image2 !=null
                                 && oneWord[2] != null
                                 && oneWord[3] != null
@@ -296,7 +299,7 @@ public class WordPairs extends RealmObject {
                             // set the fields here
                             wordPairs.setWord1(oneWord[0]);
                             wordPairs.setWord2(oneWord[1]);
-                            wordPairs.setWord1WithWord2(oneWord[2]);
+                            wordPairs.setComplement(oneWord[2]);
                             wordPairs.setIsMenuItem(oneWord[3]);
                             wordPairs.setAwardType(oneWord[4]);
                             // replace with root of the external storage or data directory

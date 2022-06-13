@@ -183,7 +183,8 @@ public class Game1Activity extends GameActivityAbstractClass implements
                 //
                 // aggiungere ripristino video prize ?
                 if (onCreateSavedInstanceState != null) {
-                    // The onSaveInstanceState method is called before an activity may be killed so that
+                    // The onSaveInstanceState method is called before an activity may be killed
+                    // (for Screen Rotation Handling) so that
                     // when it comes back it can restore its state.
                     // if this activity was playing an award video, it restores the award video
                     rightColumnAwardType = onCreateSavedInstanceState.getString(getString(R.string.award_type), getString(R.string.non_trovato) );
@@ -229,7 +230,8 @@ public class Game1Activity extends GameActivityAbstractClass implements
         super.onCreate(savedInstanceState);
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
-            // The onSaveInstanceState method is called before an activity may be killed so that
+            // The onSaveInstanceState method is called before an activity may be killed
+            // (for Screen Rotation Handling) so that
             // when it comes back it can restore its state.
             // if this activity was playing an award video, it restores the award video
             // (in callbackViewPager2)
@@ -345,18 +347,6 @@ public class Game1Activity extends GameActivityAbstractClass implements
      * @see #displaySecondLevelMenu
      */
     public void continueGameButton (View v)
-    {
-        displaySecondLevelMenu();
-    }
-    /**
-     * Called when the user taps the youtube continue game button.
-     * </p>
-     * display second level menu
-     *
-     * @param v view of tapped button
-     * @see #displaySecondLevelMenu
-     */
-    public void youtubeContinueGameButton (View v)
     {
         displaySecondLevelMenu();
     }
@@ -1361,6 +1351,7 @@ public class Game1Activity extends GameActivityAbstractClass implements
      * adds the corresponding article.
      * <p>
      *
+     * @see WordPairs
      * @see GrammarHelper#searchPlural
      * @see GrammarHelper#searchGender
      * @see GrammarHelper#searchArticle
@@ -1408,16 +1399,38 @@ public class Game1Activity extends GameActivityAbstractClass implements
     if (!rightColumnContent.equals(sharedLastPlayer)
             && !rightColumnContent.equals(getString(R.string.io))
             && !rightColumnContent.equals(" ")) {
-        // adds the corresponding article
-        // search if plural
-        // if gender male / female
-        verbOfMovement = GrammarHelper.searchVerbsOfMovement(middleColumnContentVerbInTheInfinitiveForm, realm);
-        pluralToSearchRealm = GrammarHelper.searchPlural(rightColumnContent, realm);
-        genderToSearchRealm = GrammarHelper.searchGender(rightColumnContent, realm);
-        String articleToSearch = GrammarHelper.searchArticle(rightColumnContent,
-            genderToSearchRealm, pluralToSearchRealm, verbOfMovement, realm);
-        rightColumnContent = articleToSearch + rightColumnContent;
+        // ricerca complementi
+        RealmResults<WordPairs> resultsWordPairs =
+                realm.where(WordPairs.class)
+                        .beginGroup()
+                        .equalTo(getString(R.string.word1), middleColumnContentVerbInTheInfinitiveForm)
+                        .equalTo(getString(R.string.word2), rightColumnContent)
+                        .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
+                        .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
+                        .endGroup()
+                        .findAll();
+        int resultsWordPairsSize = resultsWordPairs.size();
+        if (resultsWordPairsSize != 0) {
+            WordPairs resultWordPairs = resultsWordPairs.get(0);
+            assert resultWordPairs != null;
+            String rightColumnComplement = resultWordPairs.getComplement();
+            if (!rightColumnComplement.equals(" ") && !rightColumnComplement.equals("")) {
+                rightColumnContent = rightColumnComplement + " " + rightColumnContent;
+                }
+                else {
+                //
+                // adds the corresponding article
+                // search if plural
+                // if gender male / female
+                verbOfMovement = GrammarHelper.searchVerbsOfMovement(middleColumnContentVerbInTheInfinitiveForm, realm);
+                pluralToSearchRealm = GrammarHelper.searchPlural(rightColumnContent, realm);
+                genderToSearchRealm = GrammarHelper.searchGender(rightColumnContent, realm);
+                String articleToSearch = GrammarHelper.searchArticle(rightColumnContent,
+                        genderToSearchRealm, pluralToSearchRealm, verbOfMovement, realm);
+                rightColumnContent = articleToSearch + rightColumnContent;
+                }
         }
+    }
     }
     /**
      * reads the previously completed sentence

@@ -7,6 +7,11 @@
         android:title="Home"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/MENU_MANUAL"
+        android:icon="@drawable/ic_manual"
+        android:title="Manual"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/MENU_SETTINGS"
         android:icon="@drawable/ic_action_actionbar_settings"
         android:title="Settings"

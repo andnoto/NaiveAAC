@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+// import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +17,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.NaiveAAC.R;
 import com.example.NaiveAAC.activities.Account.AccountActivity;
-import com.example.NaiveAAC.activities.Game.ChoiseOfGame.GameActivityChoiseOfGameMediaPlayer;
+import com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
      * @see #isStoragePermissionGranted
      * @see #displayFileInAssets
      * @see #verifyLastPlayer
-     * @see GameActivityChoiseOfGameMediaPlayer
+     * @see ChoiseOfGameActivity
      * @see android.app.Activity#onCreate(Bundle)
      */
     @Override
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
 
                     Intent i = new Intent(MainActivity.this,
-                            GameActivityChoiseOfGameMediaPlayer.class);
+                            ChoiseOfGameActivity.class);
                     //
                     String message = "Bentornato " ;
                     i.putExtra(EXTRA_MESSAGE, message);
@@ -200,17 +200,17 @@ public class MainActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         == PackageManager.PERMISSION_GRANTED) {
-                    Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
+                    // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
                     return true;
                 } else {
 
-                    Log.v(TAGPERMISSION,getString(R.string.permission_is_revoked));
+                    // Log.v(TAGPERMISSION,getString(R.string.permission_is_revoked));
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                     return false;
                 }
             }
             else { //permission is automatically granted on sdk<23 upon installation
-                Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
+                // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
                 return true;
             }
         }

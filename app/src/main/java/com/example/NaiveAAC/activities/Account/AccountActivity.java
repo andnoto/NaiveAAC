@@ -1,6 +1,6 @@
 package com.example.NaiveAAC.activities.Account;
 
-import static com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper.findExternalStorageRoot;
+import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.findExternalStorageRoot;
 
 import android.Manifest;
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -19,18 +18,18 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.NaiveAAC.R;
-import com.example.NaiveAAC.activities.Game.ChoiseOfGame.GameActivityChoiseOfGameMediaPlayer;
+import com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.example.NaiveAAC.activities.Game.GameParameters.GameParameters;
-import com.example.NaiveAAC.activities.Game.Utilities.ActionbarFragment;
+import com.example.NaiveAAC.activities.Game.Utils.ActionbarFragment;
 import com.example.NaiveAAC.activities.Grammar.GrammaticalExceptions;
 import com.example.NaiveAAC.activities.Grammar.ListsOfNames;
 import com.example.NaiveAAC.activities.Graphics.Images;
 import com.example.NaiveAAC.activities.Graphics.Videos;
 import com.example.NaiveAAC.activities.Phrases.Phrases;
 import com.example.NaiveAAC.activities.Settings.AccountFragment;
-import com.example.NaiveAAC.activities.Settings.Utilities.AccountActivityAbstractClass;
-import com.example.NaiveAAC.activities.Settings.Utilities.AdvancedSettingsDataImportExportHelper;
-import com.example.NaiveAAC.activities.Settings.Utilities.SettingsFragmentAbstractClass;
+import com.example.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass;
+import com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper;
+import com.example.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass;
 import com.example.NaiveAAC.activities.Stories.Stories;
 import com.example.NaiveAAC.activities.WordPairs.WordPairs;
 import com.example.NaiveAAC.activities.history.History;
@@ -58,8 +57,8 @@ import io.realm.RealmResults;
  * 3) initial settings and content such as images, videos and others from assets</p>
  *
  * @version     1.1, 04/22/22
- * @see com.example.NaiveAAC.activities.Settings.Utilities.AccountActivityAbstractClass
- * @see com.example.NaiveAAC.activities.Settings.Utilities.SettingsFragmentAbstractClass
+ * @see com.example.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass
+ * @see com.example.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  */
 public class AccountActivity extends AccountActivityAbstractClass implements
         SettingsFragmentAbstractClass.onFragmentEventListenerSettings         {
@@ -106,7 +105,7 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             }
         //
         if (isStoragePermissionGranted()) {
-            Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
+        //    Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
         }
         //
     }
@@ -197,7 +196,7 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             realm.commitTransaction();
 //
             Intent intent = new Intent(this,
-                    GameActivityChoiseOfGameMediaPlayer.class);
+                    ChoiseOfGameActivity.class);
             String message = (getString(R.string.puoi_accedere));
             intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
@@ -231,6 +230,7 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             //
             copyAssets("images");
             copyAssets("videos");
+            copyAssets("pdf");
         }
         //
     }
@@ -270,17 +270,17 @@ public class AccountActivity extends AccountActivityAbstractClass implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
+                // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
                 return true;
             } else {
 
-                Log.v(TAGPERMISSION,getString(R.string.permission_is_revoked));
+                // Log.v(TAGPERMISSION,getString(R.string.permission_is_revoked));
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                 return false;
             }
         }
         else { //permission is automatically granted on sdk<23 upon installation
-            Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
+            // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
             return true;
         }
     }
@@ -307,7 +307,7 @@ public class AccountActivity extends AccountActivityAbstractClass implements
         try {
             files = assetManager.list(path);
         } catch (IOException e) {
-            Log.e("tag", "Failed to get asset file list.", e);
+            // Log.e("tag", "Failed to get asset file list.", e);
         }
         if (files != null) {
             for (String filename : files) {
@@ -320,7 +320,7 @@ public class AccountActivity extends AccountActivityAbstractClass implements
                     out = new FileOutputStream(outFile);
                     copyFile(in, out);
                 } catch(IOException e) {
-                    Log.e("tag", "Failed to copy asset file: " + filename, e);
+                    // Log.e("tag", "Failed to copy asset file: " + filename, e);
                 }
                 finally {
                     if (in != null) {
