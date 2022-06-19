@@ -20,7 +20,7 @@ import io.realm.RealmResults;
 /**
  * this adapter is the View "supplier" for the listview in the UI for word pairs list settings.
  *
- * @version     1.1, 04/22/22
+ * @version     1.0, 06/13/22
  * @see com.example.NaiveAAC.activities.WordPairs.WordPairs
  * @see com.example.NaiveAAC.activities.Settings.WordPairsFragment
  * @see com.example.NaiveAAC.activities.Settings.SettingsActivity
@@ -160,6 +160,9 @@ public class WordPairsAdapter extends BaseAdapter
                 // delete
                 realm= Realm.getDefaultInstance();
                 RealmResults<WordPairs> results = realm.where(WordPairs.class).findAll();
+                //
+                results = results.sort("word1");
+                //
                 realm.beginTransaction();
                 WordPairs daCancellare=results.get(position);
                 daCancellare.deleteFromRealm();

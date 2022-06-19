@@ -56,7 +56,7 @@ import io.realm.RealmResults;
  * 2) data from https://github.com/ian-hamlin/verb-data a collection of verbs and conjugations </p>
  * 3) initial settings and content such as images, videos and others from assets</p>
  *
- * @version     1.1, 04/22/22
+ * @version     1.0, 06/13/22
  * @see com.example.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass
  * @see com.example.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  */
@@ -194,7 +194,17 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             iIo.setDescrizione(getString(R.string.io));
             iIo.setUri(filePath);
             realm.commitTransaction();
-//
+            // register the linked word pairs
+            realm.beginTransaction();
+            WordPairs wordPairs = realm.createObject(WordPairs.class);
+            wordPairs.setWord1(getString(R.string.famiglia));
+            wordPairs.setWord2(textPersonName);
+            wordPairs.setComplement("");
+            wordPairs.setIsMenuItem(getString(R.string.slm));
+            wordPairs.setAwardType("");
+            wordPairs.setUriPremiumVideo("");
+            realm.commitTransaction();
+            //
             Intent intent = new Intent(this,
                     ChoiseOfGameActivity.class);
             String message = (getString(R.string.puoi_accedere));

@@ -39,12 +39,9 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
     /**
      * configurations of game choice start screen.
      * <p>
-     * Refer to <a href="https://stackoverflow.com/questions/43520688/findfragmentbyid-and-findfragmentbytag">stackoverflow</a>
-     * answer of <a href="https://stackoverflow.com/users/4266957/ricardo">Ricardo</a>
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
      * @see ActionbarFragment
-     * @see ChoiseOfGameFragment
      * @see android.app.Activity#onCreate(Bundle)
      */
     @Override
@@ -62,24 +59,38 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
         //
         resultsGameParameters =
                 realm.where(GameParameters.class).findAll();
+    }
+    /**
+     * configurations of game choice start screen.
+     * <p>
+     * Refer to <a href="https://stackoverflow.com/questions/43520688/findfragmentbyid-and-findfragmentbytag">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/4266957/ricardo">Ricardo</a>
+     *
+     * @see ChoiseOfGameFragment
+     * @see android.app.Activity#onResume()
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
         //
         ChoiseOfGameFragment frag= new ChoiseOfGameFragment();
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
         ChoiseOfGameFragment fragmentgotinstance =
-                    (ChoiseOfGameFragment)
-                            getSupportFragmentManager().findFragmentByTag(getString(R.string.choise_of_game_fragment));
+                (ChoiseOfGameFragment)
+                        getSupportFragmentManager().findFragmentByTag(getString(R.string.choise_of_game_fragment));
         if(fragmentgotinstance != null)
-            {
-                ft.replace(R.id.game_container, frag, getString(R.string.choise_of_game_fragment));
-                // ok, we got the fragment instance, but should we manipulate its view?
-            }
-            else
-            {
-                ft.add(R.id.game_container, frag, getString(R.string.choise_of_game_fragment));
-            }
+        {
+            ft.replace(R.id.game_container, frag, getString(R.string.choise_of_game_fragment));
+            // ok, we got the fragment instance, but should we manipulate its view?
+        }
+        else
+        {
+            ft.add(R.id.game_container, frag, getString(R.string.choise_of_game_fragment));
+        }
         ft.addToBackStack(null);
         ft.commit();
     }
+    //
     /**
      * Called on result of speech.
      *

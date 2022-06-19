@@ -66,7 +66,7 @@ public class ChoiseOfGameRecyclerViewViewHolder extends RecyclerView.ViewHolder 
      * @param urlType string representing the type of icon displayed in the view for game choice.
      * @param url string representing the path of icon displayed in the view for game choice.
      * @param img imageview where the image will be added
-     * @see com.example.a20210823simsim.activities.Game.GameParameters.GameParameters
+     * @see com.example.NaiveAAC.activities.Game.GameParameters.GameParameters
      * @see GraphicsHelper#addImageUsingPicasso
      * @see GraphicsHelper#addFileImageUsingPicasso
      */

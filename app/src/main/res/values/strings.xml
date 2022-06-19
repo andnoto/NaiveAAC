@@ -20,6 +20,7 @@
     <string name="eccezione_3">eccezione 3</string>
     <string name="edit_message">Username</string>
     <string name="esporta_tabelle">ESPORTA TABELLE</string>
+    <string name="famiglia">famiglia</string>
     <string name="frase_benvenuto_prima_parte">frase benvenuto prima parte</string>
     <string name="frase_benvenuto_seconda_parte">frase benvenuto seconda parte</string>
     <string name="frase_di_promemoria">frase di promemoria</string>
@@ -66,7 +67,7 @@
     <string name="puoi_accedere">puoi accedere</string>
     <string name="risultato">risultato</string>
     <string name="salva">SALVA</string>
-    <string name="save_account">save account</string>
+    <string name="save_account">salva utente</string>
     <string name="scegli_il_gioco_da_impostare">Scegli il gioco da impostare</string>
     <string name="se_plurale_p">se plurale (P)</string>
     <string name="search_image">cerca immagine</string>
@@ -187,7 +188,5 @@
     <string name="word1" translatable="false">word1</string>
     <string name="word2" translatable="false">word2</string>
     <string name="word_to_search_second_level_menu" translatable="false">WORD TO SEARCH SECOND LEVEL MENU</string>
-
-
 
 </resources>

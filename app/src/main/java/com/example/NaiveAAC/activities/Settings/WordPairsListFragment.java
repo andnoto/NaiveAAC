@@ -19,7 +19,7 @@ import io.realm.RealmResults;
  * <p><b>WordPairsListFragment</b> UI for word pairs list settings
  * </p>
  *
- * @version     1.1, 04/22/22
+ * @version     1.0, 06/13/22
  * @see com.example.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  * @see com.example.NaiveAAC.activities.Settings.SettingsActivity
  */
@@ -55,6 +55,8 @@ public class WordPairsListFragment extends SettingsFragmentAbstractClass {
         // 3) we retrieve the ListView prepared in the layout and assign it the reference to the adapter
         // which will be your View "supplier".
         RealmResults<WordPairs> results = realm.where(WordPairs.class).findAll();
+        //
+        results = results.sort("word1");
         //
         listView=(ListView) rootView.findViewById(R.id.listview);
         //

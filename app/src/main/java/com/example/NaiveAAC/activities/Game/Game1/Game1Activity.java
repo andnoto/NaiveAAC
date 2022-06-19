@@ -58,7 +58,7 @@ import io.realm.RealmResults;
  * Refer to <a href="https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started">raywenderlich.com</a>
  * By <a href="https://www.raywenderlich.com/u/rajdeep1008">Rajdeep Singh</a>
  *
- * @version     1.3, 05/05/22
+ * @version     1.0, 06/13/22
  * @see GameActivityAbstractClass
  * @see Game1RecyclerViewAdapterInterface
  * @see PrizeFragment.onFragmentEventListenerPrize
@@ -187,6 +187,10 @@ public class Game1Activity extends GameActivityAbstractClass implements
                     // (for Screen Rotation Handling) so that
                     // when it comes back it can restore its state.
                     // if this activity was playing an award video, it restores the award video
+                    // else it restores second level menu
+                    wordToSearchSecondLevelMenu =
+                            onCreateSavedInstanceState.getString(getString(R.string.word_to_search_second_level_menu), getString(R.string.non_trovato) );
+                    //
                     rightColumnAwardType = onCreateSavedInstanceState.getString(getString(R.string.award_type), getString(R.string.non_trovato) );
                     rightColumnUriPremiumVideo =
                             onCreateSavedInstanceState.getString(getString(R.string.uri_premium_video), getString(R.string.non_trovato) );
@@ -203,6 +207,10 @@ public class Game1Activity extends GameActivityAbstractClass implements
                             default:
                                 break;
                         }
+                    }
+                    else
+                    {
+                        displaySecondLevelMenu();
                     }
                     onCreateSavedInstanceState = null;
                 }
@@ -300,6 +308,9 @@ public class Game1Activity extends GameActivityAbstractClass implements
      */
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        //
+        savedInstanceState.putString(getString(R.string.word_to_search_second_level_menu), wordToSearchSecondLevelMenu);
+        //
         PrizeFragment prizefragmentgotinstance =
                 (PrizeFragment)
                         getSupportFragmentManager().findFragmentByTag(getString(R.string.prize_fragment));

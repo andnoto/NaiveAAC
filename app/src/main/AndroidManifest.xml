@@ -37,6 +37,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.NaiveAAC.activities.Main.MainActivity" />
         </activity>
+        <activity android:name="com.example.NaiveAAC.activities.Settings.SettingsWordPairsActivity"
+            android:parentActivityName="com.example.NaiveAAC.activities.Settings.SettingsActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.NaiveAAC.activities.Settings.SettingsActivity" />
+        </activity>
         <activity android:name="com.example.NaiveAAC.activities.Game.Game1.Game1Activity"
             android:parentActivityName="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
