@@ -90,26 +90,26 @@ public class YoutubePrizeFragment extends Fragment {
         //
         if (!uriPremiumVideo.toUpperCase().contains(wwwUrlSplitBy.toUpperCase()) &&
                 !uriPremiumVideo.toUpperCase().contains(androidUrlSplitBy.toUpperCase()))
-            {
+        {
             // if the video award does not exist, it warns the activity that the award
             // has been completed and therefore you can continue
             mWebView.setVisibility(View.INVISIBLE);
             //
             listener.receiveResultOnCompletatioVideoFromYoutubePrizeFragment(rootView);
-            }
-            //
-            else
-            {
+        }
+        //
+        else
+        {
             // build your own src link with your video ID
             String[] oneWord = new String[0];
             if (uriPremiumVideo.toUpperCase().contains(wwwUrlSplitBy.toUpperCase()))
-                {
-                    oneWord= uriPremiumVideo.split(wwwUrlSplitBy, -1);
-                }
-                else
-                {
-                    oneWord= uriPremiumVideo.split(androidUrlSplitBy, -1);
-                }
+            {
+                oneWord= uriPremiumVideo.split(wwwUrlSplitBy, -1);
+            }
+            else
+            {
+                oneWord= uriPremiumVideo.split(androidUrlSplitBy, -1);
+            }
             // builds the src link (including size and address)
             // The Right YouTube Dimensions = 426X240
             String videoStr = videoStr1 + oneWord[1] + videoStr2;
@@ -133,9 +133,21 @@ public class YoutubePrizeFragment extends Fragment {
             WebSettings ws = mWebView.getSettings();
             ws.setJavaScriptEnabled(true);
             mWebView.loadData(videoStr, "text/html", "utf-8");
-            }
+        }
         listener.receiveResultImagesFromYoutubePrizeFragment(rootView);
         return rootView;
+    }
+    /**
+     * destroy WebView
+     * <p>
+     *
+     * @see Fragment#onDestroyView
+     */
+    @Override
+    public void onDestroyView() {
+        mWebView.destroy();
+        mWebView = null;
+        super.onDestroyView();
     }
 }
 

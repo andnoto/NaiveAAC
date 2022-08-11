@@ -44,6 +44,8 @@ import io.realm.Realm;
  * @see GameActivityAbstractClass
  */
 public class Game2Activity extends GameActivityAbstractClass {
+    // lines inserted to remedy the incorrect double onresults that occurs with android 11
+    public String previouseText = "";
     // TTS
     public TextToSpeech tTS1;
     public String toSpeak;
@@ -187,21 +189,27 @@ public class Game2Activity extends GameActivityAbstractClass {
      */
     @Override
     public void onResult(String eText) {
-        // convert uppercase letter to lowercase
-        eText = eText.toLowerCase();
-        //
-        toBeRecordedInHistory=gettoBeRecordedInHistory(realm, eText);
-        // REALM SESSION REGISTRATION
-        List<VoiceToBeRecordedInHistory> voicesToBeRecordedInHistory =
-                toBeRecordedInHistory.getVoicesToBeRecordedInHistory();
-        //
-        int debugUrlNumber = toBeRecordedInHistory.getNumberOfVoicesToBeRecordedInHistory();
-        //
-        historyAdd(realm, debugUrlNumber, voicesToBeRecordedInHistory);
-        //
-        fragmentTransactionStart();
-        //
-        reminderPhraseCounter = 0;
+        // lines inserted to remedy the incorrect double onresults that occurs with android 11
+        if (!eText.equals(previouseText))
+        {
+            previouseText = eText;
+            // end lines inserted to remedy the incorrect double onresults that occurs with android 11
+            // convert uppercase letter to lowercase
+            eText = eText.toLowerCase();
+            //
+            toBeRecordedInHistory=gettoBeRecordedInHistory(realm, eText);
+            // REALM SESSION REGISTRATION
+            List<VoiceToBeRecordedInHistory> voicesToBeRecordedInHistory =
+                    toBeRecordedInHistory.getVoicesToBeRecordedInHistory();
+            //
+            int debugUrlNumber = toBeRecordedInHistory.getNumberOfVoicesToBeRecordedInHistory();
+            //
+            historyAdd(realm, debugUrlNumber, voicesToBeRecordedInHistory);
+            //
+            fragmentTransactionStart();
+            //
+            reminderPhraseCounter = 0;
+        }
 }
     /**
      * Called on error from SpeechRecognizerManagement.

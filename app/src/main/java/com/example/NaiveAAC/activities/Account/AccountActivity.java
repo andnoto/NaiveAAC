@@ -74,9 +74,6 @@ public class AccountActivity extends AccountActivityAbstractClass implements
     //
     public String textPersonName;
     //
-    public File root;
-    public String rootPath;
-    //
     /**
      * configurations of account start screen.
      *
@@ -96,16 +93,16 @@ public class AccountActivity extends AccountActivityAbstractClass implements
         setActivityResultLauncher();
         //
         if (savedInstanceState == null)
-            {
+        {
             fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .add(new ActionbarFragment(), getString(R.string.actionbar_fragment))
                     .add(R.id.settings_container, new AccountFragment(), getString(R.string.account_fragment))
                     .commit();
-            }
+        }
         //
         if (isStoragePermissionGranted()) {
-        //    Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
+            //    Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
         }
         //
     }
@@ -131,42 +128,39 @@ public class AccountActivity extends AccountActivityAbstractClass implements
      */
     public void saveAccount(View view) {
 
-            if (isStoragePermissionGranted()) {
-                //
-                root = findExternalStorageRoot();
-                rootPath = root.getAbsolutePath();
-                //
-                // naiveaac dir registration and csv copy from assets to dir naiveaac
-                prepareTheSimsimDirectory();
-                //
-                realm= Realm.getDefaultInstance();
-                //
-                RealmResults<History> daCancellare = realm.where(History.class).findAll();
-                realm.beginTransaction();
-                daCancellare.deleteAllFromRealm();
-                realm.commitTransaction();
-                //
-                File fI = AdvancedSettingsDataImportExportHelper.openFileInput (context,"images.csv");
-                if (fI.exists()) {
-                    Images.importFromCsv(context, realm);
-                }
-                File fV = AdvancedSettingsDataImportExportHelper.openFileInput (context,"videos.csv");
-                if (fV.exists()) {
-                    Videos.importFromCsv(context, realm);
-                }
-                //
-                GameParameters.importFromCsv(context, realm);
-                GrammaticalExceptions.importFromCsv(context, realm);
-                ListsOfNames.importFromCsv(context, realm);
-                Phrases.importFromCsv(context, realm);
-                Stories.importFromCsv(context, realm);
-                WordPairs.importFromCsv(context, realm);
-                //
+        if (isStoragePermissionGranted()) {
+            //
+            // naiveaac dir registration and csv copy from assets to dir naiveaac
+            prepareTheSimsimDirectory();
+            //
+            try {
+                copyManualFromAssetsToInternalStorage();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             //
-            // record default preferences
+            realm= Realm.getDefaultInstance();
+            //
+            RealmResults<History> daCancellare = realm.where(History.class).findAll();
+            realm.beginTransaction();
+            daCancellare.deleteAllFromRealm();
+            realm.commitTransaction();
+            //
+            Images.importFromCsv(context, realm);
+            Videos.importFromCsv(context, realm);
+            //
+            GameParameters.importFromCsv(context, realm);
+            GrammaticalExceptions.importFromCsv(context, realm);
+            ListsOfNames.importFromCsv(context, realm);
+            Phrases.importFromCsv(context, realm);
+            Stories.importFromCsv(context, realm);
+            WordPairs.importFromCsv(context, realm);
+            //
+        }
+        //
+        // record default preferences
         sharedPref = this.getSharedPreferences(
-                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.preference_print_permissions), getString(R.string.character_n));
         editor.apply();
@@ -217,23 +211,20 @@ public class AccountActivity extends AccountActivityAbstractClass implements
     /**
      * copy the csv files with initial settings and content such as images, videos and others from assets.
      *
-     * @see #copyFileCsv
+     * @see #copyFileCsvFromAssetsToInternalStorage
      * @see #copyAssets
      */
     public void prepareTheSimsimDirectory () {
-        File f = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
-        if (!f.exists()) {
-            f.mkdirs();
             try {
-                copyFileCsv("gameparameters.csv");
-                copyFileCsv("grammaticalexceptions.csv");
-                copyFileCsv("images.csv");
-                copyFileCsv("listsofnames.csv");
-                copyFileCsv("phrases.csv");
-                copyFileCsv("pictogramsalltomodify.csv");
-                copyFileCsv("stories.csv");
-                copyFileCsv("videos.csv");
-                copyFileCsv("wordpairs.csv");
+                copyFileCsvFromAssetsToInternalStorage("gameparameters.csv");
+                copyFileCsvFromAssetsToInternalStorage("grammaticalexceptions.csv");
+                copyFileCsvFromAssetsToInternalStorage("images.csv");
+                copyFileCsvFromAssetsToInternalStorage("listsofnames.csv");
+                copyFileCsvFromAssetsToInternalStorage("phrases.csv");
+                copyFileCsvFromAssetsToInternalStorage("pictogramsalltomodify.csv");
+                copyFileCsvFromAssetsToInternalStorage("stories.csv");
+                copyFileCsvFromAssetsToInternalStorage("videos.csv");
+                copyFileCsvFromAssetsToInternalStorage("wordpairs.csv");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -241,7 +232,6 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             copyAssets("images");
             copyAssets("videos");
             copyAssets("pdf");
-        }
         //
     }
     //
@@ -250,22 +240,15 @@ public class AccountActivity extends AccountActivityAbstractClass implements
      *
      * @param fileName string with the name of the file to be copied
      */
-    public void copyFileCsv(String fileName) throws IOException {
+    public void copyFileCsvFromAssetsToInternalStorage(String fileName) throws IOException {
 
         InputStream sourceStream = getAssets().open(getString(R.string.csv) + getString(R.string.character_slash) + fileName);
-        InputStreamReader charSourceStream = new InputStreamReader(sourceStream, StandardCharsets.UTF_8);
-        String destFileName = Environment.getExternalStorageDirectory()
-                + getString(R.string.character_slash) + getString(R.string.app_name)
-                + getString(R.string.character_slash) + fileName;
-        FileOutputStream destStream = new FileOutputStream(destFileName);
-        OutputStreamWriter charDestStream = new OutputStreamWriter(destStream, StandardCharsets.UTF_8);
-        char[] buffer = new char[100];
-        int charactersRead=0;
-        while ( (charactersRead=charSourceStream.read(buffer))!=-1) {
-            charDestStream.write(buffer,0,charactersRead);
+        FileOutputStream destStream = openFileOutput(fileName, Context.MODE_PRIVATE);
+        byte[] buffer = new byte[100];
+        int bytesRead=0;
+        while ( (bytesRead=sourceStream.read(buffer))!=-1) {
+            destStream.write(buffer,0,bytesRead);
         }
-        charSourceStream.close();
-        charDestStream.close();
         destStream.close();
         sourceStream.close();
 
@@ -325,9 +308,8 @@ public class AccountActivity extends AccountActivityAbstractClass implements
                 OutputStream out = null;
                 try {
                     in = assetManager.open(path + "/" + filename);
-                    // qui
-                    File outFile = new File(rootPath + "/" + getString(R.string.app_name), filename);
-                    out = new FileOutputStream(outFile);
+                    //
+                    out = context.openFileOutput(filename, Context.MODE_PRIVATE);
                     copyFile(in, out);
                 } catch(IOException e) {
                     // Log.e("tag", "Failed to copy asset file: " + filename, e);
@@ -367,7 +349,20 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             out.write(buffer, 0, read);
         }
     }
-
-
-
+    /**
+     * copy file.
+     * <p>
+     *
+     */
+    private void copyManualFromAssetsToInternalStorage() throws IOException {
+        InputStream sourceStream = getAssets().open("pdf" + "/" + "naive aac manuale istruzioni.pdf");
+        FileOutputStream destStream = openFileOutput("naive aac manuale istruzioni.pdf", Context.MODE_PRIVATE);
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = sourceStream.read(buffer)) != -1) {
+            destStream.write(buffer, 0, read);
+        }
+        destStream.close();
+        sourceStream.close();
+    }
 }

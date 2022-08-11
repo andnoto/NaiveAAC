@@ -1,8 +1,6 @@
 package com.example.NaiveAAC.activities.Grammar;
 
 import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.dataProcess;
-import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.findExternalStorageRoot;
-import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.openFileInput;
 import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.savBak;
 
 import android.content.Context;
@@ -189,21 +187,16 @@ public class ListsOfNames extends RealmObject {
         daCancellare.deleteAllFromRealm();
         realm.commitTransaction();
         //
-        File root = findExternalStorageRoot();
-        String rootPath = root.getAbsolutePath();
+        String rootPath = context.getFilesDir().getAbsolutePath();
         //
         String FILE_NAME = "listsofnames.csv";
-        File file = null;
-
-        file = openFileInput(context, FILE_NAME);
-
         //adding to db
         BufferedReader br = null;
         String line = "";
         String cvsSplitBy = context.getString(R.string.character_comma);
         //
         try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+            br = new BufferedReader(new InputStreamReader(context.openFileInput(FILE_NAME), StandardCharsets.UTF_8));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

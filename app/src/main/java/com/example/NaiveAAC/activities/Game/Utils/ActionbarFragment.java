@@ -1,13 +1,18 @@
 package com.example.NaiveAAC.activities.Game.Utils;
 
+import static androidx.core.content.FileProvider.getUriForFile;
 import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.findExternalStorageRoot;
 
+import static io.realm.Realm.getApplicationContext;
+
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -18,6 +23,7 @@ import com.example.NaiveAAC.activities.Game.Game1.Game1Activity;
 import com.example.NaiveAAC.activities.Settings.SettingsActivity;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * <h1>ActionbarFragment</h1>
@@ -79,17 +85,16 @@ public class ActionbarFragment extends Fragment {
                 /*
                 navigate to manual
                 */
-                root = findExternalStorageRoot();
-                rootPath = root.getAbsolutePath();
-                File pdfFile = new File(rootPath + "/" + getString(R.string.app_name), "naive aac manuale istruzioni.pdf");
+                assert getApplicationContext() != null;
+                File pdfFile = new File(getApplicationContext().getFilesDir(),"naive aac manuale istruzioni.pdf");
                 if (pdfFile.exists())
-                    {
-                    Uri pathPdfFile = Uri.fromFile(pdfFile);
+                {
+                    Uri pdfUri = getUriForFile(requireContext(), "com.example.NaiveAAC.fileprovider", pdfFile);
                     Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                    intent1.setDataAndType(pathPdfFile, "application/pdf");
-                    intent1.setFlags(Intent. FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent1); //Starting the pdf viewer
-                    }
+                    intent1.setDataAndType(pdfUri, "application/pdf");
+                    intent1.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(intent1);
+                }
                 return true;
             case R.id.MENU_HOME:
                 /*

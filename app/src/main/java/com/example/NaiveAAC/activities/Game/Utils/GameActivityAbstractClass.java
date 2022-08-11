@@ -37,7 +37,7 @@ import io.realm.Realm;
  * @version     1.2, 04/28/22
  * @see ChoiseOfGameActivity
  * @see Game1Activity
- * @see com.example.NaiveAAC.activities.Game.Game2.GameActivityGame2
+ * @see com.example.NaiveAAC.activities.Game.Game2.Game2Activity
  * @see RecognizerCallback
  * @see OnFragmentEventListenerGame
  */
@@ -159,6 +159,7 @@ public abstract class GameActivityAbstractClass extends AppCompatActivity implem
      */
     @Override
     public void onError(int errorCode) {
+        // Error 9 ERROR_INSUFFICIENT_PERMISSIONS is also thrown when google does not have record_audio permission.
     }
     /**
      * on callback from GameFragment to this Activity
