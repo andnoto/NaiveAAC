@@ -130,10 +130,8 @@ public static void exporttoCsv(Context context, Realm realm){
      *
      * @param context context
      * @param realm realm obtained from the activity by Realm#getDefaultInstance
-     * @see AdvancedSettingsDataImportExportHelper#findExternalStorageRoot
-     * @see AdvancedSettingsDataImportExportHelper#openFileInput(Context, String)
      */
-    public static void importFromCsv(Context context, Realm realm)
+    public static void importFromCsvFromInternalStorage(Context context, Realm realm)
     {
         // clear the table
         RealmResults<Images> daCancellare = realm.where(Images.class).findAll();

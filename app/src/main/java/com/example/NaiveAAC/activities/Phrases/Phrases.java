@@ -146,9 +146,8 @@ public class Phrases extends RealmObject {
      *
      * @param context context
      * @param realm realm obtained from the activity by Realm#getDefaultInstance
-     * @see AdvancedSettingsDataImportExportHelper#openFileInput(Context, String)
      */
-    public static void importFromCsv(Context context, Realm realm)
+    public static void importFromCsvFromInternalStorage(Context context, Realm realm)
     {
         // clear the table
         RealmResults<Phrases> daCancellare = realm.where(Phrases.class).findAll();

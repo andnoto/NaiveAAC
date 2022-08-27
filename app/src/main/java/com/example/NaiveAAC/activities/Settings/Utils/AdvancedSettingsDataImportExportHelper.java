@@ -1,5 +1,8 @@
 package com.example.NaiveAAC.activities.Settings.Utils;
 
+import static android.content.Context.MODE_APPEND;
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.os.Environment;
 
@@ -113,7 +116,7 @@ public class AdvancedSettingsDataImportExportHelper {
 
         try {
             //
-            fos = openFileOutput(context, fileName, true);
+            fos = context.openFileOutput(fileName, MODE_PRIVATE);
             fos.write(data.getBytes());
             fos.write("\n".getBytes());
 
@@ -147,7 +150,7 @@ public class AdvancedSettingsDataImportExportHelper {
         try {
             // fos = openFileOutput(FILE_NAME, MODE_PRIVATE | MODE_APPEND);
             // fos = null
-            fos = openFileOutput(context , fileName, true);
+            fos = context.openFileOutput(fileName, MODE_APPEND);
             fos.write(data.getBytes());
             if (!isLastRow)
                 fos.write("\n".getBytes());

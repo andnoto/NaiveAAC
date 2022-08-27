@@ -1,6 +1,7 @@
 package com.example.NaiveAAC.activities.Settings;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,13 +10,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 // import android.util.Log;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -44,7 +51,10 @@ import com.example.NaiveAAC.activities.WordPairs.WordPairs;
 import com.example.NaiveAAC.activities.WordPairs.WordPairsAdapter;
 import com.example.NaiveAAC.activities.history.History;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -117,6 +127,10 @@ public class SettingsActivity extends AccountActivityAbstractClass
         context = this;
         //
         setActivityResultLauncher();
+        //
+        setCsvSearchActivityResultLauncher();
+        //
+        setExportCsvSearchActivityResultLauncher();
         //
         if (savedInstanceState == null)
             {
@@ -1200,15 +1214,38 @@ public class SettingsActivity extends AccountActivityAbstractClass
     }
     /**
      * Called when the user taps the import button from the import tables settings settings.
-     * </p>
-     * import the selected tables to realm
-     * </p>
-     * and the activity is notified to view the advanced settings menu.
+     * <p>
+     * Refer to <a href="https://stackoverflow.com/questions/65203681/how-to-create-multiple-files-at-once-using-android-storage-access-framework">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/11355432/ismail-osunlana">Ismail Osunlana</a>
      *
      * @param view view of tapped button
      * @see #isStoragePermissionGranted
      * @see DataImportSettingsFragment
-     * @see AdvancedSettingsFragment
+     */
+    public void settingsDataImportSave(View view) {
+        // Choose a directory using the system's file picker.
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        // Optionally, specify a URI for the directory that should be opened in
+        // the system file picker when it loads.
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.DIRECTORY_DOWNLOADS);
+        csvSearchActivityResultLauncher.launch(intent);
+    }
+    //
+    /**
+     * setting callbacks to search for csv via ACTION_OPEN_DOCUMENT which is
+     * the intent to choose a file via the system's file browser
+     * </p>
+     * import the selected tables to realm
+     * </p>
+     * and the activity is notified to view the advanced settings menu.
+     * <p>
+     * Refer to <a href="https://stackoverflow.com/questions/62671106/onactivityresult-method-is-deprecated-what-is-the-alternative">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/4147849/muntashir-akon">Muntashir Akon</a>
+     * <p>
+     * and to <a href="https://stackoverflow.com/questions/7620401/how-to-convert-image-file-data-in-a-byte-array-to-a-bitmap">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/840861/uttam">Uttam</a>
+     *
+     * @see AccountActivityAbstractClass#copyFileFromSharedToInternalStorage
      * @see Images
      * @see Videos
      * @see GameParameters
@@ -1217,45 +1254,172 @@ public class SettingsActivity extends AccountActivityAbstractClass
      * @see Phrases
      * @see Stories
      * @see WordPairs
+     * @see AdvancedSettingsFragment
      */
-    public void settingsDataImportSave(View view) {
+    public void setCsvSearchActivityResultLauncher() {
+            // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+            csvSearchActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            // There are no request codes
+                            Intent resultData = result.getData();
+                            // doSomeOperations();
+                            csvTreeUri = null;
+//                            filePath = getString(R.string.non_trovato);
+                            if (resultData != null) {
+                                csvTreeUri = Objects.requireNonNull(resultData).getData();
+                                DocumentFile inputFolder = DocumentFile.fromTreeUri(context, csvTreeUri);
+//
+                                if (isStoragePermissionGranted()) {
+                                    if (checkboxImagesChecked) {
+                                        assert inputFolder != null;
+                                        DocumentFile documentFileNewFile = inputFolder.findFile("images.csv");
+                                        assert documentFileNewFile != null;
+                                        Uri csvFileUri = documentFileNewFile.getUri();
+                                        try {
+                                            copyFileFromSharedToInternalStorage(csvFileUri,"images.csv");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Images.importFromCsvFromInternalStorage(context, realm);
+                                    }
+                                    if (checkboxVideosChecked)
+                                    {
+                                        assert inputFolder != null;
+                                        DocumentFile documentFileNewFile = inputFolder.findFile("videos.csv");
+                                        assert documentFileNewFile != null;
+                                        Uri csvFileUri = documentFileNewFile.getUri();
+                                        try {
+                                            copyFileFromSharedToInternalStorage(csvFileUri,"videos.csv");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Videos.importFromCsvFromInternalStorage(context, realm);
+                                    }
+                                    if (checkboxPhrasesChecked)
+                                    {
+                                        assert inputFolder != null;
+                                        DocumentFile documentFileNewFile = inputFolder.findFile("phrases.csv");
+                                        assert documentFileNewFile != null;
+                                        Uri csvFileUri = documentFileNewFile.getUri();
+                                        try {
+                                            copyFileFromSharedToInternalStorage(csvFileUri,"phrases.csv");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Phrases.importFromCsvFromInternalStorage(context, realm);
+                                    }
+                                    if (checkboxWordPairsChecked)
+                                    {
+                                        assert inputFolder != null;
+                                        DocumentFile documentFileNewFile = inputFolder.findFile("wordpairs.csv");
+                                        assert documentFileNewFile != null;
+                                        Uri csvFileUri = documentFileNewFile.getUri();
+                                        try {
+                                            copyFileFromSharedToInternalStorage(csvFileUri,"wordpairs.csv");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        WordPairs.importFromCsvFromInternalStorage(context, realm);
+                                    }
+                                    if (checkboxListsOfNamesChecked)
+                                    {
+                                        assert inputFolder != null;
+                                        DocumentFile documentFileNewFile = inputFolder.findFile("listsofnames.csv");
+                                        assert documentFileNewFile != null;
+                                        Uri csvFileUri = documentFileNewFile.getUri();
+                                        try {
+                                            copyFileFromSharedToInternalStorage(csvFileUri,"listsofnames.csv");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        ListsOfNames.importFromCsvFromInternalStorage(context, realm);
+                                    }
+                                    if (checkboxStoriesChecked)
+                                    {
+                                        assert inputFolder != null;
+                                        DocumentFile documentFileNewFile = inputFolder.findFile("stories.csv");
+                                        assert documentFileNewFile != null;
+                                        Uri csvFileUri = documentFileNewFile.getUri();
+                                        try {
+                                            copyFileFromSharedToInternalStorage(csvFileUri,"stories.csv");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Stories.importFromCsvFromInternalStorage(context, realm);
+                                    }
+                                    if (checkboxGrammaticalExceptionsChecked)
+                                    {
+                                        assert inputFolder != null;
+                                        DocumentFile documentFileNewFile = inputFolder.findFile("grammaticalexceptions.csv");
+                                        assert documentFileNewFile != null;
+                                        Uri csvFileUri = documentFileNewFile.getUri();
+                                        try {
+                                            copyFileFromSharedToInternalStorage(csvFileUri,"grammaticalexceptions.csv");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm);
+                                    }
+                                    if (checkboxGameParametersChecked)
+                                    {
+                                        assert inputFolder != null;
+                                        DocumentFile documentFileNewFile = inputFolder.findFile("gameparameters.csv");
+                                        assert documentFileNewFile != null;
+                                        Uri csvFileUri = documentFileNewFile.getUri();
+                                        try {
+                                            copyFileFromSharedToInternalStorage(csvFileUri,"gameparameters.csv");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        GameParameters.importFromCsvFromInternalStorage(context, realm);
+                                    }
+                                    // removed the import of history because it gives problems:
+                                    // phraseNumber on shared preferences always starts from 1
+                                    // the shared preferences should be set to the latest phrasenumber
+                                    // of imported history
+                                }
+                                // view the advanced settings initializing AdvancedSettingsFragment (FragmentTransaction
+                                // switch between Fragments).
+                                AdvancedSettingsFragment frag= new AdvancedSettingsFragment();
+                                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                                ft.replace(R.id.settings_container, frag);
+                                ft.addToBackStack(null);
+                                ft.commit();
+
+                            }
+                        }
+                    }
+                });
+
         //
-        if (isStoragePermissionGranted()) {
-            if (checkboxImagesChecked)
-                Images.importFromCsv(context, realm);
-            if (checkboxVideosChecked)
-                Videos.importFromCsv(context, realm);
-            if (checkboxPhrasesChecked)
-                Phrases.importFromCsv(context, realm);
-            if (checkboxWordPairsChecked)
-                WordPairs.importFromCsv(context, realm);
-            if (checkboxListsOfNamesChecked)
-                ListsOfNames.importFromCsv(context, realm);
-            if (checkboxStoriesChecked)
-                Stories.importFromCsv(context, realm);
-            if (checkboxGrammaticalExceptionsChecked)
-                GrammaticalExceptions.importFromCsv(context, realm);
-            if (checkboxGameParametersChecked)
-                GameParameters.importFromCsv(context, realm);
-            // removed the import of history because it gives problems:
-            // phraseNumber on shared preferences always starts from 1
-            // the shared preferences should be set to the latest phrasenumber
-            // of imported history
-        }
-        // view the advanced settings initializing AdvancedSettingsFragment (FragmentTransaction
-        // switch between Fragments).
-        AdvancedSettingsFragment frag= new AdvancedSettingsFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
+
+    }
+    /**
+     * Called when the user taps export tables button from the advanced settings menu.
+     * </p>
+     * Refer to <a href="https://stackoverflow.com/questions/65203681/how-to-create-multiple-files-at-once-using-android-storage-access-framework">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/11355432/ismail-osunlana">Ismail Osunlana</a>
+     *
+     * @param view view of tapped button
+     * @see #isStoragePermissionGranted
+     */
+    public void exportTables(View view) {
+        // Choose a directory using the system's file picker.
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        // Optionally, specify a URI for the directory that should be opened in
+        // the system file picker when it loads.
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.DIRECTORY_DOWNLOADS);
+        exportCsvSearchActivityResultLauncher.launch(intent);
     }
     /**
      * Called when the user taps export tables button from the advanced settings menu.
      * </p>
      * at the end the activity is notified to view the settings menu.
      *
-     * @param view view of tapped button
      * @see #isStoragePermissionGranted
      * @see MenuSettingsFragment
      * @see Images
@@ -1269,27 +1433,65 @@ public class SettingsActivity extends AccountActivityAbstractClass
      * @see History
      * @see PictogramsAllToModify
      */
-    public void exportTables(View view) {
+    public void setExportCsvSearchActivityResultLauncher() {
         //
-        if (isStoragePermissionGranted()) {
-            Images.exporttoCsv(context, realm);
-            Videos.exporttoCsv(context, realm);
-            Phrases.exporttoCsv(context, realm);
-            WordPairs.exporttoCsv(context, realm);
-            ListsOfNames.exporttoCsv(context, realm);
-            Stories.exporttoCsv(context, realm);
-            History.exporttoCsv(context, realm);
-            PictogramsAllToModify.exporttoCsv(context, realm);
-            GameParameters.exporttoCsv(context, realm);
-            GrammaticalExceptions.exporttoCsv(context, realm);
-        }
-        // view the fragment settings initializing MenuSettingsFragment (FragmentTransaction
-        // switch between Fragments).
-        MenuSettingsFragment frag= new MenuSettingsFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
+        // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+        exportCsvSearchActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            // There are no request codes
+                            Intent resultData = result.getData();
+                            // doSomeOperations();
+                            csvTreeUri = null;
+//                            filePath = getString(R.string.non_trovato);
+                            if (resultData != null) {
+                                csvTreeUri = Objects.requireNonNull(resultData).getData();
+                                DocumentFile outputFolder = DocumentFile.fromTreeUri(context, csvTreeUri);
+//
+                                if (isStoragePermissionGranted()) {
+                                    Images.exporttoCsv(context, realm);
+                                    Videos.exporttoCsv(context, realm);
+                                    Phrases.exporttoCsv(context, realm);
+                                    WordPairs.exporttoCsv(context, realm);
+                                    ListsOfNames.exporttoCsv(context, realm);
+                                    Stories.exporttoCsv(context, realm);
+                                    History.exporttoCsv(context, realm);
+                                    PictogramsAllToModify.exporttoCsv(context, realm);
+                                    GameParameters.exporttoCsv(context, realm);
+                                    GrammaticalExceptions.exporttoCsv(context, realm);
+                                    //
+                                    assert outputFolder != null;
+                                    //
+                                    try {
+                                        copyFileFromInternalToSharedStorage(outputFolder,"images.csv");
+                                        copyFileFromInternalToSharedStorage(outputFolder,"videos.csv");
+                                        copyFileFromInternalToSharedStorage(outputFolder,"phrases.csv");
+                                        copyFileFromInternalToSharedStorage(outputFolder,"wordpairs.csv");
+                                        copyFileFromInternalToSharedStorage(outputFolder,"listsofnames.csv");
+                                        copyFileFromInternalToSharedStorage(outputFolder,"stories.csv");
+                                        copyFileFromInternalToSharedStorage(outputFolder,"history.csv");
+                                        copyFileFromInternalToSharedStorage(outputFolder,"pictogramsalltomodify.csv");
+                                        copyFileFromInternalToSharedStorage(outputFolder,"gameparameters.csv");
+                                        copyFileFromInternalToSharedStorage(outputFolder,"grammaticalexceptions.csv");
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    //
+                                }
+                                // view the fragment settings initializing MenuSettingsFragment (FragmentTransaction
+                                // switch between Fragments).
+                                MenuSettingsFragment frag= new MenuSettingsFragment();
+                                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                                ft.replace(R.id.settings_container, frag);
+                                ft.addToBackStack(null);
+                                ft.commit();
+                            }
+                        }
+                    }
+        });
     }
     /**
      * check permissions.

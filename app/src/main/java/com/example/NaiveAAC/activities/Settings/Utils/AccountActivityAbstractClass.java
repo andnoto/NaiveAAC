@@ -28,13 +28,17 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.NaiveAAC.R;
 import com.example.NaiveAAC.activities.Settings.VideosFragment;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -70,6 +74,9 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
     public ActivityResultLauncher<Intent> imageSearchStoriesActivityResultLauncher;
     public ActivityResultLauncher<Intent> videoSearchActivityResultLauncher;
     public ActivityResultLauncher<Intent> videoSearchWordPairsActivityResultLauncher;
+    public ActivityResultLauncher<Intent> csvSearchActivityResultLauncher;
+    public ActivityResultLauncher<Intent> exportCsvSearchActivityResultLauncher;
+    public Uri csvTreeUri;
     //
     public Uri uri;
     public String stringUri;
@@ -613,4 +620,43 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
     //
+    /**
+     * copy file.
+     * <p>
+     *
+     * @param sourceUri uri
+     * @param destFileName string
+     */
+    public void copyFileFromSharedToInternalStorage(Uri sourceUri, String destFileName) throws IOException {
+        InputStream sourceStream = context.getContentResolver().openInputStream(sourceUri);
+        FileOutputStream destStream = openFileOutput(destFileName, Context.MODE_PRIVATE);
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = sourceStream.read(buffer)) != -1) {
+            destStream.write(buffer, 0, read);
+        }
+        destStream.close();
+        sourceStream.close();
+    }
+    //
+    /**
+     * copy file.
+     * <p>
+     *
+     * @param outputFolder documentfile
+     * @param destFileName string
+     */
+    public void copyFileFromInternalToSharedStorage(DocumentFile outputFolder, String destFileName) throws IOException {
+        InputStream sourceStream = context.openFileInput(destFileName);
+        DocumentFile documentFileNewFile = outputFolder.createFile("text/csv", destFileName);
+        assert documentFileNewFile != null;
+        OutputStream destStream = context.getContentResolver().openOutputStream(documentFileNewFile.getUri());
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = sourceStream.read(buffer)) != -1) {
+            destStream.write(buffer, 0, read);
+        }
+        destStream.close();
+        sourceStream.close();
+    }
 }

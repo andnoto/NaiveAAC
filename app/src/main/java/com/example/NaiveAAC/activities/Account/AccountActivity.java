@@ -146,15 +146,15 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             daCancellare.deleteAllFromRealm();
             realm.commitTransaction();
             //
-            Images.importFromCsv(context, realm);
-            Videos.importFromCsv(context, realm);
+            Images.importFromCsvFromInternalStorage(context, realm);
+            Videos.importFromCsvFromInternalStorage(context, realm);
             //
-            GameParameters.importFromCsv(context, realm);
-            GrammaticalExceptions.importFromCsv(context, realm);
-            ListsOfNames.importFromCsv(context, realm);
-            Phrases.importFromCsv(context, realm);
-            Stories.importFromCsv(context, realm);
-            WordPairs.importFromCsv(context, realm);
+            GameParameters.importFromCsvFromInternalStorage(context, realm);
+            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm);
+            ListsOfNames.importFromCsvFromInternalStorage(context, realm);
+            Phrases.importFromCsvFromInternalStorage(context, realm);
+            Stories.importFromCsvFromInternalStorage(context, realm);
+            WordPairs.importFromCsvFromInternalStorage(context, realm);
             //
         }
         //

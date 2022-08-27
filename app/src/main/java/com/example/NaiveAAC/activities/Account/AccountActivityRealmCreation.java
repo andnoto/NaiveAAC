@@ -329,21 +329,15 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
 
                     }
                     //
-                    File fI = AdvancedSettingsDataImportExportHelper.openFileInput (context,"images.csv");
-                    if (fI.exists()) {
-                        Images.importFromCsv(context, realm);
-                    }
-                    File fV = AdvancedSettingsDataImportExportHelper.openFileInput (context,"videos.csv");
-                    if (fV.exists()) {
-                        Videos.importFromCsv(context, realm);
-                    }
+                    Images.importFromCsvFromInternalStorage(context, realm);
+                    Videos.importFromCsvFromInternalStorage(context, realm);
                     //
-                    GameParameters.importFromCsv(context, realm);
-                    GrammaticalExceptions.importFromCsv(context, realm);
-                    ListsOfNames.importFromCsv(context, realm);
-                    Phrases.importFromCsv(context, realm);
-                    Stories.importFromCsv(context, realm);
-                    WordPairs.importFromCsv(context, realm);
+                    GameParameters.importFromCsvFromInternalStorage(context, realm);
+                    GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm);
+                    ListsOfNames.importFromCsvFromInternalStorage(context, realm);
+                    Phrases.importFromCsvFromInternalStorage(context, realm);
+                    Stories.importFromCsvFromInternalStorage(context, realm);
+                    WordPairs.importFromCsvFromInternalStorage(context, realm);
 
                     //
                 }

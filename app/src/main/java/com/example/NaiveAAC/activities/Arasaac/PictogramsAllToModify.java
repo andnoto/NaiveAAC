@@ -7,6 +7,7 @@ import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDat
 
 import android.content.Context;
 
+import com.example.NaiveAAC.activities.Graphics.Images;
 import com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper;
 
 import java.io.BufferedReader;
@@ -147,19 +148,33 @@ public class PictogramsAllToModify extends RealmObject {
         savBak(context, header,FILE_NAME );
 
         // Now we write all the data corresponding to the fields grabbed above:
-        for (PictogramsAllToModify taskitems: resultsDB) {
-            dataP = taskitems.toString();
-
-            // We process the data obtained and add commas and formatting:
-            dataP = dataProcess(dataP);
-
-            // Workaround to remove the last comma from final string
-            int total = dataP.length() - 1;
-            dataP =  dataP.substring(0,total);
-
-            // We write the data to file
-            savBak(context,dataP, FILE_NAME);
+        //
+        int count = resultsDB.size();
+        if (count != 0) {
+            int irrh=0;
+            while((irrh < count  )) {
+                PictogramsAllToModify taskitems = resultsDB.get(irrh);
+                assert taskitems != null;
+                //
+                dataP = taskitems.toString();
+                // We process the data obtained and add commas and formatting:
+                dataP = dataProcess(dataP);
+                // Workaround to remove the last comma from final string
+                int total = dataP.length() - 1;
+                dataP =  dataP.substring(0,total);
+                // Workaround to remove the last line feed from final row
+                // We write the data to file
+                if (irrh == count-1)
+                {
+                    savBak(context, dataP, FILE_NAME, true);
+                }
+                else {
+                    savBak(context, dataP, FILE_NAME, false);
+                }
+                irrh++;
+            }
         }
+        //
     }
     //
     /**
