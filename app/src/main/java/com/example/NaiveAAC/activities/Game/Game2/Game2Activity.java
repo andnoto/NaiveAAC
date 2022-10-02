@@ -9,7 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
-// import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentTransaction;
@@ -130,7 +131,7 @@ public class Game2Activity extends GameActivityAbstractClass {
                     sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
         }
         //
-        fragmentTransactionStart();
+        fragmentTransactionStart("");
     }
     /**
      * destroy SpeechRecognizer, TTS shutdown
@@ -148,16 +149,43 @@ public class Game2Activity extends GameActivityAbstractClass {
         }
     }
     /**
+     * Called when the user taps the preview button.
+     *
+     * @param v view of tapped button
+     * @see ToBeRecordedInHistory
+     * @see VoiceToBeRecordedInHistory
+     * @see com.example.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper#historyAdd
+     * @see #fragmentTransactionStart
+     */
+    public void startPreview(View v) {
+        //
+        EditText sentenceToAdd = (EditText)findViewById(R.id.sentencetoadd);
+        String eText = sentenceToAdd.getText().toString();
+        eText = eText.toLowerCase();
+        //
+        toBeRecordedInHistory=gettoBeRecordedInHistory(realm, eText);
+        // REALM SESSION REGISTRATION
+        List<VoiceToBeRecordedInHistory> voicesToBeRecordedInHistory =
+                toBeRecordedInHistory.getVoicesToBeRecordedInHistory();
+        //
+        int debugUrlNumber = toBeRecordedInHistory.getNumberOfVoicesToBeRecordedInHistory();
+        //
+        historyAdd(realm, debugUrlNumber, voicesToBeRecordedInHistory);
+        //
+        fragmentTransactionStart("");
+    }
+    /**
      * initiate Fragment transaction.
      * <p>
      *
      * @see Game2Fragment
      */
-    public void fragmentTransactionStart()
+    public void fragmentTransactionStart(String eText)
     {
         Game2Fragment frag= new Game2Fragment();
         Bundle bundle = new Bundle();
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber);
+        bundle.putString("eText", eText);
         frag.setArguments(bundle);
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
         Game2Fragment fragmentgotinstance =
@@ -197,16 +225,7 @@ public class Game2Activity extends GameActivityAbstractClass {
             // convert uppercase letter to lowercase
             eText = eText.toLowerCase();
             //
-            toBeRecordedInHistory=gettoBeRecordedInHistory(realm, eText);
-            // REALM SESSION REGISTRATION
-            List<VoiceToBeRecordedInHistory> voicesToBeRecordedInHistory =
-                    toBeRecordedInHistory.getVoicesToBeRecordedInHistory();
-            //
-            int debugUrlNumber = toBeRecordedInHistory.getNumberOfVoicesToBeRecordedInHistory();
-            //
-            historyAdd(realm, debugUrlNumber, voicesToBeRecordedInHistory);
-            //
-            fragmentTransactionStart();
+            fragmentTransactionStart(eText);
             //
             reminderPhraseCounter = 0;
         }
@@ -269,7 +288,7 @@ public class Game2Activity extends GameActivityAbstractClass {
             }
         }
         //
-        fragmentTransactionStart();
+        fragmentTransactionStart("");
     }
     /**
      * Called on beginning of speech.

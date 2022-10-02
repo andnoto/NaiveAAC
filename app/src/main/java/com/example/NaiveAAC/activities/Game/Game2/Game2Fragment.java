@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ import io.realm.RealmResults;
  */
 public class Game2Fragment extends GameFragmentAbstractClass {
     public ImageButton hearingImageButton;
+    public EditText sentenceToAdd;
     //
     public int sharedLastPhraseNumber;
     //
@@ -56,10 +58,13 @@ public class Game2Fragment extends GameFragmentAbstractClass {
         hearingImageButton = (ImageButton)rootView.findViewById(R.id.btn_start);
         hearingImageButton.setImageResource(R.drawable.ic_baseline_hearing_36_red); //set the image programmatically
         //
+        sentenceToAdd = (EditText)rootView.findViewById(R.id.sentencetoadd);
+        //
         Bundle bundle = this.getArguments();
         sharedLastPhraseNumber = 0;
         if (bundle != null) {
             sharedLastPhraseNumber = bundle.getInt(getString(R.string.last_phrase_number));
+            sentenceToAdd.setText(bundle.getString("eText"));
         }
         //
         RecyclerView recyclerView1 = (RecyclerView)rootView.findViewById(R.id.imagegallery1);
