@@ -16,5 +16,20 @@
         android:icon="@drawable/ic_action_actionbar_settings"
         android:title="Settings"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/MENU_INFO"
+        android:icon="@drawable/ic_action_actionbar_info"
+        android:title="Info &amp; Credits"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/MENU_EULA"
+        android:icon="@drawable/ic_action_actionbar_eula"
+        android:title="Accordo di licenza con l'utente finale"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/MENU_PRIVACY"
+        android:icon="@drawable/ic_action_actionbar_privacy"
+        android:title="Privacy"
+        app:showAsAction="never" />
 
 </menu>

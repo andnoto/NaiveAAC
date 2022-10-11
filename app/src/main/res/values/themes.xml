@@ -15,6 +15,7 @@
         <!-- Customize your theme here. -->
 
         <item name="android:windowBackground">@color/verde_smeraldo</item>
+        <item name="android:itemBackground">@color/azzurro_pietra_di_fiume</item>
 
     </style>
 </resources>

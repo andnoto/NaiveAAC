@@ -15,11 +15,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.fragment.app.Fragment;
 
 import com.example.NaiveAAC.R;
 import com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.example.NaiveAAC.activities.Game.Game1.Game1Activity;
+import com.example.NaiveAAC.activities.Info.EulaActivity;
+import com.example.NaiveAAC.activities.Info.InfoActivity;
 import com.example.NaiveAAC.activities.Settings.SettingsActivity;
 
 import java.io.File;
@@ -59,6 +62,12 @@ public class ActionbarFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater)
     {
         inflater.inflate(R.menu.activity_display_message_menu_main, menu);
+        //
+        if(menu instanceof MenuBuilder){
+            MenuBuilder m = (MenuBuilder) menu;
+            //noinspection RestrictedApi
+            m.setOptionalIconsVisible(true);
+        }
     }
     /**
      * receives the selected menu item as a parameter and returns a boolean to indicate whether or not the touch has been consumed.
@@ -102,6 +111,35 @@ public class ActionbarFragment extends Fragment {
                 */
                 Intent intent2 = new Intent(getActivity(), ChoiseOfGameActivity.class);
                 startActivity(intent2);
+                return true;
+            case R.id.MENU_INFO:
+                /*
+                navigate to info screen (InfoActivity)
+                */
+                Intent intent3 = new Intent(getActivity(), InfoActivity.class);
+                startActivity(intent3);
+                return true;
+            case R.id.MENU_EULA:
+                /*
+                navigate to eula screen (MainActivity)
+                */
+                Intent intent4 = new Intent(getActivity(), EulaActivity.class);
+                startActivity(intent4);
+                return true;
+            case R.id.MENU_PRIVACY:
+                 /*
+                navigate to privacy policy
+                */
+                assert getApplicationContext() != null;
+                File pdfFilePrivacy = new File(getApplicationContext().getFilesDir(),"privacy.pdf");
+                if (pdfFilePrivacy.exists())
+                {
+                    Uri pdfUri = getUriForFile(requireContext(), "com.example.NaiveAAC.fileprovider", pdfFilePrivacy);
+                    Intent intent5 = new Intent(Intent.ACTION_VIEW);
+                    intent5.setDataAndType(pdfUri, "application/pdf");
+                    intent5.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(intent5);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

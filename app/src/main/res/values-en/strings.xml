@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">naive AAC</string>
+    <string name="copyright_information">"Copyright:\nAuthor of the pictogram: Sergio Palao Origin: ARASAAC (http://arasaac.org) License: CC (BY-NC-SA) Ownership: Government of Aragon.\nVerb-data - A collection of verbs and conjugations in JSON format for use in a mobile application. Origin: https://github.com/ian-hamlin/verb-data License: CC (BY-SA).\nBalloon pop game - Pop Balloon is simple Android game. Origin: https://github.com/Vukan-Markovic/Pop_Balloon License: MIT License.\nImage used for app logo. Origin: https://commons.wikimedia.org/wiki/Category:Swings#/media/File:Myles_Tan_2016-04-16_(Unsplash).jpg"</string>
+    <string name="information_this_app_was_created_by">Information: this app was created by Renzo Sampietro and is an AAC app designed to make communication boards for any use</string>
+</resources>

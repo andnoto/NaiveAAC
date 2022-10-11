@@ -7,25 +7,65 @@
     android:layout_height="match_parent"
     tools:context=".activities.Game.Game2.Game2Activity">
 
+
     <ImageButton
         android:id="@+id/btn_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="startSpeech"
         android:text="@string/inizia"
         android:src="@drawable/ic_baseline_hearing_36_black"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_preview"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btn_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="startPreview"
+        android:src="@drawable/ic_baseline_preview_36"
+        android:text="anteprima"
+        app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+        app:layout_constraintStart_toEndOf="@+id/btn_start"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="deleteSentence"
+        android:text="cancella"
+        android:src="@android:drawable/ic_menu_delete"
+        app:layout_constraintStart_toEndOf="@+id/btn_preview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/sentencetoadd"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginLeft="5dp"
+        android:background="@drawable/edit_text_border"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_start" />
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="@+id/btn_start"
-        app:layout_constraintTop_toBottomOf="@+id/btn_start">
+        app:layout_constraintStart_toStartOf="@+id/sentencetoadd"
+        app:layout_constraintTop_toBottomOf="@+id/sentencetoadd">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imagegallery1"

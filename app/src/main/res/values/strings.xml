@@ -7,7 +7,7 @@
     <string name="casuale">Casuale</string>
     <string name="cerca_immagine">cerca immagine</string>
     <string name="cerca_video">cerca video</string>
-    <string name="copyright_information">"Copyright:\nAuthor of the pictogram: Sergio Palao Origin: ARASAAC (http://arasaac.org) License: CC (BY-NC-SA) Ownership: Government of Aragon.\nVerb-data - A collection of verbs and conjugations in JSON format for use in a mobile application. Origin: https://github.com/ian-hamlin/verb-data License: CC (BY-SA).\nBalloon pop game - Pop Balloon is simple Android game. Origin: https://github.com/Vukan-Markovic/Pop_Balloon License: MIT License.\nImage used for app logo. Origin: https://commons.wikimedia.org/wiki/Category:Swings#/media/File:Myles_Tan_2016-04-16_(Unsplash).jpg"</string>
+    <string name="copyright_information">"Credits:\nAutore dei pittogrammi: Sergio Palao Origine: ARASAAC (http://arasaac.org) Licenza: CC (BY-NC-SA) Proprietà: Governo di Aragona.\nVerb-data - Una raccolta di verbi e coniugazioni in Formato JSON da utilizzare in un'applicazione mobile. Origine: https://github.com/ian-hamlin/verb-data Licenza: CC (BY-SA).\nGioco pop Balloon - Pop Balloon è un semplice gioco Android. Origine: https://github.com/Vukan-Markovic/Pop_Balloon Licenza: Licenza MIT.\nImmagine utilizzata per il logo dell'app. Origine: https://commons.wikimedia.org/wiki/Category:Swings#/media/File:Myles_Tan_2016-04-16_(Unsplash).jpg"</string>
     <string name="coppie_di_parole">COPPIE DI PAROLE</string>
     <string name="eccezioni_grammaticali">ECCEZIONI GRAMMATICALI</string>
     <string name="descrizione_immagine_da_inserire">descrizione immagine da inserire</string>
@@ -40,7 +40,7 @@
     <string name="impostazioni_generali">IMPOSTAZIONI GENERALI</string>
     <string name="impostazioni_wordpairs">IMPOSTAZIONI WORDPAIRS</string>
     <string name="info">info</string>
-    <string name="information_this_app_was_created_by">Information: this app was created by Renzo Sampietro and has the purpose of creating an open source tool that can be used as an aid for preschool children with speech problems</string>
+    <string name="information_this_app_was_created_by">Informazioni: \nQuesta app è stata creata da Renzo Sampietro ed è un\'app di CAA progettata per realizzare schede di comunicazione per qualsiasi utilizzo.\nSe desideri contattarmi per saperne di più in merito a qualsiasi questione ad essa relativa, puoi inviare un\'e-mail a sampietro.naiveaac@gmail.com</string>
     <string name="informazioni_sullo_sviluppatore">INFORMAZIONI SULLO SVILUPPATORE</string>
     <string name="inizia">inizia</string>
     <string name="inserisci_il_risultato_per_verificare_che_sei_un_adulto">inserisci il risultato per verificare che sei un adulto</string>
@@ -75,6 +75,7 @@
     <string name="seconda_parola">seconda parola</string>
     <string name="storia">STORIA</string>
     <string name="storie">STORIE</string>
+    <string name="terms_and_conditions">ACCORDO DI LICENZA CON L\'UTENTE FINALE\n\nQuesti termini e condizioni (\"Termini\", \"Accordo\") sono un accordo tra Renzo Sampietro (\"Renzo Sampietro\", \"io\", \"mio\") e te (\"Utente\", \"tu\" o \"tuo\").\nIl presente Accordo stabilisce i termini e le condizioni generali dell\'utilizzo della presente app andnoto/NaiveAAC.\n\nDiritti di proprietà intellettuale\nL\' app andnoto/NaiveAAC è concessa in licenza ai sensi e nei termini della GNU General Public License v3.0 (vedi https://github.com/andnoto/NaiveAAC/blob/main/COPYING ).\n\nCodice sorgente\nIl codice sorgente è disponibile su https://github.com/andnoto/NaiveAAC.\n\nAccettazione di questi termini\nRiconosci di aver letto il presente Accordo e di accettare tutti i suoi termini e condizioni.\nUtilizzando la presente app, accetti di essere vincolato dal presente Accordo.\nSe non accetti di rispettare i termini del presente Accordo, non sei autorizzato ad utilizzare la presente app.</string>
     <string name="this_is_the_title">This is the title</string>
     <string name="tipo_di_video_premio_opzionale">tipo di (video) premio (opzionale)</string>
     <string name="tipo_eccezione">tipo eccezione</string>

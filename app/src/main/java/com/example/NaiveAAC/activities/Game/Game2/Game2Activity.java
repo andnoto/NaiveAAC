@@ -172,6 +172,15 @@ public class Game2Activity extends GameActivityAbstractClass {
         //
         historyAdd(realm, debugUrlNumber, voicesToBeRecordedInHistory);
         //
+        fragmentTransactionStart(eText);
+    }
+    /**
+     * Called when the user taps the delete sentence button.
+     *
+     * @param v view of tapped button
+     * @see #fragmentTransactionStart
+     */
+    public void deleteSentence(View v) {
         fragmentTransactionStart("");
     }
     /**
