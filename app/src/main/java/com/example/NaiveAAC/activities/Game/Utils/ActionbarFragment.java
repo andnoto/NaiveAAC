@@ -5,7 +5,9 @@ import static com.example.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDat
 
 import static io.realm.Realm.getApplicationContext;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,7 +28,12 @@ import com.example.NaiveAAC.activities.Info.InfoActivity;
 import com.example.NaiveAAC.activities.Settings.SettingsActivity;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
+
+import io.realm.Realm;
 
 /**
  * <h1>ActionbarFragment</h1>
@@ -94,6 +101,11 @@ public class ActionbarFragment extends Fragment {
                 /*
                 navigate to manual
                 */
+                try {
+                    copyPdfFromAssetsToInternalStorage("naive aac manuale istruzioni.pdf");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 assert getApplicationContext() != null;
                 File pdfFile = new File(getApplicationContext().getFilesDir(),"naive aac manuale istruzioni.pdf");
                 if (pdfFile.exists())
@@ -130,6 +142,11 @@ public class ActionbarFragment extends Fragment {
                  /*
                 navigate to privacy policy
                 */
+                try {
+                    copyPdfFromAssetsToInternalStorage("privacy.pdf");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 assert getApplicationContext() != null;
                 File pdfFilePrivacy = new File(getApplicationContext().getFilesDir(),"privacy.pdf");
                 if (pdfFilePrivacy.exists())
@@ -145,5 +162,22 @@ public class ActionbarFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+      /**
+       * copy file.
+       * <p>
+       *
+       */
+      private void copyPdfFromAssetsToInternalStorage(String nameOfThePdfFile) throws IOException {
+          assert getApplicationContext() != null;
+          InputStream sourceStream = getApplicationContext().getAssets().open("pdf" + "/" + nameOfThePdfFile);
+          FileOutputStream destStream = getApplicationContext().openFileOutput(nameOfThePdfFile, Context.MODE_PRIVATE);
+          byte[] buffer = new byte[1024];
+          int read;
+          while((read = sourceStream.read(buffer)) != -1) {
+              destStream.write(buffer, 0, read);
+          }
+          destStream.close();
+          sourceStream.close();
+      }
 }
 

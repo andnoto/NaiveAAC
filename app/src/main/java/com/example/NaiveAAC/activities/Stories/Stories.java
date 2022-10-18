@@ -66,6 +66,20 @@ public class Stories extends RealmObject {
      * contains the file path or a url of arasaac  (originally contained the uri).
      */
     private String uri;
+    /**
+     * contains the type of action associated with the <code>word</code> in case the word is an answer.
+     * <p>
+     * answerActionType = V then the action consists of playing a video
+     * <p>
+     * answerActionType = G then the action consists consists of executing a goto (phraseNumber) statement
+     */
+    private String answerActionType;
+    /**
+     * contains the action associated with the <code>word</code> in case the word is an answer:
+     * <p>
+     * contains the video key in the videos table or a <code>phraseNumber</code>
+     */
+    private String answerAction;
     /*
      * getter, setter and other methods
      */
@@ -105,6 +119,20 @@ public class Stories extends RealmObject {
      * @return uri string data to get
      */
     public String getUri() { return uri; }
+    //
+    /**
+     * get <code>answerActionType</code>.
+     *
+     * @return answerActionType string data to get
+     */
+    public String getanswerActionType() { return answerActionType; }
+    //
+    /**
+     * get <code>answerAction</code>.
+     *
+     * @return answerAction string data to get
+     */
+    public String getAnswerAction() { return answerAction; }
     //
     /**
      * set <code>story</code>.
@@ -152,6 +180,22 @@ public class Stories extends RealmObject {
     public void setUri(String uri) {
         this.uri = uri;
     }
+    /**
+     * set <code>answerActionType</code>.
+     *
+     * @param answerActionType string data to set
+     */
+    public void setAnswerActionType(String answerActionType) {
+        this.answerActionType = answerActionType;
+    }
+    /**
+     * set <code>answerAction</code>.
+     *
+     * @param answerAction string data to set
+     */
+    public void setAnswerAction(String answerAction) {
+        this.answerAction = answerAction;
+    }
     //
     /**
      * Export to CSV.
@@ -173,7 +217,7 @@ public class Stories extends RealmObject {
 
         // Here we need to put in header fields
         String dataP = null;
-        String header = AdvancedSettingsDataImportExportHelper.grabHeader(realm, "History");
+        String header = AdvancedSettingsDataImportExportHelper.grabHeader(realm, "Stories");
 
         // We write the header to file
         savBak(context, header,FILE_NAME );
@@ -279,7 +323,11 @@ public class Stories extends RealmObject {
                             && oneWord[2] != null
                             && oneWord[3] != null
                             && oneWord[4] != null
-                            && oneWord[5] != null ) {
+                            && oneWord[5] != null
+                            && oneWord[6] != null
+                            && oneWord[7] != null
+                          )
+                    {
                         if (oneWord[0].length() > 0
                                 && oneWord[1].length() > 0
                                 && oneWord[2].length() > 0
@@ -298,6 +346,9 @@ public class Stories extends RealmObject {
                             history.setUriType(oneWord[4]);
                             //
                             history.setUri(uri);
+                            //
+                            history.setAnswerActionType(oneWord[6]);
+                            history.setAnswerAction(oneWord[7]);
                             realm.commitTransaction();
                         }
                     }

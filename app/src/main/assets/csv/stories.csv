@@ -1,13 +1,13 @@
 story,phraseNumber,wordNumber,word,uriType,uri
-mattiaada,1,0,il bambino da casa va a scuola, , 
-mattiaada,1,1,bambino, , 
-mattiaada,1,2,da casa,A,https://api.arasaac.org/api/pictograms/6964?download=false 
-mattiaada,1,3,va,A,https://api.arasaac.org/api/pictograms/3251?download=false 
-mattiaada,1,4,va,A,https://api.arasaac.org/api/pictograms/9202?download=false 
-mattiaada,1,5,a scuola,A,https://api.arasaac.org/api/pictograms/3082?download=false 
-mattiaada,2,0,il bambino da scuola torna a casa, , 
-mattiaada,2,1,bambino, , 
-mattiaada,2,2,a casa,A,https://api.arasaac.org/api/pictograms/6964?download=false
-mattiaada,2,3,torna, , 
-mattiaada,2,4,torna,A,https://api.arasaac.org/api/pictograms/9203?download=false 
-mattiaada,2,5,da scuola,A,https://api.arasaac.org/api/pictograms/3082?download=false 
+mattiaada,1,0,il bambino da casa va a scuola, , , ,
+mattiaada,1,1,bambino, , , ,
+mattiaada,1,2,da casa,A,https://api.arasaac.org/api/pictograms/6964?download=false, ,
+mattiaada,1,3,va,A,https://api.arasaac.org/api/pictograms/3251?download=false, ,
+mattiaada,1,4,va,A,https://api.arasaac.org/api/pictograms/9202?download=false, ,
+mattiaada,1,5,a scuola,A,https://api.arasaac.org/api/pictograms/3082?download=false, ,
+mattiaada,2,0,il bambino da scuola torna a casa, , , ,
+mattiaada,2,1,bambino, , , , ,
+mattiaada,2,2,a casa,A,https://api.arasaac.org/api/pictograms/6964?download=false, ,
+mattiaada,2,3,torna, , , ,
+mattiaada,2,4,torna,A,https://api.arasaac.org/api/pictograms/9203?download=false, ,
+mattiaada,2,5,da scuola,A,https://api.arasaac.org/api/pictograms/3082?download=false, ,

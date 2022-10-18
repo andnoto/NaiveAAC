@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import io.realm.DynamicRealm;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -59,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
      * answer of <a href="https://stackoverflow.com/users/3586222/chefes">Chefes</a>
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see #copyFileRealm
      * @see #isStoragePermissionGranted
      * @see #displayFileInAssets
      * @see #verifyLastPlayer
@@ -70,22 +70,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // debug get the current schema version of Realm
+        // DynamicRealm dynRealm = DynamicRealm.getInstance(realmConfiguration);
+        // long version = dynRealm.getVersion();//this will return the existing schema version
+        // dynRealm.close();
         //
-        File fileRealm = new File(this.getFilesDir(), "default.realm");
-        if (!fileRealm.exists()) {
-            try {
-                copyFileRealm();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        //
-        Realm.init(this);
-        RealmConfiguration realmConfiguration =
-                new RealmConfiguration.Builder()
-                        .deleteRealmIfMigrationNeeded()
-                        .build();
-        Realm.setDefaultConfiguration(realmConfiguration);
         // we check if the permission is granted
         isStoragePermissionGranted();
         // Store information with SharedPreferences
@@ -214,22 +203,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         }
-        //
-        /**
-         * copy defaultrealm from assets
-         */
-        public void copyFileRealm() throws IOException {
-            InputStream sourceStream = getAssets().open("copiarealm");
-            FileOutputStream destStream = openFileOutput("default.realm", Context.MODE_PRIVATE);
-            byte[] buffer = new byte[1024];
-            int read = sourceStream.read(buffer);
-            while (read != -1) {
-                destStream.write(buffer, 0, read);
-                read = sourceStream.read(buffer);
-            }
-            destStream.close();
-            sourceStream.close();
-            //
-        }
+
 
 }

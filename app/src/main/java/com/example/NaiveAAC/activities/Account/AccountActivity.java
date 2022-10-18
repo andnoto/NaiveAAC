@@ -133,11 +133,11 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             // naiveaac dir registration and csv copy from assets to dir naiveaac
             prepareTheSimsimDirectory();
             //
-            try {
-                copyManualFromAssetsToInternalStorage();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // try {
+            //     copyManualFromAssetsToInternalStorage();
+            // } catch (IOException e) {
+            //     e.printStackTrace();
+            // }
             //
             realm= Realm.getDefaultInstance();
             //
@@ -349,20 +349,20 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             out.write(buffer, 0, read);
         }
     }
-    /**
-     * copy file.
-     * <p>
-     *
-     */
-    private void copyManualFromAssetsToInternalStorage() throws IOException {
-        InputStream sourceStream = getAssets().open("pdf" + "/" + "naive aac manuale istruzioni.pdf");
-        FileOutputStream destStream = openFileOutput("naive aac manuale istruzioni.pdf", Context.MODE_PRIVATE);
-        byte[] buffer = new byte[1024];
-        int read;
-        while((read = sourceStream.read(buffer)) != -1) {
-            destStream.write(buffer, 0, read);
-        }
-        destStream.close();
-        sourceStream.close();
-    }
+//    /**
+//     * copy file.
+//     * <p>
+//     *
+//     */
+//    private void copyManualFromAssetsToInternalStorage() throws IOException {
+//        InputStream sourceStream = getAssets().open("pdf" + "/" + "naive aac manuale istruzioni.pdf");
+//        FileOutputStream destStream = openFileOutput("naive aac manuale istruzioni.pdf", Context.MODE_PRIVATE);
+//        byte[] buffer = new byte[1024];
+//        int read;
+//        while((read = sourceStream.read(buffer)) != -1) {
+//            destStream.write(buffer, 0, read);
+//        }
+//        destStream.close();
+//        sourceStream.close();
+//    }
 }
