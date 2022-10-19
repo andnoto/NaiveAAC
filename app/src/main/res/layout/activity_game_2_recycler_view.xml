@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Game.Game2.Game2Activity">
+    tools:context="com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity">
 
 
     <ImageButton

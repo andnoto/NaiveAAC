@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Game.Game1.Game1Activity">
+    tools:context="com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity">
 
     <TextView
         android:id="@+id/copyright"
@@ -17,7 +17,7 @@
         android:text=""
         android:textIsSelectable="true"/>
 
-    <com.example.NaiveAAC.activities.Game.Utils.CenterVideoView
+    <com.sampietro.NaiveAAC.activities.Game.Utils.CenterVideoView
         android:id="@+id/prizeVideoView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

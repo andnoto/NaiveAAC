@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
+    tools:context="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
 
 
     <LinearLayout
@@ -20,13 +20,13 @@
         app:layout_constraintTop_toTopOf="parent"
         android:orientation="horizontal">
 
-        <com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameRecyclerView
+        <com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameRecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/recycler_view"
             android:orientation="horizontal">
 
-        </com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameRecyclerView>
+        </com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameRecyclerView>
 
     </LinearLayout>
 

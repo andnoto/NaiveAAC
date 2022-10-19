@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.NaiveAAC"
+    package="com.sampietro.NaiveAAC"
     android:versionCode="1"
     android:versionName="1.0" 
     android:installLocation="preferExternal">
@@ -20,7 +20,7 @@
     </queries>
 
     <application
-        android:name="com.example.NaiveAAC.activities.Main.MyApplication"
+        android:name="com.sampietro.NaiveAAC.activities.Main.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -36,63 +36,63 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-    <activity android:name="com.example.NaiveAAC.activities.Account.AccountActivity"
-        android:parentActivityName="com.example.NaiveAAC.activities.Main.MainActivity">
+    <activity android:name="com.sampietro.NaiveAAC.activities.Account.AccountActivity"
+        android:parentActivityName="com.sampietro.NaiveAAC.activities.Main.MainActivity">
         <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.NaiveAAC.activities.Main.MainActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Main.MainActivity" />
         </activity>
-        <activity android:name="com.example.NaiveAAC.activities.Settings.SettingsActivity"
-            android:parentActivityName="com.example.NaiveAAC.activities.Main.MainActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Main.MainActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.NaiveAAC.activities.Main.MainActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Main.MainActivity" />
         </activity>
-        <activity android:name="com.example.NaiveAAC.activities.Settings.SettingsWordPairsActivity"
-            android:parentActivityName="com.example.NaiveAAC.activities.Settings.SettingsActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Settings.SettingsWordPairsActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.NaiveAAC.activities.Settings.SettingsActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
         </activity>
-        <activity android:name="com.example.NaiveAAC.activities.Info.InfoActivity"
-            android:parentActivityName="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Info.InfoActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
         </activity>
-        <activity android:name="com.example.NaiveAAC.activities.Info.EulaActivity"
-            android:parentActivityName="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Info.EulaActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
         </activity>
-        <activity android:name="com.example.NaiveAAC.activities.Game.Game1.Game1Activity"
-            android:parentActivityName="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
         </activity>
-        <activity android:name="com.example.NaiveAAC.activities.Game.Game2.Game2Activity"
-            android:parentActivityName="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
         </activity>
-        <activity android:name="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity"
-            android:parentActivityName="com.example.NaiveAAC.activities.Main.MainActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Main.MainActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.NaiveAAC.activities.Main.MainActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Main.MainActivity" />
         </activity>
-        <activity android:name="com.example.NaiveAAC.activities.Main.MainActivity"
+        <activity android:name="com.sampietro.NaiveAAC.activities.Main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -101,14 +101,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity"
+            android:name="com.sampietro.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:parentActivityName="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity"
             android:screenOrientation="sensorLandscape">
         <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
         </activity>
     </application>
 

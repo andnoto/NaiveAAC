@@ -8,7 +8,7 @@ android {
     buildToolsVersion "32.0.0"
 
     defaultConfig {
-        applicationId "com.example.NaiveAAC"
+        applicationId "com.sampietro.NaiveAAC"
         minSdkVersion 23
         targetSdkVersion 31
         versionCode 1
