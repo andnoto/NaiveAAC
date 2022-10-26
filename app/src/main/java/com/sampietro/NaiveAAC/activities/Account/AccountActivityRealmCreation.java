@@ -1,5 +1,7 @@
 package com.sampietro.NaiveAAC.activities.Account;
 
+import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.findExternalStorageRoot;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +10,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-// import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -21,7 +21,6 @@ import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAll;
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModify;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters;
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment;
 import com.sampietro.NaiveAAC.activities.Grammar.ComplementsOfTheName;
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions;
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames;
@@ -35,6 +34,7 @@ import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImpo
 import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass;
 import com.sampietro.NaiveAAC.activities.Stories.Stories;
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs;
+import com.sampietro.NaiveAAC.activities.history.History;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,9 +44,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 
@@ -54,41 +52,41 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * <h1>AccountActivityRealmCreation</h1>
- * <p><b>AccountActivityRealmCreation</b> create the initial realm database.</p>
+ * <h1>AccountActivity</h1>
+ * <p><b>AccountActivity</b> create from assets the initial realm database , register the user
+ * and move on to the welcome activity.</p>
  * the initial realm database consists of
  * </p>
  * 1) data from the Arasaac /pictograms/all API</p>
  * 2) data from https://github.com/ian-hamlin/verb-data a collection of verbs and conjugations </p>
  * 3) initial settings and content such as images, videos and others from assets</p>
  *
- * @version     1.1, 04/22/22
+ * @version     1.0, 06/13/22
  * @see AccountActivityAbstractClass
  * @see SettingsFragmentAbstractClass
  */
 public class AccountActivityRealmCreation extends AccountActivityAbstractClass implements
-        SettingsFragmentAbstractClass.onFragmentEventListenerSettings {
+        SettingsFragmentAbstractClass.onFragmentEventListenerSettings         {
     //
     private static final String TAG = "VERBO";
-    private final String TAGPERMISSION = "Permission";
+    private static final String TAGPERMISSION = "Permission";
     //
     public static final String EXTRA_MESSAGE ="helloworldandroidMessage" ;
-
-    //
-
-    public String infinitive = "nessun verbo";
     //
     public FragmentManager fragmentManager;
     //
-    public File root;
-    public String rootPath;
+    private final String FOLDER_SIMSIM = "simsim";
+    //
+    public String textPersonName;
+    //
+    public String infinitive = "nessun verbo";
     //
     /**
      * configurations of account start screen.
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
      * @see #setActivityResultLauncher
-     * @see ActionbarFragment
+     * @see AccountActionbarFragment
      * @see AccountFragment
      * @see android.app.Activity#onCreate(Bundle)
      */
@@ -99,25 +97,24 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
         //
         context = this;
         //
+        filePath = getString(R.string.non_trovato);
+        //
         setActivityResultLauncher();
         //
         if (savedInstanceState == null)
-            {
+        {
             fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .add(new ActionbarFragment(), getString(R.string.actionbar_fragment))
+                    .add(new AccountActionbarFragment(), "AccountActionbarFragment")
                     .add(R.id.settings_container, new AccountFragment(), getString(R.string.account_fragment))
                     .commit();
-
-            }
-        //
-        if (isStoragePermissionGranted()) {
-        //    Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
         }
         //
-
+        if (isStoragePermissionGranted()) {
+            //    Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
+        }
+        //
     }
-    //
     /**
      * Called when the user taps the save account button.
      * </p>
@@ -127,12 +124,7 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
      * @see #isStoragePermissionGranted
      * @see AdvancedSettingsDataImportExportHelper#findExternalStorageRoot()
      * @see #prepareTheSimsimDirectory
-     * @see #loadJSONFromAsset(String)
      * @see #registerPersonName(String)
-     * @see #openFileOutput(String)
-     * @see PictogramsAll
-     * @see PictogramsAllToModify
-     * @see Verbs
      * @see AdvancedSettingsDataImportExportHelper#openFileInput(Context, String)
      * @see Images
      * @see Videos
@@ -144,49 +136,53 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
      * @see WordPairs
      */
     public void saveAccount(View view) {
-        //
+
         if (isStoragePermissionGranted()) {
             //
-            root = AdvancedSettingsDataImportExportHelper.findExternalStorageRoot();
-            rootPath = root.getAbsolutePath();
-            //
             // naiveaac dir registration and csv copy from assets to dir naiveaac
-                prepareTheSimsimDirectory();
-//
-                realm= Realm.getDefaultInstance();
-                if (realm.isEmpty()) {
+            prepareTheSimsimDirectory();
+            //
+            // try {
+            //     copyManualFromAssetsToInternalStorage();
+            // } catch (IOException e) {
+            //     e.printStackTrace();
+            // }
+            //
+            realm= Realm.getDefaultInstance();
+            //
+            if (realm.isEmpty()) {
 
-                        //
-                        PictogramsAllToModify.importFromCsv(context, realm);
-                        // creo la collezione di pictogramsToModify (vedi java cap 39)
-                        HashSet<String> pictogramsToModifySet =
-                            new HashSet<String>();
-                        RealmResults<PictogramsAllToModify> resultsDB =
-                            realm.where(PictogramsAllToModify.class).findAll();
-                        for (PictogramsAllToModify taskitems: resultsDB) {
-                            pictogramsToModifySet.add(taskitems.get_id());
-                            }
-                    // RECOVER ALL PICTOGRAMS FROM ARASAAC
+                //
+                PictogramsAllToModify.importFromCsvFromInternalStorage(context, realm);
+                // creo la collezione di pictogramsToModify (vedi java cap 39)
+                HashSet<String> pictogramsToModifySet =
+                        new HashSet<String>();
+                RealmResults<PictogramsAllToModify> resultsDB =
+                        realm.where(PictogramsAllToModify.class).findAll();
+                for (PictogramsAllToModify taskitems: resultsDB) {
+                    pictogramsToModifySet.add(taskitems.get_id());
+                }
+                // RECOVER ALL PICTOGRAMS FROM ARASAAC
+                //
+                JSONArray response = null;
+                try {
+                    response = new JSONArray(loadJSONFromAsset("it.json"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                for (int i = 0; i < response.length(); i++) {
                     //
-                    JSONArray response = null;
+
                     try {
-                        response = new JSONArray(loadJSONFromAsset("it.json"));
-                        } catch (JSONException e) {
-                        e.printStackTrace();
-                        }
+                        JSONObject j = response.getJSONObject(i);
 
-                    for (int i = 0; i < response.length(); i++) {
+                        String _id = j.getString(getString(R.string._id));
                         //
-
-                        try {
-                            JSONObject j = response.getJSONObject(i);
-
-                            String _id = j.getString(getString(R.string._id));
+                        // PICTOGRAMSALLTOMODIFY ID EXCLUSION
+                        if(!pictogramsToModifySet.contains(_id))
+                        {
                             //
-                            // PICTOGRAMSALLTOMODIFY ID EXCLUSION
-                            if(!pictogramsToModifySet.contains(_id))
-                            {
-                            // 
                             JSONArray jcategories = j.getJSONArray(getString(R.string.categories));
                             //
                             JSONArray jKeywords = j.getJSONArray(getString(R.string.keywords));
@@ -210,20 +206,20 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
 
                                 if (type.equals(getString(R.string.number_1)) || type.equals(getString(R.string.number_2)) || type.equals(getString(R.string.number_3)) )
                                 {
-                                       realm.beginTransaction();
-                                       PictogramsAll p = realm.createObject(PictogramsAll.class);
-                                       p.set_id(_id);
-                                       p.setType(type);
-                                       p.setKeyword(keyword);
-                                       p.setPlural(getString(R.string.character_n));
-                                       p.setKeywordPlural(" ");
-                                       if (jKeyword.has(getString(R.string.plural)))
-                                        {
-                                           String plural = jKeyword.getString(getString(R.string.plural));
-                                           p.setKeywordPlural(plural);
-                                        }
+                                    realm.beginTransaction();
+                                    PictogramsAll p = realm.createObject(PictogramsAll.class);
+                                    p.set_id(_id);
+                                    p.setType(type);
+                                    p.setKeyword(keyword);
+                                    p.setPlural(getString(R.string.character_n));
+                                    p.setKeywordPlural(" ");
+                                    if (jKeyword.has(getString(R.string.plural)))
+                                    {
+                                        String plural = jKeyword.getString(getString(R.string.plural));
+                                        p.setKeywordPlural(plural);
+                                    }
 
-                                       realm.commitTransaction();
+                                    realm.commitTransaction();
                                 }
                                 //
                                 if (type.equals(getString(R.string.number_4)) || type.equals(getString(R.string.number_6)))
@@ -250,96 +246,100 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
                             }
                             //
 
-                            }
-                            //
-
-                        } catch (JSONException e) {
                         }
+                        //
 
+                    } catch (JSONException e) {
                     }
 
-                    //
-                    // RECOVER VERB CONJUGATION FROM ASSETS
-                    //
-                    JSONArray m_jArry = null;
-                    try {
-                        m_jArry = new JSONArray(loadJSONFromAsset("verbs.json"));
-                        } catch (JSONException e) {
-                        e.printStackTrace();
-                        }
-//
-                    String conjugation;
-                    String form;
-                    Verbs pv;
-                    for (int iv = 0; iv < m_jArry.length(); iv++) {
-                        try {
-                            JSONObject joVerbs = m_jArry.getJSONObject(iv);
-                            JSONArray jconjugations = joVerbs.getJSONArray("conjugations");
-                            for (int ic = 0; ic < jconjugations.length(); ic++) {
-                                JSONObject jconjugation = jconjugations.getJSONObject(ic);
-                                String group = jconjugation.getString("group");
-                                switch(group) {
-                                    //
-                                    case "infinitive":
-                                        infinitive = jconjugation.getString(getString(R.string.value));
-                                        // debug
-                                        // Log.d(TAG, "Ultimo verbo = " + infinitive);
-                                        break;
-                                    case "auxiliaryverb":
-                                        break;
-                                    case "indicative/pasthistoric":
-                                        break;
-                                    case "conditional/present":
-                                        break;
-                                    case "subjunctive/present":
-                                        break;
-                                    case "subjunctive/imperfect":
-                                        break;
-                                    case "indicative/present":
-                                    case "indicative/imperfect":
-                                    case "indicative/future":
-                                        conjugation = jconjugation.getString(getString(R.string.value));
-                                        form = jconjugation.getString("form");
-                                        //
-                                        realm.beginTransaction();
-                                        pv = realm.createObject(Verbs.class);
-                                        pv.setConjugation(conjugation);
-                                        pv.setForm(form);
-                                        pv.setGroup(group);
-                                        pv.setInfinitive(infinitive);
-                                        realm.commitTransaction();
-                                        break;
-                                    default:
-                                        conjugation = jconjugation.getString(getString(R.string.value));
-                                        //
-                                        realm.beginTransaction();
-                                        pv = realm.createObject(Verbs.class);
-                                        pv.setConjugation(conjugation);
-                                        pv.setInfinitive(infinitive);
-                                        realm.commitTransaction();
-                                }
-                            }
-
-                        }
-                        catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                    //
-                    Images.importFromCsvFromInternalStorage(context, realm);
-                    Videos.importFromCsvFromInternalStorage(context, realm);
-                    //
-                    GameParameters.importFromCsvFromInternalStorage(context, realm);
-                    GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm);
-                    ListsOfNames.importFromCsvFromInternalStorage(context, realm);
-                    Phrases.importFromCsvFromInternalStorage(context, realm);
-                    Stories.importFromCsvFromInternalStorage(context, realm);
-                    WordPairs.importFromCsvFromInternalStorage(context, realm);
-
-                    //
                 }
+
+                //
+                // RECOVER VERB CONJUGATION FROM ASSETS
+                //
+                JSONArray m_jArry = null;
+                try {
+                    m_jArry = new JSONArray(loadJSONFromAsset("verbs.json"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//
+                String conjugation;
+                String form;
+                Verbs pv;
+                for (int iv = 0; iv < m_jArry.length(); iv++) {
+                    try {
+                        JSONObject joVerbs = m_jArry.getJSONObject(iv);
+                        JSONArray jconjugations = joVerbs.getJSONArray("conjugations");
+                        for (int ic = 0; ic < jconjugations.length(); ic++) {
+                            JSONObject jconjugation = jconjugations.getJSONObject(ic);
+                            String group = jconjugation.getString("group");
+                            switch(group) {
+                                //
+                                case "infinitive":
+                                    infinitive = jconjugation.getString(getString(R.string.value));
+                                    // debug
+                                    // Log.d(TAG, "Ultimo verbo = " + infinitive);
+                                    break;
+                                case "auxiliaryverb":
+                                    break;
+                                case "indicative/pasthistoric":
+                                    break;
+                                case "conditional/present":
+                                    break;
+                                case "subjunctive/present":
+                                    break;
+                                case "subjunctive/imperfect":
+                                    break;
+                                case "indicative/present":
+                                case "indicative/imperfect":
+                                case "indicative/future":
+                                    conjugation = jconjugation.getString(getString(R.string.value));
+                                    form = jconjugation.getString("form");
+                                    //
+                                    realm.beginTransaction();
+                                    pv = realm.createObject(Verbs.class);
+                                    pv.setConjugation(conjugation);
+                                    pv.setForm(form);
+                                    pv.setGroup(group);
+                                    pv.setInfinitive(infinitive);
+                                    realm.commitTransaction();
+                                    break;
+                                default:
+                                    conjugation = jconjugation.getString(getString(R.string.value));
+                                    //
+                                    realm.beginTransaction();
+                                    pv = realm.createObject(Verbs.class);
+                                    pv.setConjugation(conjugation);
+                                    pv.setInfinitive(infinitive);
+                                    realm.commitTransaction();
+                            }
+                        }
+
+                    }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                //
+                //
+            RealmResults<History> daCancellare = realm.where(History.class).findAll();
+            realm.beginTransaction();
+            daCancellare.deleteAllFromRealm();
+            realm.commitTransaction();
             //
+            Images.importFromCsvFromInternalStorage(context, realm);
+            Videos.importFromCsvFromInternalStorage(context, realm);
+            //
+            GameParameters.importFromCsvFromInternalStorage(context, realm);
+            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm);
+            ListsOfNames.importFromCsvFromInternalStorage(context, realm);
+            Phrases.importFromCsvFromInternalStorage(context, realm);
+            Stories.importFromCsvFromInternalStorage(context, realm);
+            WordPairs.importFromCsvFromInternalStorage(context, realm);
+            //
+            }
         }
         //
         // record default preferences
@@ -350,11 +350,20 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
         editor.apply();
         editor.putString(getString(R.string.preference_list_mode), getString(R.string.sorted));
         editor.apply();
-
+        editor.putInt("preference_AllowedMarginOfError", 20);
+        editor.apply();
         // register the user in the shared preferences
         // and move on to the welcome activity
         EditText editText = (EditText) rootViewFragment.findViewById(R.id.editTextTextAccount);
-        String textPersonName = editText.getText().toString();
+        textPersonName = editText.getText().toString();
+        // default
+        if (!(textPersonName.length() >0))
+            textPersonName = "utente";
+        if (filePath.equals(getString(R.string.non_trovato)))
+        {
+            File utenteFile = getFileStreamPath("utente.png");
+            filePath = utenteFile.getAbsolutePath();
+        }
         //
         if (textPersonName.length()>0 && !filePath.equals(getString(R.string.non_trovato)))
         {
@@ -371,46 +380,53 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
             iIo.setDescrizione(getString(R.string.io));
             iIo.setUri(filePath);
             realm.commitTransaction();
+            // register the linked word pairs
+            realm.beginTransaction();
+            WordPairs wordPairs = realm.createObject(WordPairs.class);
+            wordPairs.setWord1(getString(R.string.famiglia));
+            wordPairs.setWord2(textPersonName);
+            wordPairs.setComplement("");
+            wordPairs.setIsMenuItem(getString(R.string.slm));
+            wordPairs.setAwardType("");
+            wordPairs.setUriPremiumVideo("");
+            realm.commitTransaction();
             //
             File destination = openFileOutput("copiarealm");
             realm.writeCopyTo(destination);
-//
+            //
             Intent intent = new Intent(this,
                     ChoiseOfGameActivity.class);
             String message = (getString(R.string.puoi_accedere));
             intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
         }
-
     }
+
     //
     /**
      * copy the csv files with initial settings and content such as images, videos and others from assets.
      *
-     * @see #copyFileCsv
+     * @see #copyFileCsvFromAssetsToInternalStorage
      * @see #copyAssets
      */
     public void prepareTheSimsimDirectory () {
-        File f = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
-        if (!f.exists()) {
-            f.mkdirs();
             try {
-                copyFileCsv("gameparameters.csv");
-                copyFileCsv("grammaticalexceptions.csv");
-                copyFileCsv("images.csv");
-                copyFileCsv("listsofnames.csv");
-                copyFileCsv("phrases.csv");
-                copyFileCsv("pictogramsalltomodify.csv");
-                copyFileCsv("stories.csv");
-                copyFileCsv("videos.csv");
-                copyFileCsv("wordpairs.csv");
+                copyFileCsvFromAssetsToInternalStorage("gameparameters.csv");
+                copyFileCsvFromAssetsToInternalStorage("grammaticalexceptions.csv");
+                copyFileCsvFromAssetsToInternalStorage("images.csv");
+                copyFileCsvFromAssetsToInternalStorage("listsofnames.csv");
+                copyFileCsvFromAssetsToInternalStorage("phrases.csv");
+                copyFileCsvFromAssetsToInternalStorage("pictogramsalltomodify.csv");
+                copyFileCsvFromAssetsToInternalStorage("stories.csv");
+                copyFileCsvFromAssetsToInternalStorage("videos.csv");
+                copyFileCsvFromAssetsToInternalStorage("wordpairs.csv");
             } catch (IOException e) {
                 e.printStackTrace();
             }
             //
             copyAssets("images");
             copyAssets("videos");
-        }
+            copyAssets("pdf");
         //
     }
     //
@@ -419,26 +435,20 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
      *
      * @param fileName string with the name of the file to be copied
      */
-    public void copyFileCsv(String fileName) throws IOException {
+    public void copyFileCsvFromAssetsToInternalStorage(String fileName) throws IOException {
 
         InputStream sourceStream = getAssets().open(getString(R.string.csv) + getString(R.string.character_slash) + fileName);
-        InputStreamReader charSourceStream = new InputStreamReader(sourceStream, StandardCharsets.UTF_8);
-        String destFileName = Environment.getExternalStorageDirectory()
-                + getString(R.string.character_slash) + getString(R.string.app_name)
-                + getString(R.string.character_slash) + fileName;
-        FileOutputStream destStream = new FileOutputStream(destFileName);
-        OutputStreamWriter charDestStream = new OutputStreamWriter(destStream, StandardCharsets.UTF_8);
-        char[] buffer = new char[100];
-        int charactersRead=0;
-        while ( (charactersRead=charSourceStream.read(buffer))!=-1) {
-            charDestStream.write(buffer,0,charactersRead);
+        FileOutputStream destStream = openFileOutput(fileName, Context.MODE_PRIVATE);
+        byte[] buffer = new byte[100];
+        int bytesRead=0;
+        while ( (bytesRead=sourceStream.read(buffer))!=-1) {
+            destStream.write(buffer,0,bytesRead);
         }
-        charSourceStream.close();
-        charDestStream.close();
         destStream.close();
         sourceStream.close();
 
     }
+    //
     /**
      * load a local json file from assets.
      * <p>
@@ -503,13 +513,14 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
      * @see AdvancedSettingsDataImportExportHelper#findExternalStorageRoot
      */
     public File openFileOutput(String fileName){
-        File root = AdvancedSettingsDataImportExportHelper.findExternalStorageRoot();
+        File root = findExternalStorageRoot();
         //
         File dir = new File (root.getAbsolutePath() + getString(R.string.character_slash) + getString(R.string.app_name));
         File file = new File(dir, fileName);
         file.setReadable(true, true);
         return file;
     }
+    //
     /**
      * copy assets images and videos to storage.
      * <p>
@@ -529,33 +540,32 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
         }
         if (files != null) {
             for (String filename : files) {
-            InputStream in = null;
-            OutputStream out = null;
-            try {
-                in = assetManager.open(path + "/" + filename);
-                // qui
-                File outFile = new File(rootPath + "/" + getString(R.string.app_name), filename);
-                out = new FileOutputStream(outFile);
-                copyFile(in, out);
-            } catch(IOException e) {
-                // Log.e("tag", "Failed to copy asset file: " + filename, e);
-            }
-            finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        // NOOP
+                InputStream in = null;
+                OutputStream out = null;
+                try {
+                    in = assetManager.open(path + "/" + filename);
+                    //
+                    out = context.openFileOutput(filename, Context.MODE_PRIVATE);
+                    copyFile(in, out);
+                } catch(IOException e) {
+                    // Log.e("tag", "Failed to copy asset file: " + filename, e);
+                }
+                finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            // NOOP
+                        }
+                    }
+                    if (out != null) {
+                        try {
+                            out.close();
+                        } catch (IOException e) {
+                            // NOOP
+                        }
                     }
                 }
-                if (out != null) {
-                    try {
-                        out.close();
-                    } catch (IOException e) {
-                        // NOOP
-                    }
-                }
-            }
             }
         }
     }
@@ -575,5 +585,20 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
             out.write(buffer, 0, read);
         }
     }
-
+//    /**
+//     * copy file.
+//     * <p>
+//     *
+//     */
+//    private void copyManualFromAssetsToInternalStorage() throws IOException {
+//        InputStream sourceStream = getAssets().open("pdf" + "/" + "naive aac manuale istruzioni.pdf");
+//        FileOutputStream destStream = openFileOutput("naive aac manuale istruzioni.pdf", Context.MODE_PRIVATE);
+//        byte[] buffer = new byte[1024];
+//        int read;
+//        while((read = sourceStream.read(buffer)) != -1) {
+//            destStream.write(buffer, 0, read);
+//        }
+//        destStream.close();
+//        sourceStream.close();
+//    }
 }

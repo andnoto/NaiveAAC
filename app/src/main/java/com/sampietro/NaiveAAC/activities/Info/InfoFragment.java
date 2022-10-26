@@ -1,9 +1,11 @@
 package com.sampietro.NaiveAAC.activities.Info;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Info.Utils.InfoFragmentAbstractClass;
@@ -28,6 +30,11 @@ public class InfoFragment extends InfoFragmentAbstractClass {
     {
         rootView = inflater.inflate(R.layout.activity_settings_information, container, false);
         // logic of fragment
+        TextView textInformation = (TextView) rootView.findViewById(R.id.information);
+        textInformation.setMovementMethod(new ScrollingMovementMethod());
+        TextView textCopyright = (TextView) rootView.findViewById(R.id.copyright);
+        textCopyright.setMovementMethod(new ScrollingMovementMethod());
+        //
         return rootView;
     }
 }

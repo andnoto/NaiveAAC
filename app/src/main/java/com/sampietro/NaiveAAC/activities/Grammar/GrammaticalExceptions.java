@@ -41,6 +41,10 @@ public class GrammaticalExceptions extends RealmObject {
     /**
      * represent the type of exception.
      * <p>
+     * exceptionType    = Is an auxiliary verb
+     * <p>
+     * exceptionType    = Is a servile verb
+     * <p>
      * exceptionType    = Is a verb of movement to place
      * <p>
      * exceptionType    = Is a verb of movement from place

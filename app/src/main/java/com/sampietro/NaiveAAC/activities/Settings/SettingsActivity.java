@@ -170,7 +170,12 @@ public class SettingsActivity extends AccountActivityAbstractClass
     public void submitVerification(View view) {
         EditText editText = (EditText) rootViewVerifyFragment.findViewById(R.id.calculationToBeVerified);
         String value= editText.getText().toString();
-        int calculationToBeVerified=Integer.parseInt(value);
+        int calculationToBeVerified = 99;
+        try {
+            calculationToBeVerified=Integer.parseInt(value);
+        } catch(NumberFormatException nfe) {
+            System.out.println("Could not parse " + nfe);
+        }
         if (calculationToBeVerified == resultToVerify)
         {
             // view the fragment settings initializing MenuSettingsFragment (FragmentTransaction

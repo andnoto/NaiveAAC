@@ -547,6 +547,64 @@ public class GrammarHelper {
         }
         return verbToSearchRealm;
     }
+    // dato l'infinito restituisce se si tratta di un verbo ausiliare
+    /**
+     * given the infinitive, it returns if it is an auxiliary verb
+     *
+     * @param k string containing the infinitive
+     * @param realm realm
+     * @return string with if it is an auxiliary verb
+     * @see GrammaticalExceptions
+     */
+    public static String searchAuxiliaryVerbs(String k, Realm realm)
+    {
+        String verbToSearchRealm = "non trovato";
+        //
+        RealmResults<GrammaticalExceptions> results =
+                realm.where(GrammaticalExceptions.class)
+                        .beginGroup()
+                        .equalTo("keyword", k)
+                        .equalTo("exceptionType", "Is an auxiliary verb")
+                        .endGroup()
+                        .findAll();
+        int count = results.size();
+        if (count != 0) {
+            GrammaticalExceptions result = results.get(0);
+            if (result != null) {
+                verbToSearchRealm = result.getExceptionType();
+            }
+        }
+        return verbToSearchRealm;
+    }
+    // dato l'infinito restituisce se si tratta di un verbo servile
+    /**
+     * given the infinitive, it returns if it is a servile verb
+     *
+     * @param k string containing the infinitive
+     * @param realm realm
+     * @return string with if it is a servile verb
+     * @see GrammaticalExceptions
+     */
+    public static String searchServileVerbs(String k, Realm realm)
+    {
+        String verbToSearchRealm = "non trovato";
+        //
+        RealmResults<GrammaticalExceptions> results =
+                realm.where(GrammaticalExceptions.class)
+                        .beginGroup()
+                        .equalTo("keyword", k)
+                        .equalTo("exceptionType", "Is a servile verb")
+                        .endGroup()
+                        .findAll();
+        int count = results.size();
+        if (count != 0) {
+            GrammaticalExceptions result = results.get(0);
+            if (result != null) {
+                verbToSearchRealm = result.getExceptionType();
+            }
+        }
+        return verbToSearchRealm;
+    }
     // data una parola controlla se si tratta di un complemento al nome
     /**
      * given a word, check if it is a complement to the noun

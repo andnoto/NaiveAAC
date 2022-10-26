@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/MENU_MANUAL"
+        android:icon="@drawable/ic_manual"
+        android:title="Manual"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/MENU_INFO"
+        android:icon="@drawable/ic_action_actionbar_info"
+        android:title="Info &amp; Credits"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/MENU_EULA"
+        android:icon="@drawable/ic_action_actionbar_eula"
+        android:title="Accordo di licenza con l'utente finale"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/MENU_PRIVACY"
+        android:icon="@drawable/ic_action_actionbar_privacy"
+        android:title="Privacy"
+        app:showAsAction="ifRoom" />
+
+</menu>

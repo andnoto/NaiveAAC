@@ -17,7 +17,6 @@ import androidx.fragment.app.FragmentManager;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters;
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment;
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions;
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames;
 import com.sampietro.NaiveAAC.activities.Graphics.Images;
@@ -31,6 +30,7 @@ import com.sampietro.NaiveAAC.activities.Stories.Stories;
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs;
 import com.sampietro.NaiveAAC.activities.history.History;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +72,7 @@ public class AccountActivity extends AccountActivityAbstractClass implements
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
      * @see #setActivityResultLauncher
-     * @see ActionbarFragment
+     * @see AccountActionbarFragment
      * @see AccountFragment
      * @see android.app.Activity#onCreate(Bundle)
      */
@@ -83,13 +83,15 @@ public class AccountActivity extends AccountActivityAbstractClass implements
         //
         context = this;
         //
+        filePath = getString(R.string.non_trovato);
+        //
         setActivityResultLauncher();
         //
         if (savedInstanceState == null)
         {
             fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
-                    .add(new ActionbarFragment(), getString(R.string.actionbar_fragment))
+                    .add(new AccountActionbarFragment(), "AccountActionbarFragment")
                     .add(R.id.settings_container, new AccountFragment(), getString(R.string.account_fragment))
                     .commit();
         }
@@ -165,6 +167,14 @@ public class AccountActivity extends AccountActivityAbstractClass implements
         // and move on to the welcome activity
         EditText editText = (EditText) rootViewFragment.findViewById(R.id.editTextTextAccount);
         textPersonName = editText.getText().toString();
+        // default
+        if (!(textPersonName.length() >0))
+            textPersonName = "utente";
+        if (filePath.equals(getString(R.string.non_trovato)))
+        {
+            File utenteFile = getFileStreamPath("utente.png");
+            filePath = utenteFile.getAbsolutePath();
+        }
         //
         if (textPersonName.length()>0 && !filePath.equals(getString(R.string.non_trovato)))
         {

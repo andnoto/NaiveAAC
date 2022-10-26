@@ -9,84 +9,84 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-// import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.sampietro.NaiveAAC.R;
+import com.sampietro.NaiveAAC.activities.Account.AccountActivity;
 import com.sampietro.NaiveAAC.activities.Account.AccountActivityRealmCreation;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-
+/**
+ * <h1>MainActivity</h1>
+ * <p><b>MainActivity</b> represent start screen for the app.</p>
+ * 1) on first use copy defaultrealm from assets
+ * 2) check if the permission is granted
+ * 3) Store information with SharedPreferences
+ * 4) check if there is a player already registered
+ */
 public class MainActivityRealmCreation extends AppCompatActivity {
 
     public static final String EXTRA_MESSAGE ="helloworldandroidMessage" ;
-
-    // SIMSIM
     //
     public static final int ID_RICHIESTA_PERMISSION = 1;
-    public String permessi = "permessi non pervenuti";
-
+    public String permessi = "permission not granted";
     //
     public Context context;
     public SharedPreferences sharedPref;
     //
-
-    private static final String TAGPERMISSION = "Permission";
-
+    private final String TAGPERMISSION = "permission";
+    /**
+     * configurations of main start screen. Furthermore:
+     * </p>
+     * 1) on first use copy defaultrealm from assets
+     * 2) check if the permission is granted
+     * 3) Store information with SharedPreferences
+     * 4) check if there is a player already registered
+     * 5) if there is a player already registered go to choise of game activity.
+     * <p>
+     * Refer to <a href="https://stackoverflow.com/questions/24745546/android-change-activity-after-few-seconds">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/3586222/chefes">Chefes</a>
+     *
+     * @param savedInstanceState Define potentially saved parameters due to configurations changes.
+     * @see #isStoragePermissionGranted
+     * @see #displayFileInAssets
+     * @see #verifyLastPlayer
+     * @see ChoiseOfGameActivity
+     * @see android.app.Activity#onCreate(Bundle)
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+        // debug get the current schema version of Realm
+        // DynamicRealm dynRealm = DynamicRealm.getInstance(realmConfiguration);
+        // long version = dynRealm.getVersion();//this will return the existing schema version
+        // dynRealm.close();
         //
-        Realm.init(this);
-        RealmConfiguration realmConfiguration =
-                new RealmConfiguration.Builder()
-                        .deleteRealmIfMigrationNeeded()
-                        .build();
-        Realm.setDefaultConfiguration(realmConfiguration);
-        //
-        // SIM SIM
-        // controlliamo se la permission è concessa
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            // se arriviamo qui è perchè la permission non è stata ancora concessa
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // mostriamo ulteriori informazioni all'utente riguardante l'uso della permission nell'app ed eventualmente richiediamo la permission
-            } else {
-                // se siamo qui è perchè non si è mostrata alcuna spiegazione all'utente, richiesta di permission
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, ID_RICHIESTA_PERMISSION);
-            }
-        }
-        //
-        //
-        // vedi cap 29 Memorizzare informazioni con SharedPreferences
+        // we check if the permission is granted
+        isStoragePermissionGranted();
+        // Store information with SharedPreferences
         context = this;
         sharedPref = context.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        boolean hasLastSession = sharedPref.contains("preference_LastSession");
+        boolean hasLastSession = sharedPref.contains(getString(R.string.preference_LastSession));
         if (!hasLastSession) {
-            // è la prima sessione e registro LastSession sulle sharedpref con il numero 1
-            editor.putInt("preference_LastSession", 1);
+            // is the first session and register LastSession on sharedpref with the number 1
+            editor.putInt(getString(R.string.preference_LastSession), 1);
             }
             else
             {
-            // non è la prima sessione e sommo 1 a LastSession sulle sharedpref
+            // it's not the first session and I add 1 to LastSession on sharedprefs
             Integer sharedLastSession =
-                        sharedPref.getInt ("preference_LastSession", 1);
-            editor.putInt("preference_LastSession", sharedLastSession+1);
+                        sharedPref.getInt (getString(R.string.preference_LastSession), 1);
+            editor.putInt(getString(R.string.preference_LastSession), sharedLastSession+1);
             }
         editor.apply();
         //
@@ -94,22 +94,15 @@ public class MainActivityRealmCreation extends AppCompatActivity {
         verifyLastPlayer();
         //
         if (isStoragePermissionGranted()) {
-            // passo all'activity di benvenuto
-            //
-            //Time to launch the another activity
-            // fonte https://stackoverflow.com/questions/24745546/android-change-activity-after-few-seconds
+            // I move on to the activity of choice
+            // Time to launch the another activity
             int TIME_OUT = 4000;
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
 
                     Intent i = new Intent(MainActivityRealmCreation.this,
-//                            GameActivityChoiseOfGame.class);
-//                            GameActivityChoiseOfGameVideo.class);
-//                            GameActivityChoiseOfGameExoplayer.class);
                             ChoiseOfGameActivity.class);
-
-
                     //
                     String message = "Bentornato " ;
                     i.putExtra(EXTRA_MESSAGE, message);
@@ -119,34 +112,33 @@ public class MainActivityRealmCreation extends AppCompatActivity {
             }, TIME_OUT);
         }
     }
-    // SIMSIM
-    //
+    /**
+     * Callback for the result from requesting permissions.
+     *
+     * @param requestCode int which represents the request code passed in requestPermissions
+     * @param permissions string which represents the request permissions
+     * @param grantResults int which represents the grant results for the corresponding permissions
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permessi = "permessi in verifica";
+        permessi = getString(R.string.permission_not_granted);
         if (requestCode == ID_RICHIESTA_PERMISSION) {
             // Request for camera permission.
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//        switch (requestCode) {
-//            case ID_RICHIESTA_PERMISSION: {
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // permission concessa: eseguiamo il codice
-                permessi = "permessi concessi";
-            } else {
-                // permission negata: provvediamo in qualche maniera
-                permessi = "permessi negati";
+//
+                permessi = getString(R.string.permission_is_granted);
             }
-            return;
-//           }
         }
     }
-    //
-    //
+    /**
+     * start screen
+     * <p>
+     * Refer to <a href="https://xjaphx.wordpress.com/2011/10/02/store-and-use-files-in-assets/">Pete Houston</a>
+     * answer of <a href="https://stackoverflow.com/users/801396/pete-houston">Pete Houston</a>
+     *
+     */
     public void displayFileInAssets() {
-
-        // fonte https://xjaphx.wordpress.com/2011/10/02/store-and-use-files-in-assets/
-        //
             try
             {
                 // get input stream
@@ -160,18 +152,18 @@ public class MainActivityRealmCreation extends AppCompatActivity {
             }
             catch(IOException ex)
             {
-            // debug
-            //    TextView myText = findViewById(R.id.textViewMain);
-            //    myText.setText((CharSequence) ex);
             return;
             }
         }
-
-    // QUI testare shared preference
+    /**
+     * if there is no player already registered, go to the user registration activity.
+     *
+     * @see AccountActivity
+     */
     public void verifyLastPlayer () {
-        boolean hasLastPlayer = sharedPref.contains("preference_LastPlayer");
+        boolean hasLastPlayer = sharedPref.contains(getString(R.string.preference_LastPlayer));
         if (!hasLastPlayer) {
-            // passo all'activity di registrazione utente
+            // go to the user registration activity
             Intent intent = new Intent(this, AccountActivityRealmCreation.class);
             //
             String message = "enter username";
@@ -180,35 +172,31 @@ public class MainActivityRealmCreation extends AppCompatActivity {
             startActivity(intent);
 
             }
-            else
-            {
-            String sharedLastPlayer =
-                    sharedPref.getString ("preference_LastPlayer", "DEFAULT");
-            String sharedGameLevel =
-                    sharedPref.getString ("preference_GameLevel", "DEFAULT");
-            }
-
     }
     //
+       /**
+         * check permissions.
+         *
+         * @return boolean whit true if permission is granted
+         */
         public  boolean isStoragePermissionGranted() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         == PackageManager.PERMISSION_GRANTED) {
-                    // Log.v(TAGPERMISSION,"Permission is granted");
+                    // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
                     return true;
                 } else {
 
-                    // Log.v(TAGPERMISSION,"Permission is revoked");
+                    // Log.v(TAGPERMISSION,getString(R.string.permission_is_revoked));
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
                     return false;
                 }
             }
             else { //permission is automatically granted on sdk<23 upon installation
-                // Log.v(TAGPERMISSION,"Permission is granted");
+                // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
                 return true;
             }
         }
-        //
 
 
 }

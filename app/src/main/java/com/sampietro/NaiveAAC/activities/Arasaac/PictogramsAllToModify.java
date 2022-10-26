@@ -2,18 +2,18 @@ package com.sampietro.NaiveAAC.activities.Arasaac;
 
 import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.dataProcess;
 import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.grabHeader;
-import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.openFileInput;
 import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.savBak;
 
 import android.content.Context;
 
+import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -183,28 +183,27 @@ public class PictogramsAllToModify extends RealmObject {
      *
      * @param context context
      * @param realm realm obtained from the activity by Realm#getDefaultInstance
-     * @see AdvancedSettingsDataImportExportHelper#openFileInput(Context, String)
      */
-    public static void importFromCsv(Context context, Realm realm)
+    public static void importFromCsvFromInternalStorage(Context context, Realm realm)
     {
+        // clear the table
+        RealmResults<PictogramsAllToModify> daCancellare = realm.where(PictogramsAllToModify.class).findAll();
+        realm.beginTransaction();
+        daCancellare.deleteAllFromRealm();
+        realm.commitTransaction();
         //
         String FILE_NAME = "pictogramsalltomodify.csv";
-        File file = null;
-
-        file = openFileInput(context, FILE_NAME);
-
-//adding to db
+        //adding to db
         BufferedReader br = null;
         String line = "";
-        String cvsSplitBy = ",";
+        String cvsSplitBy = context.getString(R.string.character_comma);
         //
         try {
-            br = new BufferedReader(new FileReader(file));
+            br = new BufferedReader(new InputStreamReader(context.openFileInput(FILE_NAME), StandardCharsets.UTF_8));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (br != null)
-        {
+        if (br != null) {
             boolean isTheFirstLine = true;
             while (true) {
                 try {
@@ -233,10 +232,6 @@ public class PictogramsAllToModify extends RealmObject {
                 }
             }
         }
-
-
     }
-    //
-
 
 }

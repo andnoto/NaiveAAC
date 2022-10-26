@@ -501,6 +501,14 @@ public class Game1Activity extends GameActivityAbstractClass implements
             leftColumnContent = getString(R.string.nessuno);
             middleColumnContent = getString(R.string.nessuno);
             rightColumnContent = getString(R.string.nessuno);
+            if (resultsWordPairsCenterSize == 1) {
+                // the first word of the sentence was chosen
+                // (in the case of noun and verb only possible choice,
+                // the second word of the sentence is also considered to be chosen -
+                // in the case of verb and nouns the only possible choice is considered
+                // also chosen the second or second and third word of the sentence)
+                theFirstWordOfTheSentenceWasChosen(0);
+                }
             fragmentTransactionStart();
         }
     }
@@ -581,280 +589,7 @@ public class Game1Activity extends GameActivityAbstractClass implements
                 // the second word of the sentence is also considered to be chosen -
                 // in the case of verb and nouns the only possible choice is considered
                 // also chosen the second or second and third word of the sentence)
-                numberOfWordsChosen++;
-                //
-                leftColumnMenuPhraseNumber = 0;
-                middleColumnMenuPhraseNumber = 0;
-                rightColumnMenuPhraseNumber = 0;
-                leftColumnContent = getString(R.string.nessuno);
-                middleColumnContent = getString(R.string.nessuno);
-                rightColumnContent = getString(R.string.nessuno);
-                // retrieves the chosen word
-                resultWordPairs = resultsWordPairsCenterList.get(i);
-                middleColumnContent = resultWordPairs.getWord2();
-                // search for the corresponding image
-                ResponseImageSearch image = null;
-                image = ImageSearchHelper.imageSearch(realm, middleColumnContent);
-                if (image!=null) {
-                    middleColumnContentUrlType = image.getUriType();
-                    middleColumnContentUrl = image.getUriToSearch();
-                }
-                // search for related words on wordpairs
-                // if the chosen word is the first of the pair,
-                // the corresponding second words go to the right column
-                // vice versa if the chosen word is the second of the pair,
-                // the corresponding second words go to the left column
-                resultsWordPairsLeft =
-                        realm.where(WordPairs.class)
-                                .beginGroup()
-                                .equalTo(getString(R.string.word2), middleColumnContent)
-                                .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
-                                .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
-                                .endGroup()
-                                .findAll();
-                resultsWordPairsLeftSize = resultsWordPairsLeft.size();
-                if (resultsWordPairsLeftSize != 0) {
-                    // convert RealmResults<Model> to ArrayList<Model>
-                    resultsWordPairsList = getResultsWordPairsList(realm, resultsWordPairsLeft);
-                    // does not consider wordpairs with pairs of nouns or pairs of verbs
-                    // (leaves only noun-verb pairs or vice versa verb-noun)
-                    resultsWordPairsLeftList = refineSearchWordPairs(resultsWordPairsList);
-                    resultsWordPairsLeftSize = resultsWordPairsLeftList.size();
-                    //
-                    if (resultsWordPairsLeftSize > 1) {
-                        // History registration
-                        historyRegistration
-                                (context, realm,
-                                        resultsWordPairsLeftList, resultsWordPairsLeftSize , true);
-                        sharedLastPhraseNumber =
-                                sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
-                        leftColumnMenuPhraseNumber = sharedLastPhraseNumber;
-                    }
-                }
-                //
-                resultsWordPairsRight =
-                        realm.where(WordPairs.class)
-                                .beginGroup()
-                                .equalTo(getString(R.string.word1), middleColumnContent)
-                                .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
-                                .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
-                                .endGroup()
-                                .findAll();
-                resultsWordPairsRightSize = resultsWordPairsRight.size();
-                if (resultsWordPairsRightSize != 0) {
-                    // convert RealmResults<Model> to ArrayList<Model>
-                    resultsWordPairsList = getResultsWordPairsList(realm, resultsWordPairsRight);
-                    // does not consider wordpairs with pairs of nouns or pairs of verbs
-                    // (leave only noun-verb pairs or vice versa verb-noun)
-                    resultsWordPairsRightList = refineSearchWordPairs(resultsWordPairsList);
-                    resultsWordPairsRightSize = resultsWordPairsRightList.size();
-                    //
-                    if (resultsWordPairsRightSize > 1) {
-                        // History registration
-                        historyRegistration(context, realm,
-                                resultsWordPairsRightList, resultsWordPairsRightSize, false);
-                        sharedLastPhraseNumber =
-                                sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
-                        rightColumnMenuPhraseNumber = sharedLastPhraseNumber;
-                    }
-                }
-                // if you have only one possible choice (in the recycler views on the right and left)
-                // and this is a verb (if the first word chosen is not a verb, the proposed choices
-                // can only be verbs)
-                // 1a) if the verb only possible choice is on the left, register the choice
-                // by moving the central column to the right and the left column in the center
-                // and proposing in the left column the choices compatible with the verb
-                // 1b) if the verb only possible choice is on the right, register the choice
-                // moving the middle column to the left and the right column in the center
-                // and proposing in the right column the choices compatible with the verb
-                // 1c) if I have only one possible choice verb both on the left and on the right,
-                // I propose the choice both in the column on the right and in the one on the left
-                // 2) if the first word chosen (the middle one) is a verb, check if I have only one
-                // possible choice in the recycler views on the right and left
-                // in this case I register the choice
-                String middleColumnContentType =
-                        GrammarHelper.searchType(middleColumnContent, realm);
-                // type = 3 verbs
-                if (!middleColumnContentType.equals("3")) {
-                    if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 0) {
-                        // 1a) if the verb only possible choice is on the left, register the choice
-                        // by moving the central column to the right and the left column in the center
-                        // and proposing in the left column the choices compatible with the verb
-                        rightColumnContent = middleColumnContent;
-                        rightColumnContentUrlType = middleColumnContentUrlType;
-                        rightColumnContentUrl = middleColumnContentUrl;
-                        rightColumnMenuPhraseNumber = 0;
-                        //
-                        resultWordPairs = resultsWordPairsLeftList.get(0);
-                        middleColumnContent = resultWordPairs.getWord1();
-                        middleColumnMenuPhraseNumber = 0;
-                        //
-                        rightColumnAwardType = resultWordPairs.getAwardType();
-                        rightColumnUriPremiumVideo = resultWordPairs.getUriPremiumVideo();
-                        // image search
-                        image = null;
-                        image = ImageSearchHelper.imageSearch(realm, middleColumnContent);
-                        if (image!=null) {
-                            middleColumnContentUrlType = image.getUriType();
-                            middleColumnContentUrl = image.getUriToSearch();
-                        }
-                        //
-                        resultsWordPairsLeft =
-                                realm.where(WordPairs.class)
-                                        .beginGroup()
-                                        .equalTo(getString(R.string.word2), middleColumnContent)
-                                        .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
-                                        .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
-                                        .endGroup()
-                                        .findAll();
-                        int resultsWordPairsLeftSize = resultsWordPairsLeft.size();
-                        if (resultsWordPairsLeftSize != 0) {
-                            // convert RealmResults<Model> to ArrayList<Model>
-                            resultsWordPairsList = getResultsWordPairsList(realm, resultsWordPairsLeft);
-                            // does not consider wordpairs with pairs of nouns or pairs of verbs
-                            // (leave only noun-verb pairs or vice versa verb-noun)
-                            resultsWordPairsLeftList = refineSearchWordPairs(resultsWordPairsList);
-                            resultsWordPairsLeftSize = resultsWordPairsLeftList.size();
-                            //
-                            if (resultsWordPairsLeftSize > 1) {
-                                // History registration
-                                historyRegistration
-                                        (context, realm,
-                                         resultsWordPairsLeftList, resultsWordPairsLeftSize , true);
-                                sharedLastPhraseNumber =
-                                        sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
-                                leftColumnMenuPhraseNumber = sharedLastPhraseNumber;
-                                leftColumnContent = getString(R.string.nessuno);
-                            }
-                            else {
-                                if (resultsWordPairsLeftSize == 1) {
-                                    registerTheChoiceForTheViewOnTheLeft();
-                                    numberOfWordsChosen++;
-                                    // sentence completion check, grammar arrangement and text reading
-                                    sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
-                                }
-                            }
-                        }
-                        else {
-                            // resultsWordPairsLeftSize == 0 : the sentence is complete
-                            leftColumnContent = " ";
-                            leftColumnMenuPhraseNumber = 0;
-                            numberOfWordsChosen++;
-                            // sentence completion check, grammar arrangement and text reading
-                            sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
-                        }
-                        numberOfWordsChosen++;
-                    }
-                    if (resultsWordPairsLeftSize == 0 && resultsWordPairsRightSize == 1) {
-                        // 1b) if the verb only possible choice is on the right, register the choice
-                        // moving the middle column to the left and the right column in the center
-                        // and proposing in the right column the choices compatible with the verb
-                        leftColumnContent = middleColumnContent;
-                        leftColumnContentUrlType = middleColumnContentUrlType;
-                        leftColumnContentUrl = middleColumnContentUrl;
-                        leftColumnMenuPhraseNumber = 0;
-                        //
-                        resultWordPairs = resultsWordPairsRightList.get(0);
-                        middleColumnContent = resultWordPairs.getWord2();
-                        middleColumnMenuPhraseNumber = 0;
-                        // image search
-                        image = null;
-                        image = ImageSearchHelper.imageSearch(realm, middleColumnContent);
-                        if (image!=null) {
-                            middleColumnContentUrlType = image.getUriType();
-                            middleColumnContentUrl = image.getUriToSearch();
-                        }
-                        //
-                        resultsWordPairsRight =
-                                realm.where(WordPairs.class)
-                                        .beginGroup()
-                                        .equalTo(getString(R.string.word1), middleColumnContent)
-                                        .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
-                                        .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
-                                        .endGroup()
-                                        .findAll();
-                        int resultsWordPairsRightSize = resultsWordPairsRight.size();
-                        if (resultsWordPairsRightSize != 0) {
-                            // convert RealmResults<Model> to ArrayList<Model>
-                            resultsWordPairsList = getResultsWordPairsList(realm, resultsWordPairsRight);
-                            // does not consider wordpairs with pairs of nouns or pairs of verbs
-                            // (leave only noun-verb pairs or vice versa verb-noun)
-                            resultsWordPairsRightList = refineSearchWordPairs(resultsWordPairsList);
-                            resultsWordPairsRightSize = resultsWordPairsRightList.size();
-                            //
-                            if (resultsWordPairsRightSize > 1) {
-                                // History registration
-                                historyRegistration
-                                        (context, realm,
-                                         resultsWordPairsRightList, resultsWordPairsRightSize , false);
-                                sharedLastPhraseNumber =
-                                        sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
-                                rightColumnMenuPhraseNumber = sharedLastPhraseNumber;
-                                rightColumnContent = getString(R.string.nessuno);
-                            }
-                            else {
-                                if (resultsWordPairsRightSize == 1) {
-                                    registerTheChoiceForTheViewOnTheRight();
-                                    numberOfWordsChosen++;
-                                    // sentence completion check, grammar arrangement and text reading
-                                    sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
-                                }
-                            }
-                        }
-                        else {
-                            // resultsWordPairsRightSize == 0 : la frase è completa
-                            rightColumnContent = " ";
-                            rightColumnMenuPhraseNumber = 0;
-                            numberOfWordsChosen++;
-                            // sentence completion check, grammar arrangement and text reading
-                            sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
-                        }
-                        numberOfWordsChosen++;
-                    }
-                    if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 1) {
-                        // 1c) if I have only one possible choice verb both on the left and on the right,
-                        // I propose the choice both in the column on the right and in the one on the left
-                        // History registration
-                        historyRegistration
-                                (context, realm,
-                                        resultsWordPairsLeftList, resultsWordPairsLeftSize , true);
-                        sharedLastPhraseNumber =
-                                sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
-                        leftColumnMenuPhraseNumber = sharedLastPhraseNumber;
-                        historyRegistration(context, realm,
-                                resultsWordPairsRightList, resultsWordPairsRightSize, false);
-                        sharedLastPhraseNumber =
-                                sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
-                        rightColumnMenuPhraseNumber = sharedLastPhraseNumber;
-                    }
-                }
-                else {
-                    // 2) if the first word chosen (the middle one) is a verb, check if I have only one
-                    // possible choice in the recycler views on the right and left
-                    // in this case I register the choice
-                    if (resultsWordPairsLeftSize == 1) {
-                        registerTheChoiceForTheViewOnTheLeft();
-                    }
-                    if (resultsWordPairsRightSize == 1) {
-                        registerTheChoiceForTheViewOnTheRight();
-                    }
-                    if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 1) {
-                        // sentence completion check, grammar arrangement and text reading
-                        sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
-                    }
-                }
-                // if you do not have possible choices neither on the recycler view on the right
-                // nor on that one on the left, the sentence is completed with a single word
-                if (resultsWordPairsLeftSize == 0 && resultsWordPairsRightSize == 0) {
-                    leftColumnContent = " ";
-                    leftColumnMenuPhraseNumber = 0;
-                    numberOfWordsChosen++;
-                    rightColumnContent = " ";
-                    rightColumnMenuPhraseNumber = 0;
-                    numberOfWordsChosen++;
-                    // sentence completion check, grammar arrangement and text reading
-                    sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
-                }
+                theFirstWordOfTheSentenceWasChosen(i);
                 // start of transaction Fragment
                 fragmentTransactionStart();
                 break;
@@ -879,8 +614,9 @@ public class Game1Activity extends GameActivityAbstractClass implements
                 // 2c) if the word chosen is on the right, i register the choice moving the central
                 // column to the left and the right column (that of the choice) to the center and
                 // proposing in the right column the choices compatible with the choice (it should be a verb)
+                ResponseImageSearch image = null;
                 numberOfWordsChosen++;
-                middleColumnContentType =
+                String middleColumnContentType =
                         GrammarHelper.searchType(middleColumnContent, realm);
                 // type = 3 verbs
                 if (middleColumnContentType.equals("3")) {
@@ -979,7 +715,9 @@ public class Game1Activity extends GameActivityAbstractClass implements
                                 // convert RealmResults<Model> to ArrayList<Model>
                                 resultsWordPairsList = getResultsWordPairsList(realm, resultsWordPairsLeft);
                                 // does not consider wordpairs with pairs of nouns or pairs of verbs
-                                // (leave only noun-verb pairs or vice versa verb-noun)
+                                // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
+                                // (leaves only noun-verb pairs or vice versa verb-noun
+                                // or verb-verb if the first is an auxiliary verb or a servile verb)
                                 resultsWordPairsLeftList = refineSearchWordPairs(resultsWordPairsList);
                                 resultsWordPairsLeftSize = resultsWordPairsLeftList.size();
                                 //
@@ -1052,7 +790,9 @@ public class Game1Activity extends GameActivityAbstractClass implements
                                 // convert RealmResults<Model> to ArrayList<Model>
                                 resultsWordPairsList = getResultsWordPairsList(realm, resultsWordPairsRight);
                                 // does not consider wordpairs with pairs of nouns or pairs of verbs
-                                // (leave only noun-verb pairs or vice versa verb-noun)
+                                // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
+                                // (leaves only noun-verb pairs or vice versa verb-noun
+                                // or verb-verb if the first is an auxiliary verb or a servile verb)
                                 resultsWordPairsRightList = refineSearchWordPairs(resultsWordPairsList);
                                 resultsWordPairsRightSize = resultsWordPairsRightList.size();
                                 //
@@ -1255,6 +995,290 @@ public class Game1Activity extends GameActivityAbstractClass implements
             default:
             }
     }
+    public void theFirstWordOfTheSentenceWasChosen(int i) {
+        numberOfWordsChosen++;
+        //
+        leftColumnMenuPhraseNumber = 0;
+        middleColumnMenuPhraseNumber = 0;
+        rightColumnMenuPhraseNumber = 0;
+        leftColumnContent = getString(R.string.nessuno);
+        middleColumnContent = getString(R.string.nessuno);
+        rightColumnContent = getString(R.string.nessuno);
+        // retrieves the chosen word
+        resultWordPairs = resultsWordPairsCenterList.get(i);
+        middleColumnContent = resultWordPairs.getWord2();
+        // search for the corresponding image
+        ResponseImageSearch image = null;
+        image = ImageSearchHelper.imageSearch(realm, middleColumnContent);
+        if (image!=null) {
+            middleColumnContentUrlType = image.getUriType();
+            middleColumnContentUrl = image.getUriToSearch();
+        }
+        // search for related words on wordpairs
+        // if the chosen word is the first of the pair,
+        // the corresponding second words go to the right column
+        // vice versa if the chosen word is the second of the pair,
+        // the corresponding second words go to the left column
+        resultsWordPairsLeft =
+                realm.where(WordPairs.class)
+                        .beginGroup()
+                        .equalTo(getString(R.string.word2), middleColumnContent)
+                        .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
+                        .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
+                        .endGroup()
+                        .findAll();
+        resultsWordPairsLeftSize = resultsWordPairsLeft.size();
+        if (resultsWordPairsLeftSize != 0) {
+            // convert RealmResults<Model> to ArrayList<Model>
+            resultsWordPairsList = getResultsWordPairsList(realm, resultsWordPairsLeft);
+            // does not consider wordpairs with pairs of nouns or pairs of verbs
+            // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
+            // (leaves only noun-verb pairs or vice versa verb-noun
+            // or verb-verb if the first is an auxiliary verb or a servile verb)
+            resultsWordPairsLeftList = refineSearchWordPairs(resultsWordPairsList);
+            resultsWordPairsLeftSize = resultsWordPairsLeftList.size();
+            //
+            if (resultsWordPairsLeftSize > 1) {
+                // History registration
+                historyRegistration
+                        (context, realm,
+                                resultsWordPairsLeftList, resultsWordPairsLeftSize , true);
+                sharedLastPhraseNumber =
+                        sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
+                leftColumnMenuPhraseNumber = sharedLastPhraseNumber;
+            }
+        }
+        //
+        resultsWordPairsRight =
+                realm.where(WordPairs.class)
+                        .beginGroup()
+                        .equalTo(getString(R.string.word1), middleColumnContent)
+                        .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
+                        .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
+                        .endGroup()
+                        .findAll();
+        resultsWordPairsRightSize = resultsWordPairsRight.size();
+        if (resultsWordPairsRightSize != 0) {
+            // convert RealmResults<Model> to ArrayList<Model>
+            resultsWordPairsList = getResultsWordPairsList(realm, resultsWordPairsRight);
+            // does not consider wordpairs with pairs of nouns or pairs of verbs
+            // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
+            // (leaves only noun-verb pairs or vice versa verb-noun
+            // or verb-verb if the first is an auxiliary verb or a servile verb)
+            resultsWordPairsRightList = refineSearchWordPairs(resultsWordPairsList);
+            resultsWordPairsRightSize = resultsWordPairsRightList.size();
+            //
+            if (resultsWordPairsRightSize > 1) {
+                // History registration
+                historyRegistration(context, realm,
+                        resultsWordPairsRightList, resultsWordPairsRightSize, false);
+                sharedLastPhraseNumber =
+                        sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
+                rightColumnMenuPhraseNumber = sharedLastPhraseNumber;
+            }
+        }
+        // if you have only one possible choice (in the recycler views on the right and left)
+        // and this is a verb (if the first word chosen is not a verb, the proposed choices
+        // can only be verbs)
+        // 1a) if the verb only possible choice is on the left, register the choice
+        // by moving the central column to the right and the left column in the center
+        // and proposing in the left column the choices compatible with the verb
+        // 1b) if the verb only possible choice is on the right, register the choice
+        // moving the middle column to the left and the right column in the center
+        // and proposing in the right column the choices compatible with the verb
+        // 1c) if I have only one possible choice verb both on the left and on the right,
+        // I propose the choice both in the column on the right and in the one on the left
+        // 2) if the first word chosen (the middle one) is a verb, check if I have only one
+        // possible choice in the recycler views on the right and left
+        // in this case I register the choice
+        String middleColumnContentType =
+                GrammarHelper.searchType(middleColumnContent, realm);
+        // type = 3 verbs
+        if (!middleColumnContentType.equals("3")) {
+            if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 0) {
+                // 1a) if the verb only possible choice is on the left, register the choice
+                // by moving the central column to the right and the left column in the center
+                // and proposing in the left column the choices compatible with the verb
+                rightColumnContent = middleColumnContent;
+                rightColumnContentUrlType = middleColumnContentUrlType;
+                rightColumnContentUrl = middleColumnContentUrl;
+                rightColumnMenuPhraseNumber = 0;
+                //
+                resultWordPairs = resultsWordPairsLeftList.get(0);
+                middleColumnContent = resultWordPairs.getWord1();
+                middleColumnMenuPhraseNumber = 0;
+                //
+                rightColumnAwardType = resultWordPairs.getAwardType();
+                rightColumnUriPremiumVideo = resultWordPairs.getUriPremiumVideo();
+                // image search
+                image = null;
+                image = ImageSearchHelper.imageSearch(realm, middleColumnContent);
+                if (image!=null) {
+                    middleColumnContentUrlType = image.getUriType();
+                    middleColumnContentUrl = image.getUriToSearch();
+                }
+                //
+                resultsWordPairsLeft =
+                        realm.where(WordPairs.class)
+                                .beginGroup()
+                                .equalTo(getString(R.string.word2), middleColumnContent)
+                                .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
+                                .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
+                                .endGroup()
+                                .findAll();
+                int resultsWordPairsLeftSize = resultsWordPairsLeft.size();
+                if (resultsWordPairsLeftSize != 0) {
+                    // convert RealmResults<Model> to ArrayList<Model>
+                    resultsWordPairsList = getResultsWordPairsList(realm, resultsWordPairsLeft);
+                    // does not consider wordpairs with pairs of nouns or pairs of verbs
+                    // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
+                    // (leaves only noun-verb pairs or vice versa verb-noun
+                    // or verb-verb if the first is an auxiliary verb or a servile verb)
+                    resultsWordPairsLeftList = refineSearchWordPairs(resultsWordPairsList);
+                    resultsWordPairsLeftSize = resultsWordPairsLeftList.size();
+                    //
+                    if (resultsWordPairsLeftSize > 1) {
+                        // History registration
+                        historyRegistration
+                                (context, realm,
+                                        resultsWordPairsLeftList, resultsWordPairsLeftSize , true);
+                        sharedLastPhraseNumber =
+                                sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
+                        leftColumnMenuPhraseNumber = sharedLastPhraseNumber;
+                        leftColumnContent = getString(R.string.nessuno);
+                    }
+                    else {
+                        if (resultsWordPairsLeftSize == 1) {
+                            registerTheChoiceForTheViewOnTheLeft();
+                            numberOfWordsChosen++;
+                            // sentence completion check, grammar arrangement and text reading
+                            sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
+                        }
+                    }
+                }
+                else {
+                    // resultsWordPairsLeftSize == 0 : the sentence is complete
+                    leftColumnContent = " ";
+                    leftColumnMenuPhraseNumber = 0;
+                    numberOfWordsChosen++;
+                    // sentence completion check, grammar arrangement and text reading
+                    sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
+                }
+                numberOfWordsChosen++;
+            }
+            if (resultsWordPairsLeftSize == 0 && resultsWordPairsRightSize == 1) {
+                // 1b) if the verb only possible choice is on the right, register the choice
+                // moving the middle column to the left and the right column in the center
+                // and proposing in the right column the choices compatible with the verb
+                leftColumnContent = middleColumnContent;
+                leftColumnContentUrlType = middleColumnContentUrlType;
+                leftColumnContentUrl = middleColumnContentUrl;
+                leftColumnMenuPhraseNumber = 0;
+                //
+                resultWordPairs = resultsWordPairsRightList.get(0);
+                middleColumnContent = resultWordPairs.getWord2();
+                middleColumnMenuPhraseNumber = 0;
+                // image search
+                image = null;
+                image = ImageSearchHelper.imageSearch(realm, middleColumnContent);
+                if (image!=null) {
+                    middleColumnContentUrlType = image.getUriType();
+                    middleColumnContentUrl = image.getUriToSearch();
+                }
+                //
+                resultsWordPairsRight =
+                        realm.where(WordPairs.class)
+                                .beginGroup()
+                                .equalTo(getString(R.string.word1), middleColumnContent)
+                                .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
+                                .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
+                                .endGroup()
+                                .findAll();
+                int resultsWordPairsRightSize = resultsWordPairsRight.size();
+                if (resultsWordPairsRightSize != 0) {
+                    // convert RealmResults<Model> to ArrayList<Model>
+                    resultsWordPairsList = getResultsWordPairsList(realm, resultsWordPairsRight);
+                    // does not consider wordpairs with pairs of nouns or pairs of verbs
+                    // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
+                    // (leaves only noun-verb pairs or vice versa verb-noun
+                    // or verb-verb if the first is an auxiliary verb or a servile verb)
+                    resultsWordPairsRightList = refineSearchWordPairs(resultsWordPairsList);
+                    resultsWordPairsRightSize = resultsWordPairsRightList.size();
+                    //
+                    if (resultsWordPairsRightSize > 1) {
+                        // History registration
+                        historyRegistration
+                                (context, realm,
+                                        resultsWordPairsRightList, resultsWordPairsRightSize , false);
+                        sharedLastPhraseNumber =
+                                sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
+                        rightColumnMenuPhraseNumber = sharedLastPhraseNumber;
+                        rightColumnContent = getString(R.string.nessuno);
+                    }
+                    else {
+                        if (resultsWordPairsRightSize == 1) {
+                            registerTheChoiceForTheViewOnTheRight();
+                            numberOfWordsChosen++;
+                            // sentence completion check, grammar arrangement and text reading
+                            sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
+                        }
+                    }
+                }
+                else {
+                    // resultsWordPairsRightSize == 0 : la frase è completa
+                    rightColumnContent = " ";
+                    rightColumnMenuPhraseNumber = 0;
+                    numberOfWordsChosen++;
+                    // sentence completion check, grammar arrangement and text reading
+                    sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
+                }
+                numberOfWordsChosen++;
+            }
+            if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 1) {
+                // 1c) if I have only one possible choice verb both on the left and on the right,
+                // I propose the choice both in the column on the right and in the one on the left
+                // History registration
+                historyRegistration
+                        (context, realm,
+                                resultsWordPairsLeftList, resultsWordPairsLeftSize , true);
+                sharedLastPhraseNumber =
+                        sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
+                leftColumnMenuPhraseNumber = sharedLastPhraseNumber;
+                historyRegistration(context, realm,
+                        resultsWordPairsRightList, resultsWordPairsRightSize, false);
+                sharedLastPhraseNumber =
+                        sharedPref.getInt (getString(R.string.preference_last_phrase_number), 1);
+                rightColumnMenuPhraseNumber = sharedLastPhraseNumber;
+            }
+        }
+        else {
+            // 2) if the first word chosen (the middle one) is a verb, check if I have only one
+            // possible choice in the recycler views on the right and left
+            // in this case I register the choice
+            if (resultsWordPairsLeftSize == 1) {
+                registerTheChoiceForTheViewOnTheLeft();
+            }
+            if (resultsWordPairsRightSize == 1) {
+                registerTheChoiceForTheViewOnTheRight();
+            }
+            if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 1) {
+                // sentence completion check, grammar arrangement and text reading
+                sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
+            }
+        }
+        // if you do not have possible choices neither on the recycler view on the right
+        // nor on that one on the left, the sentence is completed with a single word
+        if (resultsWordPairsLeftSize == 0 && resultsWordPairsRightSize == 0) {
+            leftColumnContent = " ";
+            leftColumnMenuPhraseNumber = 0;
+            numberOfWordsChosen++;
+            rightColumnContent = " ";
+            rightColumnMenuPhraseNumber = 0;
+            numberOfWordsChosen++;
+            // sentence completion check, grammar arrangement and text reading
+            sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText();
+        }
+    }
     /**
      * register the choice for the view on the left.
      * <p>
@@ -1311,7 +1335,12 @@ public class Game1Activity extends GameActivityAbstractClass implements
     public List<WordPairs> refineSearchWordPairs(List<WordPairs> resultsWordPairsList)
     {
         // does not consider wordpairs with pairs of nouns or pairs of verbs
-        // (leaves only noun-verb pairs or vice versa verb-noun)
+        // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
+        // (leaves only noun-verb pairs or vice versa verb-noun
+        // or verb-verb if the first is an auxiliary verb or a servile verb)
+        String auxiliaryVerb;
+        String servileVerb;
+        //
         int i=0;
         int resultsWordPairsSize = resultsWordPairsList.size();
         while(i < resultsWordPairsSize) {
@@ -1321,7 +1350,11 @@ public class Game1Activity extends GameActivityAbstractClass implements
             // type = 3 verbs
             String word2Type =
                     GrammarHelper.searchType(resultWordPairs.getWord2(), realm);
-            if ((word1Type.equals("3") && word2Type.equals("3"))
+            //
+            auxiliaryVerb = GrammarHelper.searchAuxiliaryVerbs(resultWordPairs.getWord1(), realm);
+            servileVerb = GrammarHelper.searchServileVerbs(resultWordPairs.getWord1(), realm);
+            if ((word1Type.equals("3") && word2Type.equals("3")
+                && (!auxiliaryVerb.equals("Is an auxiliary verb")) && (!servileVerb.equals("Is a servile verb")))
                 || (!word1Type.equals("3") && !word2Type.equals("3"))) {
                 resultsWordPairsList.remove(i);
                 resultsWordPairsSize--;
@@ -1375,36 +1408,51 @@ public class Game1Activity extends GameActivityAbstractClass implements
     String genderToSearchRealm;
     String formToSearchRealm;
     String verbOfMovement;
-    if (!leftColumnContent.equals(sharedLastPlayer) && !leftColumnContent.equals(getString(R.string.io))) {
-        // adds the corresponding article
-        // search if plural
-        // if gender male / female
-        pluralToSearchRealm = GrammarHelper.searchPlural(leftColumnContent, realm);
-        genderToSearchRealm = GrammarHelper.searchGender(leftColumnContent, realm);
-        String articleToSearch = GrammarHelper.searchArticle(leftColumnContent,
-                genderToSearchRealm, pluralToSearchRealm, "", realm);
-        leftColumnContent = articleToSearch + leftColumnContent;
+    //
+    String leftColumnContentIsAServileVerb = GrammarHelper.searchServileVerbs(leftColumnContent, realm);
+    if (leftColumnContentIsAServileVerb.equals("Is a servile verb")) {
+        formToSearchRealm = getString(R.string.s1);
+        String conjugationOfTheVerb =
+                GrammarHelper.searchVerb(leftColumnContent,formToSearchRealm, realm);
+        leftColumnContent = conjugationOfTheVerb;
+        }
+    else {
+        if (!leftColumnContent.equals(sharedLastPlayer) && !leftColumnContent.equals(getString(R.string.io))) {
+            // adds the corresponding article
+            // search if plural
+            // if gender male / female
+            pluralToSearchRealm = GrammarHelper.searchPlural(leftColumnContent, realm);
+            genderToSearchRealm = GrammarHelper.searchGender(leftColumnContent, realm);
+            String articleToSearch = GrammarHelper.searchArticle(leftColumnContent,
+                    genderToSearchRealm, pluralToSearchRealm, "", realm);
+            leftColumnContent = articleToSearch + leftColumnContent;
+        }
     }
     // verb group verb
-    if (!(leftColumnContent.equals(" ")
+    if (!leftColumnContentIsAServileVerb.equals("Is a servile verb")) {
+        if (!(leftColumnContent.equals(" ")
                 && rightColumnContent.equals(" "))) {
-        if (leftColumnContent.equals(getString(R.string.io))) {
-            formToSearchRealm = getString(R.string.s1); }
-        else {
+            if (leftColumnContent.equals(getString(R.string.io))) {
+                formToSearchRealm = getString(R.string.s1); }
+            else {
             if (leftColumnContent.equals(getString(R.string.la_famiglia))
                     || leftColumnContent.equals(" ")) {
                 formToSearchRealm = getString(R.string.p1); }
-            else {
+                else {
                 if (!pluralToSearchRealm.equals(getString(R.string.character_y))) {
                     formToSearchRealm = getString(R.string.s3); }
-                else {
+                    else {
                     formToSearchRealm = getString(R.string.p3); }
+                }
             }
-        }
         middleColumnContentVerbInTheInfinitiveForm = middleColumnContent;
         String conjugationOfTheVerb =
                 GrammarHelper.searchVerb(middleColumnContent,formToSearchRealm, realm);
         middleColumnContent = conjugationOfTheVerb;
+        }
+    }
+    else {
+        middleColumnContentVerbInTheInfinitiveForm = middleColumnContent;
     }
     // verbal group direct object
     if (!rightColumnContent.equals(sharedLastPlayer)
