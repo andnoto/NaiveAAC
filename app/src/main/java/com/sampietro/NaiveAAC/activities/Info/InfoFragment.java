@@ -31,9 +31,7 @@ public class InfoFragment extends InfoFragmentAbstractClass {
         rootView = inflater.inflate(R.layout.activity_settings_information, container, false);
         // logic of fragment
         TextView textInformation = (TextView) rootView.findViewById(R.id.information);
-        textInformation.setMovementMethod(new ScrollingMovementMethod());
-        TextView textCopyright = (TextView) rootView.findViewById(R.id.copyright);
-        textCopyright.setMovementMethod(new ScrollingMovementMethod());
+        textInformation.setText(getString(R.string.information_this_app_was_created_by) + getString(R.string.copyright_information));
         //
         return rootView;
     }

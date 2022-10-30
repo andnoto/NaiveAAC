@@ -149,6 +149,37 @@ public class Game2Activity extends GameActivityAbstractClass {
             tTS1.shutdown();
         }
     }
+    //
+    /**
+     * Called when the user taps the start speech button.
+     *
+     * @param v view of tapped button
+     * @see SpeechRecognizerManagement#startSpeech()
+     */
+    public void startSpeechGame2(View v)
+    {
+        SpeechRecognizerManagement.startSpeech();
+        //
+        GameFragmentHear frag= new GameFragmentHear();
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+        Game2Fragment fragmentgotinstance =
+                (Game2Fragment)
+                        getSupportFragmentManager().findFragmentByTag(getString(R.string.game2_fragment));
+        GameFragmentHear hearfragmentgotinstance =
+                (GameFragmentHear)
+                        getSupportFragmentManager().findFragmentByTag(getString(R.string.game_fragment_hear));
+        if ((fragmentgotinstance != null) || (hearfragmentgotinstance != null))
+        {
+            ft.replace(R.id.game_container, frag, getString(R.string.game_fragment_hear));
+            // ok, we got the fragment instance, but should we manipulate its view?
+        }
+        else
+        {
+            ft.add(R.id.game_container, frag, getString(R.string.game_fragment_hear));
+        }
+        ft.addToBackStack(null);
+        ft.commit();
+    }
     /**
      * Called when the user taps the preview button.
      *
@@ -313,25 +344,7 @@ public class Game2Activity extends GameActivityAbstractClass {
      */
     @Override
     public void onBeginningOfSpeech(String eText) {
-        GameFragmentHear frag= new GameFragmentHear();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        Game2Fragment fragmentgotinstance =
-                (Game2Fragment)
-                        getSupportFragmentManager().findFragmentByTag(getString(R.string.game2_fragment));
-        GameFragmentHear hearfragmentgotinstance =
-                (GameFragmentHear)
-                        getSupportFragmentManager().findFragmentByTag(getString(R.string.game_fragment_hear));
-        if ((fragmentgotinstance != null) || (hearfragmentgotinstance != null))
-        {
-            ft.replace(R.id.game_container, frag, getString(R.string.game_fragment_hear));
-            // ok, we got the fragment instance, but should we manipulate its view?
-        }
-        else
-        {
-            ft.add(R.id.game_container, frag, getString(R.string.game_fragment_hear));
-        }
-        ft.addToBackStack(null);
-        ft.commit();
+
     }
     /**
      * Called on end of speech.

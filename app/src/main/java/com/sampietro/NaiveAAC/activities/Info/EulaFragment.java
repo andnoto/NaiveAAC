@@ -30,9 +30,6 @@ public class EulaFragment extends InfoFragmentAbstractClass {
     {
         rootView = inflater.inflate(R.layout.activity_eula_information, container, false);
         // logic of fragment
-        TextView textInformation = (TextView) rootView.findViewById(R.id.information);
-        textInformation.setMovementMethod(new ScrollingMovementMethod());
-        //
         return rootView;
     }
 }

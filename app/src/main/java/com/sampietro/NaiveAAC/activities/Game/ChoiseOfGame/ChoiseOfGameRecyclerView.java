@@ -2,7 +2,9 @@ package com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame;
 
 import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
@@ -78,7 +80,8 @@ public class ChoiseOfGameRecyclerView extends RecyclerView {
      * @see #resetVideoView
      */
     private void init(Context context){
-        this.context = context.getApplicationContext();
+//      this.context = context.getApplicationContext();
+        this.context = getActivity();
         Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         Point point = new Point();
         display.getSize(point);
@@ -311,4 +314,14 @@ public class ChoiseOfGameRecyclerView extends RecyclerView {
         this.gameArrayList = gameArrayList;
     }
     //
+    private Activity getActivity() {
+        Context context = getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity)context;
+            }
+            context = ((ContextWrapper)context).getBaseContext();
+        }
+        return null;
+    }
 }

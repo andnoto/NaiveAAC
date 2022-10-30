@@ -23,6 +23,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity;
+import com.sampietro.NaiveAAC.activities.Game.Game2.Game2Fragment;
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear;
@@ -326,6 +327,35 @@ public class Game1Activity extends GameActivityAbstractClass implements
         super.onSaveInstanceState(savedInstanceState);
     }
     /**
+     * Called when the user taps the start speech button.
+     *
+     * @param v view of tapped button
+     * @see SpeechRecognizerManagement#startSpeech()
+     */
+    public void startSpeechGame1(View v)
+    {
+        SpeechRecognizerManagement.startSpeech();
+        //
+        GameFragmentHear frag= new GameFragmentHear();
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+        Game1SecondLevelFragment fragmentgotinstance =
+                (Game1SecondLevelFragment)
+                        getSupportFragmentManager().findFragmentByTag(getString(R.string.game1_second_level_fragment));
+        GameFragmentHear hearfragmentgotinstance =
+                (GameFragmentHear)
+                        getSupportFragmentManager().findFragmentByTag(getString(R.string.game_fragment_hear));
+        if ((fragmentgotinstance != null) || (hearfragmentgotinstance != null))
+        {
+            ft.replace(R.id.game_container_game1, frag, getString(R.string.game_fragment_hear));
+        }
+        else
+        {
+            ft.add(R.id.game_container_game1, frag, getString(R.string.game_fragment_hear));
+        }
+        ft.addToBackStack(null);
+        ft.commitAllowingStateLoss();
+    }
+    /**
      * Called when the user taps the listen again button.
      * </p>
      * re-reads the text of the sentence just composed
@@ -335,7 +365,7 @@ public class Game1Activity extends GameActivityAbstractClass implements
      *
      * @param v view of tapped button
      * @see #readingOfTheText
-     * @see #startSpeech
+     * @see #startSpeechGame1
      */
     public void listenAgainButton (View v)
     {
@@ -345,7 +375,7 @@ public class Game1Activity extends GameActivityAbstractClass implements
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startSpeech(rootViewImageFragment);
+                startSpeechGame1(rootViewImageFragment);
             }
         }, TIME_OUT);
     }
@@ -385,24 +415,6 @@ public class Game1Activity extends GameActivityAbstractClass implements
      */
     @Override
     public void onBeginningOfSpeech(String eText) {
-        GameFragmentHear frag= new GameFragmentHear();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        Game1SecondLevelFragment fragmentgotinstance =
-                (Game1SecondLevelFragment)
-                        getSupportFragmentManager().findFragmentByTag(getString(R.string.game1_second_level_fragment));
-        GameFragmentHear hearfragmentgotinstance =
-                (GameFragmentHear)
-                        getSupportFragmentManager().findFragmentByTag(getString(R.string.game_fragment_hear));
-        if ((fragmentgotinstance != null) || (hearfragmentgotinstance != null))
-        {
-            ft.replace(R.id.game_container_game1, frag, getString(R.string.game_fragment_hear));
-        }
-        else
-        {
-            ft.add(R.id.game_container_game1, frag, getString(R.string.game_fragment_hear));
-        }
-        ft.addToBackStack(null);
-        ft.commit();
     }
     /**
      * Called on end of speech.
@@ -551,7 +563,7 @@ public class Game1Activity extends GameActivityAbstractClass implements
             ft.add(R.id.game_container_game1, frag, getString(R.string.game1_second_level_fragment));
         }
         ft.addToBackStack(null);
-        ft.commit();
+        ft.commitAllowingStateLoss();
     }
     /**
      * called when a word list item is clicked.
@@ -1370,7 +1382,7 @@ public class Game1Activity extends GameActivityAbstractClass implements
      *
      * @see #grammaticalArrangement
      * @see #readingOfTheText
-     * @see #startSpeech
+     * @see #startSpeechGame1
      */
     public void sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText() {
         // sentence completion check
@@ -1385,7 +1397,7 @@ public class Game1Activity extends GameActivityAbstractClass implements
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startSpeech(rootViewImageFragment);
+                    startSpeechGame1(rootViewImageFragment);
                 }
             }, TIME_OUT);
         }

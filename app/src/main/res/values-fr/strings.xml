@@ -15,6 +15,6 @@
     <string name="impostazioni_data_import">PARAMÈTRES DATA IMPORT</string>
     <string name="importa">IMPORT</string>
     <string name="information_this_app_was_created_by">"Information : cette application a été créée par Renzo Sampietro et est une application AAC conçue pour créer des tableaux de communication pour tout usage"</string>
-    <string name="copyright_information">"Copyright :\nAuteur du pictogramme : Sergio Palao Origine : ARASAAC (http://arasaac.org) Licence : CC (BY-NC-SA) Propriété : Gouvernement d'Aragon.\nVerb-data - Une collection de verbes et de conjugaisons au format JSON à utiliser dans une application mobile. Origine : https://github.com/ian-hamlin/verb-data Licence : CC (BY-SA).\nImage utilisée pour le logo de l'application. Origine: https://commons.wikimedia.org/wiki/Category:Swings#/media/File:Myles_Tan_2016-04-16_(Unsplash).jpg"</string>
+    <string name="copyright_information">"\n\n\nCredits:\nAuteur du pictogramme : Sergio Palao Origine : ARASAAC (http://arasaac.org) Licence : CC (BY-NC-SA) Propriété : Gouvernement d'Aragon.\nVerb-data - Une collection de verbes et de conjugaisons au format JSON à utiliser dans une application mobile. Origine : https://github.com/ian-hamlin/verb-data Licence : CC (BY-SA).\nImage utilisée pour le logo de l'application. Origine: https://commons.wikimedia.org/wiki/Category:Swings#/media/File:Myles_Tan_2016-04-16_(Unsplash).jpg"</string>
 
 </resources>

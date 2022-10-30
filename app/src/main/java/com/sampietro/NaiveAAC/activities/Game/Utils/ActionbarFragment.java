@@ -4,6 +4,7 @@ import static androidx.core.content.FileProvider.getUriForFile;
 
 import static io.realm.Realm.getApplicationContext;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -100,15 +101,19 @@ public class ActionbarFragment extends Fragment {
                     e.printStackTrace();
                 }
                 assert getApplicationContext() != null;
-                File pdfFile = new File(getApplicationContext().getFilesDir(),"naive aac manuale istruzioni.pdf");
-                if (pdfFile.exists())
-                {
-                    Uri pdfUri = getUriForFile(requireContext(), "com.example.NaiveAAC.fileprovider", pdfFile);
-                    Intent intent1 = new Intent(Intent.ACTION_VIEW);
-                    intent1.setDataAndType(pdfUri, "application/pdf");
-                    intent1.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(intent1);
-                }
+                try {
+                    File pdfFile = new File(getApplicationContext().getFilesDir(),"naive aac manuale istruzioni.pdf");
+                    if (pdfFile.exists())
+                        {
+                        Uri pdfUri = getUriForFile(requireContext(), "com.example.NaiveAAC.fileprovider", pdfFile);
+                        Intent intent1 = new Intent(Intent.ACTION_VIEW);
+                        intent1.setDataAndType(pdfUri, "application/pdf");
+                        intent1.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        startActivity(intent1);
+                        }
+                    } catch (ActivityNotFoundException e) {
+                    e.printStackTrace();
+                    }
                 return true;
             case R.id.MENU_HOME:
                 /*
