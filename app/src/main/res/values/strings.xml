@@ -25,15 +25,15 @@
     <string name="frase_benvenuto_seconda_parte">frase benvenuto seconda parte</string>
     <string name="frase_di_promemoria">frase di promemoria</string>
     <string name="frase_nome_da_aggiungere_alla_storia">frase / nome da aggiungere alla storia</string>
-    <string name="game_settings">IMPOSTAZIONE DEI GIOCHI</string>
+    <string name="game_settings">IMPOSTAZIONE GIOCHI</string>
     <string name="generali">GENERALI</string>
     <string name="i_tuoi_video">I TUOI VIDEO</string>
     <string name="id_pittogramma">id pittogramma</string>
     <string name="il_tuo_account">IL TUO ACCOUNT</string>
     <string name="importa">IMPORTA</string>
     <string name="importa_tabelle">IMPORTA TABELLE</string>
-    <string name="impostazione_dei_contenuti">IMPOSTAZIONE DEI CONTENUTI</string>
-    <string name="impostazione_dei_giochi">IMPOSTAZIONE DEI GIOCHI</string>
+    <string name="impostazione_dei_contenuti">IMPOSTAZIONE CONTENUTI</string>
+    <string name="impostazione_dei_giochi">IMPOSTAZIONE GIOCHI</string>
     <string name="impostazioni">IMPOSTAZIONI</string>
     <string name="impostazioni_avanzate">IMPOSTAZIONI AVANZATE</string>
     <string name="impostazioni_data_import">IMPOSTAZIONI DATA IMPORT</string>
@@ -47,7 +47,7 @@
     <string name="le_tue_immagini">LE TUE IMMAGINI</string>
     <string name="link_youtube">link Youtube</string>
     <string name="lista_di_nomi">LISTA DI NOMI</string>
-    <string name="media_settings">IMPOSTAZIONE DEI MEDIA</string>
+    <string name="media_settings">IMPOSTAZIONE MEDIA</string>
     <string name="modalita_elenco">Modalità Elenco</string>
     <string name="mostra_elenco">mostra elenco</string>
     <string name="nessuna">nessuna</string>

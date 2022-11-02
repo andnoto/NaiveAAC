@@ -1685,24 +1685,5 @@ public class SettingsActivity extends AccountActivityAbstractClass
         ft.addToBackStack(null);
         ft.commit();
     }
-    /**
-     * Called when the user taps the about us button from the settings menu.
-     * </p>
-     * the activity is notified to view information.
-     * </p>
-     *
-     * @param view view of tapped button
-     * @see MenuSettingsFragment
-     * @see InformationFragment
-     */
-    public void submitAboutUs(View view) {
-        // view information initializing InformationFragment
-        // (FragmentTransaction switch between Fragments).
-        InformationFragment frag= new InformationFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
 //
 }

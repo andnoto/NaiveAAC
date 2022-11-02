@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.Toast;
@@ -426,6 +427,17 @@ public class Game1Activity extends GameActivityAbstractClass implements
      */
     @Override
     public void onEndOfSpeech(String editText) {
+        fragmentTransactionStart();
+    }
+    /**
+     * Called on error from SpeechRecognizerManagement.
+     *
+     * @param errorCode int error code from SpeechRecognizerManagement
+     * @see com.example.voicerecognitionlibrary.RecognizerCallback
+     * @see #fragmentTransactionStart
+     */
+    @Override
+    public void onError(int errorCode) {
         fragmentTransactionStart();
     }
     /**

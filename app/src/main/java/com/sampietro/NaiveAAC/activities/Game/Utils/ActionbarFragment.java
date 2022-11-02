@@ -4,6 +4,7 @@ import static androidx.core.content.FileProvider.getUriForFile;
 
 import static io.realm.Realm.getApplicationContext;
 
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -112,7 +113,7 @@ public class ActionbarFragment extends Fragment {
                         startActivity(intent1);
                         }
                     } catch (ActivityNotFoundException e) {
-                    e.printStackTrace();
+                    alertDialogNeedsSomePDFApp();
                     }
                 return true;
             case R.id.MENU_HOME:
@@ -146,14 +147,18 @@ public class ActionbarFragment extends Fragment {
                     e.printStackTrace();
                 }
                 assert getApplicationContext() != null;
-                File pdfFilePrivacy = new File(getApplicationContext().getFilesDir(),"privacy.pdf");
-                if (pdfFilePrivacy.exists())
-                {
-                    Uri pdfUri = getUriForFile(requireContext(), "com.example.NaiveAAC.fileprovider", pdfFilePrivacy);
-                    Intent intent5 = new Intent(Intent.ACTION_VIEW);
-                    intent5.setDataAndType(pdfUri, "application/pdf");
-                    intent5.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(intent5);
+                try {
+                    File pdfFilePrivacy = new File(getApplicationContext().getFilesDir(),"privacy.pdf");
+                    if (pdfFilePrivacy.exists())
+                    {
+                        Uri pdfUri = getUriForFile(requireContext(), "com.example.NaiveAAC.fileprovider", pdfFilePrivacy);
+                        Intent intent5 = new Intent(Intent.ACTION_VIEW);
+                        intent5.setDataAndType(pdfUri, "application/pdf");
+                        intent5.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        startActivity(intent5);
+                    }
+                } catch (ActivityNotFoundException e) {
+                alertDialogNeedsSomePDFApp();
                 }
                 return true;
             default:
@@ -177,5 +182,16 @@ public class ActionbarFragment extends Fragment {
           destStream.close();
           sourceStream.close();
       }
+    /**
+     * alert dialog.
+     * <p>
+     *
+     */
+    private void alertDialogNeedsSomePDFApp()  {
+        AlertDialog.Builder alertDialogBuilder=new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setTitle("Attenzione!");
+        alertDialogBuilder.setMessage("Occorre installare un lettore PDF da Play Store");
+        alertDialogBuilder.show();
+    }
 }
 

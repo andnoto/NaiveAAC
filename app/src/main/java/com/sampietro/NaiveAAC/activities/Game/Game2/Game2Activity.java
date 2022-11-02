@@ -244,7 +244,7 @@ public class Game2Activity extends GameActivityAbstractClass {
             ft.add(R.id.game_container, frag, getString(R.string.game2_fragment));
         }
         ft.addToBackStack(null);
-        ft.commit();
+        ft.commitAllowingStateLoss();
     }
     /**
      * Called on result of speech.
