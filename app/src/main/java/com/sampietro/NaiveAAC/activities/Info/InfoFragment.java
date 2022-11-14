@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.sampietro.NaiveAAC.BuildConfig;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Info.Utils.InfoFragmentAbstractClass;
 
@@ -30,8 +31,9 @@ public class InfoFragment extends InfoFragmentAbstractClass {
     {
         rootView = inflater.inflate(R.layout.activity_settings_information, container, false);
         // logic of fragment
+        String versionName = BuildConfig.VERSION_NAME;
         TextView textInformation = (TextView) rootView.findViewById(R.id.information);
-        textInformation.setText(getString(R.string.information_this_app_was_created_by) + getString(R.string.copyright_information));
+        textInformation.setText("NaiveAAC version " + versionName + getString(R.string.information_this_app_was_created_by) + getString(R.string.copyright_information));
         //
         return rootView;
     }

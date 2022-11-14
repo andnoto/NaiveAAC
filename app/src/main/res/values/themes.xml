@@ -3,7 +3,7 @@
     <style name="Theme.20210823simsim" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <!-- <item name="colorPrimary">@color/purple_500</item> -->
-        <item name="colorPrimary">@color/azzurro_pietra_di_fiume</item>
+        <item name="colorPrimary">@color/azzurro_pastello</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -15,7 +15,7 @@
         <!-- Customize your theme here. -->
 
         <item name="android:windowBackground">@color/verde_smeraldo</item>
-        <item name="android:itemBackground">@color/azzurro_pietra_di_fiume</item>
+        <item name="android:itemBackground">@color/azzurro_pastello</item>
 
     </style>
 </resources>

@@ -40,7 +40,7 @@
     <string name="impostazioni_generali">IMPOSTAZIONI GENERALI</string>
     <string name="impostazioni_wordpairs">IMPOSTAZIONI WORDPAIRS</string>
     <string name="info">info</string>
-    <string name="information_this_app_was_created_by">Informazioni: \nQuesta app è stata creata da Renzo Sampietro ed è un\'app di CAA progettata per realizzare schede di comunicazione per qualsiasi utilizzo.\nSe desideri contattarmi per saperne di più in merito a qualsiasi questione ad essa relativa, puoi inviare un\'e-mail a sampietro.naiveaac@gmail.com</string>
+    <string name="information_this_app_was_created_by">\n\nInformazioni: \nQuesta app è stata creata da Renzo Sampietro ed è un\'app di CAA progettata per realizzare schede di comunicazione per qualsiasi utilizzo.\nSe desideri contattarmi per saperne di più in merito a qualsiasi questione ad essa relativa, puoi inviare un\'e-mail a sampietro.naiveaac@gmail.com</string>
     <string name="informazioni_sullo_sviluppatore">INFORMAZIONI SULLO SVILUPPATORE</string>
     <string name="inizia">inizia</string>
     <string name="inserisci_il_risultato_per_verificare_che_sei_un_adulto">inserisci il risultato per verificare che sei un adulto</string>
@@ -93,7 +93,7 @@
     <string name="account_fragment" translatable="false">AccountFragment</string>
     <string name="actionbar_fragment" translatable="false">ActionbarFragment</string>
     <string name="adverb_of_place" translatable="false">adverb of place</string>
-    <string name="app_name" translatable="false">naive AAC</string>
+    <string name="app_name" translatable="false">naiveAAC</string>
     <string name="article" translatable="false">article</string>
     <string name="assertion_message" translatable="false">Expected 1 param for current level</string>
     <string name="award_type" translatable="false">AWARD TYPE</string>
@@ -148,8 +148,8 @@
     <string name="non_trovato" translatable="false">non trovato</string>
     <string name="p1" translatable="false">p1</string>
     <string name="p3" translatable="false">p3</string>
-    <string name="parole_in_liberta" translatable="false">PAROLE IN LIBERTA\'</string>
-    <string name="pensieri_e_parole" translatable="false">PENSIERI E PAROLE</string>
+    <string name="parole_in_liberta" translatable="false">COMUNICATORE</string>
+    <string name="pensieri_e_parole" translatable="false">NAVIGATORE</string>
     <string name="permission" translatable="false">Permission</string>
     <string name="permission_is_granted" translatable="false">Permission is granted</string>
     <string name="permission_is_revoked" translatable="false">Permission is revoked</string>
@@ -189,5 +189,21 @@
     <string name="word1" translatable="false">word1</string>
     <string name="word2" translatable="false">word2</string>
     <string name="word_to_search_second_level_menu" translatable="false">WORD TO SEARCH SECOND LEVEL MENU</string>
+    <string name="inizia_il_discorso">inizia il discorso</string>
+    <string name="rilegge_il_testo_della_frase_appena_composta">rilegge il testo della frase appena composta</string>
+    <string name="passa_alla_composizione_di_una_nuova_frase">passa alla composizione di una nuova frase</string>
+    <string name="vai_al_precedente">vai al precedente</string>
+    <string name="vai_al_successivo">vai al successivo</string>
+    <string name="ricerca_le_immagini">ricerca le immagini</string>
+    <string name="cancella_la_frase">cancella la frase</string>
+    <string name="frase_per_la_quale_ricercare_le_immagini">frase per la quale ricercare le immagini</string>
+    <string name="inizia_a_parlare">inizia a parlare</string>
+    <string name="immagine_dell_utente">immagine dell\'utente</string>
+    <string name="cerca_l_immagine_dell_utente">cerca l\'immagine dell\'utente</string>
+    <string name="salva_i_dati_dell_utente">salva i dati dell\'utente</string>
+    <string name="descrizione_gioco">descrizione gioco</string>
+    <string name="icona_del_gioco">icona del gioco</string>
+    <string name="immagine_da_inserire">immagine da inserire</string>
+    <string name="cancella_immagine">cancella immagine</string>
 
 </resources>

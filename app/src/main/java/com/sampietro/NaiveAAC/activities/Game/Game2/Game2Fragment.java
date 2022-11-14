@@ -53,7 +53,7 @@ public class Game2Fragment extends GameFragmentAbstractClass {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        rootView = inflater.inflate(R.layout.activity_game_2_recycler_view, container, false);
+        rootView = inflater.inflate(R.layout.activity_game_2, container, false);
         //
         hearingImageButton = (ImageButton)rootView.findViewById(R.id.btn_start);
         hearingImageButton.setImageResource(R.drawable.ic_baseline_hearing_36_red); //set the image programmatically

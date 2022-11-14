@@ -52,7 +52,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text" />
+                android:inputType="text"
+                android:autofillHints="@string/id_pittogramma" />
 
         </LinearLayout>
 
@@ -75,7 +76,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text" />
+                android:inputType="text"
+                android:autofillHints="@string/tipo_modifica_e_i_c" />
 
         </LinearLayout>
 
@@ -98,7 +100,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text" />
+                android:inputType="text"
+                android:autofillHints="@string/parola_chiave" />
 
         </LinearLayout>
 
@@ -121,7 +124,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text" />
+                android:inputType="text"
+                android:autofillHints="@string/se_plurale_p" />
 
         </LinearLayout>
 

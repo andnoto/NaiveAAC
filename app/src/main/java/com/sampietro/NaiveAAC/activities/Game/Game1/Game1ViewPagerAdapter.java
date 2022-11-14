@@ -73,6 +73,16 @@ public class Game1ViewPagerAdapter extends FragmentStateAdapter {
             wordToSearchSecondLevelMenu = result.getWord1();
             //
             bundle.putString("WORD TO SEARCH SECOND LEVEL MENU", wordToSearchSecondLevelMenu);
+            //
+            if (!(position == 0))
+                { bundle.putString("LEFT ARROW", "Y"); }
+                else
+                { bundle.putString("LEFT ARROW", "N"); }
+            if (resultsWordPairsSize > (position + 1))
+                { bundle.putString("RIGHT ARROW", "Y"); }
+                else
+                { bundle.putString("RIGHT ARROW", "N"); }
+            //
             fragment=new Game1FirstLevelFragment();
             fragment.setArguments(bundle);
         }

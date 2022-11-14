@@ -40,7 +40,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text" />
+                android:inputType="text"
+                android:autofillHints="@string/descrizione_immagine_da_inserire" />
 
         </LinearLayout>
     </LinearLayout>
@@ -54,7 +55,8 @@
             android:layout_marginEnd="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageDescriptionLL" />
+            app:layout_constraintTop_toBottomOf="@+id/imageDescriptionLL"
+            android:contentDescription="@string/immagine_da_inserire" />
 
     <LinearLayout
         android:id="@+id/imageLL"
@@ -79,7 +81,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-
                 android:onClick="imageSearch"
                 android:text="@string/cerca_immagine" />
 
@@ -88,7 +89,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-
                 android:onClick="imageAdd"
                 android:text="@string/aggiungi_immagine" />
         </LinearLayout>

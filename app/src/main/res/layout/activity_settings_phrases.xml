@@ -26,7 +26,8 @@
         android:hint="@string/frase_benvenuto_prima_parte"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="@+id/welcomephrasefirstpart"
-        app:layout_constraintTop_toBottomOf="@+id/welcomephrasefirstpart" />
+        app:layout_constraintTop_toBottomOf="@+id/welcomephrasefirstpart"
+        android:autofillHints="@string/frase_benvenuto_prima_parte" />
 
     <TextView
         android:id="@+id/welcomephrasesecondpart"
@@ -46,7 +47,8 @@
         android:hint="@string/frase_benvenuto_seconda_parte"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="@+id/welcomephrasesecondpart"
-        app:layout_constraintTop_toBottomOf="@+id/welcomephrasesecondpart" />
+        app:layout_constraintTop_toBottomOf="@+id/welcomephrasesecondpart"
+        android:autofillHints="@string/frase_benvenuto_seconda_parte" />
 
     <TextView
         android:id="@+id/reminderphrase"
@@ -66,7 +68,8 @@
         android:hint="@string/frase_di_promemoria"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="@+id/reminderphrase"
-        app:layout_constraintTop_toBottomOf="@+id/reminderphrase" />
+        app:layout_constraintTop_toBottomOf="@+id/reminderphrase"
+        android:autofillHints="@string/frase_di_promemoria" />
 
     <TextView
         android:id="@+id/reminderphraseplural"
@@ -86,7 +89,8 @@
         android:hint="@string/plurale_frase_di_promemoria"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="@+id/reminderphraseplural"
-        app:layout_constraintTop_toBottomOf="@+id/reminderphraseplural" />
+        app:layout_constraintTop_toBottomOf="@+id/reminderphraseplural"
+        android:autofillHints="@string/plurale_frase_di_promemoria" />
 
     <Button
         android:id="@+id/buttonPhrases"

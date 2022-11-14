@@ -51,7 +51,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text" />
+                android:inputType="text"
+                android:autofillHints="@string/parola_chiave" />
     </LinearLayout>
 
     <LinearLayout
@@ -73,7 +74,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text" />
+                android:inputType="text"
+                android:autofillHints="@string/nome_da_aggiungere_alla_lista" />
     </LinearLayout>
 
     <LinearLayout
@@ -95,7 +97,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text" />
+                android:inputType="text"
+                android:autofillHints="@string/tipo_uri_a_s_opzionale" />
     </LinearLayout>
 
     <LinearLayout
@@ -117,7 +120,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text" />
+                android:inputType="text"
+                android:autofillHints="@string/uri_opzionale" />
     </LinearLayout>
 
     </LinearLayout>

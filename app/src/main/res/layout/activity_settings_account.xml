@@ -9,7 +9,7 @@
     <EditText
         android:id="@+id/editTextTextAccount"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="116dp"
         android:layout_marginTop="24dp"
         android:ems="10"
@@ -27,7 +27,8 @@
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextAccount" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextAccount"
+        android:contentDescription="@string/immagine_dell_utente"/>
 
 
         <LinearLayout
@@ -45,18 +46,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-
                 android:onClick="imageSearch"
-                android:text="@string/search_image" />
+                android:text="@string/search_image"
+                android:contentDescription="@string/cerca_l_immagine_dell_utente" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-
                 android:onClick="saveAccount"
-                android:text="@string/save_account" />
+                android:text="@string/save_account"
+                android:contentDescription="@string/salva_i_dati_dell_utente"/>
         </LinearLayout>
 
 

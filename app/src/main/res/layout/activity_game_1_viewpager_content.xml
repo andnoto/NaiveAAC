@@ -7,28 +7,46 @@
     android:layout_height="match_parent"
     tools:context="com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity">
 
-    <LinearLayout
-        android:id="@+id/imagefirstlevelmenuLL"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/leftarrowfirstlevelmenu"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_arrow_back_ios_36"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imagefirstlevelmenu"
         app:layout_constraintTop_toTopOf="parent"
-        android:orientation="vertical">
+        android:contentDescription="@string/vai_al_precedente"/>
 
-        <ImageView
-            android:id="@+id/imagefirstlevelmenu"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/verde_smeraldo"
-            android:scaleType="centerInside"/>
+    <ImageView
+        android:id="@+id/imagefirstlevelmenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/verde_smeraldo"
+        app:layout_constraintStart_toEndOf="@+id/leftarrowfirstlevelmenu"
+        app:layout_constraintEnd_toStartOf="@+id/rightarrowfirstlevelmenu"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/rightarrowfirstlevelmenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_arrow_forward_ios_36"
+        app:layout_constraintStart_toEndOf="@+id/imagefirstlevelmenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/vai_al_successivo"/>
+
         <TextView
             android:id="@+id/titlefirstlevelmenu"
-            android:layout_gravity="center"
             android:textColor="#000"
             android:textStyle="bold"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/imagefirstlevelmenu"
+            app:layout_constraintEnd_toEndOf="@+id/imagefirstlevelmenu"
+            app:layout_constraintTop_toBottomOf="@+id/imagefirstlevelmenu"/>
 
-    </LinearLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

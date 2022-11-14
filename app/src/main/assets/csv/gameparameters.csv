@@ -1,3 +1,3 @@
 gameName,gameIconType,gameIconPath,gameInfo,gameJavaClass,gameParameter
-pensieri e parole,AS,images/browser.png,l'app visualizza raccolte di immagini di parole che si possono selezionare per formare delle semplici frasi,PENSIERI E PAROLE,
-parole in libertà,AS,images/communicator.png,l'app visualizza le immagini (caricate dall'utente o i pittogrammi Arasaac) delle parole pronunciate dopo aver premuto il tasto ascolta,PAROLE IN LIBERTA',
+NAVIGATORE,AS,images/browser.png,l'app visualizza raccolte di immagini di parole che si possono selezionare per formare delle semplici frasi,NAVIGATORE,
+COMUNICATORE,AS,images/communicator.png,l'app visualizza le immagini (caricate dall'utente o i pittogrammi Arasaac) delle parole pronunciate dopo aver premuto il tasto ascolta,COMUNICATORE,

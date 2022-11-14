@@ -141,13 +141,13 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
                 gameParameter = result.getGameParameter();
                 //
                 switch(gameJavaClass) {
-                    case "PENSIERI E PAROLE":
+                    case "NAVIGATORE":
                         intent = new Intent(this,
                                 Game1Activity.class);
                         intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter);
                         startActivity(intent);
                         break;
-                    case "PAROLE IN LIBERTA'":
+                    case "COMUNICATORE":
                         intent = new Intent(this,
                                 Game2Activity.class);
                         intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter);

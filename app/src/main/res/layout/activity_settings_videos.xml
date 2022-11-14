@@ -41,7 +41,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:hint="@string/nessuna"
-                android:inputType="text" />
+                android:inputType="text"
+                android:autofillHints="@string/descrizione_video_da_inserire" />
 
         </LinearLayout>
     </LinearLayout>

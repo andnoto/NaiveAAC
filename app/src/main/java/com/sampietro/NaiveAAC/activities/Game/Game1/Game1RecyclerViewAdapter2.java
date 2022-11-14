@@ -79,6 +79,7 @@ public class Game1RecyclerViewAdapter2
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         viewHolder.title.setText(galleryList.get(i).getImage_title());
         viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        viewHolder.img.setContentDescription(galleryList.get(i).getImage_title());
         //
         addImage((galleryList.get(i).getUrlType()),
                 (galleryList.get(i).getUrl()), viewHolder.img);

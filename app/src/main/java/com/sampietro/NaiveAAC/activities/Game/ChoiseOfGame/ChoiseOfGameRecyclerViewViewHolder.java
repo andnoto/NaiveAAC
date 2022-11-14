@@ -59,6 +59,7 @@ public class ChoiseOfGameRecyclerViewViewHolder extends RecyclerView.ViewHolder 
         title.setText(gameArrayList.getImage_title());
         info.setText(R.string.info);
         copyright.setText(gameArrayList.getVideoCopyright());
+        imageView.setContentDescription(gameArrayList.getImage_title());
         addImage(gameArrayList.getUrlType(),gameArrayList.getUrl(),imageView);
     }
     /**

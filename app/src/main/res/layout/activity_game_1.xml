@@ -23,28 +23,33 @@
         android:id="@+id/btn_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:backgroundTint="@color/azzurro_pastello"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
         android:onClick="startSpeechGame1"
         android:src="@drawable/ic_baseline_hearing_36_black"
-        android:text="@string/inizia" />
+        android:text="@string/inizia"
+        android:contentDescription="@string/inizia_il_discorso" />
 
 
     <ImageButton
         android:id="@+id/listenagainbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:backgroundTint="@color/azzurro_pastello"
         android:layout_marginStart="80dp"
         android:onClick="listenAgainButton"
-        android:src="@drawable/ic_baseline_play_arrow_36" />
+        android:src="@drawable/ic_baseline_play_arrow_36"
+        android:contentDescription="@string/rilegge_il_testo_della_frase_appena_composta" />
 
     <ImageButton
         android:id="@+id/continuegamebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:backgroundTint="@color/azzurro_pastello"
         android:layout_marginStart="80dp"
         android:onClick="continueGameButton"
-        android:src="@drawable/ic_baseline_arrow_forward_ios_36" />
+        android:src="@drawable/ic_baseline_delete_36"
+        android:contentDescription="@string/passa_alla_composizione_di_una_nuova_frase" />
         </LinearLayout>
 
     <LinearLayout

@@ -535,7 +535,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
         // (FragmentTransaction switch between Fragments).
         FragmentTransaction ft;
         switch(textGameToSet) {
-            case "PAROLE IN LIBERTA'":
+            case "COMUNICATORE":
                 PhrasesFragment phrasesFragment= new PhrasesFragment();
                 ft=getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.settings_container, phrasesFragment);
@@ -1686,4 +1686,15 @@ public class SettingsActivity extends AccountActivityAbstractClass
         ft.commit();
     }
 //
+    /**
+     * Called when the user taps the test crash button from the advanced settings menu.
+     * </p>
+     *
+     * @param view view of tapped button
+     * @see AdvancedSettingsFragment
+     */
+    public void testCrash(View view) {
+        // Crash Test with Firebase Crashlytics
+        throw new RuntimeException("Test Crash"); // Force a crash
+    }
 }

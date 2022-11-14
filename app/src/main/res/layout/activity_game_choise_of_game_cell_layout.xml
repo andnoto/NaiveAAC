@@ -58,8 +58,8 @@
 
     <TextView
         android:id="@+id/infomediaplayer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:background="@android:color/holo_green_light"
         android:textColor="#EEEEEE"
         android:text="@string/info"

@@ -119,7 +119,7 @@ public class Game1SecondLevelFragment extends GameFragmentAbstractClass {
             {
             hearingImageButton.setVisibility(View.INVISIBLE);
             listenAgainButton.setVisibility(View.INVISIBLE);
-            continueGameButton.setVisibility(View.VISIBLE);
+            continueGameButton.setVisibility(View.INVISIBLE);
             }
         //
         RecyclerView recyclerView1 = (RecyclerView)rootView.findViewById(R.id.imagegallery1);

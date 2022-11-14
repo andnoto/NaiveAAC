@@ -30,6 +30,8 @@ import java.util.Locale;
  */
 public class Game1FirstLevelFragment extends GameFragmentAbstractClass {
     public String wordToSearchSecondLevelMenu;
+    public String leftArrow;
+    public String rightArrow;
     /**
      * prepares the ui and makes the callback to the activity
      * <p>
@@ -48,6 +50,8 @@ public class Game1FirstLevelFragment extends GameFragmentAbstractClass {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             wordToSearchSecondLevelMenu = bundle.getString(getString(R.string.word_to_search_second_level_menu));
+            leftArrow = bundle.getString("LEFT ARROW");
+            rightArrow = bundle.getString("RIGHT ARROW");
             //
             TextView textFirstLevelMenuView = (TextView) rootView.findViewById(R.id.titlefirstlevelmenu);
             textFirstLevelMenuView.setText(wordToSearchSecondLevelMenu.toUpperCase(Locale.getDefault()));
@@ -55,7 +59,15 @@ public class Game1FirstLevelFragment extends GameFragmentAbstractClass {
             ResponseImageSearch image = null;
             image = ImageSearchHelper.imageSearch(realm, wordToSearchSecondLevelMenu);
             ImageView imageFirstLevelMenuView = rootView.findViewById(R.id.imagefirstlevelmenu);
+            imageFirstLevelMenuView.setContentDescription(wordToSearchSecondLevelMenu.toUpperCase(Locale.getDefault()));
             addImage(image.getUriType(),image.getUriToSearch(),imageFirstLevelMenuView, 200, 200);
+            // arrows
+            ImageView leftArrowFirstLevelMenu = rootView.findViewById(R.id.leftarrowfirstlevelmenu);
+            ImageView rightArrowFirstLevelMenu = rootView.findViewById(R.id.rightarrowfirstlevelmenu);
+            if (leftArrow.equals("N"))
+                leftArrowFirstLevelMenu.setVisibility(View.INVISIBLE);
+            if (rightArrow.equals("N"))
+                rightArrowFirstLevelMenu.setVisibility(View.INVISIBLE);
         }
         //
         listener.receiveResultGameFragment(rootView);
