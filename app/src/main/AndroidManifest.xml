@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sampietro.NaiveAAC"
-    android:versionCode="5"
-    android:versionName="1.4"
+    android:versionCode="6"
+    android:versionName="1.5"
     android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -55,6 +55,8 @@
         <activity android:name="com.sampietro.NaiveAAC.activities.Info.InfoActivity">
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Info.EulaActivity">
+        </activity>
+        <activity android:name="com.sampietro.NaiveAAC.activities.Info.PrivacyActivity">
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity"
             android:parentActivityName="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">

@@ -23,6 +23,7 @@ import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity;
 import com.sampietro.NaiveAAC.activities.Info.EulaActivity;
 import com.sampietro.NaiveAAC.activities.Info.InfoActivity;
+import com.sampietro.NaiveAAC.activities.Info.PrivacyActivity;
 import com.sampietro.NaiveAAC.activities.Settings.SettingsActivity;
 
 import java.io.File;
@@ -139,27 +140,10 @@ public class ActionbarFragment extends Fragment {
                 return true;
             case R.id.MENU_PRIVACY:
                  /*
-                navigate to privacy policy
+                navigate to privacy screen (PrivacyActivity)
                 */
-                try {
-                    copyPdfFromAssetsToInternalStorage("privacy.pdf");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                assert getApplicationContext() != null;
-                try {
-                    File pdfFilePrivacy = new File(getApplicationContext().getFilesDir(),"privacy.pdf");
-                    if (pdfFilePrivacy.exists())
-                    {
-                        Uri pdfUri = getUriForFile(requireContext(), "com.example.NaiveAAC.fileprovider", pdfFilePrivacy);
-                        Intent intent5 = new Intent(Intent.ACTION_VIEW);
-                        intent5.setDataAndType(pdfUri, "application/pdf");
-                        intent5.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        startActivity(intent5);
-                    }
-                } catch (ActivityNotFoundException e) {
-                alertDialogNeedsSomePDFApp();
-                }
+                Intent intent5 = new Intent(getActivity(), PrivacyActivity.class);
+                startActivity(intent5);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
