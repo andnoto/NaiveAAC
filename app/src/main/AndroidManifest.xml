@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sampietro.NaiveAAC"
-    android:versionCode="7"
-    android:versionName="1.6"
+    android:versionCode="8"
+    android:versionName="2.0"
     android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -52,6 +52,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
         </activity>
+        <activity android:name=".activities.Game.Game2.SettingsStoriesQuickRegistrationActivity"
+            android:parentActivityName=".activities.Settings.SettingsActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.Settings.SettingsActivity" />
+        </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Info.InfoActivity">
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Info.EulaActivity">
@@ -66,6 +73,13 @@
                 android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
+        </activity>
+        <activity android:name=".activities.Game.GameADA.GameADAActivity"
             android:parentActivityName="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data

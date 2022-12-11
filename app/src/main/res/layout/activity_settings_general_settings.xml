@@ -44,6 +44,41 @@
         </RadioGroup>
 
     <TextView
+        android:id="@+id/titlewritingtypetv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="@string/edit_message"
+        android:text="Tipo di scrittura dei titoli"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enableprintingradiogroup" />
+
+
+    <RadioGroup
+        android:id="@+id/titlewritingtyperadiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titlewritingtypetv"
+        app:layout_constraintVertical_bias="0.069">
+        <RadioButton android:id="@+id/uppercase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MAIUSCOLO"
+            android:onClick="titleWritingTypeRadioButtonClicked"/>
+        <RadioButton android:id="@+id/lowercase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="minuscolo"
+            android:onClick="titleWritingTypeRadioButtonClicked"/>
+    </RadioGroup>
+
+    <TextView
         android:id="@+id/listmodetv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,7 +88,7 @@
         android:hint="@string/edit_message"
         android:text="@string/modalita_elenco"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enableprintingradiogroup" />
+        app:layout_constraintTop_toBottomOf="@+id/titlewritingtyperadiogroup" />
 
 
     <RadioGroup

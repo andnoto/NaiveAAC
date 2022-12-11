@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Settings.SettingsActivity">
+
+    <TextView
+        android:id="@+id/storiessettingsarasaac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="2dp"
+        android:ems="10"
+        android:text="CERCA E SCEGLI L'IMMAGINE ARASAAC"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/keywordarasaactosearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="testo da cercare"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_search_arasaac"
+        app:layout_constraintTop_toBottomOf="@+id/storiessettingsarasaac"/>
+
+    <ImageButton
+        android:id="@+id/btn_search_arasaac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="arasaacSearch"
+        android:src="@android:drawable/ic_menu_search"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/storiessettingsarasaac" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/imagegallery"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_search_arasaac" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,9 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Settings;
 
+import static io.realm.Sort.ASCENDING;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.sampietro.NaiveAAC.R;
@@ -13,6 +16,7 @@ import com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * <h1>StoriesListFragment</h1>
@@ -20,20 +24,23 @@ import io.realm.RealmResults;
  * </p>
  *
  * @version     1.1, 04/22/22
- * @see SettingsFragmentAbstractClass
- * @see SettingsActivity
+ * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  */
 public class StoriesListFragment extends SettingsFragmentAbstractClass {
     private Realm realm;
     //
     private ListView listView=null;
     private StoriesAdapter adapter;
+    //
+    public EditText storyToSearch;
+    public EditText phraseNumberToSearch;
     /**
      * prepares the ui also using a listview and makes the callback to the activity
      *
      * @see androidx.fragment.app.Fragment#onCreateView
-     * @see Stories
-     * @see StoriesAdapter
+     * @see com.sampietro.NaiveAAC.activities.Stories.Stories
+     * @see com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -54,7 +61,45 @@ public class StoriesListFragment extends SettingsFragmentAbstractClass {
         // each single row
         // 3) we retrieve the ListView prepared in the layout and assign it the reference to the adapter
         // which will be your View "supplier".
-        RealmResults<Stories> results = realm.where(Stories.class).findAll();
+        //
+        RealmResults<Stories> results;
+        storyToSearch = (EditText)rootView.findViewById(R.id.keywordstorytosearch);
+        phraseNumberToSearch = (EditText)rootView.findViewById(R.id.phrasenumbertosearch);
+        Bundle bundle = this.getArguments();
+        if (bundle == null) {
+            results = realm.where(Stories.class).findAll();
+            }
+            else
+            {
+                storyToSearch.setText(bundle.getString("keywordStoryToSearch"));
+                phraseNumberToSearch.setText(Integer.toString(bundle.getInt("phraseNumberToSearch")));
+                //
+                if (bundle.getString("keywordStoryToSearch").equals(getString(R.string.nome_storia))) {
+                    results = realm.where(Stories.class).findAll();
+                    }
+                    else
+                    {
+                    if (bundle.getInt("phraseNumberToSearch") == 0) {
+                            results =
+                                    realm.where(Stories.class)
+                                            .equalTo("story", bundle.getString("keywordStoryToSearch").toLowerCase())
+                                            .findAll();
+                        }
+                        else
+                        {
+                            results =
+                                    realm.where(Stories.class)
+                                            .equalTo("story", bundle.getString("keywordStoryToSearch").toLowerCase())
+                                            .equalTo("phraseNumberInt", bundle.getInt("phraseNumberToSearch"))
+                                            .findAll();
+                        }
+                    }
+            }
+
+        //
+        String[] mStrings1 = {"story","phraseNumberInt", "wordNumberInt" };
+        Sort[] mStrings2 = {ASCENDING,ASCENDING, ASCENDING };
+        results = results.sort(mStrings1, mStrings2 );
         //
         listView=(ListView) rootView.findViewById(R.id.listview);
         //

@@ -1,5 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Stories;
 
+import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.dataProcess;
 import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.savBak;
 
 import android.content.Context;
@@ -13,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -30,7 +32,7 @@ public class Stories extends RealmObject {
     /**
      * order number of the sentence in a given story.
      */
-    private String phraseNumber;
+    private int phraseNumberInt;
     /**
      * order number of the word in a given sentence or the entire sentence or a question / answer related to the phrase or
      * the topic of the sentence.
@@ -45,7 +47,7 @@ public class Stories extends RealmObject {
      * <p>
      * if wordNumber = 9999 the word contain the topic of the sentence
      */
-    private String wordNumber;
+    private int wordNumberInt;
     /**
      * sentence, word, question , answer or topic belonging to the story identified with the <code>story</code>.
      */
@@ -92,13 +94,13 @@ public class Stories extends RealmObject {
      *
      * @return phraseNumber string data to get
      */
-    public String getPhraseNumber() { return phraseNumber; }
+    public int getPhraseNumber() { return phraseNumberInt; }
     /**
      * get <code>wordNumber</code>.
      *
      * @return wordNumber string data to get
      */
-    public String getWordNumber() { return wordNumber; }
+    public int getWordNumber() { return wordNumberInt; }
     /**
      * get <code>word</code>.
      *
@@ -143,16 +145,16 @@ public class Stories extends RealmObject {
      *
      * @param phraseNumber string data to set
      */
-    public void setPhraseNumber(String phraseNumber) {
-        this.phraseNumber = phraseNumber;
+    public void setPhraseNumber(int phraseNumber) {
+        this.phraseNumberInt = phraseNumber;
     }
     /**
      * set <code>wordNumber</code>.
      *
      * @param wordNumber string data to set
      */
-    public void setWordNumber(String wordNumber) {
-        this.wordNumber = wordNumber;
+    public void setWordNumber(int wordNumber) {
+        this.wordNumberInt = wordNumber;
     }
     /**
      * set <code>word</code>.
@@ -218,7 +220,7 @@ public class Stories extends RealmObject {
         String header = AdvancedSettingsDataImportExportHelper.grabHeader(realm, "Stories");
 
         // We write the header to file
-        AdvancedSettingsDataImportExportHelper.savBak(context, header,FILE_NAME );
+        savBak(context, header,FILE_NAME );
 
         // Now we write all the data corresponding to the fields grabbed above:
         //
@@ -231,7 +233,7 @@ public class Stories extends RealmObject {
                 //
                 dataP = taskitems.toString();
                 // We process the data obtained and add commas and formatting:
-                dataP = AdvancedSettingsDataImportExportHelper.dataProcess(dataP);
+                dataP = dataProcess(dataP);
                 // Workaround to remove the last comma from final string
                 int total = dataP.length() - 1;
                 dataP =  dataP.substring(0,total);
@@ -239,10 +241,10 @@ public class Stories extends RealmObject {
                 // We write the data to file
                 if (irrh == count-1)
                 {
-                    AdvancedSettingsDataImportExportHelper.savBak(context, dataP, FILE_NAME, true);
+                    savBak(context, dataP, FILE_NAME, true);
                 }
                 else {
-                    AdvancedSettingsDataImportExportHelper.savBak(context, dataP, FILE_NAME, false);
+                    savBak(context, dataP, FILE_NAME, false);
                 }
                 irrh++;
             }
@@ -256,14 +258,18 @@ public class Stories extends RealmObject {
      *
      * @param context context
      * @param realm realm obtained from the activity by Realm#getDefaultInstance
+     * @param mode string import mode (Append or Replace)
      */
-    public static void importFromCsvFromInternalStorage(Context context, Realm realm)
+    public static void importFromCsvFromInternalStorage(Context context, Realm realm, String mode)
     {
-        // clear the table
-        RealmResults<Stories> daCancellare = realm.where(Stories.class).findAll();
-        realm.beginTransaction();
-        daCancellare.deleteAllFromRealm();
-        realm.commitTransaction();
+        if (Objects.equals(mode, "Replace"))
+            {
+                // clear the table
+                RealmResults<Stories> daCancellare = realm.where(Stories.class).findAll();
+                realm.beginTransaction();
+                daCancellare.deleteAllFromRealm();
+                realm.commitTransaction();
+            }
         //
         String rootPath = context.getFilesDir().getAbsolutePath();
         //
@@ -338,8 +344,8 @@ public class Stories extends RealmObject {
                             Stories history = realm.createObject(Stories.class);
                             // set the fields here
                             history.setStory(oneWord[0]);
-                            history.setPhraseNumber(oneWord[1]);
-                            history.setWordNumber(oneWord[2]);
+                            history.setPhraseNumber(Integer.parseInt(oneWord[1]));
+                            history.setWordNumber(Integer.parseInt(oneWord[2]));
                             history.setWord(oneWord[3]);
                             history.setUriType(oneWord[4]);
                             //

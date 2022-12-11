@@ -4,12 +4,15 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.annotation.NonNull;
-
 import com.sampietro.NaiveAAC.BuildConfig;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters;
+import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions;
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames;
+import com.sampietro.NaiveAAC.activities.Graphics.Images;
 import com.sampietro.NaiveAAC.activities.Graphics.Videos;
+import com.sampietro.NaiveAAC.activities.Phrases.Phrases;
+import com.sampietro.NaiveAAC.activities.Stories.Stories;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,10 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
-import io.realm.DynamicRealmObject;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmObjectSchema;
 import io.realm.RealmResults;
 
 /**
@@ -39,7 +40,7 @@ public class MyApplication extends Application {
      * Refer to <a href="https://github.com/realm/realm-java/tree/master/examples/migrationExample/src/main/java/io/realm/examples/realmmigrationexample">github</a>
      * commits by <a href="https://github.com/cmelchior">Christian Melchior</a>
      *
-     * @see android.app.Application#onCreate
+     * @see Application#onCreate
      * @see #copyFileRealm()
      * @see customRealmMigration
      */
@@ -60,7 +61,7 @@ public class MyApplication extends Application {
         RealmConfiguration realmConfiguration =
                 new RealmConfiguration.Builder()
                         .name("default.realm")
-                        .schemaVersion(2)
+                        .schemaVersion(4)
                         .migration(new customRealmMigration())
                         //     .deleteRealmIfMigrationNeeded()
                         .build();
@@ -175,10 +176,52 @@ public class MyApplication extends Application {
             //
             oldVersionCode++;
         }
+        //
+        if (oldVersionCode == 7) {
+            try {
+                copyFileFromAssetsToInternalStorage("images", "racconto.png", "racconto.png");
+                copyFileFromAssetsToInternalStorage("images", "non.png", "non.png");
+                //
+                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-images.csv", "images.csv");
+                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-grammaticalexceptions.csv", "grammaticalexceptions.csv");
+                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-stories.csv", "stories.csv");
+                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-gameparameters.csv", "gameparameters.csv");
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Realm realm= Realm.getDefaultInstance();
+            Images.importFromCsvFromInternalStorage(context, realm, "Append");
+            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Append");
+            Stories.importFromCsvFromInternalStorage(context, realm, "Append");
+            GameParameters.importFromCsvFromInternalStorage(context, realm, "Append");
+            //
+            oldVersionCode++;
+        }
+        //
         if (oldVersionCode < currentVersionCode) {
             throw new IllegalStateException(String.format(Locale.US, "Migration missing from v%d to v%d", oldVersionCode, currentVersionCode));
         }
+
+    }
+    //
+    /**
+     * copy the single file from assets
+     * @param dirName string with the name of the directory of the file to be copied
+     * @param fileName string with the name of the file to be copied
+     * @param destFileName string with the name of the destination file
+     */
+    public void copyFileFromAssetsToInternalStorage(String dirName, String fileName, String destFileName) throws IOException {
+
+        InputStream sourceStream = getAssets().open(dirName + getString(R.string.character_slash) + fileName);
+        FileOutputStream destStream = openFileOutput(destFileName, Context.MODE_PRIVATE);
+        byte[] buffer = new byte[100];
+        int bytesRead=0;
+        while ( (bytesRead=sourceStream.read(buffer))!=-1) {
+            destStream.write(buffer,0,bytesRead);
+        }
+        destStream.close();
+        sourceStream.close();
 
     }
 }

@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity;
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity;
+import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAActivity;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters;
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass;
@@ -58,7 +59,12 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
         }
         //
         resultsGameParameters =
-                realm.where(GameParameters.class).findAll();
+                realm.where(GameParameters.class)
+                        .beginGroup()
+                        .equalTo("gameActive", "A")
+                        .endGroup()
+                        .findAll();
+        resultsGameParameters = resultsGameParameters.sort("gameName");
     }
     /**
      * configurations of game choice start screen.
@@ -150,6 +156,12 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
                     case "COMUNICATORE":
                         intent = new Intent(this,
                                 Game2Activity.class);
+                        intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter);
+                        startActivity(intent);
+                        break;
+                    case "A/DA":
+                        intent = new Intent(this,
+                                GameADAActivity.class);
                         intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter);
                         startActivity(intent);
                         break;

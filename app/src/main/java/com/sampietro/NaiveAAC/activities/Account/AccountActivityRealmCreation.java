@@ -329,15 +329,15 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
             daCancellare.deleteAllFromRealm();
             realm.commitTransaction();
             //
-            Images.importFromCsvFromInternalStorage(context, realm);
-            Videos.importFromCsvFromInternalStorage(context, realm);
+            Images.importFromCsvFromInternalStorage(context, realm, "Replace");
+            Videos.importFromCsvFromInternalStorage(context, realm, "Replace");
             //
-            GameParameters.importFromCsvFromInternalStorage(context, realm);
-            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm);
-            ListsOfNames.importFromCsvFromInternalStorage(context, realm);
-            Phrases.importFromCsvFromInternalStorage(context, realm);
-            Stories.importFromCsvFromInternalStorage(context, realm);
-            WordPairs.importFromCsvFromInternalStorage(context, realm);
+            GameParameters.importFromCsvFromInternalStorage(context, realm, "Replace");
+            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Replace");
+            ListsOfNames.importFromCsvFromInternalStorage(context, realm, "Replace");
+            Phrases.importFromCsvFromInternalStorage(context, realm, "Replace");
+            Stories.importFromCsvFromInternalStorage(context, realm, "Replace");
+            WordPairs.importFromCsvFromInternalStorage(context, realm, "Replace");
             //
             }
         }

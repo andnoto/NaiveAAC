@@ -89,7 +89,12 @@ public class ChoiseOfGameFragment extends GameFragmentAbstractClass {
         int debugUrlNumber = 0;
         //
         RealmResults<GameParameters> results =
-                realm.where(GameParameters.class).findAll();
+                realm.where(GameParameters.class)
+                        .beginGroup()
+                        .equalTo("gameActive", "A")
+                        .endGroup()
+                        .findAll();
+        results = results.sort("gameName");
         int count = results.size();
         //
         if (count != 0) {

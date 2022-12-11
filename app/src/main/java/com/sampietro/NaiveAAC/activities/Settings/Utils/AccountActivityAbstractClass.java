@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-// import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,10 +31,7 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.sampietro.NaiveAAC.R;
-import com.sampietro.NaiveAAC.activities.Account.AccountActivity;
 import com.sampietro.NaiveAAC.activities.Settings.VideosFragment;
-import com.sampietro.NaiveAAC.activities.Account.AccountActivityRealmCreation;
-import com.sampietro.NaiveAAC.activities.Settings.SettingsActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -58,9 +54,9 @@ import io.realm.Realm;
  * 3) SettingsActivity</p>
  *
  * @version     1.1, 04/22/22
- * @see AccountActivity
- * @see AccountActivityRealmCreation
- * @see SettingsActivity
+ * @see com.sampietro.NaiveAAC.activities.Account.AccountActivity
+ * @see com.sampietro.NaiveAAC.activities.Account.AccountActivityRealmCreation
+ * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  */
 public abstract class AccountActivityAbstractClass extends AppCompatActivity
 {
@@ -83,6 +79,9 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
     //
     public Uri uri;
     public String stringUri;
+    //
+    public String gameIconType;
+    //
     public String filePath;
     public String fileName;
     public byte[] byteArray;
@@ -163,6 +162,7 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
                                 //
                                 try {
                                     filePath = getFilePath(context, uri);
+                                    gameIconType = "S";
                                 } catch (URISyntaxException e) {
                                     e.printStackTrace();
                                 }

@@ -1,7 +1,5 @@
 package com.sampietro.NaiveAAC.activities.Grammar;
 
-import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.savBak;
-
 import android.content.Context;
 
 import com.sampietro.NaiveAAC.R;
@@ -12,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -50,10 +49,13 @@ public class GrammaticalExceptions extends RealmObject {
      * exceptionType    = Is a verb of movement from place
      * <p>
      * exceptionType    = Article
+     * <p>
+     * exceptionType    = Is a negation adverb
      */
     private String exceptionType;
     /**
      * if exceptionType    = Article then exception1 = article
+     * if exceptionType    = Is a negation adverb then exception1 = description of the corresponding image in the images class
      */
     private String exception1;
     /**
@@ -214,14 +216,18 @@ public class GrammaticalExceptions extends RealmObject {
      *
      * @param context context
      * @param realm realm obtained from the activity by Realm#getDefaultInstance
+     * @param mode string import mode (Append or Replace)
      */
-    public static void importFromCsvFromInternalStorage(Context context, Realm realm)
+    public static void importFromCsvFromInternalStorage(Context context, Realm realm, String mode)
     {
-        // clear the table
-        RealmResults<GrammaticalExceptions> daCancellare = realm.where(GrammaticalExceptions.class).findAll();
-        realm.beginTransaction();
-        daCancellare.deleteAllFromRealm();
-        realm.commitTransaction();
+        if (Objects.equals(mode, "Replace"))
+            {
+                // clear the table
+                RealmResults<GrammaticalExceptions> daCancellare = realm.where(GrammaticalExceptions.class).findAll();
+                realm.beginTransaction();
+                daCancellare.deleteAllFromRealm();
+                realm.commitTransaction();
+            }
         //
         String FILE_NAME = "grammaticalexceptions.csv";
         //adding to db

@@ -9,6 +9,7 @@ import io.realm.DynamicRealmObject;
 import io.realm.RealmMigration;
 import io.realm.RealmObjectSchema;
 import io.realm.RealmSchema;
+
 /**
  * <h1>customRealmMigration</h1>
  * <p><b>customRealmMigration</b> Realm Migration due to schema change
@@ -16,7 +17,7 @@ import io.realm.RealmSchema;
  * Refer to <a href="https://github.com/realm/realm-java/tree/master/examples/migrationExample/src/main/java/io/realm/examples/realmmigrationexample">github</a>
  * commits by <a href="https://github.com/cmelchior">Christian Melchior</a>
  *
- * @see io.realm.RealmMigration
+ * @see RealmMigration
  * @see MyApplication
  */
 public class customRealmMigration implements RealmMigration {
@@ -52,6 +53,42 @@ public class customRealmMigration implements RealmMigration {
                             obj.set("answerAction", " " );
                         }
                     })
+            ;
+            oldVersion++;
+        }
+        //
+        if (oldVersion == 2) {
+            // Migrate from v2 to v3
+            RealmObjectSchema gameParametersSchema = schema.get("GameParameters");
+            assert gameParametersSchema != null;
+            gameParametersSchema
+                    .addField("gameActive", String.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.set("gameActive", "A" );
+                        }
+                    })
+            ;
+            oldVersion++;
+        }
+        //
+        if (oldVersion == 3) {
+            // Migrate from v3 to v4
+            RealmObjectSchema storiesSchema = schema.get("Stories");
+            assert storiesSchema != null;
+            storiesSchema
+                    .addField("phraseNumberInt", int.class)
+                    .addField("wordNumberInt", int.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.setInt("phraseNumberInt", Integer.parseInt(obj.getString("phraseNumber")));
+                            obj.setInt("wordNumberInt", Integer.parseInt(obj.getString("wordNumber")));
+                        }
+                    })
+                    .removeField("phraseNumber")
+                    .removeField("wordNumber")
             ;
             oldVersion++;
         }

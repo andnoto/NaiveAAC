@@ -1,5 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Graphics;
 
+import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.dataProcess;
 import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.savBak;
 
 import android.content.Context;
@@ -13,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -116,7 +118,7 @@ public class Videos extends RealmObject {
         String header = AdvancedSettingsDataImportExportHelper.grabHeader(realm, "Videos");
 
         // We write the header to file
-        AdvancedSettingsDataImportExportHelper.savBak(context, header,FILE_NAME );
+        savBak(context, header,FILE_NAME );
 
         // Now we write all the data corresponding to the fields grabbed above:
         //
@@ -129,7 +131,7 @@ public class Videos extends RealmObject {
                 //
                 dataP = taskitems.toString();
                 // We process the data obtained and add commas and formatting:
-                dataP = AdvancedSettingsDataImportExportHelper.dataProcess(dataP);
+                dataP = dataProcess(dataP);
                 // Workaround to remove the last comma from final string
                 int total = dataP.length() - 1;
                 dataP =  dataP.substring(0,total);
@@ -137,10 +139,10 @@ public class Videos extends RealmObject {
                 // We write the data to file
                 if (irrh == count-1)
                 {
-                    AdvancedSettingsDataImportExportHelper.savBak(context, dataP, FILE_NAME, true);
+                    savBak(context, dataP, FILE_NAME, true);
                 }
                 else {
-                    AdvancedSettingsDataImportExportHelper.savBak(context, dataP, FILE_NAME, false);
+                    savBak(context, dataP, FILE_NAME, false);
                 }
                 irrh++;
             }
@@ -153,14 +155,18 @@ public class Videos extends RealmObject {
      *
      * @param context context
      * @param realm realm obtained from the activity by Realm#getDefaultInstance
+     * @param mode string import mode (Append or Replace)
      */
-    public static void importFromCsvFromInternalStorage(Context context,Realm realm)
+    public static void importFromCsvFromInternalStorage(Context context,Realm realm, String mode)
     {
-        // clear the table
-        RealmResults<Videos> daCancellare = realm.where(Videos.class).findAll();
-        realm.beginTransaction();
-        daCancellare.deleteAllFromRealm();
-        realm.commitTransaction();
+        if (Objects.equals(mode, "Replace"))
+            {
+                // clear the table
+                RealmResults<Videos> daCancellare = realm.where(Videos.class).findAll();
+                realm.beginTransaction();
+                daCancellare.deleteAllFromRealm();
+                realm.commitTransaction();
+            }
         //
         String rootPath = context.getFilesDir().getAbsolutePath();
         //

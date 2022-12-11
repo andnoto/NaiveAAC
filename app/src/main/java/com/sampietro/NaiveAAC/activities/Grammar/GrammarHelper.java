@@ -605,6 +605,45 @@ public class GrammarHelper {
         }
         return verbToSearchRealm;
     }
+    // data una stringa restituisce se contiene un avverbio di negazione
+    /**
+     * given a string, if it contains a negation adverb
+     * it returns description of the corresponding image in the images class
+     *
+     * @param k string
+     * @param realm realm
+     * @return string with if it contains a negation adverb
+     * @see GrammaticalExceptions
+     */
+    public static String searchNegationAdverb(String k, Realm realm)
+    {
+        String NegationAdverb = "non trovato";
+        //
+        // decomposes k
+        String[] arrWords = GrammarHelper.splitString(k);
+        //
+        int arrWordsLength=arrWords.length;
+        int i=0;
+        while(i < arrWordsLength) {
+            RealmResults<GrammaticalExceptions> results =
+                    realm.where(GrammaticalExceptions.class)
+                            .beginGroup()
+                            .equalTo("keyword", arrWords[i])
+                            .equalTo("exceptionType", "Is a negation adverb")
+                            .endGroup()
+                            .findAll();
+            int count = results.size();
+            if (count != 0) {
+                GrammaticalExceptions result = results.get(0);
+                if (result != null) {
+                    NegationAdverb = result.getException1();
+                    break;
+                }
+            }
+            i++;
+        }
+        return NegationAdverb;
+    }
     // data una parola controlla se si tratta di un complemento al nome
     /**
      * given a word, check if it is a complement to the noun

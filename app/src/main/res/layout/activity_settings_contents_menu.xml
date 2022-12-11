@@ -4,17 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
+    tools:context=".activities.Settings.SettingsActivity">
 
     <TextView
         android:id="@+id/contentssettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="130dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="@string/edit_message"
         android:text="@string/impostazione_dei_contenuti"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,11 +22,11 @@
         android:id="@+id/listsOfNames"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
         android:layout_marginTop="8dp"
         android:onClick="submitListsOfNames"
         android:singleLine="false"
         android:text="@string/lista_di_nomi"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/contentssettings" />
 
@@ -34,24 +34,48 @@
         android:id="@+id/wordpairs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
         android:layout_marginTop="8dp"
         android:onClick="submitWordPairs"
         android:singleLine="false"
         android:text="@string/coppie_di_parole"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/listsOfNames" />
+
+    <Button
+        android:id="@+id/storiesquickregistration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="submitStoriesQuickRegistration"
+        android:singleLine="false"
+        android:text="STORIE - registrazione rapida"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wordpairs" />
+
+    <Button
+        android:id="@+id/storyshowlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/storiesquickregistration"
+        android:onClick="submitStoriesShowList"
+        android:text="STORIE - mostra elenco" />
 
     <Button
         android:id="@+id/stories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
         android:layout_marginTop="8dp"
         android:onClick="submitStories"
         android:singleLine="false"
-        android:text="@string/storie"
+        android:text="STORIE - aggiungi parola"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/wordpairs" />
+        app:layout_constraintTop_toBottomOf="@id/storyshowlist" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

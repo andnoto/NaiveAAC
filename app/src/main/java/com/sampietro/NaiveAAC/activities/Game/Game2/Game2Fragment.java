@@ -15,6 +15,7 @@ import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass;
 import com.sampietro.NaiveAAC.activities.history.History;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import io.realm.RealmResults;
 
@@ -113,7 +114,11 @@ public class Game2Fragment extends GameFragmentAbstractClass {
                 int wordNumber = result.getWordNumber();
                 //
                 if (wordNumber != 0) {
-                    row1debugWord[irrh - 1] = result.getWord();
+                    if (preference_TitleWritingType.equals("uppercase"))
+                        row1debugWord[irrh - 1] = result.getWord().toUpperCase(Locale.getDefault());
+                    else
+                        row1debugWord[irrh - 1] = result.getWord().toLowerCase();
+                    //
                     row1debugUrlType[irrh - 1] = result.getUriType();
                     row1debugUrl[irrh - 1] = result.getUri();
                 }
@@ -154,7 +159,11 @@ public class Game2Fragment extends GameFragmentAbstractClass {
                 int wordNumber = result.getWordNumber();
                 //
                 if (wordNumber != 0) {
-                    row1debugWord[irrh - 1] = result.getWord();
+                    if (preference_TitleWritingType.equals("uppercase"))
+                        row1debugWord[irrh - 1] = result.getWord().toUpperCase(Locale.getDefault());
+                    else
+                        row1debugWord[irrh - 1] = result.getWord().toLowerCase();
+                    //
                     row1debugUrlType[irrh - 1] = result.getUriType();
                     row1debugUrl[irrh - 1] = result.getUri();
                 }

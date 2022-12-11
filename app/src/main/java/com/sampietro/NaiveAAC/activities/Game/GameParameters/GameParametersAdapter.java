@@ -11,21 +11,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sampietro.NaiveAAC.R;
-import com.sampietro.NaiveAAC.activities.Settings.GameParametersSettingsFragment;
-import com.sampietro.NaiveAAC.activities.Settings.SettingsActivity;
 
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * this adapter is the View "supplier" for the listview in the UI for game parameters settings.
  *
  * @version     1.1, 04/22/22
- * @see GameParameters
- * @see GameParametersSettingsFragment
- * @see SettingsActivity
+ * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
+ * @see com.sampietro.NaiveAAC.activities.Settings.GameParametersSettingsFragment
+ * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  */
 public class GameParametersAdapter extends BaseAdapter
     {
@@ -39,7 +36,8 @@ public class GameParametersAdapter extends BaseAdapter
          * @see GameParametersAdapter(Context, GameParameters, ListView)
          */
         public interface GameParametersAdapterInterface{
-                public void reloadGameParametersFragment();
+            public void reloadGameParametersFragmentDeleteGameParameters(int position);
+            public void reloadGameParametersFragmentForEditing(int position);
             }
         public GameParametersAdapterInterface listener;
         //
@@ -120,17 +118,39 @@ public class GameParametersAdapter extends BaseAdapter
             // the list <GameParameters> of position position is set
             if (v==null)
             {
-                v= LayoutInflater.from(context).inflate(R.layout.activity_settings_row, null);
+                v= LayoutInflater.from(context).inflate(R.layout.activity_settings_row_game_patameters, null);
             }
             GameParameters l=(GameParameters) getItem(position);
             TextView txt=(TextView) v.findViewById(R.id.imageDescriptionRow);
             txt.setText(l.getGameName() + "-" + l.getGameParameter());
             //
-            ImageButton imgbtn=(ImageButton) v.findViewById(R.id.btn_delete_image);
-            imgbtn.setOnClickListener(clickListenerDeleteGameParameters);
+            ImageButton edtimgbtn=(ImageButton) v.findViewById(R.id.btn_edit_image);
+            edtimgbtn.setOnClickListener(clickListenerEditGameParameters);
+            //
+            ImageButton delimgbtn=(ImageButton) v.findViewById(R.id.btn_delete_image);
+            delimgbtn.setOnClickListener(clickListenerDeleteGameParameters);
             //
             return v;
         }
+        /**
+         * listener for the edit button.
+         * <p>
+         * enable editing of the selected item and
+         * makes the callback to the activity to reload the fragment for editing
+         *
+         * @see View.OnClickListener
+         * @see GameParametersAdapterInterface#reloadGameParametersFragmentForEditing
+         */
+        private View.OnClickListener clickListenerEditGameParameters=new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                int position=listview.getPositionForView(v);
+                listener.reloadGameParametersFragmentForEditing(position);
+                //
+            }
+        };
         /**
          * listener for the delete button.
          * <p>
@@ -138,7 +158,7 @@ public class GameParametersAdapter extends BaseAdapter
          * makes the callback to the activity to reload the fragment with the updated data
          *
          * @see View.OnClickListener
-         * @see GameParametersAdapterInterface#reloadGameParametersFragment
+         * @see GameParametersAdapterInterface#reloadGameParametersFragmentDeleteGameParameters
          */
         private View.OnClickListener clickListenerDeleteGameParameters=new View.OnClickListener()
         {
@@ -147,15 +167,15 @@ public class GameParametersAdapter extends BaseAdapter
             {
                 int position=listview.getPositionForView(v);
                 // delete
-                realm= Realm.getDefaultInstance();
-                RealmResults<GameParameters> results = realm.where(GameParameters.class).findAll();
-                realm.beginTransaction();
-                GameParameters daCancellare=results.get(position);
-                assert daCancellare != null;
-                daCancellare.deleteFromRealm();
-                realm.commitTransaction();
+//                realm= Realm.getDefaultInstance();
+//                RealmResults<GameParameters> results = realm.where(GameParameters.class).findAll();
+//                realm.beginTransaction();
+//                GameParameters daCancellare=results.get(position);
+//                assert daCancellare != null;
+//                daCancellare.deleteFromRealm();
+//                realm.commitTransaction();
                 //
-                listener.reloadGameParametersFragment();
+                listener.reloadGameParametersFragmentDeleteGameParameters(position);
                 //
             }
         };

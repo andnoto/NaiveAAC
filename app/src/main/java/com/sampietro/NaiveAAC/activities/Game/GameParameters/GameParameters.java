@@ -1,5 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Game.GameParameters;
 
+import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.dataProcess;
 import static com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.savBak;
 
 import android.content.Context;
@@ -13,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -27,6 +29,12 @@ public class GameParameters extends RealmObject {
      * represent the description displayed in the view for game choice.
      */
     private String gameName;
+    /**
+     * indicates whether the game is active or not.
+     * <p>
+     * gameActive = A then the game is active
+     */
+    private String gameActive;
     /**
      * represent the type of icon displayed in the view for game choice.
      * <p>
@@ -48,10 +56,10 @@ public class GameParameters extends RealmObject {
     /**
      * represent the java class of the game.
      * <p>
-     * gameJavaClass = PENSIERI E PAROLE
+     * gameJavaClass = NAVIGATORE
      * the app displays collections of word images that you can select to form simple sentences
      * <p>
-     * gameJavaClass = PAROLE IN LIBERTA'
+     * gameJavaClass = COMUNICATORE
      * the app displays images (uploaded by the user or Arasaac pictograms) of the words spoken after pressing the listen button
      * <p>
      * gameJavaClass = ELENCHI (under construction)
@@ -62,7 +70,7 @@ public class GameParameters extends RealmObject {
      * the app displays the images (in the singular and in the plural) of a list:
      * if the word pronounced after pressing the listen key corresponds to the plural, you will receive a reward
      * <p>
-     * gameJavaClass = A/DA (under construction)
+     * gameJavaClass = A/DA
      * the app tells and displays the images of a story:
      * at certain points questions are asked by proposing images of the possible answers:
      * if the word pronounced after pressing the listen button is correct, you will receive a reward
@@ -87,6 +95,14 @@ public class GameParameters extends RealmObject {
      */
     public String getGameName() {
         return gameName;
+    }
+    /**
+     * get <code>getGameActive</code>.
+     *
+     * @return gameActive string data to get
+     */
+    public String getGameActive() {
+        return gameActive;
     }
     /**
      * get <code>gameIconType</code>.
@@ -136,6 +152,14 @@ public class GameParameters extends RealmObject {
      */
     public void setGameName(String gameName) {
         this.gameName = gameName;
+    }
+    /**
+     * set <code>gameActive</code>.
+     *
+     * @param gameActive string data to set
+     */
+    public void setGameActive(String gameActive) {
+        this.gameActive = gameActive;
     }
     /**
      * set <code>gameIconType</code>.
@@ -206,7 +230,7 @@ public class GameParameters extends RealmObject {
     String header = AdvancedSettingsDataImportExportHelper.grabHeader(realm, "GameParameters");
 
     // We write the header to file
-    AdvancedSettingsDataImportExportHelper.savBak(context, header,FILE_NAME );
+    savBak(context, header,FILE_NAME );
 
     // Now we write all the data corresponding to the fields grabbed above:
 
@@ -219,7 +243,7 @@ public class GameParameters extends RealmObject {
             //
             dataP = taskitems.toString();
             // We process the data obtained and add commas and formatting:
-            dataP = AdvancedSettingsDataImportExportHelper.dataProcess(dataP);
+            dataP = dataProcess(dataP);
 
             // Workaround to remove the last comma from final string
             int total = dataP.length() - 1;
@@ -229,10 +253,10 @@ public class GameParameters extends RealmObject {
             // We write the data to file
             if (irrh == count-1)
                 {
-                    AdvancedSettingsDataImportExportHelper.savBak(context, dataP, FILE_NAME, true);
+                    savBak(context, dataP, FILE_NAME, true);
                 }
                 else {
-                    AdvancedSettingsDataImportExportHelper.savBak(context, dataP, FILE_NAME, false);
+                    savBak(context, dataP, FILE_NAME, false);
                 }
             irrh++;
         }
@@ -245,14 +269,18 @@ public class GameParameters extends RealmObject {
      *
      * @param context context
      * @param realm realm obtained from the activity by Realm#getDefaultInstance
+     * @param mode string import mode (Append or Replace)
      */
-    public static void importFromCsvFromInternalStorage(Context context, Realm realm)
+    public static void importFromCsvFromInternalStorage(Context context, Realm realm, String mode)
     {
-        // clear the table
-        RealmResults<GameParameters> daCancellare = realm.where(GameParameters.class).findAll();
-        realm.beginTransaction();
-        daCancellare.deleteAllFromRealm();
-        realm.commitTransaction();
+        if (Objects.equals(mode, "Replace"))
+            {
+                // clear the table
+                RealmResults<GameParameters> daCancellare = realm.where(GameParameters.class).findAll();
+                realm.beginTransaction();
+                daCancellare.deleteAllFromRealm();
+                realm.commitTransaction();
+            }
         //
         String rootPath = context.getFilesDir().getAbsolutePath();
         //
@@ -292,16 +320,16 @@ public class GameParameters extends RealmObject {
                     // checks
                     File f = null;
                     String uri = null;
-                    if (oneWord[2] != null ) {
-                        if (oneWord[1].equals(context.getString(R.string.character_s))) {
+                    if (oneWord[3] != null ) {
+                        if (oneWord[2].equals(context.getString(R.string.character_s))) {
                             // replace with root of the external storage or data directory
-                            uri = oneWord[2].replaceFirst(context.getString(R.string.rootdirectory), rootPath);
+                            uri = oneWord[3].replaceFirst(context.getString(R.string.rootdirectory), rootPath);
                             //
-                            f = new File(oneWord[2]);
+                            f = new File(oneWord[3]);
                         }
                         else
                         {
-                            uri = oneWord[2];
+                            uri = oneWord[3];
                         }
                     }
                     if (oneWord[0] != null
@@ -309,26 +337,29 @@ public class GameParameters extends RealmObject {
                             && oneWord[2] != null
                             && oneWord[3] != null
                             && oneWord[4] != null
-                            && oneWord[5] != null ) {
+                            && oneWord[5] != null
+                            && oneWord[6] != null ) {
 
                         if ((oneWord[0].length() > 0
                                 && oneWord[1].length() > 0
                                 && oneWord[2].length() > 0
-                                && oneWord[4].length() > 0 )
+                                && oneWord[3].length() > 0
+                                && oneWord[5].length() > 0 )
                                 &&
-                                ((!oneWord[1].equals(context.getString(R.string.character_s)))
-                                        || (oneWord[1].equals(context.getString(R.string.character_s))  && f.exists())))  {
+                                ((!oneWord[2].equals(context.getString(R.string.character_s)))
+                                        || (oneWord[2].equals(context.getString(R.string.character_s))  && f.exists())))  {
                             //
                             realm.beginTransaction();
                             GameParameters gameParameters = realm.createObject(GameParameters.class);
                             // set the fields here
                             gameParameters.setGameName(oneWord[0]);
-                            gameParameters.setGameIconType(oneWord[1]);
+                            gameParameters.setGameActive(oneWord[1]);
+                            gameParameters.setGameIconType(oneWord[2]);
 
                             gameParameters.setGameIconPath(uri);
-                            gameParameters.setGameInfo(oneWord[3]);
-                            gameParameters.setGameJavaClass(oneWord[4]);
-                            gameParameters.setGameParameter(oneWord[5]);
+                            gameParameters.setGameInfo(oneWord[4]);
+                            gameParameters.setGameJavaClass(oneWord[5]);
+                            gameParameters.setGameParameter(oneWord[6]);
                             realm.commitTransaction();
                         }
                     }

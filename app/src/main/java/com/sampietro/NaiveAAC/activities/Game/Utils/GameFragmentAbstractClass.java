@@ -49,6 +49,8 @@ public abstract class GameFragmentAbstractClass extends Fragment {
     public Context ctext;
     public SharedPreferences sharedPref;
     public String preference_PrintPermissions;
+    //
+    public String preference_TitleWritingType;
     /**
      * used for printing
      */
@@ -95,7 +97,9 @@ public abstract class GameFragmentAbstractClass extends Fragment {
         sharedPref = ctext.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         preference_PrintPermissions =
-                sharedPref.getString ("preference_PrintPermissions", "DEFAULT");
+            sharedPref.getString ("preference_PrintPermissions", "DEFAULT");
+        preference_TitleWritingType =
+            sharedPref.getString ("preference_title_writing_type", "uppercase");
     }
     /**
      * TTS shutdown

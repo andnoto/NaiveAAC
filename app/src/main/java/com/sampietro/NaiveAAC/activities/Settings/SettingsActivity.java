@@ -1,5 +1,7 @@
 package com.sampietro.NaiveAAC.activities.Settings;
 
+import static io.realm.Sort.ASCENDING;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-// import android.util.Log;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.view.View;
@@ -29,6 +30,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModify;
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModifyAdapter;
+import com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesQuickRegistrationActivity;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter;
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment;
@@ -45,16 +47,20 @@ import com.sampietro.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractC
 import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass;
 import com.sampietro.NaiveAAC.activities.Stories.Stories;
 import com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter;
+import com.sampietro.NaiveAAC.activities.Stories.StoriesComparator;
+import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper;
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs;
-import com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter;
 import com.sampietro.NaiveAAC.activities.history.History;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * <h1>SettingsActivity</h1>
@@ -67,7 +73,7 @@ import io.realm.RealmResults;
  * @see ChoiseOfGameToSetFragment
  * @see ImagesAdapter
  * @see VideosAdapter
- * @see WordPairsAdapter
+ * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
  * @see ListsOfNamesAdapter
  * @see GrammaticalExceptionsAdapter
  * @see StoriesAdapter
@@ -82,6 +88,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
         ListsOfNamesAdapter.ListsOfNamesAdapterInterface,
         SettingsFragmentAbstractClass.onFragmentEventListenerSettings,
         StoriesAdapter.StoriesAdapterInterface,
+        StoriesImageSearchArasaacRecyclerViewAdapterInterface,
         GameParametersAdapter.GameParametersAdapterInterface,
         GrammaticalExceptionsAdapter.GrammaticalExceptionsAdapterInterface,
         PictogramsAllToModifyAdapter.PictogramsAllToModifyAdapterInterface
@@ -99,6 +106,12 @@ public class SettingsActivity extends AccountActivityAbstractClass
     //
     public FragmentManager fragmentManager;
     //
+    public boolean radiobuttonGameParametersActiveClicked = false;
+    public boolean radiobuttonGameParametersNotActiveClicked = false;
+    //
+    public boolean radiobuttonDataImportReplaceClicked = false;
+    public boolean radiobuttonDataImportAppendClicked = false;
+    //
     public boolean checkboxImagesChecked;
     public boolean checkboxVideosChecked;
     public boolean checkboxPhrasesChecked;
@@ -107,6 +120,14 @@ public class SettingsActivity extends AccountActivityAbstractClass
     public boolean checkboxStoriesChecked;
     public boolean checkboxGrammaticalExceptionsChecked;
     public boolean checkboxGameParametersChecked;
+    //
+    public String keywordStoryToSearch;
+    public int phraseNumberToSearch;
+    public String keywordStoryToSearchArasaac;
+    public int phraseNumberToSearchArasaac;
+    public int wordNumberToSearchArasaac;
+    public String wordToSearchArasaac;
+
     /**
      * configurations of settings start screen.
      *
@@ -114,7 +135,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
      * @see #setActivityResultLauncher
      * @see ActionbarFragment
      * @see VerifyFragment
-     * @see android.app.Activity#onCreate(Bundle)
+     * @see Activity#onCreate(Bundle)
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -761,7 +782,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
         startActivity(intent);
     }
     /**
-     * Called when the user taps the stories button from the contents settings menu.
+     * Called when the user taps the stories add word button from the contents settings menu.
      * </p>
      * the activity is notified to view the stories settings.
      * </p>
@@ -780,19 +801,82 @@ public class SettingsActivity extends AccountActivityAbstractClass
         ft.commit();
     }
     /**
-     * Called when the user taps the show list button from the stories settings.
-     * </p>
-     * the activity is notified to view the stories list.
-     * </p>
+     * Called when the user taps the image search Arasaac button from Stories Fragment.
      *
-     * @param view view of tapped button
-     * @see StoriesFragment
-     * @see StoriesListFragment
+     * @param v view of tapped button
      */
-    public void storiesShowList(View view) {
-        // view the stories list  initializing StoriesListFragment (FragmentTransaction
-        // switch between Fragments).
-        StoriesListFragment frag= new StoriesListFragment();
+    public void imageSearchArasaac(View v)
+    {
+        EditText textWord1=(EditText) findViewById(R.id.keywordstorytoadd);
+        EditText textWord2=(EditText) findViewById(R.id.phrasenumbertoadd);
+        EditText textWord3=(EditText) findViewById(R.id.wordnumbertoadd);
+        EditText textWord4=(EditText) findViewById(R.id.wordtoadd);
+        if (textWord4 != null)
+        {
+            // view the image search Arasaac  initializing ImageSearchArasaacFragment (FragmentTransaction
+            // switch between Fragments).
+            keywordStoryToSearchArasaac = textWord1.getText().toString().toLowerCase();
+            if ((textWord2 != null) && (!textWord2.getText().toString().equals("")))
+                phraseNumberToSearchArasaac = Integer.parseInt(textWord2.getText().toString());
+            if ((textWord3 != null) && (!textWord3.getText().toString().equals("")))
+                wordNumberToSearchArasaac = Integer.parseInt(textWord3.getText().toString());
+            wordToSearchArasaac = textWord4.getText().toString();
+            StoriesImageSearchArasaacFragment frag= new StoriesImageSearchArasaacFragment();
+            //
+            Bundle bundle = new Bundle();
+            bundle.putString("keywordToSearchArasaac", wordToSearchArasaac);
+            frag.setArguments(bundle);
+            //
+            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.settings_container, frag);
+            ft.addToBackStack(null);
+            ft.commit();
+        }
+    }
+    /**
+     * Called when the user taps the image search Arasaac button from StoriesImagesSearchArasaac Fragment.
+     *
+     * @param v view of tapped button
+     */
+    public void arasaacSearch(View v)
+    {
+        EditText textWord1=(EditText) findViewById(R.id.keywordarasaactosearch);
+        if (textWord1 != null)
+        {
+            // view the image search Arasaac  initializing ImageSearchArasaacFragment (FragmentTransaction
+            // switch between Fragments).
+            StoriesImageSearchArasaacFragment frag= new StoriesImageSearchArasaacFragment();
+            //
+            Bundle bundle = new Bundle();
+            bundle.putString("keywordToSearchArasaac", textWord1.getText().toString());
+            frag.setArguments(bundle);
+            //
+            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.settings_container, frag);
+            ft.addToBackStack(null);
+            ft.commit();
+        }
+    }
+    /**
+     * Called when the user taps the image Arasaac .
+     *
+     * @param view view of the image Arasaac
+     * @param word string whit the keyword of the image Arasaac
+     * @param url string whit the url of the image Arasaac
+     */
+    @Override
+    public void onItemClick(View view, String word, String url) {
+        StoriesFragment frag= new StoriesFragment();
+        //
+        Bundle bundle = new Bundle();
+        bundle.putString("Story", keywordStoryToSearchArasaac);
+        bundle.putInt("PhraseNumber", phraseNumberToSearchArasaac);
+        bundle.putInt("WordNumber", wordNumberToSearchArasaac);
+        bundle.putString("Word", wordToSearchArasaac);
+        bundle.putString("UriType", "A");
+        bundle.putString("Uri", url);
+        frag.setArguments(bundle);
+        //
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.settings_container, frag);
         ft.addToBackStack(null);
@@ -811,6 +895,10 @@ public class SettingsActivity extends AccountActivityAbstractClass
      */
     public void storyToAdd(View v)
     {
+        //
+        keywordStoryToSearch = getString(R.string.nome_storia);
+        phraseNumberToSearch = 0;
+        //
         realm= Realm.getDefaultInstance();
         //
         EditText textWord1=(EditText) findViewById(R.id.keywordstorytoadd);
@@ -819,27 +907,191 @@ public class SettingsActivity extends AccountActivityAbstractClass
         EditText textWord4=(EditText) findViewById(R.id.wordtoadd);
         EditText textWord5=(EditText) findViewById(R.id.uritypetoadd);
         EditText textWord6=(EditText) findViewById(R.id.uritoadd);
-        if ((textWord1 != null) && (textWord2 != null)
+        if ((textWord1 != null) && (!textWord1.getText().toString().equals(""))
+                && (textWord2 != null) && (!textWord2.getText().toString().equals(""))
                 && (textWord3 != null) && (textWord4 != null)
                 && (textWord5 != null) && (textWord6 != null))
         {
-            // Note that the realm object was generated with the createObject method
-            // and not with the new operator.
-            // The modification operations will be performed within a Transaction.
+            // cancello frase vecchia
+            // se textWord3 non è vuoto
+            // copio la frase vecchia fino a textWord3
+            // inserisco la nuova parola
+            // copio il resto della frase vecchia e riordino
+            // se textWord3 è vuoto
+            // copio la frase vecchia
+            // inserisco la nuova parola alla fine e riordino
+            //
+            // clear the table
+            // cancello frase vecchia dopo averne salvato copia
+            RealmResults<Stories> resultsStories =
+                    realm.where(Stories.class)
+                            .equalTo("story", textWord1.getText().toString().toLowerCase())
+                            .equalTo("phraseNumberInt", Integer.parseInt(textWord2.getText().toString()))
+                            .findAll();
+            int storiesSize = resultsStories.size();
+            //
+            List<Stories> resultsStoriesList = realm.copyFromRealm(resultsStories);
+            //
+            Collections.sort(resultsStoriesList,new StoriesComparator());
+            //
             realm.beginTransaction();
-            Stories stories = realm.createObject(Stories.class);
-            // set the fields here
-            stories.setStory(textWord1.getText().toString());
-            stories.setPhraseNumber(textWord2.getText().toString());
-            stories.setWordNumber(textWord3.getText().toString());
-            stories.setWord(textWord4.getText().toString());
-            stories.setUriType(textWord5.getText().toString());
-            stories.setUri(textWord6.getText().toString());
+            resultsStories.deleteAllFromRealm();
             realm.commitTransaction();
+            //
+            int currentWordNumber = 0;
+            if (!textWord3.getText().toString().equals(""))
+                {
+                    // copio la frase vecchia fino a textWord3
+                    int irrh=0;
+                    while(irrh < storiesSize)   {
+                        Stories resultStories = resultsStoriesList.get(irrh);
+                        assert resultStories != null;
+                        currentWordNumber = resultStories.getWordNumber();
+                        if (currentWordNumber < Integer.parseInt(textWord3.getText().toString()))
+                        {
+                            realm.beginTransaction();
+                            realm.copyToRealm(resultStories);
+                            realm.commitTransaction();
+                        }
+                        else
+                        {
+                            break;
+                        }
+                        irrh++;
+                    }
+                    // inserisco la nuova parola
+                    // registro nuova parola
+                    // Note that the realm object was generated with the createObject method
+                    // and not with the new operator.
+                    // The modification operations will be performed within a Transaction.
+                    //
+                    keywordStoryToSearch = textWord1.getText().toString().toLowerCase();
+                    phraseNumberToSearch = Integer.parseInt(textWord2.getText().toString());
+                    //
+                    realm.beginTransaction();
+                    Stories stories = realm.createObject(Stories.class);
+                    // set the fields here
+                    stories.setStory(textWord1.getText().toString().toLowerCase());
+                    stories.setPhraseNumber(Integer.parseInt(textWord2.getText().toString()));
+                    stories.setWordNumber(Integer.parseInt(textWord3.getText().toString()));
+                    stories.setWord(textWord4.getText().toString());
+                    stories.setUriType(textWord5.getText().toString());
+                    stories.setUri(textWord6.getText().toString());
+                    realm.commitTransaction();
+                    // copio la frase vecchia
+                    while(irrh < storiesSize)   {
+                        Stories resultStories = resultsStoriesList.get(irrh);
+                        assert resultStories != null;
+                        realm.beginTransaction();
+                        realm.copyToRealm(resultStories);
+                        realm.commitTransaction();
+                        irrh++;
+                    }
+                 }
+                 else
+                 {
+                     // copio la frase vecchia
+                     int irrh=0;
+                     while(irrh < storiesSize)   {
+                         Stories resultStories = resultsStoriesList.get(irrh);
+                         assert resultStories != null;
+                         currentWordNumber = resultStories.getWordNumber();
+                         //
+                         realm.beginTransaction();
+                         realm.copyToRealm(resultStories);
+                         realm.commitTransaction();
+                         //
+                         irrh++;
+                     }
+                     // inserisco la nuova parola
+                     // registro nuova parola
+                     // Note that the realm object was generated with the createObject method
+                     // and not with the new operator.
+                     // The modification operations will be performed within a Transaction.
+                     //
+                     keywordStoryToSearch = textWord1.getText().toString().toLowerCase();
+                     phraseNumberToSearch = Integer.parseInt(textWord2.getText().toString());
+                     //
+                     realm.beginTransaction();
+                     Stories stories = realm.createObject(Stories.class);
+                     // set the fields here
+                     stories.setStory(textWord1.getText().toString().toLowerCase());
+                     stories.setPhraseNumber(Integer.parseInt(textWord2.getText().toString()));
+                     stories.setWordNumber(++currentWordNumber);
+                     stories.setWord(textWord4.getText().toString());
+                     stories.setUriType(textWord5.getText().toString());
+                     stories.setUri(textWord6.getText().toString());
+                     realm.commitTransaction();
+                 }
+            // riordino
+            StoriesHelper.renumberAPhraseOfAStory(realm, textWord1.getText().toString().toLowerCase(), Integer.parseInt(textWord2.getText().toString()));
         }
-        // view the stories settings fragment initializing StoriesFragment (FragmentTransaction
+        // view the stories settings fragment initializing StoriesListFragment (FragmentTransaction
         // switch between Fragments).
-        StoriesFragment frag= new StoriesFragment();
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+        //
+        StoriesListFragment frag= new StoriesListFragment();
+        //
+        Bundle bundle = new Bundle();
+        bundle.putString("keywordStoryToSearch", keywordStoryToSearch);
+        bundle.putInt("phraseNumberToSearch", phraseNumberToSearch);
+        frag.setArguments(bundle);
+        //
+        ft.replace(R.id.settings_container, frag);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+    /**
+     * Called when the user taps the show list button from the contents settings menu.
+     * </p>
+     * the activity is notified to view the stories list.
+     * </p>
+     *
+     * @param view view of tapped button
+     * @see ContentsFragment
+     * @see StoriesListFragment
+     */
+    public void submitStoriesShowList(View view) {
+        //
+        keywordStoryToSearch = getString(R.string.nome_storia);
+        phraseNumberToSearch = 0;
+        // view the stories list  initializing StoriesListFragment (FragmentTransaction
+        // switch between Fragments).
+        StoriesListFragment frag= new StoriesListFragment();
+        //
+        Bundle bundle = new Bundle();
+        bundle.putString("keywordStoryToSearch", keywordStoryToSearch);
+        bundle.putInt("phraseNumberToSearch", phraseNumberToSearch);
+        frag.setArguments(bundle);
+        //
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.settings_container, frag);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+    /**
+     * Called when the user taps the story search button from the stories list.
+     * </p>
+     * the activity is notified to view the stories list.
+     * </p>
+     *
+     * @param view view of tapped button
+     * @see StoriesListFragment
+     */
+    public void storiesSearch(View view) {
+        // view the storie list  initializing StoriesListFragment (FragmentTransaction
+        // switch between Fragments).
+        EditText textWord1=(EditText) rootViewFragment.findViewById(R.id.keywordstorytosearch);
+        EditText textWord2=(EditText) rootViewFragment.findViewById(R.id.phrasenumbertosearch);
+        keywordStoryToSearch = textWord1.getText().toString().toLowerCase();
+        phraseNumberToSearch = Integer.parseInt(textWord2.getText().toString());
+        StoriesListFragment frag= new StoriesListFragment();
+        //
+        Bundle bundle = new Bundle();
+        bundle.putString("keywordStoryToSearch", keywordStoryToSearch);
+        bundle.putInt("phraseNumberToSearch", phraseNumberToSearch);
+        frag.setArguments(bundle);
+        //
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.settings_container, frag);
         ft.addToBackStack(null);
@@ -855,14 +1107,203 @@ public class SettingsActivity extends AccountActivityAbstractClass
      * @see StoriesFragment
      */
     @Override
-    public void reloadStoriesFragment() {
+    public void reloadStoriesFragmentDeleteStories(int position) {
         // view the stories settings fragment initializing StoriesFragment (FragmentTransaction
         // switch between Fragments).
-        StoriesFragment frag= new StoriesFragment();
+        realm= Realm.getDefaultInstance();
+        RealmResults<Stories> results = null;
+        if ((keywordStoryToSearch == null) || (keywordStoryToSearch.equals(getString(R.string.nome_storia)))) {
+            results = realm.where(Stories.class).findAll();
+            }
+            //
+            else
+            if (phraseNumberToSearch == 0)
+                {
+                    results =
+                            realm.where(Stories.class)
+                                    .equalTo("story", keywordStoryToSearch)
+                                    .findAll();
+                }
+                else
+                {
+                    results =
+                            realm.where(Stories.class)
+                                    .equalTo("story", keywordStoryToSearch)
+                                    .equalTo("phraseNumberInt", phraseNumberToSearch)
+                                    .findAll();
+                }
+        //
+        String[] mStrings1 = {"story","phraseNumberInt", "wordNumberInt" };
+        Sort[] mStrings2 = {ASCENDING,ASCENDING, ASCENDING };
+        results = results.sort(mStrings1, mStrings2 );
+        //
+        Stories daCancellare=results.get(position);
+        //
+        assert daCancellare != null;
+        String daCancellareStory = daCancellare.getStory();
+        int daCancellarePhraseNumber = daCancellare.getPhraseNumber();
+        int daCancellareWordNumber = daCancellare.getWordNumber();
+        //
+        keywordStoryToSearch = daCancellareStory;
+        phraseNumberToSearch = daCancellarePhraseNumber;
+        // delete
+        realm.beginTransaction();
+        daCancellare.deleteFromRealm();
+        realm.commitTransaction();
+        //
+        StoriesHelper.renumberAPhraseOfAStory(realm, daCancellareStory, daCancellarePhraseNumber);
+        // StoriesFragment frag= new StoriesFragment();
+        StoriesListFragment frag= new StoriesListFragment();
+        //
+        Bundle bundle = new Bundle();
+        bundle.putString("keywordStoryToSearch", keywordStoryToSearch);
+        bundle.putInt("phraseNumberToSearch", phraseNumberToSearch);
+        frag.setArguments(bundle);
+        //
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.settings_container, frag);
         ft.addToBackStack(null);
         ft.commit();
+    }
+    /**
+     * on callback from StoriesAdapter to this Activity
+     * </p>
+     * for editing a piece of story the activity is notified to view the word pairs settings
+     * </p>
+     *
+     * @see StoriesAdapter
+     * @see StoriesFragment
+     */
+    @Override
+    public void reloadStoriesFragmentForEditing(int position) {
+        // view the stories settings fragment initializing StoriesFragment (FragmentTransaction
+        // switch between Fragments).
+        realm= Realm.getDefaultInstance();
+        RealmResults<Stories> results = null;
+        if ((keywordStoryToSearch == null) || (keywordStoryToSearch.equals(getString(R.string.nome_storia)))) {
+            results = realm.where(Stories.class).findAll();
+        }
+        //
+        else
+        if (phraseNumberToSearch == 0)
+        {
+            results =
+                    realm.where(Stories.class)
+                            .equalTo("story", keywordStoryToSearch)
+                            .findAll();
+        }
+        else
+        {
+            results =
+                    realm.where(Stories.class)
+                            .equalTo("story", keywordStoryToSearch)
+                            .equalTo("phraseNumberInt", phraseNumberToSearch)
+                            .findAll();
+        }
+        //
+        String[] mStrings1 = {"story","phraseNumberInt", "wordNumberInt" };
+        Sort[] mStrings2 = {ASCENDING,ASCENDING, ASCENDING };
+        results = results.sort(mStrings1, mStrings2 );
+        //
+        StoriesFragment frag= new StoriesFragment();
+        //
+        Bundle bundle = new Bundle();
+        Stories daModificare=results.get(position);
+        assert daModificare != null;
+        //
+        String daModificareStory = daModificare.getStory();
+        int daModificarePhraseNumber = daModificare.getPhraseNumber();
+        int daModificareWordNumber = daModificare.getWordNumber();
+        //
+        bundle.putString("Story", daModificare.getStory());
+        bundle.putInt("PhraseNumber", daModificare.getPhraseNumber());
+        bundle.putInt("WordNumber", daModificare.getWordNumber());
+        bundle.putString("Word", daModificare.getWord());
+        bundle.putString("UriType", daModificare.getUriType());
+        bundle.putString("Uri", daModificare.getUri());
+        frag.setArguments(bundle);
+        // delete
+        realm.beginTransaction();
+        daModificare.deleteFromRealm();
+        realm.commitTransaction();
+        //
+        StoriesHelper.renumberAPhraseOfAStory(realm, daModificareStory, daModificarePhraseNumber);
+        //
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.settings_container, frag);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+    /**
+     * on callback from StoriesAdapter to this Activity
+     * </p>
+     * for insertion a piece of story the activity is notified to view the word pairs settings
+     * </p>
+     *
+     * @see StoriesAdapter
+     * @see StoriesFragment
+     */
+    @Override
+    public void reloadStoriesFragmentForInsertion(int position) {
+        // view the stories settings fragment initializing StoriesFragment (FragmentTransaction
+        // switch between Fragments).
+        realm= Realm.getDefaultInstance();
+        RealmResults<Stories> results = null;
+        if ((keywordStoryToSearch == null) || (keywordStoryToSearch.equals(getString(R.string.nome_storia)))) {
+            results = realm.where(Stories.class).findAll();
+        }
+        //
+        else
+        if (phraseNumberToSearch == 0)
+        {
+            results =
+                    realm.where(Stories.class)
+                            .equalTo("story", keywordStoryToSearch)
+                            .findAll();
+        }
+        else
+        {
+            results =
+                    realm.where(Stories.class)
+                            .equalTo("story", keywordStoryToSearch)
+                            .equalTo("phraseNumberInt", phraseNumberToSearch)
+                            .findAll();
+        }
+        //
+        String[] mStrings1 = {"story","phraseNumberInt", "wordNumberInt" };
+        Sort[] mStrings2 = {ASCENDING,ASCENDING, ASCENDING };
+        results = results.sort(mStrings1, mStrings2 );
+        //
+        StoriesFragment frag= new StoriesFragment();
+        //
+        Bundle bundle = new Bundle();
+        Stories daInserirePrimaDi=results.get(position);
+        assert daInserirePrimaDi != null;
+        //
+        bundle.putString("Story", daInserirePrimaDi.getStory());
+        bundle.putInt("PhraseNumber", daInserirePrimaDi.getPhraseNumber());
+        bundle.putInt("WordNumber", daInserirePrimaDi.getWordNumber());
+        frag.setArguments(bundle);
+        //
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.settings_container, frag);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+    /**
+     * Called when the user taps the Stories - Quick Registration button from the contents settings menu.
+     * </p>
+     *
+     * @param view view of tapped button
+     * @see ContentsFragment
+     * @see SettingsStoriesQuickRegistrationActivity
+     */
+    public void submitStoriesQuickRegistration(View view) {
+        /*
+                navigate to settings Stories Quick Registration screen
+        */
+        Intent intent = new Intent(context, SettingsStoriesQuickRegistrationActivity.class);
+        startActivity(intent);
     }
     /**
      * Called when the user taps the advanced settings button from the settings menu.
@@ -933,6 +1374,42 @@ public class SettingsActivity extends AccountActivityAbstractClass
                     getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString(getString(R.string.preference_print_permissions), getString(R.string.character_n));
+                    editor.apply();
+                }
+                break;
+        }
+    }
+    /**
+     * Called when the user click the title writing type radiobutton from general settings.
+     * </p>
+     * register in the shared preferences
+     *
+     * @param view view of clicked radiobutton
+     * @see GeneralSettingsFragment
+     */
+    public void titleWritingTypeRadioButtonClicked(View view) {
+        //
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.uppercase:
+                if (checked)
+                {
+                    sharedPref = this.getSharedPreferences(
+                            getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("preference_title_writing_type", "uppercase");
+                    editor.apply();
+                }
+                break;
+            case R.id.lowercase:
+                if (checked)
+                {
+                    sharedPref = this.getSharedPreferences(
+                            getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString("preference_title_writing_type", "lowercase");
                     editor.apply();
                 }
                 break;
@@ -1043,6 +1520,31 @@ public class SettingsActivity extends AccountActivityAbstractClass
         ft.commit();
     }
     /**
+     * Called when the user click the radio button from the game parameters settings.
+     * </p>
+     * register which radio button was clicked
+     *
+     * @param view view of clicked radio button
+     * @see GameParametersSettingsFragment
+     */
+    public void onGameParametersRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_active:
+                if (checked)
+                    //
+                    radiobuttonGameParametersActiveClicked = true;
+                break;
+            case R.id.radio_not_active:
+                if (checked)
+                    //
+                    radiobuttonGameParametersNotActiveClicked = true;
+                break;
+        }
+    }
+    /**
      * Called when the user taps the save button from the game parameters settings.
      * </p>
      * after the checks it adds the game parameters on realm
@@ -1073,10 +1575,14 @@ public class SettingsActivity extends AccountActivityAbstractClass
             realm.beginTransaction();
             GameParameters gp = realm.createObject(GameParameters.class);
             gp.setGameName(gamD.getText().toString());
+            if (radiobuttonGameParametersActiveClicked)
+                gp.setGameActive("A");
+                else
+                gp.setGameActive("N"); // default
             gp.setGameInfo(gamI.getText().toString());
             gp.setGameJavaClass(gamJC.getText().toString());
             gp.setGameParameter(gamP.getText().toString());
-            gp.setGameIconType("S");
+            gp.setGameIconType(gameIconType);
             gp.setGameIconPath(filePath);
             realm.commitTransaction();
             // view the game parameters settings initializing GameParametersSettingsFragment (FragmentTransaction
@@ -1098,7 +1604,16 @@ public class SettingsActivity extends AccountActivityAbstractClass
      * @see GameParametersSettingsFragment
      */
     @Override
-    public void reloadGameParametersFragment() {
+    public void reloadGameParametersFragmentDeleteGameParameters(int position) {
+        // delete
+        realm= Realm.getDefaultInstance();
+        RealmResults<GameParameters> results = realm.where(GameParameters.class).findAll();
+        results = results.sort("gameName");
+        realm.beginTransaction();
+        GameParameters daCancellare=results.get(position);
+        assert daCancellare != null;
+        daCancellare.deleteFromRealm();
+        realm.commitTransaction();
         // view the game parameters settings initializing GameParametersSettingsFragment (FragmentTransaction
         // switch between Fragments).
         GameParametersSettingsFragment frag= new GameParametersSettingsFragment();
@@ -1106,7 +1621,52 @@ public class SettingsActivity extends AccountActivityAbstractClass
         ft.replace(R.id.settings_container, frag);
         ft.addToBackStack(null);
         ft.commit();
-
+    }
+    /**
+     * on callback from GameParametersAdapter to this Activity
+     * </p>
+     * for editing a Game Parameter the activity is notified to view the Game Parameters settings
+     * </p>
+     *
+     * @see GameParametersAdapter
+     * @see GameParametersSettingsFragment
+     */
+    @Override
+    public void reloadGameParametersFragmentForEditing(int position) {
+        // view the Game Parameters settings fragment initializing GameParametersSettingsFragment (FragmentTransaction
+        // switch between Fragments).
+        realm= Realm.getDefaultInstance();
+        RealmResults<GameParameters> results = null;
+        results = realm.where(GameParameters.class).findAll();
+        results = results.sort("gameName");
+        //
+        GameParametersSettingsFragment frag= new GameParametersSettingsFragment();
+        //
+        Bundle bundle = new Bundle();
+        GameParameters daModificare=results.get(position);
+        assert daModificare != null;
+        //
+        bundle.putString("GameName", daModificare.getGameName());
+        bundle.putString("GameActive", daModificare.getGameActive());
+        //
+        gameIconType = daModificare.getGameIconType();
+        filePath = daModificare.getGameIconPath();
+        //
+        bundle.putString("GameIconType", daModificare.getGameIconType());
+        bundle.putString("GameIconPath", daModificare.getGameIconPath());
+        bundle.putString("GameInfo", daModificare.getGameInfo());
+        bundle.putString("GameJavaClass", daModificare.getGameJavaClass());
+        bundle.putString("GameParameter", daModificare.getGameParameter());
+        frag.setArguments(bundle);
+        // delete
+        realm.beginTransaction();
+        daModificare.deleteFromRealm();
+        realm.commitTransaction();
+        //
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.settings_container, frag);
+        ft.addToBackStack(null);
+        ft.commit();
     }
     /**
      * Called when the user taps import tables button from the advanced settings menu.
@@ -1133,6 +1693,31 @@ public class SettingsActivity extends AccountActivityAbstractClass
         ft.replace(R.id.settings_container, frag);
         ft.addToBackStack(null);
         ft.commit();
+    }
+    /**
+     * Called when the user click the radio button from import tables settings.
+     * </p>
+     * register which radio button was clicked
+     *
+     * @param view view of clicked radio button
+     * @see DataImportSettingsFragment
+     */
+    public void onDataImportRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_replace:
+                if (checked)
+                    //
+                    radiobuttonDataImportReplaceClicked = true;
+                    break;
+            case R.id.radio_append:
+                if (checked)
+                    //
+                    radiobuttonDataImportAppendClicked = true;
+                    break;
+        }
     }
     /**
      * Called when the user click the checkbox from import tables settings.
@@ -1276,6 +1861,9 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                 DocumentFile inputFolder = DocumentFile.fromTreeUri(context, csvTreeUri);
 //
                                 if (isStoragePermissionGranted()) {
+                                    String importMode = "Append"; // default import mode
+                                    if (radiobuttonDataImportReplaceClicked)
+                                        importMode = "Replace";
                                     if (checkboxImagesChecked) {
                                         assert inputFolder != null;
                                         DocumentFile documentFileNewFile = inputFolder.findFile("images.csv");
@@ -1286,7 +1874,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                        Images.importFromCsvFromInternalStorage(context, realm);
+                                        Images.importFromCsvFromInternalStorage(context, realm, importMode);
                                     }
                                     if (checkboxVideosChecked)
                                     {
@@ -1299,7 +1887,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                        Videos.importFromCsvFromInternalStorage(context, realm);
+                                        Videos.importFromCsvFromInternalStorage(context, realm, importMode);
                                     }
                                     if (checkboxPhrasesChecked)
                                     {
@@ -1312,7 +1900,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                        Phrases.importFromCsvFromInternalStorage(context, realm);
+                                        Phrases.importFromCsvFromInternalStorage(context, realm, importMode);
                                     }
                                     if (checkboxWordPairsChecked)
                                     {
@@ -1325,7 +1913,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                        WordPairs.importFromCsvFromInternalStorage(context, realm);
+                                        WordPairs.importFromCsvFromInternalStorage(context, realm, importMode);
                                     }
                                     if (checkboxListsOfNamesChecked)
                                     {
@@ -1338,7 +1926,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                        ListsOfNames.importFromCsvFromInternalStorage(context, realm);
+                                        ListsOfNames.importFromCsvFromInternalStorage(context, realm, importMode);
                                     }
                                     if (checkboxStoriesChecked)
                                     {
@@ -1351,7 +1939,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                        Stories.importFromCsvFromInternalStorage(context, realm);
+                                        Stories.importFromCsvFromInternalStorage(context, realm, importMode);
                                     }
                                     if (checkboxGrammaticalExceptionsChecked)
                                     {
@@ -1364,7 +1952,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                        GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm);
+                                        GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, importMode);
                                     }
                                     if (checkboxGameParametersChecked)
                                     {
@@ -1377,7 +1965,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
-                                        GameParameters.importFromCsvFromInternalStorage(context, realm);
+                                        GameParameters.importFromCsvFromInternalStorage(context, realm, importMode);
                                     }
                                     // removed the import of history because it gives problems:
                                     // phraseNumber on shared preferences always starts from 1

@@ -2,7 +2,6 @@ package com.sampietro.NaiveAAC.activities.Stories;
 
 import android.app.Activity;
 import android.content.Context;
-// import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,21 +11,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sampietro.NaiveAAC.R;
-import com.sampietro.NaiveAAC.activities.Settings.SettingsActivity;
-import com.sampietro.NaiveAAC.activities.Settings.StoriesFragment;
 
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 /**
  * this adapter is the View "supplier" for the listview in the UI for stories list settings.
  *
  * @version     1.1, 04/22/22
- * @see Stories
- * @see StoriesFragment
- * @see SettingsActivity
+ * @see com.sampietro.NaiveAAC.activities.Stories.Stories
+ * @see com.sampietro.NaiveAAC.activities.Settings.StoriesFragment
+ * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  */
 public class StoriesAdapter extends BaseAdapter
     {
@@ -40,7 +36,9 @@ public class StoriesAdapter extends BaseAdapter
          * @see StoriesAdapter (Context, Stories , ListView)
          */
         public interface StoriesAdapterInterface{
-            public void reloadStoriesFragment();
+            public void reloadStoriesFragmentDeleteStories(int position);
+            public void reloadStoriesFragmentForInsertion(int position);
+            public void reloadStoriesFragmentForEditing(int position);
         }
         public StoriesAdapterInterface listener;
         //
@@ -121,7 +119,7 @@ public class StoriesAdapter extends BaseAdapter
             // the list <Stories> of position position is set
             if (v==null)
             {
-                v= LayoutInflater.from(context).inflate(R.layout.activity_settings_row, null);
+                v= LayoutInflater.from(context).inflate(R.layout.activity_settings_row_stories, null);
             }
             Stories l=(Stories) getItem(position);
             TextView txt=(TextView) v.findViewById(R.id.imageDescriptionRow);
@@ -137,8 +135,62 @@ public class StoriesAdapter extends BaseAdapter
             ImageButton imgbtn=(ImageButton) v.findViewById(R.id.btn_delete_image);
             imgbtn.setOnClickListener(clickListenerDeleteStories);
             //
+            ImageButton imgbtnedit=(ImageButton) v.findViewById(R.id.btn_edit_image);
+            imgbtnedit.setOnClickListener(clickListenerEditStories);
+            //
+            ImageButton imgbtninsert=(ImageButton) v.findViewById(R.id.btn_insert_image);
+            imgbtninsert.setOnClickListener(clickListenerInsertStories);
+            //
             return v;
         }
+        /**
+         * listener for the insert button.
+         * <p>
+         * enables inserting before the selected item and
+         * makes the callback to the activity to load the fragment for insertion
+         *
+         * @see View.OnClickListener
+         * @see StoriesAdapterInterface#reloadStoriesFragmentForInsertion
+         */
+        private View.OnClickListener clickListenerInsertStories=new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                int position=listview.getPositionForView(v);
+                //
+                listener.reloadStoriesFragmentForInsertion(position);
+                //
+            }
+        };
+        /**
+         * listener for the edit button.
+         * <p>
+         * enable editing of the selected item and
+         * makes the callback to the activity to reload the fragment for editing
+         *
+         * @see View.OnClickListener
+         * @see StoriesAdapterInterface#reloadStoriesFragmentForEditing
+         */
+        private View.OnClickListener clickListenerEditStories=new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                int position=listview.getPositionForView(v);
+                // delete
+//              realm= Realm.getDefaultInstance();
+//              RealmResults<Stories> results = realm.where(Stories.class).findAll();
+//                realm.beginTransaction();
+//              Stories daModificare=results.get(position);
+//                assert daModificare != null;
+//                daCancellare.deleteFromRealm();
+//                realm.commitTransaction();
+                //
+                listener.reloadStoriesFragmentForEditing(position);
+                //
+            }
+        };
         /**
          * listener for the delete button.
          * <p>
@@ -146,7 +198,7 @@ public class StoriesAdapter extends BaseAdapter
          * makes the callback to the activity to reload the fragment with the updated data
          *
          * @see View.OnClickListener
-         * @see StoriesAdapterInterface#reloadStoriesFragment
+         * @see StoriesAdapterInterface#reloadStoriesFragmentDeleteStories
          */
         private View.OnClickListener clickListenerDeleteStories=new View.OnClickListener()
         {
@@ -155,15 +207,15 @@ public class StoriesAdapter extends BaseAdapter
             {
                 int position=listview.getPositionForView(v);
                 // delete
-                realm= Realm.getDefaultInstance();
-                RealmResults<Stories> results = realm.where(Stories.class).findAll();
-                realm.beginTransaction();
-                Stories daCancellare=results.get(position);
-                assert daCancellare != null;
-                daCancellare.deleteFromRealm();
-                realm.commitTransaction();
+//                realm= Realm.getDefaultInstance();
+//                RealmResults<Stories> results = realm.where(Stories.class).findAll();
+//                realm.beginTransaction();
+//                Stories daCancellare=results.get(position);
+//                assert daCancellare != null;
+//                daCancellare.deleteFromRealm();
+//                realm.commitTransaction();
                 //
-                listener.reloadStoriesFragment();
+                listener.reloadStoriesFragmentDeleteStories(position);
                 //
             }
         };

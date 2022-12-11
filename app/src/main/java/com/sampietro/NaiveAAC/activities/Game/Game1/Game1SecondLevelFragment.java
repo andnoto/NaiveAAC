@@ -14,6 +14,7 @@ import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass;
 import com.sampietro.NaiveAAC.activities.history.History;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import io.realm.RealmResults;
 
@@ -167,7 +168,11 @@ public class Game1SecondLevelFragment extends GameFragmentAbstractClass {
         //
         if (!leftColumnContent.equals(getString(R.string.nessuno)) && !leftColumnContent.equals(" ") ) {
             column1debugUrlNumber = 1;
-            column1debugWord[0] = leftColumnContent;
+            if (preference_TitleWritingType.equals("uppercase"))
+                column1debugWord[0] = leftColumnContent.toUpperCase(Locale.getDefault());
+            else
+                column1debugWord[0] = leftColumnContent.toLowerCase();
+            //
             column1debugUrlType[0] = leftColumnContentUrlType;
             column1debugUrl[0] = leftColumnContentUrl;
             }
@@ -189,7 +194,11 @@ public class Game1SecondLevelFragment extends GameFragmentAbstractClass {
                             //
 
                             if (wordNumber != 0) {
-                                column1debugWord[irrh - 1] = result.getWord();
+                                if (preference_TitleWritingType.equals("uppercase"))
+                                    column1debugWord[irrh - 1] = result.getWord().toUpperCase(Locale.getDefault());
+                                else
+                                    column1debugWord[irrh - 1] = result.getWord().toLowerCase();
+                                //
                                 column1debugUrlType[irrh - 1] = result.getUriType();
                                 column1debugUrl[irrh - 1] = result.getUri();
                             }
@@ -221,7 +230,11 @@ public class Game1SecondLevelFragment extends GameFragmentAbstractClass {
         //
         if (!middleColumnContent.equals(getString(R.string.nessuno))) {
             column2debugUrlNumber = 1;
-            column2debugWord[0] = middleColumnContent;
+            if (preference_TitleWritingType.equals("uppercase"))
+                column2debugWord[0] = middleColumnContent.toUpperCase(Locale.getDefault());
+            else
+                column2debugWord[0] = middleColumnContent.toLowerCase();
+            //
             column2debugUrlType[0] = middleColumnContentUrlType;
             column2debugUrl[0] = middleColumnContentUrl;
         }
@@ -242,7 +255,11 @@ public class Game1SecondLevelFragment extends GameFragmentAbstractClass {
                         int wordNumber = result.getWordNumber();
                         //
                         if (wordNumber != 0) {
-                            column2debugWord[irrh - 1] = result.getWord();
+                            if (preference_TitleWritingType.equals("uppercase"))
+                                column2debugWord[irrh - 1] = result.getWord().toUpperCase(Locale.getDefault());
+                            else
+                                column2debugWord[irrh - 1] = result.getWord().toLowerCase();
+                            //
                             column2debugUrlType[irrh - 1] = result.getUriType();
                             column2debugUrl[irrh - 1] = result.getUri();
                         }
@@ -274,7 +291,11 @@ public class Game1SecondLevelFragment extends GameFragmentAbstractClass {
         //
         if (!rightColumnContent.equals(getString(R.string.nessuno)) && !rightColumnContent.equals(" ")) {
             column3debugUrlNumber = 1;
-            column3debugWord[0] = rightColumnContent;
+            if (preference_TitleWritingType.equals("uppercase"))
+                column3debugWord[0] = rightColumnContent.toUpperCase(Locale.getDefault());
+            else
+                column3debugWord[0] = rightColumnContent.toLowerCase();
+            //
             column3debugUrlType[0] = rightColumnContentUrlType;
             column3debugUrl[0] = rightColumnContentUrl;
         }
@@ -295,7 +316,11 @@ public class Game1SecondLevelFragment extends GameFragmentAbstractClass {
                         int wordNumber = result.getWordNumber();
                         //
                         if (wordNumber != 0) {
-                            column3debugWord[irrh - 1] = result.getWord();
+                            if (preference_TitleWritingType.equals("uppercase"))
+                                column3debugWord[irrh - 1] = result.getWord().toUpperCase(Locale.getDefault());
+                            else
+                                column3debugWord[irrh - 1] = result.getWord().toLowerCase();
+                            //
                             column3debugUrlType[irrh - 1] = result.getUriType();
                             column3debugUrl[irrh - 1] = result.getUri();
                         }

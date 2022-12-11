@@ -4,12 +4,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
 
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter;
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper;
 import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass;
+
+import java.io.File;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -20,8 +26,8 @@ import io.realm.RealmResults;
  * </p>
  *
  * @version     1.1, 04/22/22
- * @see SettingsFragmentAbstractClass
- * @see SettingsActivity
+ * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  */
 public class GameParametersSettingsFragment extends SettingsFragmentAbstractClass {
     private Realm realm;
@@ -32,8 +38,8 @@ public class GameParametersSettingsFragment extends SettingsFragmentAbstractClas
      * prepares the ui also using a listview and makes the callback to the activity
      *
      * @see androidx.fragment.app.Fragment#onCreateView
-     * @see GameParameters
-     * @see GameParametersAdapter
+     * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
+     * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -56,11 +62,46 @@ public class GameParametersSettingsFragment extends SettingsFragmentAbstractClas
         // which will be your View "supplier".
         RealmResults<GameParameters> results = realm.where(GameParameters.class).findAll();
         //
+        results = results.sort("gameName");
+        //
         listView=(ListView) rootView.findViewById(R.id.listview);
         //
         adapter=new GameParametersAdapter(ctext, results, listView);
         //
         listView.setAdapter(adapter);
+        //
+        Bundle bundle = this.getArguments();
+        //
+        if (bundle != null) {
+            EditText gameDescription=(EditText) rootView.findViewById(R.id.gameDescription);
+            RadioButton radio_active = (RadioButton) rootView.findViewById(R.id.radio_active);
+            RadioButton radio_not_active = (RadioButton) rootView.findViewById(R.id.radio_not_active);
+            EditText gamejavaclass=(EditText) rootView.findViewById(R.id.gamejavaclass);
+            EditText gameparameter=(EditText) rootView.findViewById(R.id.gameparameter);
+            EditText gameinfo=(EditText) rootView.findViewById(R.id.gameinfo);
+            ImageView imageviewgameicon=(ImageView) rootView.findViewById(R.id.imageviewgameicon);
+
+            //
+            gameDescription.setText(bundle.getString("GameName"));
+            if (bundle.getString("GameActive").equals("A")) {
+                radio_active.setChecked(true);
+                radio_not_active.setChecked(false);
+                }
+                else
+                {
+                radio_active.setChecked(false);
+                radio_not_active.setChecked(true);   // default
+                }
+            gamejavaclass.setText(bundle.getString("GameJavaClass"));
+            gameparameter.setText(bundle.getString("GameParameter"));
+            gameinfo.setText(bundle.getString("GameInfo"));
+            String gameIconType = bundle.getString("GameIconType");
+            String gameIconPath = bundle.getString("GameIconPath");
+            //
+            File f = new File(gameIconPath);
+            GraphicsHelper.addFileImageUsingPicasso(f, (ImageView) imageviewgameicon, 200,200);
+            //
+        }
         //
         listener.receiveResultSettings(rootView);
         //

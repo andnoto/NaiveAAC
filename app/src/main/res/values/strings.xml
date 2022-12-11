@@ -24,7 +24,7 @@
     <string name="frase_benvenuto_prima_parte">frase benvenuto prima parte</string>
     <string name="frase_benvenuto_seconda_parte">frase benvenuto seconda parte</string>
     <string name="frase_di_promemoria">frase di promemoria</string>
-    <string name="frase_nome_da_aggiungere_alla_storia">frase / nome da aggiungere alla storia</string>
+    <string name="frase_nome_da_aggiungere_alla_storia">parola / gruppo di parole da aggiungere alla storia</string>
     <string name="game_settings">IMPOSTAZIONE GIOCHI</string>
     <string name="generali">GENERALI</string>
     <string name="i_tuoi_video">I TUOI VIDEO</string>
@@ -54,7 +54,7 @@
     <string name="nome_da_aggiungere_alla_lista">nome da aggiungere alla lista</string>
     <string name="nome_storia">nome storia</string>
     <string name="numero_frase">numero frase</string>
-    <string name="numero_parola">numero parola</string>
+    <string name="numero_parola">numero parola / gruppo di parole</string>
     <string name="ordinato">Ordinato</string>
     <string name="parametri_dei_giochi">PARAMETRI DEI GIOCHI</string>
     <string name="parola_chiave">parola chiave</string>
@@ -119,7 +119,7 @@
     <string name="game_java_class" translatable="false">game java class</string>
     <string name="game_life" translatable="false">Game life</string>
     <string name="game_parameter" translatable="false">game parameter</string>
-    <string name="game_to_insert" translatable="false">game to insert</string>
+    <string name="game_to_insert" translatable="false">nome del gioco</string>
     <string name="height" translatable="false">height</string>
     <string name="io">io</string>
     <string name="is_menu_item" translatable="false">isMenuItem</string>
