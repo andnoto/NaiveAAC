@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,6 +32,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Settings.VideosFragment;
 
@@ -212,25 +215,38 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
                                     e.printStackTrace();
                                 }
                                 //
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                    final int takeFlags = resultData.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
-                                    context.getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                                if (Objects.equals(filePath, "da download"))
+                                {
+                                    ContextThemeWrapper ctw = new ContextThemeWrapper(context, R.style.CustomSnackbarTheme);
+                                    Snackbar snackbar = Snackbar.make(ctw, findViewById(R.id.imageviewaccounticon), "al momento l'app non è in grado di accedere ad immagini nella cartella download", 10000);
+                                    snackbar.setTextMaxLines(5);
+                                    snackbar.setTextColor(Color.BLACK);
+                                    snackbar.show();
                                 }
-                                //
-                                Bitmap bitmap = null;
-                                try {
-                                    bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                if ((!Objects.equals(filePath, getString(R.string.non_trovato)))
+                                        && (!Objects.equals(filePath, "da download")))
+                                {
+                                    //
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                        final int takeFlags = resultData.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
+                                        context.getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                                    }
+                                    //
+                                    Bitmap bitmap = null;
+                                    try {
+                                        bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    //
+                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                    byteArray = stream.toByteArray();
+                                    //
+                                    ImageView myImage;
+                                    myImage = (ImageView) findViewById(R.id.imageviewaccounticon);
+                                    showImage(uri, myImage);
                                 }
-                                //
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                byteArray = stream.toByteArray();
-                                //
-                                ImageView myImage;
-                                myImage = (ImageView) findViewById(R.id.imageviewaccounticon);
-                                showImage(uri, myImage);
                             }
                         }
                     }
@@ -543,9 +559,10 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
             final String[] split = docId.split(":");
             return Environment.getExternalStorageDirectory() + "/" + split[1];
         } else if (isDownloadsDocument(uri)) {
-            final String id = DocumentsContract.getDocumentId(uri);
-            uri = ContentUris.withAppendedId(
-                    Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+//            final String id = DocumentsContract.getDocumentId(uri);
+//            uri = ContentUris.withAppendedId(
+//                    Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+            return "da download";
         } else if (isMediaDocument(uri)) {
             final String docId = DocumentsContract.getDocumentId(uri);
             final String[] split = docId.split(":");

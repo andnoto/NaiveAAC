@@ -17,6 +17,11 @@
         android:title="Settings"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/MENU_COMUNICATORE"
+        android:icon="@drawable/ic_action_actionbar_connect_without_contact"
+        android:title="Comunicatore"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/MENU_INFO"
         android:icon="@drawable/ic_action_actionbar_info"
         android:title="Info &amp; Credits"

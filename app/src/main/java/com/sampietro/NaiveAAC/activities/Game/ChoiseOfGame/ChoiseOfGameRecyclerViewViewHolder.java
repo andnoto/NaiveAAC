@@ -29,7 +29,7 @@ public class ChoiseOfGameRecyclerViewViewHolder extends RecyclerView.ViewHolder 
     FrameLayout media_container;
     TextView title, info, copyright;
     public ImageView imageView;
-    public ProgressBar progressBar;
+    // public ProgressBar progressBar;
     View parent;
     /**
      * ChoiseOfGameRecyclerViewViewHolder constructor.
@@ -43,7 +43,7 @@ public class ChoiseOfGameRecyclerViewViewHolder extends RecyclerView.ViewHolder 
         media_container = itemView.findViewById(R.id.media_container);
         imageView = itemView.findViewById(R.id.imageView);
         title = itemView.findViewById(R.id.title);
-        progressBar = itemView.findViewById(R.id.progressBar);
+        // progressBar = itemView.findViewById(R.id.progressBar);
         info = itemView.findViewById(R.id.infomediaplayer);
         copyright = itemView.findViewById(R.id.copyright);
     }

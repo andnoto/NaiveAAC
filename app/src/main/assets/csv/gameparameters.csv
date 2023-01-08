@@ -1,5 +1,5 @@
 gameName,gameActive,gameIconType,gameIconPath,gameInfo,gameJavaClass,gameParameter
 NAVIGATORE,A,AS,images/browser.png,l'app visualizza raccolte di immagini di parole che si possono selezionare per formare delle semplici frasi,NAVIGATORE,
-COMUNICATORE,A,AS,images/communicator.png,l'app visualizza le immagini (caricate dall'utente o i pittogrammi Arasaac) delle parole pronunciate dopo aver premuto il tasto ascolta,COMUNICATORE,
+COMUNICATORE,N,AS,images/communicator.png,l'app visualizza le immagini (caricate dall'utente o i pittogrammi Arasaac) delle parole pronunciate dopo aver premuto il tasto ascolta,COMUNICATORE,
 devi mangiare,A,AS,images/racconto.png,devi mangiare,A/DA,devi mangiare
 il gatto con gli stivali,A,AS,images/racconto.png,il gatto con gli stivali,A/DA,il gatto con gli stivali

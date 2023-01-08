@@ -6,6 +6,33 @@
     android:layout_height="match_parent"
     tools:context="com.sampietro.NaiveAAC.activities.Settings.VerifyFragment">
 
+    <RelativeLayout
+        android:id="@+id/actionbarbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/azzurro_pastello" >
+
+        <ImageButton
+            android:id="@+id/homebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:onClick="returnHome"
+            app:backgroundTint="@color/azzurro_pastello"
+            android:src="@drawable/ic_baseline_home_36" />
+
+    </RelativeLayout>
+
+
     <TextView
         android:id="@+id/verify"
         android:layout_width="wrap_content"
@@ -15,8 +42,8 @@
         android:text="@string/inserisci_il_risultato_per_verificare_che_sei_un_adulto"
         android:ems="10"
         android:hint="@string/edit_message"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/actionbarbutton"
+        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton"/>
 
     <TextView
         android:id="@+id/verifyCalculation"

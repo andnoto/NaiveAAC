@@ -18,4 +18,12 @@
         <item name="android:itemBackground">@color/azzurro_pastello</item>
 
     </style>
+
+    <style name="CustomSnackbarTheme">
+        <item name="snackbarStyle">@style/MySnackBarStyle</item>
+    </style>
+    <style name="MySnackBarStyle" parent="Widget.MaterialComponents.Snackbar">
+        <item name="android:background">@color/azzurro_pastello</item>
+    </style>
+
 </resources>

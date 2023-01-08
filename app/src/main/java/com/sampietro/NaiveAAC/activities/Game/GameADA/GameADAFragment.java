@@ -17,8 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2ArrayList;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass;
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameRecyclerViewAdapter;
-import com.sampietro.NaiveAAC.activities.Game.Utils.OnFragmentEventListenerGame;
 import com.sampietro.NaiveAAC.activities.history.History;
 
 import java.util.ArrayList;
@@ -33,6 +31,8 @@ public class GameADAFragment extends GameFragmentAbstractClass {
     //
     public int sharedLastPhraseNumber;
     //
+    public int wordToDisplayIndex = 0;
+    //
     public String [] row1debugWord = new String[32];
     public String [] row1debugUrlType = new String[32];
     public String [] row1debugUrl = new String[32];
@@ -40,6 +40,8 @@ public class GameADAFragment extends GameFragmentAbstractClass {
     public String sentence;
     //
     public GameADAOnFragmentEventListener listenerADA=null;
+    //
+    public boolean ttsEnabled = true;
     /**
      * listener setting for game activities callbacks , context annotation, realm get default instance
      * and get print permissions
@@ -70,10 +72,10 @@ public class GameADAFragment extends GameFragmentAbstractClass {
      * Refer to <a href="https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/">androidauthority</a>
      * by <a href="https://www.androidauthority.com/author/adamsinicki/">Adam Sinicki</a>
      *
-     * @see androidx.fragment.app.Fragment#onCreateView
+     * @see Fragment#onCreateView
      * @see Game2ArrayList
      * @see #prepareData1
-     * @see GameRecyclerViewAdapter
+     * @see GameADARecyclerViewAdapter
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -87,6 +89,8 @@ public class GameADAFragment extends GameFragmentAbstractClass {
         sharedLastPhraseNumber = 0;
         if (bundle != null) {
             sharedLastPhraseNumber = bundle.getInt("LAST PHRASE NUMBER");
+            wordToDisplayIndex = bundle.getInt("WORD TO DISPLAY INDEX");
+            ttsEnabled = bundle.getBoolean("TTS ENABLED");
         }
         //
         RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.imagegallery);
@@ -95,26 +99,31 @@ public class GameADAFragment extends GameFragmentAbstractClass {
                 new LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         ArrayList<Game2ArrayList> createLists = prepareData1();
-        GameRecyclerViewAdapter adapter =
-                new GameRecyclerViewAdapter(ctext, realm, createLists);
+        GameADARecyclerViewAdapter adapter =
+                new GameADARecyclerViewAdapter(ctext, realm, createLists);
         recyclerView.setAdapter(adapter);
+        //
+        if (!(wordToDisplayIndex == 0))
+            recyclerView.getLayoutManager().scrollToPosition(wordToDisplayIndex);
         // TTS
-        tTS1=new TextToSpeech(ctext, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status != TextToSpeech.ERROR) {
-                    if (!tTS1.isSpeaking()) {
-                        tTS1.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, null);
+        if (ttsEnabled) {
+            tTS1=new TextToSpeech(ctext, new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if(status != TextToSpeech.ERROR) {
+                        if (!tTS1.isSpeaking()) {
+                            tTS1.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, null);
+                        }
+                        else
+                        { Toast.makeText(ctext, "is speaking", Toast.LENGTH_SHORT).show(); }
                     }
                     else
-                    { Toast.makeText(ctext, "is speaking", Toast.LENGTH_SHORT).show(); }
+                    {
+                        Toast.makeText(ctext, status,Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else
-                {
-                    Toast.makeText(ctext, status,Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+            });
+        }
         //
         // listener.receiveResultGameFragment(rootView);
         //

@@ -1,8 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentTransaction;
@@ -12,8 +16,9 @@ import com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity;
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity;
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAActivity;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters;
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass;
+import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity;
+import com.google.android.material.snackbar.Snackbar;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -37,12 +42,13 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
     //
     public View rootViewGameFragment;
     //
+    private ViewGroup mContentView;
     /**
      * configurations of game choice start screen.
      * <p>
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see ActionbarFragment
+     // * @see ActionbarFragment
      * @see android.app.Activity#onCreate(Bundle)
      */
     @Override
@@ -50,13 +56,22 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_container);
         //
-        realm= Realm.getDefaultInstance();
+        mContentView = findViewById(R.id.activity_game_container_id);
+        setToFullScreen();
+        ViewTreeObserver viewTreeObserver = mContentView.getViewTreeObserver();
         //
-        if (savedInstanceState == null)
-        {
-            getSupportFragmentManager().beginTransaction()
-                    .add(new ActionbarFragment(), getString(R.string.actionbar_fragment)).commit();
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
         }
+        //
+        mContentView.setOnClickListener(view -> setToFullScreen());
+        //
+        realm= Realm.getDefaultInstance();
         //
         resultsGameParameters =
                 realm.where(GameParameters.class)
@@ -67,7 +82,7 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
         resultsGameParameters = resultsGameParameters.sort("gameName");
     }
     /**
-     * configurations of game choice start screen.
+     * configurations of game choice start screen. Hide the Navigation Bar
      * <p>
      * Refer to <a href="https://stackoverflow.com/questions/43520688/findfragmentbyid-and-findfragmentbytag">stackoverflow</a>
      * answer of <a href="https://stackoverflow.com/users/4266957/ricardo">Ricardo</a>
@@ -78,6 +93,7 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
     @Override
     public void onResume(){
         super.onResume();
+        setToFullScreen();
         //
         ChoiseOfGameFragment frag= new ChoiseOfGameFragment();
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
@@ -95,6 +111,29 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
         }
         ft.addToBackStack(null);
         ft.commit();
+    }
+    /**
+     * This method is responsible to transfer MainActivity into fullscreen mode.
+     */
+    private void setToFullScreen() {
+        findViewById(R.id.activity_game_container_id).setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+    }
+    //
+     /**
+     * Called when the user taps the settings button.
+     * replace with hear fragment
+     * </p>
+     *
+     * @param v view of tapped button
+     * @see ChoiseOfGameActivity
+     */
+    public void returnSettings(View v)
+    {
+    /*
+                navigate to settings screen (ChoiseOfGameActivity)
+    */
+        Intent intent = new Intent(this, VerifyActivity.class);
+        startActivity(intent);
     }
     //
     /**
@@ -174,8 +213,14 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
                 String gameInfo = null;
                 assert result != null;
                 gameInfo = result.getGameInfo();
-                TextView textinfo = (TextView)rootViewGameFragment.findViewById(R.id.textinfoEP);
-                textinfo.setText(gameInfo);
+//                TextView textinfo = (TextView)rootViewGameFragment.findViewById(R.id.textinfoEP);
+//                textinfo.setText("");
+                //
+                ContextThemeWrapper ctw = new ContextThemeWrapper(this, R.style.CustomSnackbarTheme);
+                Snackbar snackbar = Snackbar.make(ctw, findViewById(R.id.imagegallerychoiseofgameLLEP), gameInfo, 10000);
+                snackbar.setTextMaxLines(5);
+                snackbar.setTextColor(Color.BLACK);
+                snackbar.show();
                 break;
         }
     }

@@ -172,13 +172,14 @@ public class AccountActivity extends AccountActivityAbstractClass implements
         // default
         if (!(textPersonName.length() >0))
             textPersonName = "utente";
-        if (filePath.equals(getString(R.string.non_trovato)))
+        if ((filePath.equals(getString(R.string.non_trovato))) || (filePath.equals("da download")))
         {
             File utenteFile = getFileStreamPath("utente.png");
             filePath = utenteFile.getAbsolutePath();
         }
         //
-        if (textPersonName.length()>0 && !filePath.equals(getString(R.string.non_trovato)))
+        if (textPersonName.length()>0 && !filePath.equals(getString(R.string.non_trovato))
+                && !filePath.equals("da download"))
         {
             // register the user
             registerPersonName(textPersonName);

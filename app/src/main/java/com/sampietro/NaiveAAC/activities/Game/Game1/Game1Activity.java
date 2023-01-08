@@ -10,9 +10,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -24,8 +25,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback;
 
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity;
-import com.sampietro.NaiveAAC.activities.Game.Game2.Game2Fragment;
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment;
+import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear;
 import com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper;
@@ -35,6 +35,7 @@ import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper;
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper;
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch;
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases;
+import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity;
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs;
 import com.sampietro.NaiveAAC.activities.history.History;
 import com.example.voicerecognitionlibrary.AndroidPermission;
@@ -124,6 +125,8 @@ public class Game1Activity extends GameActivityAbstractClass implements
     //
     public String preference_PrintPermissions;
     public int preference_AllowedMarginOfError;
+    //
+    private ViewGroup mContentView;
     /**
      * used for printing
      */
@@ -227,7 +230,7 @@ public class Game1Activity extends GameActivityAbstractClass implements
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
      * @see SpeechRecognizerManagement#prepareSpeechRecognizer
-     * @see ActionbarFragment
+     // * @see ActionbarFragment
      * @see #welcomeSpeech
      * @see Game1ViewPagerAdapter
      * @see android.app.Activity#onCreate(Bundle)
@@ -250,15 +253,24 @@ public class Game1Activity extends GameActivityAbstractClass implements
         // viewpager
         setContentView(R.layout.activity_game_1_viewpager);
         //
+        mContentView = findViewById(R.id.activity_game_1_viewpager_id);
+        setToFullScreen();
+        ViewTreeObserver viewTreeObserver = mContentView.getViewTreeObserver();
+        //
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
+        }
+        //
+        mContentView.setOnClickListener(view -> setToFullScreen());
+        //
         AndroidPermission.checkPermission(this);
         //
         SpeechRecognizerManagement.prepareSpeechRecognizer(this);
-        //
-        if (savedInstanceState == null)
-        {
-            getSupportFragmentManager().beginTransaction()
-                    .add(new ActionbarFragment(), getString(R.string.actionbar_fragment)).commit();
-        }
         //
         realm= Realm.getDefaultInstance();
         //
@@ -282,6 +294,17 @@ public class Game1Activity extends GameActivityAbstractClass implements
         // Register page change callback
         mViewPager.registerOnPageChangeCallback(callbackViewPager2);
      }
+    /**
+     * Hide the Navigation Bar
+     *
+     * @see android.app.Activity#onResume
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setToFullScreen();
+    }
+    //
     /**
      * destroy SpeechRecognizer, TTS shutdown and more
      *
@@ -326,6 +349,44 @@ public class Game1Activity extends GameActivityAbstractClass implements
         }
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
+    }
+    /**
+     * This method is responsible to transfer MainActivity into fullscreen mode.
+     */
+    private void setToFullScreen() {
+        findViewById(R.id.activity_game_1_viewpager_id).setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+    }
+    //
+    /**
+     * Called when the user taps the home button.
+     * </p>
+     *
+     * @param v view of tapped button
+     * @see ChoiseOfGameActivity
+     */
+    public void returnHome(View v)
+    {
+    /*
+                navigate to home screen (ChoiseOfGameActivity)
+    */
+        Intent intent = new Intent(this, ChoiseOfGameActivity.class);
+        startActivity(intent);
+    }
+    /**
+     * Called when the user taps the settings button.
+     * replace with hear fragment
+     * </p>
+     *
+     * @param v view of tapped button
+     * @see ChoiseOfGameActivity
+     */
+    public void returnSettings(View v)
+    {
+    /*
+                navigate to settings screen (ChoiseOfGameActivity)
+    */
+        Intent intent = new Intent(this, VerifyActivity.class);
+        startActivity(intent);
     }
     /**
      * Called when the user taps the start speech button.
@@ -1592,23 +1653,34 @@ public class Game1Activity extends GameActivityAbstractClass implements
                 (eText, leftColumnContent + " " + middleColumnContent
                         + " " + rightColumnContent,preference_AllowedMarginOfError))
         {
-            switch(rightColumnAwardType){
-                case "V":
-                    // upload a video as a reward
-                    uploadAVideoAsAReward();
-                    break;
-                case "Y":
-                    // upload a Youtube video as a reward
-                    uploadAYoutubeVideoAsAReward();
-                    break;
-                default:
-                    // charge the activity balloon as a reward
-                    // a simple balloon game
-                    Intent intent = new Intent(getApplicationContext(), BalloonGameplayActivity.class);
-                    // ad uso futuro
-                    intent.putExtra(EXTRA_MESSAGE_BALLOON, getString(R.string.pensieri_e_parole));
-                    startActivity(intent);
-                    break;
+            if (rightColumnAwardType == null) {
+                // charge the activity balloon as a reward
+                // a simple balloon game
+                Intent intent = new Intent(getApplicationContext(), BalloonGameplayActivity.class);
+                // ad uso futuro
+                intent.putExtra(EXTRA_MESSAGE_BALLOON, getString(R.string.pensieri_e_parole));
+                startActivity(intent);
+            }
+            else
+            {
+                switch(rightColumnAwardType){
+                    case "V":
+                        // upload a video as a reward
+                        uploadAVideoAsAReward();
+                        break;
+                    case "Y":
+                        // upload a Youtube video as a reward
+                        uploadAYoutubeVideoAsAReward();
+                        break;
+                    default:
+                        // charge the activity balloon as a reward
+                        // a simple balloon game
+                        Intent intent = new Intent(getApplicationContext(), BalloonGameplayActivity.class);
+                        // ad uso futuro
+                        intent.putExtra(EXTRA_MESSAGE_BALLOON, getString(R.string.pensieri_e_parole));
+                        startActivity(intent);
+                        break;
+                }
             }
         }
         else

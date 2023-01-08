@@ -7,6 +7,46 @@
     android:layout_height="match_parent"
     tools:context="com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity">
 
+    <RelativeLayout
+        android:id="@+id/actionbarbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/azzurro_pastello" >
+
+        <ImageButton
+            android:id="@+id/homebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:onClick="returnHome"
+            app:backgroundTint="@color/azzurro_pastello"
+            android:src="@drawable/ic_baseline_home_36" />
+
+        <ImageButton
+            android:id="@+id/settingsbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:onClick="returnSettings"
+            app:backgroundTint="@color/azzurro_pastello"
+            android:src="@drawable/ic_baseline_settings_36" />
+
+    </RelativeLayout>
+
     <ImageView
         android:id="@+id/leftarrowfirstlevelmenu"
         android:layout_width="wrap_content"
@@ -14,7 +54,7 @@
         android:src="@drawable/ic_baseline_arrow_back_ios_36"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/imagefirstlevelmenu"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton"
         android:contentDescription="@string/vai_al_precedente"/>
 
     <ImageView
@@ -24,7 +64,7 @@
         android:background="@color/verde_smeraldo"
         app:layout_constraintStart_toEndOf="@+id/leftarrowfirstlevelmenu"
         app:layout_constraintEnd_toStartOf="@+id/rightarrowfirstlevelmenu"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton"/>
 
     <ImageView
         android:id="@+id/rightarrowfirstlevelmenu"
@@ -33,7 +73,7 @@
         android:src="@drawable/ic_baseline_arrow_forward_ios_36"
         app:layout_constraintStart_toEndOf="@+id/imagefirstlevelmenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton"
         android:contentDescription="@string/vai_al_successivo"/>
 
         <TextView

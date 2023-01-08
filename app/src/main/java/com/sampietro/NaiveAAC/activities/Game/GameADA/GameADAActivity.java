@@ -6,25 +6,29 @@ import static com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentTransaction;
+import androidx.print.PrintHelper;
 
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment;
+import com.sampietro.NaiveAAC.activities.Game.Game2.Game2ArrayList;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear;
 import com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper;
-import com.sampietro.NaiveAAC.activities.Game.Utils.OnFragmentEventListenerGame;
 import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment;
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper;
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper;
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch;
-import com.sampietro.NaiveAAC.activities.Phrases.Phrases;
+import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity;
 import com.sampietro.NaiveAAC.activities.Stories.Stories;
 import com.sampietro.NaiveAAC.activities.history.History;
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory;
@@ -32,7 +36,11 @@ import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl;
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory;
 import com.example.voicerecognitionlibrary.AndroidPermission;
 import com.example.voicerecognitionlibrary.SpeechRecognizerManagement;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -49,25 +57,52 @@ import io.realm.RealmResults;
  * @see GameActivityAbstractClass
  */
 public class GameADAActivity extends GameActivityAbstractClass implements
+        GameADARecyclerViewAdapterInterface,
         PrizeFragment.onFragmentEventListenerPrize, GameADAOnFragmentEventListener {
-    public String sharedStory;
+    public String sharedStory = null;
     public RealmResults<Stories> resultsStories;
     public int sharedPhraseSize;
     //
     public int phraseToDisplayIndex;
     public Stories phraseToDisplay;
     //
+    public String preference_PrintPermissions;
+    //
+    public int wordToDisplayIndex = 0;
+    public boolean ttsEnabled = true;
+    //
+    /**
+     * used for printing
+     */
+    public Bitmap bitmap1;
+    /**
+     * used for printing
+     */
+    public Target target1 = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            bitmap1 = bitmap;
+        }
+        @Override
+        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+        }
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+        }
+    };
     /**
      * used for TTS
      */
-    public TextToSpeech tTS1;
+    public TextToSpeech tTS1 = null;
+    //
+    private ViewGroup mContentView;
     /**
      * configurations of gameADA start screen.
      * <p>
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
      * @see SpeechRecognizerManagement#prepareSpeechRecognizer
-     * @see ActionbarFragment
+//     * @see ActionbarFragment
      * @see android.app.Activity#onCreate(Bundle)
      * @see #fragmentTransactionStart
      */
@@ -77,33 +112,62 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         //
         setContentView(R.layout.activity_game);
         //
+        mContentView = findViewById(R.id.activity_game_id);
+        setToFullScreen();
+        ViewTreeObserver viewTreeObserver = mContentView.getViewTreeObserver();
+        //
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
+        }
+        //
+        mContentView.setOnClickListener(view -> setToFullScreen());
+        //
         AndroidPermission.checkPermission(this);
         //
         SpeechRecognizerManagement.prepareSpeechRecognizer(this);
         //
-        if (savedInstanceState == null)
-        {
-            getSupportFragmentManager().beginTransaction()
-                    .add(new ActionbarFragment(), "ActionbarFragment").commit();
-        }
-        //
         realm= Realm.getDefaultInstance();
         // SEARCH HISTORY TO BE DISPLAYED
         Intent intent = getIntent();
-        sharedStory =
-                intent.getStringExtra(ChoiseOfGameActivity.EXTRA_MESSAGE_GAME_PARAMETER);
+        if (intent.hasExtra(ChoiseOfGameActivity.EXTRA_MESSAGE_GAME_PARAMETER)) {
+            sharedStory =
+                    intent.getStringExtra(ChoiseOfGameActivity.EXTRA_MESSAGE_GAME_PARAMETER);
+            phraseToDisplayIndex = 1;
+        }
+        // if intent is from GameADAViewPagerActivity
+        if (intent.hasExtra("STORY TO DISPLAY")) {
+            sharedStory =
+                    intent.getStringExtra("STORY TO DISPLAY");
+            phraseToDisplayIndex= intent.getIntExtra("PHRASE TO DISPLAY INDEX", 1);
+            wordToDisplayIndex= intent.getIntExtra("WORD TO DISPLAY INDEX", 0);
+            ttsEnabled = false;
+        }
         //
         context = this;
         //
         sharedPref = context.getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         //
-        if (sharedStory.equals(" ")  || sharedStory.equals(""))
+        if (sharedStory == null)
             {
             sharedStory =
                     sharedPref.getString ("preference_Story", "default");
-
             }
+        //
+        boolean hasLastPhraseNumber = sharedPref.contains("preference_LastPhraseNumber");
+        if (hasLastPhraseNumber) {
+            sharedLastPhraseNumber =
+                    sharedPref.getInt ("preference_LastPhraseNumber", 1);
+        }
+        // if is print permitted then preference_PrintPermissions = Y
+        preference_PrintPermissions =
+                sharedPref.getString (context.getString(R.string.preference_print_permissions), "DEFAULT");
+        //
         // SEARCH FIRST PHRASE TO DISPLAY
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
@@ -115,12 +179,10 @@ public class GameADAActivity extends GameActivityAbstractClass implements
              phraseToDisplayIndex = savedInstanceState.getInt("PHRASE TO DISPLAY INDEX" );
              sharedLastPhraseNumber =
                     savedInstanceState.getInt("LAST PHRASE NUMBER" );
-             //
              fragmentTransactionStart();
         }
         else
         {
-            phraseToDisplayIndex = 1;
             resultsStories =
                     realm.where(Stories.class)
                             .beginGroup()
@@ -149,9 +211,20 @@ public class GameADAActivity extends GameActivityAbstractClass implements
     }
 //
     /**
+     * Hide the Navigation Bar
+     *
+     * @see android.app.Activity#onResume
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setToFullScreen();
+    }
+    //
+    /**
      * destroy SpeechRecognizer
      *
-     * @see androidx.fragment.app.Fragment#onDestroy
+     * @see android.app.Activity#onDestroy
      */
     @Override
     protected void onDestroy() {
@@ -170,11 +243,49 @@ public class GameADAActivity extends GameActivityAbstractClass implements
     public void onSaveInstanceState(Bundle savedInstanceState) {
         //
         savedInstanceState.putInt("PHRASE TO DISPLAY INDEX", phraseToDisplayIndex);
+        savedInstanceState.putInt("WORD TO DISPLAY INDEX", wordToDisplayIndex);
         savedInstanceState.putInt("LAST PHRASE NUMBER", sharedLastPhraseNumber);
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
+    /**
+     * This method is responsible to transfer MainActivity into fullscreen mode.
+     */
+    private void setToFullScreen() {
+        findViewById(R.id.activity_game_id).setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+    }
     //
+    /**
+     * Called when the user taps the home button.
+     * </p>
+     *
+     * @param v view of tapped button
+     * @see ChoiseOfGameActivity
+     */
+    public void returnHome(View v)
+    {
+    /*
+                navigate to home screen (ChoiseOfGameActivity)
+    */
+        Intent intent = new Intent(this, ChoiseOfGameActivity.class);
+        startActivity(intent);
+    }
+    /**
+     * Called when the user taps the settings button.
+     * replace with hear fragment
+     * </p>
+     *
+     * @param v view of tapped button
+     * @see VerifyActivity
+     */
+    public void returnSettings(View v)
+    {
+    /*
+                navigate to settings screen (VerifyActivity)
+    */
+        Intent intent = new Intent(this, VerifyActivity.class);
+        startActivity(intent);
+    }
     /**
      * Called when the user taps the start speech button.
      * replace with hear fragment
@@ -216,15 +327,27 @@ public class GameADAActivity extends GameActivityAbstractClass implements
      * @see #continueGameAda
      */
     public void returnGameAdaButton(View v) {
-        if (!tTS1.isSpeaking()) {
+        if (!(tTS1 == null)) {
+            if (!tTS1.isSpeaking()) {
+                if (phraseToDisplayIndex > 1)
+                {
+                    phraseToDisplayIndex--;
+                    wordToDisplayIndex= 0;
+                }
+                continueGameAda();
+            }
+            else
+            { Toast.makeText(context, "TTS sta parlando : riprovare più tardi", Toast.LENGTH_SHORT).show(); }
+        }
+        else
+        {
             if (phraseToDisplayIndex > 1)
             {
                 phraseToDisplayIndex--;
+                wordToDisplayIndex= 0;
             }
             continueGameAda();
         }
-        else
-        { Toast.makeText(context, "TTS sta parlando : riprovare più tardi", Toast.LENGTH_SHORT).show(); }
     }
     //
     /**
@@ -234,12 +357,21 @@ public class GameADAActivity extends GameActivityAbstractClass implements
      * @see #continueGameAda
      */
     public void continueGameAdaButton(View v) {
-        if (!tTS1.isSpeaking()) {
-            phraseToDisplayIndex++;
-            continueGameAda();
+        if (!(tTS1 == null)) {
+            if (!tTS1.isSpeaking()) {
+                phraseToDisplayIndex++;
+                wordToDisplayIndex= 0;
+                continueGameAda();
+            }
+            else
+            { Toast.makeText(context, "TTS sta parlando : riprovare più tardi", Toast.LENGTH_SHORT).show(); }
         }
         else
-        { Toast.makeText(context, "TTS sta parlando : riprovare più tardi", Toast.LENGTH_SHORT).show(); }
+        {
+            phraseToDisplayIndex++;
+            wordToDisplayIndex= 0;
+            continueGameAda();
+        }
     }
     //
     /**
@@ -305,6 +437,9 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         GameADAFragment frag= new GameADAFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("LAST PHRASE NUMBER", sharedLastPhraseNumber);
+        bundle.putInt("WORD TO DISPLAY INDEX", wordToDisplayIndex);
+        bundle.putBoolean("TTS ENABLED", ttsEnabled);
+        ttsEnabled = true;
         frag.setArguments(bundle);
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
         GameADAFragment fragmentgotinstance =
@@ -326,6 +461,50 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         }
         ft.addToBackStack(null);
         ft.commit();
+    }
+    //
+    /**
+     * click listener
+     * <p>
+     *
+     * @param view view of tapped button
+     * @param i int
+     * @param galleryList ArrayList<Game2ArrayList>
+     * @see GameADARecyclerViewAdapter
+     * @see Game2ArrayList
+     * @see #getTargetBitmapFromUrlUsingPicasso
+     * @see #getTargetBitmapFromFileUsingPicasso
+     * @see GameADAViewPagerActivity
+     */
+    @Override
+    public void onItemClick(View view, int i, ArrayList<Game2ArrayList> galleryList) {
+        if (preference_PrintPermissions.equals("Y")) {
+            if (galleryList.get(i).getUrlType().equals("A"))
+            {
+                getTargetBitmapFromUrlUsingPicasso(galleryList.get(i).getUrl(), target1);
+            }
+            else
+            {
+                File f = new File(galleryList.get(i).getUrl());
+                getTargetBitmapFromFileUsingPicasso(f, target1);
+            }
+            //
+            PrintHelper photoPrinter = new PrintHelper(context);
+            photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+            photoPrinter.printBitmap(context.getString(R.string.stampa_immagine1), bitmap1);
+        }
+        else
+        {
+            Intent intent = null;
+            intent = new Intent(this,
+                    GameADAViewPagerActivity.class);
+            intent.putExtra("STORY TO DISPLAY", sharedStory);
+            intent.putExtra("PHRASE TO DISPLAY INDEX", phraseToDisplayIndex);
+            intent.putExtra("WORD TO DISPLAY INDEX", i);
+            startActivity(intent);
+            //
+        }
+
     }
     //
     /**
@@ -700,5 +879,33 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         rootViewImageFragment = v;
         tTS1 = t;
     }
+
+
 //
+    /**
+     * used for printing load an image in a target bitmap from a file
+     *
+     * @param file file of origin
+     * @param target target bitmap
+     * @see Picasso
+     */
+    public void getTargetBitmapFromFileUsingPicasso(File file, Target target){
+        Picasso.get()
+                .load(file)
+                .resize(200, 200)
+                .into(target);
+    }
+    /**
+     * used for printing load an image in a target bitmap from a url
+     *
+     * @param url string with url of origin
+     * @param target target bitmap
+     * @see Picasso
+     */
+    public void getTargetBitmapFromUrlUsingPicasso(String url, Target target){
+        Picasso.get()
+                .load(url)
+                .resize(200, 200)
+                .into(target);
+    }
 }

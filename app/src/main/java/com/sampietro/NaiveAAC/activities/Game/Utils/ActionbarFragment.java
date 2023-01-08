@@ -1,7 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Game.Utils;
 
 import static androidx.core.content.FileProvider.getUriForFile;
-
 import static io.realm.Realm.getApplicationContext;
 
 import android.app.AlertDialog;
@@ -21,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity;
+import com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity;
 import com.sampietro.NaiveAAC.activities.Info.EulaActivity;
 import com.sampietro.NaiveAAC.activities.Info.InfoActivity;
 import com.sampietro.NaiveAAC.activities.Info.PrivacyActivity;
@@ -124,26 +124,33 @@ public class ActionbarFragment extends Fragment {
                 Intent intent2 = new Intent(getActivity(), ChoiseOfGameActivity.class);
                 startActivity(intent2);
                 return true;
+            case R.id.MENU_COMUNICATORE:
+                /*
+                navigate to game2 screen (Game2Activity)
+                */
+                Intent intent3 = new Intent(getActivity(), Game2Activity.class);
+                startActivity(intent3);
+                return true;
             case R.id.MENU_INFO:
                 /*
                 navigate to info screen (InfoActivity)
                 */
-                Intent intent3 = new Intent(getActivity(), InfoActivity.class);
-                startActivity(intent3);
+                Intent intent4 = new Intent(getActivity(), InfoActivity.class);
+                startActivity(intent4);
                 return true;
             case R.id.MENU_EULA:
                 /*
                 navigate to eula screen (MainActivity)
                 */
-                Intent intent4 = new Intent(getActivity(), EulaActivity.class);
-                startActivity(intent4);
+                Intent intent5 = new Intent(getActivity(), EulaActivity.class);
+                startActivity(intent5);
                 return true;
             case R.id.MENU_PRIVACY:
                  /*
                 navigate to privacy screen (PrivacyActivity)
                 */
-                Intent intent5 = new Intent(getActivity(), PrivacyActivity.class);
-                startActivity(intent5);
+                Intent intent6 = new Intent(getActivity(), PrivacyActivity.class);
+                startActivity(intent6);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

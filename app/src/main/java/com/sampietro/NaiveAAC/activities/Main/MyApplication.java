@@ -48,8 +48,11 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         //
+        boolean itSAFreshInstall = false;
         File fileRealm = new File(this.getFilesDir(), "default.realm");
         if (!fileRealm.exists()) {
+            // it's a fresh install
+            itSAFreshInstall = true;
             try {
                 copyFileRealm();
             } catch (IOException e) {
@@ -67,7 +70,20 @@ public class MyApplication extends Application {
                         .build();
         Realm.setDefaultConfiguration(realmConfiguration);
         //
-        appVersionManagement();
+        if (itSAFreshInstall)
+            {
+            Context context = this;
+            SharedPreferences sharedPref = context.getSharedPreferences(
+                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            // register current VersionCode on sharedpref
+            editor.putInt("preference_VersionCode", BuildConfig.VERSION_CODE);
+            editor.apply();
+            }
+        else
+            {
+            appVersionManagement();
+            }
     }
     //
     /**
@@ -100,17 +116,12 @@ public class MyApplication extends Application {
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         boolean hasVersionCode = sharedPref.contains("preference_VersionCode");
-        if (!hasVersionCode) {
-            // is the first version downloaded and register current VersionCode on sharedpref
-            editor.putInt("preference_VersionCode", currentVersionCode);
-            editor.apply();
-        }
-        else
-        {
-            // it's not the first version downloaded  and I record the old version code
+        if (hasVersionCode)
+            {
+            // I record the old version code (the version code is present from version 7)
             oldVersionCode =
                     sharedPref.getInt ("preference_VersionCode", 0);
-        }
+            }
         //
         if (oldVersionCode == 0) {
             oldVersionCode++;
@@ -199,10 +210,42 @@ public class MyApplication extends Application {
             oldVersionCode++;
         }
         //
+        if (oldVersionCode == 8) {
+            // fix error in the transition from version 7 to 8 and update game parameters
+            //
+            // delete image
+            Realm realm= Realm.getDefaultInstance();
+            RealmResults<Images> results =
+                    realm.where(Images.class).equalTo("descrizione", "negazione").findAll();
+            realm.beginTransaction();
+            results.deleteAllFromRealm();
+            realm.commitTransaction();
+            //
+            try {
+                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-images.csv", "images.csv");
+                copyFileFromAssetsToInternalStorage("csv", "grammaticalexceptions.csv", "grammaticalexceptions.csv");
+                copyFileFromAssetsToInternalStorage("csv", "stories.csv", "stories.csv");
+                copyFileFromAssetsToInternalStorage("csv", "gameparameters.csv", "gameparameters.csv");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Images.importFromCsvFromInternalStorage(context, realm, "Append");
+            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Replace");
+            Stories.importFromCsvFromInternalStorage(context, realm, "Replace");
+            GameParameters.importFromCsvFromInternalStorage(context, realm, "Replace");
+            //
+            oldVersionCode++;
+        }
+        //
         if (oldVersionCode < currentVersionCode) {
             throw new IllegalStateException(String.format(Locale.US, "Migration missing from v%d to v%d", oldVersionCode, currentVersionCode));
         }
 
+
+        // register current VersionCode on sharedpref
+        editor.putInt("preference_VersionCode", currentVersionCode);
+        editor.apply();
     }
     //
     /**

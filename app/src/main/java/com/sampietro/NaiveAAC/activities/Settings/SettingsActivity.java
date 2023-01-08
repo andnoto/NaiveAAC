@@ -81,7 +81,6 @@ import io.realm.Sort;
  */
 public class SettingsActivity extends AccountActivityAbstractClass
         implements
-        VerifyFragment.onFragmentEventListenerVerify,
         ImagesAdapter.ImagesAdapterInterface,
         ChoiseOfGameToSetFragment.onFragmentEventListenerChoiseOfGameToSet,
         VideosAdapter.VideosAdapterInterface,
@@ -95,9 +94,6 @@ public class SettingsActivity extends AccountActivityAbstractClass
 {
     public String message = "messaggio non formato";
     public TextView textView;
-    //
-    public View rootViewVerifyFragment;
-    public int resultToVerify;
     //
     public View rootViewChoiseOfGameToSetFragment;
     public String textGameToSet;
@@ -155,7 +151,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
             fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .add(new ActionbarFragment(), getString(R.string.actionbar_fragment))
-                    .add(R.id.settings_container, new VerifyFragment(), "VerifyFragment")
+                    .add(R.id.settings_container, new MenuSettingsFragment(), "MenuSettingsFragment")
                     .commit();
             }
         // The MainActivity class provides an instance of Realm wherever needed in the application.
@@ -164,50 +160,6 @@ public class SettingsActivity extends AccountActivityAbstractClass
         realm= Realm.getDefaultInstance();
     }
     //
-    /**
-     * receive result to verify for check the right to access the settings.
-     *
-     * @param v view of calling fragment
-     * @param r int with result to verify
-     * @see VerifyFragment
-     */
-    @Override
-    public void receiveResultToVerify(View v, int r)
-    {
-        rootViewVerifyFragment = v;
-        resultToVerify = r;
-    }
-    /**
-     * Called when the user taps the submit verification button.
-     * </p>
-     * check and if the answer is correct the activity is notified to view the fragment settings.
-     * </p>
-     *
-     * @param view view of tapped button
-     * @see VerifyFragment
-     * @see #receiveResultToVerify
-     * @see MenuSettingsFragment
-     */
-    public void submitVerification(View view) {
-        EditText editText = (EditText) rootViewVerifyFragment.findViewById(R.id.calculationToBeVerified);
-        String value= editText.getText().toString();
-        int calculationToBeVerified = 99;
-        try {
-            calculationToBeVerified=Integer.parseInt(value);
-        } catch(NumberFormatException nfe) {
-            System.out.println("Could not parse " + nfe);
-        }
-        if (calculationToBeVerified == resultToVerify)
-        {
-            // view the fragment settings initializing MenuSettingsFragment (FragmentTransaction
-            // switch between Fragments).
-            MenuSettingsFragment frag= new MenuSettingsFragment();
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.settings_container, frag);
-            ft.addToBackStack(null);
-            ft.commit();
-        }
-    }
     /**
      * receives calls from fragment listeners.
      *
