@@ -87,10 +87,12 @@ public class ChoiseOfGameToSetFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
-                TextView txt= arg1.findViewById(R.id.rowtext);
-                textGameToSet=txt.getText().toString();
-                listener.receiveResultGameToSet(textGameToSet);
-
+                if (arg1 != null)
+                {
+                    TextView txt= arg1.findViewById(R.id.rowtext);
+                    textGameToSet=txt.getText().toString();
+                    listener.receiveResultGameToSet(textGameToSet);
+                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> arg0)

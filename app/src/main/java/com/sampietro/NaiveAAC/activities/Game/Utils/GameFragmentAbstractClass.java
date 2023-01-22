@@ -5,19 +5,22 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameFragment;
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1FirstLevelFragment;
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1SecondLevelFragment;
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper;
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2Fragment;
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -77,6 +80,27 @@ public abstract class GameFragmentAbstractClass extends Fragment {
     public String toSpeak;
     //
     public OnFragmentEventListenerGame listener=null;
+    //
+    /**
+     * override the default Back button behavior
+     *
+     * @see Fragment#onCreate
+     */
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // This callback will only be called when MyFragment is at least Started.
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                // Handle the back button event
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+
+        // The callback can be enabled or disabled here or in handleOnBackPressed()
+    }
     /**
      * listener setting for game activities callbacks , context annotation, realm get default instance
      * and get print permissions

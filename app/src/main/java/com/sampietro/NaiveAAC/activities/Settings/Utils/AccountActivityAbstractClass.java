@@ -399,7 +399,9 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        realm.close();
+        if ( realm != null) {
+            realm.close();
+        }
     }
     /**
      * register the last player name on shared preferences.

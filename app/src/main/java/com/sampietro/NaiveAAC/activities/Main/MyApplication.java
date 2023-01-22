@@ -238,6 +238,25 @@ public class MyApplication extends Application {
             oldVersionCode++;
         }
         //
+        if (oldVersionCode == 9) {
+            // delete story
+            Realm realm= Realm.getDefaultInstance();
+            RealmResults<Stories> results =
+                    realm.where(Stories.class).equalTo("story", "il gatto con gli stivali").findAll();
+            realm.beginTransaction();
+            results.deleteAllFromRealm();
+            realm.commitTransaction();
+            // replace story from csv in assets
+            try {
+                copyFileFromAssetsToInternalStorage("csv", "toaddversion10-stories.csv", "stories.csv");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Stories.importFromCsvFromInternalStorage(context, realm, "Append");
+            //
+            oldVersionCode++;
+        }
+        //
         if (oldVersionCode < currentVersionCode) {
             throw new IllegalStateException(String.format(Locale.US, "Migration missing from v%d to v%d", oldVersionCode, currentVersionCode));
         }

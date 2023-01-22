@@ -127,7 +127,7 @@ public class GameADAFragment extends GameFragmentAbstractClass {
         //
         // listener.receiveResultGameFragment(rootView);
         //
-        listenerADA.receiveResultGameFragment(rootView, tTS1);
+        listenerADA.receiveResultGameFragment(rootView, tTS1, createLists);
         //
         return rootView;
     }

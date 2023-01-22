@@ -72,12 +72,13 @@ public class Stories extends RealmObject {
      * answerActionType = V then the action consists of playing a video
      * <p>
      * answerActionType = G then the action consists consists of executing a goto (phraseNumber) statement
+     * corresponding to the topic of a sentence
      */
     private String answerActionType;
     /**
      * contains the action associated with the <code>word</code> in case the word is an answer:
      * <p>
-     * contains the video key in the videos table or a <code>phraseNumber</code>
+     * contains the video key in the videos table or the topic of a sentence
      */
     private String answerAction;
     /*

@@ -1,14 +1,20 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA;
 
 import static com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd;
+import static com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchNegationAdverb;
 import static com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb;
+import static com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +80,11 @@ public class GameADAActivity extends GameActivityAbstractClass implements
     /**
      * used for printing
      */
+    ArrayList<Game2ArrayList> galleryList;
+    //
     public Bitmap bitmap1;
+    public Bitmap bitmap2;
+    public Bitmap mergedImages;
     /**
      * used for printing
      */
@@ -82,6 +92,21 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             bitmap1 = bitmap;
+        }
+        @Override
+        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+        }
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+        }
+    };
+    /**
+     * used for printing
+     */
+    public Target target2 = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            bitmap2 = bitmap;
         }
         @Override
         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
@@ -158,6 +183,14 @@ public class GameADAActivity extends GameActivityAbstractClass implements
             sharedStory =
                     sharedPref.getString ("preference_Story", "default");
             }
+        // resumes the story from the last sentence displayed
+        if (intent.hasExtra(ChoiseOfGameActivity.EXTRA_MESSAGE_GAME_PARAMETER)) {
+            boolean hasPhraseToDisplayIndex = sharedPref.contains(sharedStory + "preference_PhraseToDisplayIndex");
+            if (hasPhraseToDisplayIndex) {
+                phraseToDisplayIndex =
+                        sharedPref.getInt (sharedStory + "preference_PhraseToDisplayIndex", 1);
+            }
+        }
         //
         boolean hasLastPhraseNumber = sharedPref.contains("preference_LastPhraseNumber");
         if (hasLastPhraseNumber) {
@@ -195,6 +228,9 @@ public class GameADAActivity extends GameActivityAbstractClass implements
             resultsStories = resultsStories.sort("wordNumberInt");
             //
             if (sharedPhraseSize != 0) {
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(sharedStory + "preference_PhraseToDisplayIndex", phraseToDisplayIndex);
+                editor.apply();
                 //
                 toBeRecordedInHistory=gettoBeRecordedInHistory();
                 // REALM SESSION REGISTRATION
@@ -270,18 +306,238 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         Intent intent = new Intent(this, ChoiseOfGameActivity.class);
         startActivity(intent);
     }
+    //
+    /**
+     * Called when the user taps the print button.
+     * </p>
+     *
+     * @param v view of tapped button
+     * @see #printPhraseCacheImages
+     * @see #printPhraseCreateMergedImages
+     */
+    public void printPhrase(View v)
+    {
+        printPhraseCacheImages();
+        int TIME_OUT = 2000;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                printPhraseCreateMergedImages();
+                //
+                PrintHelper photoPrinter = new PrintHelper(context);
+                photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+                photoPrinter.printBitmap(context.getString(R.string.stampa_immagine1), mergedImages);
+            }
+        }, TIME_OUT);
+        //
+    }
+    //
+    /**
+     * Cache images for printing
+     * </p>
+     *
+     * @see #getTargetBitmapFromUrlUsingPicasso
+     * @see #getTargetBitmapFromFileUsingPicasso
+     * @see GrammarHelper#searchNegationAdverb
+     */
+    public void printPhraseCacheImages()
+    {
+        int count = galleryList.size();
+        if (count != 0) {
+            mergedImages = null;
+            int irrh=0;
+            while(irrh < count) {
+                if (galleryList.get(irrh).getUrlType().equals("A"))
+                {
+                    getTargetBitmapFromUrlUsingPicasso(galleryList.get(irrh).getUrl(), target1);
+                }
+                else
+                {
+                    File f = new File(galleryList.get(irrh).getUrl());
+                    getTargetBitmapFromFileUsingPicasso(f, target1);
+                }
+                // search for negation adverbs
+                String negationAdverbImageToSearchFor = searchNegationAdverb(galleryList.get(irrh).getImage_title().toLowerCase(), realm);
+                if (!(negationAdverbImageToSearchFor.equals("non trovato"))) {
+                    // INTERNAL MEMORY IMAGE SEARCH
+                    String uriToSearch = searchUri(realm, negationAdverbImageToSearchFor);
+                    File f = new File(uriToSearch);
+                    getTargetBitmapFromFileUsingPicasso(f, target2);
+                }
+                irrh++;
+            }
+        }
+        //
+    }
+    /**
+     * it merge images for printing
+     * </p>
+     *
+     * @see #getTargetBitmapFromUrlUsingPicasso
+     * @see #getTargetBitmapFromFileUsingPicasso
+     * @see GrammarHelper#searchNegationAdverb(String, Realm)
+     * @see ImageSearchHelper#searchUri(Realm, String) searchUri
+     * @see #createSingleImageSuperimposedFromMultipleImages
+     * @see #createSingleImageFromImageAndTitlePlacingThemVertically
+     * @see #createSingleImageFromMultipleImages
+     */
+    public void printPhraseCreateMergedImages()
+    {
+        int count = galleryList.size();
+        if (count != 0) {
+            mergedImages = null;
+            //
+            int imagesContainedInARow = 0;
+            int nrows = 1;
+            int ncolumns = 1;
+            //
+            int irrh=0;
+            while(irrh < count) {
+                if (galleryList.get(irrh).getUrlType().equals("A"))
+                {
+                    getTargetBitmapFromUrlUsingPicasso(galleryList.get(irrh).getUrl(), target1);
+                }
+                else
+                {
+                    File f = new File(galleryList.get(irrh).getUrl());
+                    getTargetBitmapFromFileUsingPicasso(f, target1);
+                }
+                // search for negation adverbs
+                String negationAdverbImageToSearchFor = searchNegationAdverb(galleryList.get(irrh).getImage_title().toLowerCase(), realm);
+                if (!(negationAdverbImageToSearchFor.equals("non trovato"))) {
+                    // INTERNAL MEMORY IMAGE SEARCH
+                    String uriToSearch = searchUri(realm, negationAdverbImageToSearchFor);
+                    File f = new File(uriToSearch);
+                    getTargetBitmapFromFileUsingPicasso(f, target2);
+                    // addImage("S", uriToSearch, viewHolder.img2);
+                    bitmap1 = createSingleImageSuperimposedFromMultipleImages(bitmap1, bitmap2);
+                }
+                // adding title
+                bitmap1 = createSingleImageFromImageAndTitlePlacingThemVertically(bitmap1, galleryList.get(irrh).getImage_title());
+                //
+                if (irrh == 0) {
+                    if (count > 24)
+                        {
+                        imagesContainedInARow = 7;
+                        mergedImages = Bitmap.createBitmap(bitmap1.getWidth() * 7, bitmap1.getHeight() * 5, bitmap1.getConfig());
+                        }
+                    else
+                    if (count > 15)
+                        {
+                        imagesContainedInARow = 6;
+                        mergedImages = Bitmap.createBitmap(bitmap1.getWidth() * 6, bitmap1.getHeight() * 4, bitmap1.getConfig());
+                        }
+                    else
+                    if (count > 12)
+                        {
+                        imagesContainedInARow = 5;
+                        mergedImages = Bitmap.createBitmap(bitmap1.getWidth() * 5, bitmap1.getHeight() * 3, bitmap1.getConfig());
+                        }
+                    else
+                        {
+                        imagesContainedInARow = 4;
+                        mergedImages = Bitmap.createBitmap(bitmap1.getWidth() * 4, bitmap1.getHeight() * 3, bitmap1.getConfig());
+                        }
+                }
+                else
+                {
+                    ncolumns++;
+                    if (ncolumns > imagesContainedInARow) {
+                        nrows++;
+                        ncolumns = 1;
+                    }
+                }
+                Bitmap firstImage = mergedImages;
+                mergedImages = createSingleImageFromMultipleImages(firstImage, bitmap1, nrows, ncolumns);
+                irrh++;
+            }
+        }
+        //
+    }
+    //
+    /**
+     * used for printing create single bitmap image from multiple bitmap images placing them horizontally
+     * Refer to <a href="https://stackoverflow.com/questions/34719987/merging-two-images-into-one-image#:~:text=Here%20is%20the%20code%3A%20Used%20to%20combine%20Images&text=getHeight()%2C%20firstImage.,(firstImage%2C%20SecondImage)%3B%20im.">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/2026359/caulitomaz">caulitomaz</a>
+     *
+     * @param firstImage bitmap of first image
+     * @param secondImage bitmap of second image
+     * @return bitmap single image created from multiple images
+     */
+    private Bitmap createSingleImageFromMultipleImagesPlacingThemHorizontally(Bitmap firstImage, Bitmap secondImage) {
+        Bitmap result = Bitmap.createBitmap(firstImage.getWidth() + secondImage.getWidth(), firstImage.getHeight(), firstImage.getConfig());
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(firstImage, 0f, 0f, null);
+        canvas.drawBitmap(secondImage, firstImage.getWidth(), 0f, null);
+        return result;
+    }
+    //
+    /**
+     * used for printing create single bitmap image from multiple bitmap images
+     *
+     * @param firstImage bitmap of first image
+     * @param secondImage bitmap of second image
+     * @param nrows int number of rows on the page
+     * @param ncolumns int number of columns on the page
+     * @return bitmap single image created from multiple images
+     */
+    private Bitmap createSingleImageFromMultipleImages(Bitmap firstImage, Bitmap secondImage, int nrows, int ncolumns ) {
+        Bitmap result = Bitmap.createBitmap(firstImage.getWidth() , firstImage.getHeight(), firstImage.getConfig());
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(firstImage, 0f, 0f, null);
+        canvas.drawBitmap(secondImage, secondImage.getWidth() * (ncolumns - 1), secondImage.getHeight() * (nrows - 1), null);
+        return result;
+    }
+    //
+    /**
+     * used for printing create single bitmap image from image and title
+     * Refer to <a href="https://stackoverflow.com/questions/2655402/android-canvas-drawtext">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/119396/gaz">gaz</a>
+     *
+     * @param firstImage bitmap of image
+     * @param title string image title
+     * @return bitmap single image created from image and title
+     */
+    private Bitmap createSingleImageFromImageAndTitlePlacingThemVertically(Bitmap firstImage, String title) {
+        Bitmap result = Bitmap.createBitmap(firstImage.getWidth(), firstImage.getHeight()  + 30, firstImage.getConfig());
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(firstImage, 0f, 0f, null);
+        //
+        Paint paint = new Paint();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setTextSize(20);
+        canvas.drawText(title, 0f, firstImage.getHeight() + 10, paint);
+        //
+        return result;
+    }
+    //
+    /**
+     * used for printing create single bitmap image superimposed from multiple bitmap images
+     *
+     * @param firstImage bitmap of first image
+     * @param secondImage bitmap of second image
+     * @return bitmap single image created from multiple images
+     */
+    private Bitmap createSingleImageSuperimposedFromMultipleImages(Bitmap firstImage, Bitmap secondImage) {
+        Bitmap result = Bitmap.createBitmap(firstImage.getWidth() , firstImage.getHeight(), firstImage.getConfig());
+        Canvas canvas = new Canvas(result);
+        canvas.drawBitmap(firstImage, 0f, 0f, null);
+        canvas.drawBitmap(secondImage, 0f, 0f, null);
+        return result;
+    }
     /**
      * Called when the user taps the settings button.
      * replace with hear fragment
      * </p>
      *
      * @param v view of tapped button
-     * @see VerifyActivity
+     * @see ChoiseOfGameActivity
      */
     public void returnSettings(View v)
     {
     /*
-                navigate to settings screen (VerifyActivity)
+                navigate to settings screen (ChoiseOfGameActivity)
     */
         Intent intent = new Intent(this, VerifyActivity.class);
         startActivity(intent);
@@ -319,6 +575,65 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         }
         ft.addToBackStack(null);
         ft.commit();
+    }
+    /**
+     * Called when the user taps the first page button.
+     * go to the first sentence
+     * @param v view of tapped button
+     * @see #continueGameAda
+     */
+    public void firstPageGameAdaButton(View v) {
+        if (!(tTS1 == null)) {
+            if (!tTS1.isSpeaking()) {
+                phraseToDisplayIndex = 1;
+                wordToDisplayIndex= 0;
+                continueGameAda();
+            }
+            else
+            { Toast.makeText(context, "TTS sta parlando : riprovare più tardi", Toast.LENGTH_SHORT).show(); }
+        }
+        else
+        {
+            phraseToDisplayIndex = 1;
+            wordToDisplayIndex= 0;
+            continueGameAda();
+        }
+    }
+    /**
+     * Called when the user taps the last page button.
+     * go to the last sentence
+     * @param v view of tapped button
+     * @see #continueGameAda
+     */
+    public void lastPageGameAdaButton(View v) {
+        // VIEW THE LAST PHRASE
+        resultsStories =
+                realm.where(Stories.class)
+                        .beginGroup()
+                        .equalTo("story", sharedStory)
+                        .endGroup()
+                        .findAll();
+        int resultsStoriesSize = resultsStories.size();
+        //
+        resultsStories = resultsStories.sort("phraseNumberInt");
+        //
+        Stories resultStories = resultsStories.get(resultsStoriesSize-1);
+        assert resultStories != null;
+        if (!(tTS1 == null)) {
+            if (!tTS1.isSpeaking()) {
+                phraseToDisplayIndex = resultStories.getPhraseNumber();
+                wordToDisplayIndex= 0;
+                continueGameAda();
+            }
+            else
+            { Toast.makeText(context, "TTS sta parlando : riprovare più tardi", Toast.LENGTH_SHORT).show(); }
+        }
+        else
+        {
+            phraseToDisplayIndex = resultStories.getPhraseNumber();
+            wordToDisplayIndex= 0;
+            continueGameAda();
+        }
     }
     /**
      * Called when the user taps the return button.
@@ -413,6 +728,10 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         }
         //
         if (sharedPhraseSize != 0) {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt(sharedStory + "preference_PhraseToDisplayIndex", phraseToDisplayIndex);
+            editor.apply();
+            //
             toBeRecordedInHistory=gettoBeRecordedInHistory();
             // REALM SESSION REGISTRATION
             List<VoiceToBeRecordedInHistory> voicesToBeRecordedInHistory =
@@ -463,19 +782,6 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         ft.commit();
     }
     //
-    /**
-     * click listener
-     * <p>
-     *
-     * @param view view of tapped button
-     * @param i int
-     * @param galleryList ArrayList<Game2ArrayList>
-     * @see GameADARecyclerViewAdapter
-     * @see Game2ArrayList
-     * @see #getTargetBitmapFromUrlUsingPicasso
-     * @see #getTargetBitmapFromFileUsingPicasso
-     * @see GameADAViewPagerActivity
-     */
     @Override
     public void onItemClick(View view, int i, ArrayList<Game2ArrayList> galleryList) {
         if (preference_PrintPermissions.equals("Y")) {
@@ -873,11 +1179,13 @@ public class GameADAActivity extends GameActivityAbstractClass implements
      *
      * @param v view root fragment view
      * @param t TextToSpeech
+     * @param gL ArrayList<Game2ArrayList>
      */
     @Override
-    public void receiveResultGameFragment(View v, TextToSpeech t) {
+    public void receiveResultGameFragment(View v, TextToSpeech t, ArrayList<Game2ArrayList> gL) {
         rootViewImageFragment = v;
         tTS1 = t;
+        galleryList = gL;
     }
 
 
