@@ -7,7 +7,6 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.TextView;
 
 import androidx.fragment.app.FragmentTransaction;
 
@@ -37,6 +36,7 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
         ChoiseOfGameRecyclerViewAdapterInterface {
 
     public static final String EXTRA_MESSAGE_GAME_PARAMETER ="GameParameter" ;
+    public static final String EXTRA_MESSAGE_GAME_USE_VIDEO_AND_SOUND ="GameUseVideoAndSound" ;
     //
     public RealmResults<GameParameters> resultsGameParameters;
     //
@@ -180,28 +180,33 @@ public class ChoiseOfGameActivity extends GameActivityAbstractClass implements
                     recyclerView.releasePlayer();
                 String gameJavaClass = null;
                 String gameParameter = null;
+                String gameUseVideoAndSound = null;
                 Intent intent = null;
                 assert result != null;
                 gameJavaClass = result.getGameJavaClass();
                 gameParameter = result.getGameParameter();
+                gameUseVideoAndSound = result.getGameUseVideoAndSound();
                 //
                 switch(gameJavaClass) {
                     case "NAVIGATORE":
                         intent = new Intent(this,
                                 Game1Activity.class);
                         intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter);
+                        intent.putExtra(EXTRA_MESSAGE_GAME_USE_VIDEO_AND_SOUND, gameUseVideoAndSound);
                         startActivity(intent);
                         break;
                     case "COMUNICATORE":
                         intent = new Intent(this,
                                 Game2Activity.class);
                         intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter);
+                        intent.putExtra(EXTRA_MESSAGE_GAME_USE_VIDEO_AND_SOUND, gameUseVideoAndSound);
                         startActivity(intent);
                         break;
                     case "A/DA":
                         intent = new Intent(this,
                                 GameADAActivity.class);
                         intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter);
+                        intent.putExtra(EXTRA_MESSAGE_GAME_USE_VIDEO_AND_SOUND, gameUseVideoAndSound);
                         startActivity(intent);
                         break;
                     // any other cases

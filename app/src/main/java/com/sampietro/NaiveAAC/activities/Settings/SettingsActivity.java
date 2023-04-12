@@ -1,6 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Settings;
 
-import static io.realm.Sort.ASCENDING;
+import static com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberStories;
 
 import android.Manifest;
 import android.app.Activity;
@@ -30,37 +30,27 @@ import androidx.fragment.app.FragmentTransaction;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModify;
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModifyAdapter;
-import com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesQuickRegistrationActivity;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter;
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment;
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions;
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptionsAdapter;
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames;
-import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter;
 import com.sampietro.NaiveAAC.activities.Graphics.Images;
-import com.sampietro.NaiveAAC.activities.Graphics.ImagesAdapter;
+import com.sampietro.NaiveAAC.activities.Graphics.Sounds;
 import com.sampietro.NaiveAAC.activities.Graphics.Videos;
-import com.sampietro.NaiveAAC.activities.Graphics.VideosAdapter;
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases;
 import com.sampietro.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass;
 import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass;
 import com.sampietro.NaiveAAC.activities.Stories.Stories;
-import com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter;
-import com.sampietro.NaiveAAC.activities.Stories.StoriesComparator;
-import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper;
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs;
 import com.sampietro.NaiveAAC.activities.history.History;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 /**
  * <h1>SettingsActivity</h1>
@@ -71,23 +61,13 @@ import io.realm.Sort;
  * @see SettingsFragmentAbstractClass
  * @see VerifyFragment
  * @see ChoiseOfGameToSetFragment
- * @see ImagesAdapter
- * @see VideosAdapter
- * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
- * @see ListsOfNamesAdapter
  * @see GrammaticalExceptionsAdapter
- * @see StoriesAdapter
  * @see GameParametersAdapter
  */
 public class SettingsActivity extends AccountActivityAbstractClass
         implements
-        ImagesAdapter.ImagesAdapterInterface,
         ChoiseOfGameToSetFragment.onFragmentEventListenerChoiseOfGameToSet,
-        VideosAdapter.VideosAdapterInterface,
-        ListsOfNamesAdapter.ListsOfNamesAdapterInterface,
         SettingsFragmentAbstractClass.onFragmentEventListenerSettings,
-        StoriesAdapter.StoriesAdapterInterface,
-        StoriesImageSearchArasaacRecyclerViewAdapterInterface,
         GameParametersAdapter.GameParametersAdapterInterface,
         GrammaticalExceptionsAdapter.GrammaticalExceptionsAdapterInterface,
         PictogramsAllToModifyAdapter.PictogramsAllToModifyAdapterInterface
@@ -105,25 +85,21 @@ public class SettingsActivity extends AccountActivityAbstractClass
     public boolean radiobuttonGameParametersActiveClicked = false;
     public boolean radiobuttonGameParametersNotActiveClicked = false;
     //
+    public boolean radiobuttonGameParametersUseVideoAndSoundClicked = false;
+    public boolean radiobuttonGameParametersDoesNotUseVideoAndSoundClicked = false;
+    //
     public boolean radiobuttonDataImportReplaceClicked = false;
     public boolean radiobuttonDataImportAppendClicked = false;
     //
     public boolean checkboxImagesChecked;
     public boolean checkboxVideosChecked;
+    public boolean checkboxSoundsChecked;
     public boolean checkboxPhrasesChecked;
     public boolean checkboxWordPairsChecked;
     public boolean checkboxListsOfNamesChecked;
     public boolean checkboxStoriesChecked;
     public boolean checkboxGrammaticalExceptionsChecked;
     public boolean checkboxGameParametersChecked;
-    //
-    public String keywordStoryToSearch;
-    public int phraseNumberToSearch;
-    public String keywordStoryToSearchArasaac;
-    public int phraseNumberToSearchArasaac;
-    public int wordNumberToSearchArasaac;
-    public String wordToSearchArasaac;
-
     /**
      * configurations of settings start screen.
      *
@@ -244,12 +220,14 @@ public class SettingsActivity extends AccountActivityAbstractClass
             Images i = realm.createObject(Images.class);
             i.setDescrizione(textPersonName);
             i.setUri(filePath);
+            i.setFromAssets("");
             realm.commitTransaction();
             //
             realm.beginTransaction();
             Images iIo = realm.createObject(Images.class);
             iIo.setDescrizione(getString(R.string.io));
             iIo.setUri(filePath);
+            i.setFromAssets("");
             realm.commitTransaction();
             // register the linked word pairs
             realm.beginTransaction();
@@ -260,6 +238,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
             wordPairs.setIsMenuItem(getString(R.string.slm));
             wordPairs.setAwardType("");
             wordPairs.setUriPremiumVideo("");
+            wordPairs.setFromAssets("");
             realm.commitTransaction();
         }
         // view the fragment settings initializing MenuSettingsFragment (FragmentTransaction
@@ -277,202 +256,15 @@ public class SettingsActivity extends AccountActivityAbstractClass
      * </p>
      *
      * @param view view of tapped button
-     * @see MenuSettingsFragment
+     * @see SettingsMediaActivity
      * @see ChoiseOfMediaToSetFragment
      */
-    public void submitChoiseOfMediaToSet(View view) {
-        // view the media settings fragment initializing ChoiseOfMediaToSetFragment (FragmentTransaction
-        // switch between Fragments).
-        ChoiseOfMediaToSetFragment frag= new ChoiseOfMediaToSetFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the video button from the media settings menu.
-     * </p>
-     * the activity is notified to view the videos settings.
-     * </p>
-     *
-     * @param view view of tapped button
-     * @see ChoiseOfMediaToSetFragment
-     * @see VideosFragment
-     */
-    public void submitVideo(View view) {
-        // view the videos settings fragment initializing VideosFragment (FragmentTransaction
-        // switch between Fragments).
-        VideosFragment frag= new VideosFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(getString(R.string.uri), getString(R.string.none));
-        frag.setArguments(bundle);
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the search video button from the video settings menu.
-     * </p>
-     *
-     * @param v view of tapped button
-     * @see VideosFragment
-     * @see #setActivityResultLauncher
-     */
-    public void videoSearch(View v)
-    {
-        // video search
-        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
-        // browser.
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        // Filter to only show results that can be "opened", such as a
-        // file (as opposed to a list of contacts or timezones)
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        // Filter to show only images, using the image MIME data type.
-        // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
-        // To search for all documents available via installed storage providers,
-        // it would be "*/*".
-        intent.setType("video/*");
-        videoSearchActivityResultLauncher.launch(intent);
-    }
-    /**
-     * Called when the user taps the add video button from the video settings.
-     * </p>
-     * after the checks it adds the references of the video on realm
-     * </p>
-     * and the activity is notified to view the updated video settings.
-     *
-     * @param v view of tapped button
-     * @see VideosFragment
-     * @see Videos
-     */
-    public void videoAdd(View v)
-    {
-        realm= Realm.getDefaultInstance();
-        //
-        EditText vidD=(EditText) findViewById(R.id.videoDescription);
-        if (vidD.length()>0 && stringUri != null)
-        {
-            uri = Uri.parse(stringUri);
-            try {
-                filePath = getFilePath(this, uri);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-            // Note that the realm object was generated with the createObject method
-            // and not with the new operator.
-            // The modification operations will be performed within a Transaction.
-            realm.beginTransaction();
-            Videos videos = realm.createObject(Videos.class);
-            videos.setDescrizione(vidD.getText().toString());
-            videos.setUri(filePath);
-            realm.commitTransaction();
-            // view the videos settings fragment initializing VideosFragment (FragmentTransaction
-            // switch between Fragments).
-            VideosFragment frag= new VideosFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(getString(R.string.uri), getString(R.string.none));
-            frag.setArguments(bundle);
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.settings_container, frag);
-            ft.addToBackStack(null);
-            ft.commit();
-        }
-    }
-    /**
-     * on callback from VideosAdapter to this Activity
-     * </p>
-     * after deleting references to a video the activity is notified to view the updated video settings
-     * </p>
-     *
-     * @see VideosAdapter
-     * @see VideosFragment
-     */
-    @Override
-    public void reloadVideosFragment() {
-        // view the videos settings fragment initializing VideosFragment (FragmentTransaction
-        // switch between Fragments).
-        VideosFragment frag= new VideosFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(getString(R.string.uri), getString(R.string.none));
-        frag.setArguments(bundle);
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the images button from the media settings menu.
-     * </p>
-     * the activity is notified to view the images settings.
-     * </p>
-     *
-     * @param view view of tapped button
-     * @see ChoiseOfMediaToSetFragment
-     * @see ImagesFragment
-     */
-    public void submitImages(View view) {
-        // view the images settings fragment initializing ImagesFragment (FragmentTransaction
-        // switch between Fragments).
-        ImagesFragment frag= new ImagesFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the add image button from the image settings.
-     * </p>
-     * after the checks it adds the references of the image on realm
-     * </p>
-     * and the activity is notified to view the updated image settings.
-     *
-     * @param v view of tapped button
-     * @see ImagesFragment
-     * @see Images
-     */
-    public void imageAdd(View v)
-    {
-        realm= Realm.getDefaultInstance();
-        //
-        EditText immD=(EditText) findViewById(R.id.imageDescription);
-        if (immD.length()>0 && !filePath.equals(getString(R.string.non_trovato)))
-        {
-            // Note that the realm object was generated with the createObject method
-            // and not with the new operator.
-            // The modification operations will be performed within a Transaction.
-            realm.beginTransaction();
-            Images i = realm.createObject(Images.class);
-            i.setDescrizione(immD.getText().toString());
-            i.setUri(filePath);
-            realm.commitTransaction();
-            // view the images settings fragment initializing ImagesFragment (FragmentTransaction
-            // switch between Fragments).
-            ImagesFragment frag= new ImagesFragment();
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.settings_container, frag);
-            ft.addToBackStack(null);
-            ft.commit();
-        }
-    }
-    /**
-     * on callback from ImagesAdapter to this Activity
-     * </p>
-     * after deleting references to a image the activity is notified to view the updated image settings
-     * </p>
-     *
-     * @see ImagesAdapter
-     * @see ImagesFragment
-     */
-    @Override
-    public void reloadImagesFragment() {
-        // view the images settings fragment initializing ImagesFragment (FragmentTransaction
-        // switch between Fragments).
-        ImagesFragment frag= new ImagesFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
+     public void submitChoiseOfMediaToSet(View view) {
+        /*
+                navigate to settings word pairs screen
+        */
+        Intent intent = new Intent(context, SettingsMediaActivity.class);
+        startActivity(intent);
     }
     /**
      * Called when the user taps the game settings button from the settings menu.
@@ -550,6 +342,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                 // set the fields here
                 phrase.setTipo(getString(R.string.welcome_phrase_first_part));
                 phrase.setDescrizione(textWPFP.getText().toString());
+                phrase.setFromAssets("Y");
             } else {
                 phraseToSearch.setDescrizione(textWPFP.getText().toString());
             }
@@ -568,6 +361,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                 // set the fields here
                 phrase.setTipo(getString(R.string.welcome_phrase_second_part));
                 phrase.setDescrizione(textWPSP.getText().toString());
+                phrase.setFromAssets("Y");
             } else {
                 phraseToSearch.setDescrizione(textWPSP.getText().toString());
             }
@@ -586,6 +380,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                 // set the fields here
                 phrase.setTipo(getString(R.string.reminder_phrase));
                 phrase.setDescrizione(textRP.getText().toString());
+                phrase.setFromAssets("Y");
             } else {
                 phraseToSearch.setDescrizione(textRP.getText().toString());
             }
@@ -605,6 +400,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                 // set the fields here
                 phrase.setTipo(getString(R.string.reminder_phrase_plural));
                 phrase.setDescrizione(textRPP.getText().toString());
+                phrase.setFromAssets("Y");
             } else {
                 phraseToSearch.setDescrizione(textRPP.getText().toString());
             }
@@ -626,637 +422,14 @@ public class SettingsActivity extends AccountActivityAbstractClass
      *
      * @param view view of tapped button
      * @see MenuSettingsFragment
+     * @see SettingsContentsActivity
      * @see ContentsFragment
      */
     public void submitContents(View view) {
-        // view the contents settings fragment initializing ContentsFragment (FragmentTransaction
-        // switch between Fragments).
-        ContentsFragment frag= new ContentsFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
+        Intent intent = new Intent(context, SettingsContentsActivity.class);
+        startActivity(intent);
     }
     //
-    /**
-     * Called when the user taps the lists of names button from the contents settings menu.
-     * </p>
-     * the activity is notified to view the lists of names settings.
-     * </p>
-     *
-     * @param view view of tapped button
-     * @see ContentsFragment
-     * @see ListsOfNamesFragment
-     */
-    public void submitListsOfNames(View view) {
-        // view the lists of names settings fragment initializing ListsOfNamesFragment (FragmentTransaction
-        // switch between Fragments).
-        ListsOfNamesFragment frag= new ListsOfNamesFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the add button from lists of names settings.
-     * </p>
-     * after the checks it adds the name on realm
-     * </p>
-     * and the activity is notified to view the updated lists of names settings.
-     *
-     * @param v view of tapped button
-     * @see ListsOfNamesFragment
-     * @see ListsOfNames
-     */
-    public void nameAddToList(View v)
-    {
-        realm= Realm.getDefaultInstance();
-        //
-        EditText textWord1=(EditText) findViewById(R.id.keywordtoadd);
-        EditText textWord2=(EditText) findViewById(R.id.nametoadd);
-        EditText textWord3=(EditText) findViewById(R.id.uritypenametoadd);
-        EditText textWord4=(EditText) findViewById(R.id.urinametoadd);
-        if ((textWord1 != null) && (textWord2 != null)
-                && (textWord3 != null) && (textWord4 != null))
-        {
-            // Note that the realm object was generated with the createObject method
-            // and not with the new operator.
-            // The modification operations will be performed within a Transaction.
-            realm.beginTransaction();
-            ListsOfNames listsOfNames = realm.createObject(ListsOfNames.class);
-            // set the fields here
-            listsOfNames.setKeyword(textWord1.getText().toString());
-            listsOfNames.setWord(textWord2.getText().toString());
-            listsOfNames.setUriType(textWord3.getText().toString());
-            listsOfNames.setUri(textWord4.getText().toString());
-            realm.commitTransaction();
-        }
-        // view the lists of names settings initializing ListsOfNamesFragment (FragmentTransaction
-        // switch between Fragments).
-        ListsOfNamesFragment frag= new ListsOfNamesFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * on callback from ListOfNamesAdapter to this Activity
-     * </p>
-     * after deleting a name the activity is notified to view the updated lists of names settings
-     * </p>
-     *
-     * @see ListsOfNamesAdapter
-     * @see ListsOfNamesFragment
-     */
-    @Override
-    public void reloadListOfNamesFragment() {
-        // view the lists of names settings initializing ListsOfNamesFragment (FragmentTransaction
-        // switch between Fragments).
-        ListsOfNamesFragment frag= new ListsOfNamesFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the word pairs button from the contents settings menu.
-     * </p>
-     *
-     * @param view view of tapped button
-     * @see ContentsFragment
-     * @see SettingsWordPairsActivity
-     */
-    public void submitWordPairs(View view) {
-        /*
-                navigate to settings word pairs screen
-        */
-        Intent intent = new Intent(context, SettingsWordPairsActivity.class);
-        startActivity(intent);
-    }
-    /**
-     * Called when the user taps the stories add word button from the contents settings menu.
-     * </p>
-     * the activity is notified to view the stories settings.
-     * </p>
-     *
-     * @param view view of tapped button
-     * @see ContentsFragment
-     * @see StoriesFragment
-     */
-    public void submitStories(View view) {
-        // view the stories settings fragment initializing StoriesFragment (FragmentTransaction
-        // switch between Fragments).
-        StoriesFragment frag= new StoriesFragment();
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the image search Arasaac button from Stories Fragment.
-     *
-     * @param v view of tapped button
-     */
-    public void imageSearchArasaac(View v)
-    {
-        EditText textWord1=(EditText) findViewById(R.id.keywordstorytoadd);
-        EditText textWord2=(EditText) findViewById(R.id.phrasenumbertoadd);
-        EditText textWord3=(EditText) findViewById(R.id.wordnumbertoadd);
-        EditText textWord4=(EditText) findViewById(R.id.wordtoadd);
-        if (textWord4 != null)
-        {
-            // view the image search Arasaac  initializing ImageSearchArasaacFragment (FragmentTransaction
-            // switch between Fragments).
-            keywordStoryToSearchArasaac = textWord1.getText().toString().toLowerCase();
-            if ((textWord2 != null) && (!textWord2.getText().toString().equals("")))
-                phraseNumberToSearchArasaac = Integer.parseInt(textWord2.getText().toString());
-            if ((textWord3 != null) && (!textWord3.getText().toString().equals("")))
-                wordNumberToSearchArasaac = Integer.parseInt(textWord3.getText().toString());
-            wordToSearchArasaac = textWord4.getText().toString();
-            StoriesImageSearchArasaacFragment frag= new StoriesImageSearchArasaacFragment();
-            //
-            Bundle bundle = new Bundle();
-            bundle.putString("keywordToSearchArasaac", wordToSearchArasaac);
-            frag.setArguments(bundle);
-            //
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.settings_container, frag);
-            ft.addToBackStack(null);
-            ft.commit();
-        }
-    }
-    /**
-     * Called when the user taps the image search Arasaac button from StoriesImagesSearchArasaac Fragment.
-     *
-     * @param v view of tapped button
-     */
-    public void arasaacSearch(View v)
-    {
-        EditText textWord1=(EditText) findViewById(R.id.keywordarasaactosearch);
-        if (textWord1 != null)
-        {
-            // view the image search Arasaac  initializing ImageSearchArasaacFragment (FragmentTransaction
-            // switch between Fragments).
-            StoriesImageSearchArasaacFragment frag= new StoriesImageSearchArasaacFragment();
-            //
-            Bundle bundle = new Bundle();
-            bundle.putString("keywordToSearchArasaac", textWord1.getText().toString());
-            frag.setArguments(bundle);
-            //
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.settings_container, frag);
-            ft.addToBackStack(null);
-            ft.commit();
-        }
-    }
-    /**
-     * Called when the user taps the image Arasaac .
-     *
-     * @param view view of the image Arasaac
-     * @param word string whit the keyword of the image Arasaac
-     * @param url string whit the url of the image Arasaac
-     */
-    @Override
-    public void onItemClick(View view, String word, String url) {
-        StoriesFragment frag= new StoriesFragment();
-        //
-        Bundle bundle = new Bundle();
-        bundle.putString("Story", keywordStoryToSearchArasaac);
-        bundle.putInt("PhraseNumber", phraseNumberToSearchArasaac);
-        bundle.putInt("WordNumber", wordNumberToSearchArasaac);
-        bundle.putString("Word", wordToSearchArasaac);
-        bundle.putString("UriType", "A");
-        bundle.putString("Uri", url);
-        frag.setArguments(bundle);
-        //
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the add button from stories settings.
-     * </p>
-     * after the checks it adds the piece of story on realm
-     * </p>
-     * and the activity is notified to view the stories settings.
-     *
-     * @param v view of tapped button
-     * @see StoriesFragment
-     * @see Stories
-     */
-    public void storyToAdd(View v)
-    {
-        //
-        keywordStoryToSearch = getString(R.string.nome_storia);
-        phraseNumberToSearch = 0;
-        //
-        realm= Realm.getDefaultInstance();
-        //
-        EditText textWord1=(EditText) findViewById(R.id.keywordstorytoadd);
-        EditText textWord2=(EditText) findViewById(R.id.phrasenumbertoadd);
-        EditText textWord3=(EditText) findViewById(R.id.wordnumbertoadd);
-        EditText textWord4=(EditText) findViewById(R.id.wordtoadd);
-        EditText textWord5=(EditText) findViewById(R.id.uritypetoadd);
-        EditText textWord6=(EditText) findViewById(R.id.uritoadd);
-        if ((textWord1 != null) && (!textWord1.getText().toString().equals(""))
-                && (textWord2 != null) && (!textWord2.getText().toString().equals(""))
-                && (textWord3 != null) && (textWord4 != null)
-                && (textWord5 != null) && (textWord6 != null))
-        {
-            // cancello frase vecchia
-            // se textWord3 non è vuoto
-            // copio la frase vecchia fino a textWord3
-            // inserisco la nuova parola
-            // copio il resto della frase vecchia e riordino
-            // se textWord3 è vuoto
-            // copio la frase vecchia
-            // inserisco la nuova parola alla fine e riordino
-            //
-            // clear the table
-            // cancello frase vecchia dopo averne salvato copia
-            RealmResults<Stories> resultsStories =
-                    realm.where(Stories.class)
-                            .equalTo("story", textWord1.getText().toString().toLowerCase())
-                            .equalTo("phraseNumberInt", Integer.parseInt(textWord2.getText().toString()))
-                            .findAll();
-            int storiesSize = resultsStories.size();
-            //
-            List<Stories> resultsStoriesList = realm.copyFromRealm(resultsStories);
-            //
-            Collections.sort(resultsStoriesList,new StoriesComparator());
-            //
-            realm.beginTransaction();
-            resultsStories.deleteAllFromRealm();
-            realm.commitTransaction();
-            //
-            int currentWordNumber = 0;
-            if (!textWord3.getText().toString().equals(""))
-                {
-                    // copio la frase vecchia fino a textWord3
-                    int irrh=0;
-                    while(irrh < storiesSize)   {
-                        Stories resultStories = resultsStoriesList.get(irrh);
-                        assert resultStories != null;
-                        currentWordNumber = resultStories.getWordNumber();
-                        if (currentWordNumber < Integer.parseInt(textWord3.getText().toString()))
-                        {
-                            realm.beginTransaction();
-                            realm.copyToRealm(resultStories);
-                            realm.commitTransaction();
-                        }
-                        else
-                        {
-                            break;
-                        }
-                        irrh++;
-                    }
-                    // inserisco la nuova parola
-                    // registro nuova parola
-                    // Note that the realm object was generated with the createObject method
-                    // and not with the new operator.
-                    // The modification operations will be performed within a Transaction.
-                    //
-                    keywordStoryToSearch = textWord1.getText().toString().toLowerCase();
-                    phraseNumberToSearch = Integer.parseInt(textWord2.getText().toString());
-                    //
-                    realm.beginTransaction();
-                    Stories stories = realm.createObject(Stories.class);
-                    // set the fields here
-                    stories.setStory(textWord1.getText().toString().toLowerCase());
-                    stories.setPhraseNumber(Integer.parseInt(textWord2.getText().toString()));
-                    stories.setWordNumber(Integer.parseInt(textWord3.getText().toString()));
-                    stories.setWord(textWord4.getText().toString());
-                    stories.setUriType(textWord5.getText().toString());
-                    stories.setUri(textWord6.getText().toString());
-                    realm.commitTransaction();
-                    // copio la frase vecchia
-                    while(irrh < storiesSize)   {
-                        Stories resultStories = resultsStoriesList.get(irrh);
-                        assert resultStories != null;
-                        realm.beginTransaction();
-                        realm.copyToRealm(resultStories);
-                        realm.commitTransaction();
-                        irrh++;
-                    }
-                 }
-                 else
-                 {
-                     // copio la frase vecchia
-                     int irrh=0;
-                     while(irrh < storiesSize)   {
-                         Stories resultStories = resultsStoriesList.get(irrh);
-                         assert resultStories != null;
-                         currentWordNumber = resultStories.getWordNumber();
-                         //
-                         realm.beginTransaction();
-                         realm.copyToRealm(resultStories);
-                         realm.commitTransaction();
-                         //
-                         irrh++;
-                     }
-                     // inserisco la nuova parola
-                     // registro nuova parola
-                     // Note that the realm object was generated with the createObject method
-                     // and not with the new operator.
-                     // The modification operations will be performed within a Transaction.
-                     //
-                     keywordStoryToSearch = textWord1.getText().toString().toLowerCase();
-                     phraseNumberToSearch = Integer.parseInt(textWord2.getText().toString());
-                     //
-                     realm.beginTransaction();
-                     Stories stories = realm.createObject(Stories.class);
-                     // set the fields here
-                     stories.setStory(textWord1.getText().toString().toLowerCase());
-                     stories.setPhraseNumber(Integer.parseInt(textWord2.getText().toString()));
-                     stories.setWordNumber(++currentWordNumber);
-                     stories.setWord(textWord4.getText().toString());
-                     stories.setUriType(textWord5.getText().toString());
-                     stories.setUri(textWord6.getText().toString());
-                     realm.commitTransaction();
-                 }
-            // riordino
-            StoriesHelper.renumberAPhraseOfAStory(realm, textWord1.getText().toString().toLowerCase(), Integer.parseInt(textWord2.getText().toString()));
-        }
-        // view the stories settings fragment initializing StoriesListFragment (FragmentTransaction
-        // switch between Fragments).
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        //
-        StoriesListFragment frag= new StoriesListFragment();
-        //
-        Bundle bundle = new Bundle();
-        bundle.putString("keywordStoryToSearch", keywordStoryToSearch);
-        bundle.putInt("phraseNumberToSearch", phraseNumberToSearch);
-        frag.setArguments(bundle);
-        //
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the show list button from the contents settings menu.
-     * </p>
-     * the activity is notified to view the stories list.
-     * </p>
-     *
-     * @param view view of tapped button
-     * @see ContentsFragment
-     * @see StoriesListFragment
-     */
-    public void submitStoriesShowList(View view) {
-        //
-        keywordStoryToSearch = getString(R.string.nome_storia);
-        phraseNumberToSearch = 0;
-        // view the stories list  initializing StoriesListFragment (FragmentTransaction
-        // switch between Fragments).
-        StoriesListFragment frag= new StoriesListFragment();
-        //
-        Bundle bundle = new Bundle();
-        bundle.putString("keywordStoryToSearch", keywordStoryToSearch);
-        bundle.putInt("phraseNumberToSearch", phraseNumberToSearch);
-        frag.setArguments(bundle);
-        //
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the story search button from the stories list.
-     * </p>
-     * the activity is notified to view the stories list.
-     * </p>
-     *
-     * @param view view of tapped button
-     * @see StoriesListFragment
-     */
-    public void storiesSearch(View view) {
-        // view the storie list  initializing StoriesListFragment (FragmentTransaction
-        // switch between Fragments).
-        EditText textWord1=(EditText) rootViewFragment.findViewById(R.id.keywordstorytosearch);
-        EditText textWord2=(EditText) rootViewFragment.findViewById(R.id.phrasenumbertosearch);
-        keywordStoryToSearch = textWord1.getText().toString().toLowerCase();
-        phraseNumberToSearch = Integer.parseInt(textWord2.getText().toString());
-        StoriesListFragment frag= new StoriesListFragment();
-        //
-        Bundle bundle = new Bundle();
-        bundle.putString("keywordStoryToSearch", keywordStoryToSearch);
-        bundle.putInt("phraseNumberToSearch", phraseNumberToSearch);
-        frag.setArguments(bundle);
-        //
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * on callback from StoriesAdapter to this Activity
-     * </p>
-     * after deleting a piece of story the activity is notified to view the word pairs settings
-     * </p>
-     *
-     * @see StoriesAdapter
-     * @see StoriesFragment
-     */
-    @Override
-    public void reloadStoriesFragmentDeleteStories(int position) {
-        // view the stories settings fragment initializing StoriesFragment (FragmentTransaction
-        // switch between Fragments).
-        realm= Realm.getDefaultInstance();
-        RealmResults<Stories> results = null;
-        if ((keywordStoryToSearch == null) || (keywordStoryToSearch.equals(getString(R.string.nome_storia)))) {
-            results = realm.where(Stories.class).findAll();
-            }
-            //
-            else
-            if (phraseNumberToSearch == 0)
-                {
-                    results =
-                            realm.where(Stories.class)
-                                    .equalTo("story", keywordStoryToSearch)
-                                    .findAll();
-                }
-                else
-                {
-                    results =
-                            realm.where(Stories.class)
-                                    .equalTo("story", keywordStoryToSearch)
-                                    .equalTo("phraseNumberInt", phraseNumberToSearch)
-                                    .findAll();
-                }
-        //
-        String[] mStrings1 = {"story","phraseNumberInt", "wordNumberInt" };
-        Sort[] mStrings2 = {ASCENDING,ASCENDING, ASCENDING };
-        results = results.sort(mStrings1, mStrings2 );
-        //
-        Stories daCancellare=results.get(position);
-        //
-        assert daCancellare != null;
-        String daCancellareStory = daCancellare.getStory();
-        int daCancellarePhraseNumber = daCancellare.getPhraseNumber();
-        int daCancellareWordNumber = daCancellare.getWordNumber();
-        //
-        keywordStoryToSearch = daCancellareStory;
-        phraseNumberToSearch = daCancellarePhraseNumber;
-        // delete
-        realm.beginTransaction();
-        daCancellare.deleteFromRealm();
-        realm.commitTransaction();
-        //
-        StoriesHelper.renumberAPhraseOfAStory(realm, daCancellareStory, daCancellarePhraseNumber);
-        // StoriesFragment frag= new StoriesFragment();
-        StoriesListFragment frag= new StoriesListFragment();
-        //
-        Bundle bundle = new Bundle();
-        bundle.putString("keywordStoryToSearch", keywordStoryToSearch);
-        bundle.putInt("phraseNumberToSearch", phraseNumberToSearch);
-        frag.setArguments(bundle);
-        //
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * on callback from StoriesAdapter to this Activity
-     * </p>
-     * for editing a piece of story the activity is notified to view the word pairs settings
-     * </p>
-     *
-     * @see StoriesAdapter
-     * @see StoriesFragment
-     */
-    @Override
-    public void reloadStoriesFragmentForEditing(int position) {
-        // view the stories settings fragment initializing StoriesFragment (FragmentTransaction
-        // switch between Fragments).
-        realm= Realm.getDefaultInstance();
-        RealmResults<Stories> results = null;
-        if ((keywordStoryToSearch == null) || (keywordStoryToSearch.equals(getString(R.string.nome_storia)))) {
-            results = realm.where(Stories.class).findAll();
-        }
-        //
-        else
-        if (phraseNumberToSearch == 0)
-        {
-            results =
-                    realm.where(Stories.class)
-                            .equalTo("story", keywordStoryToSearch)
-                            .findAll();
-        }
-        else
-        {
-            results =
-                    realm.where(Stories.class)
-                            .equalTo("story", keywordStoryToSearch)
-                            .equalTo("phraseNumberInt", phraseNumberToSearch)
-                            .findAll();
-        }
-        //
-        String[] mStrings1 = {"story","phraseNumberInt", "wordNumberInt" };
-        Sort[] mStrings2 = {ASCENDING,ASCENDING, ASCENDING };
-        results = results.sort(mStrings1, mStrings2 );
-        //
-        StoriesFragment frag= new StoriesFragment();
-        //
-        Bundle bundle = new Bundle();
-        Stories daModificare=results.get(position);
-        assert daModificare != null;
-        //
-        String daModificareStory = daModificare.getStory();
-        int daModificarePhraseNumber = daModificare.getPhraseNumber();
-        int daModificareWordNumber = daModificare.getWordNumber();
-        //
-        bundle.putString("Story", daModificare.getStory());
-        bundle.putInt("PhraseNumber", daModificare.getPhraseNumber());
-        bundle.putInt("WordNumber", daModificare.getWordNumber());
-        bundle.putString("Word", daModificare.getWord());
-        bundle.putString("UriType", daModificare.getUriType());
-        bundle.putString("Uri", daModificare.getUri());
-        frag.setArguments(bundle);
-        // delete
-        realm.beginTransaction();
-        daModificare.deleteFromRealm();
-        realm.commitTransaction();
-        //
-        StoriesHelper.renumberAPhraseOfAStory(realm, daModificareStory, daModificarePhraseNumber);
-        //
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * on callback from StoriesAdapter to this Activity
-     * </p>
-     * for insertion a piece of story the activity is notified to view the word pairs settings
-     * </p>
-     *
-     * @see StoriesAdapter
-     * @see StoriesFragment
-     */
-    @Override
-    public void reloadStoriesFragmentForInsertion(int position) {
-        // view the stories settings fragment initializing StoriesFragment (FragmentTransaction
-        // switch between Fragments).
-        realm= Realm.getDefaultInstance();
-        RealmResults<Stories> results = null;
-        if ((keywordStoryToSearch == null) || (keywordStoryToSearch.equals(getString(R.string.nome_storia)))) {
-            results = realm.where(Stories.class).findAll();
-        }
-        //
-        else
-        if (phraseNumberToSearch == 0)
-        {
-            results =
-                    realm.where(Stories.class)
-                            .equalTo("story", keywordStoryToSearch)
-                            .findAll();
-        }
-        else
-        {
-            results =
-                    realm.where(Stories.class)
-                            .equalTo("story", keywordStoryToSearch)
-                            .equalTo("phraseNumberInt", phraseNumberToSearch)
-                            .findAll();
-        }
-        //
-        String[] mStrings1 = {"story","phraseNumberInt", "wordNumberInt" };
-        Sort[] mStrings2 = {ASCENDING,ASCENDING, ASCENDING };
-        results = results.sort(mStrings1, mStrings2 );
-        //
-        StoriesFragment frag= new StoriesFragment();
-        //
-        Bundle bundle = new Bundle();
-        Stories daInserirePrimaDi=results.get(position);
-        assert daInserirePrimaDi != null;
-        //
-        bundle.putString("Story", daInserirePrimaDi.getStory());
-        bundle.putInt("PhraseNumber", daInserirePrimaDi.getPhraseNumber());
-        bundle.putInt("WordNumber", daInserirePrimaDi.getWordNumber());
-        frag.setArguments(bundle);
-        //
-        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.settings_container, frag);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-    /**
-     * Called when the user taps the Stories - Quick Registration button from the contents settings menu.
-     * </p>
-     *
-     * @param view view of tapped button
-     * @see ContentsFragment
-     * @see SettingsStoriesQuickRegistrationActivity
-     */
-    public void submitStoriesQuickRegistration(View view) {
-        /*
-                navigate to settings Stories Quick Registration screen
-        */
-        Intent intent = new Intent(context, SettingsStoriesQuickRegistrationActivity.class);
-        startActivity(intent);
-    }
     /**
      * Called when the user taps the advanced settings button from the settings menu.
      * </p>
@@ -1485,14 +658,47 @@ public class SettingsActivity extends AccountActivityAbstractClass
         // Check which radio button was clicked
         switch(view.getId()) {
             case R.id.radio_active:
-                if (checked)
+                if (checked) {
                     //
                     radiobuttonGameParametersActiveClicked = true;
+                    radiobuttonGameParametersNotActiveClicked = false;
+                }
                 break;
             case R.id.radio_not_active:
-                if (checked)
+                if (checked) {
                     //
+                    radiobuttonGameParametersActiveClicked = false;
                     radiobuttonGameParametersNotActiveClicked = true;
+                }
+                break;
+        }
+    }
+    /**
+     * Called when the user click the radio button UseVideoAndSound from the game parameters settings.
+     * </p>
+     * register which radio button was clicked
+     *
+     * @param view view of clicked radio button
+     * @see GameParametersSettingsFragment
+     */
+    public void onGameParametersUseVideoAndSoundClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_yes:
+                if (checked) {
+                    //
+                    radiobuttonGameParametersUseVideoAndSoundClicked = true;
+                    radiobuttonGameParametersDoesNotUseVideoAndSoundClicked = false;
+                }
+                break;
+            case R.id.radio_no:
+                if (checked) {
+                    //
+                    radiobuttonGameParametersUseVideoAndSoundClicked = false;
+                    radiobuttonGameParametersDoesNotUseVideoAndSoundClicked = true;
+                    }
                 break;
         }
     }
@@ -1519,6 +725,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                 gamI.length()>0 &&
                 gamJC.length()>0 &&
                 gamP.length()>0 &&
+                filePath != null &&
                 !filePath.equals(getString(R.string.non_trovato)))
         {
             // Note that the realm object was generated with the createObject method
@@ -1534,8 +741,13 @@ public class SettingsActivity extends AccountActivityAbstractClass
             gp.setGameInfo(gamI.getText().toString());
             gp.setGameJavaClass(gamJC.getText().toString());
             gp.setGameParameter(gamP.getText().toString());
+            if (radiobuttonGameParametersUseVideoAndSoundClicked)
+                gp.setGameUseVideoAndSound("Y");
+            else
+                gp.setGameUseVideoAndSound("N"); // default
             gp.setGameIconType(gameIconType);
             gp.setGameIconPath(filePath);
+            gp.setFromAssets("");
             realm.commitTransaction();
             // view the game parameters settings initializing GameParametersSettingsFragment (FragmentTransaction
             // switch between Fragments).
@@ -1600,6 +812,16 @@ public class SettingsActivity extends AccountActivityAbstractClass
         //
         bundle.putString("GameName", daModificare.getGameName());
         bundle.putString("GameActive", daModificare.getGameActive());
+        if (Objects.equals(daModificare.getGameActive(), "A")) {
+            //
+            radiobuttonGameParametersActiveClicked = true;
+            radiobuttonGameParametersNotActiveClicked = false;
+            }
+            else {
+            //
+            radiobuttonGameParametersActiveClicked = false;
+            radiobuttonGameParametersNotActiveClicked = true;
+            }
         //
         gameIconType = daModificare.getGameIconType();
         filePath = daModificare.getGameIconPath();
@@ -1609,6 +831,17 @@ public class SettingsActivity extends AccountActivityAbstractClass
         bundle.putString("GameInfo", daModificare.getGameInfo());
         bundle.putString("GameJavaClass", daModificare.getGameJavaClass());
         bundle.putString("GameParameter", daModificare.getGameParameter());
+        bundle.putString("GameUseVideoAndSound", daModificare.getGameUseVideoAndSound());
+        if (Objects.equals(daModificare.getGameUseVideoAndSound(), "Y")) {
+            //
+            radiobuttonGameParametersUseVideoAndSoundClicked = true;
+            radiobuttonGameParametersDoesNotUseVideoAndSoundClicked = false;
+        }
+        else {
+            //
+            radiobuttonGameParametersUseVideoAndSoundClicked = false;
+            radiobuttonGameParametersDoesNotUseVideoAndSoundClicked = true;
+        }
         frag.setArguments(bundle);
         // delete
         realm.beginTransaction();
@@ -1633,6 +866,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
     public void importTables(View view) {
         checkboxImagesChecked = false;
         checkboxVideosChecked = false;
+        checkboxSoundsChecked = false;
         checkboxPhrasesChecked = false;
         checkboxWordPairsChecked = false;
         checkboxListsOfNamesChecked = false;
@@ -1699,6 +933,14 @@ public class SettingsActivity extends AccountActivityAbstractClass
                 else
                     //
                 checkboxVideosChecked = false;
+                break;
+            case R.id.checkbox_sounds:
+                if (checked)
+                //
+                checkboxSoundsChecked = true;
+                else
+                //
+                checkboxSoundsChecked = false;
                 break;
             case R.id.checkbox_phrases:
                 if (checked)
@@ -1841,6 +1083,19 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                         }
                                         Videos.importFromCsvFromInternalStorage(context, realm, importMode);
                                     }
+                                    if (checkboxSoundsChecked)
+                                    {
+                                        assert inputFolder != null;
+                                        DocumentFile documentFileNewFile = inputFolder.findFile("sounds.csv");
+                                        assert documentFileNewFile != null;
+                                        Uri csvFileUri = documentFileNewFile.getUri();
+                                        try {
+                                            copyFileFromSharedToInternalStorage(csvFileUri,"sounds.csv");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        Sounds.importFromCsvFromInternalStorage(context, realm, importMode);
+                                    }
                                     if (checkboxPhrasesChecked)
                                     {
                                         assert inputFolder != null;
@@ -1892,6 +1147,10 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                             e.printStackTrace();
                                         }
                                         Stories.importFromCsvFromInternalStorage(context, realm, importMode);
+                                        if (Objects.equals(importMode, "Replace"))
+                                        {
+                                            renumberStories(realm);
+                                        }
                                     }
                                     if (checkboxGrammaticalExceptionsChecked)
                                     {
@@ -1996,6 +1255,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                 if (isStoragePermissionGranted()) {
                                     Images.exporttoCsv(context, realm);
                                     Videos.exporttoCsv(context, realm);
+                                    Sounds.exporttoCsv(context, realm);
                                     Phrases.exporttoCsv(context, realm);
                                     WordPairs.exporttoCsv(context, realm);
                                     ListsOfNames.exporttoCsv(context, realm);
@@ -2010,6 +1270,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
                                     try {
                                         copyFileFromInternalToSharedStorage(outputFolder,"images.csv");
                                         copyFileFromInternalToSharedStorage(outputFolder,"videos.csv");
+                                        copyFileFromInternalToSharedStorage(outputFolder,"sounds.csv");
                                         copyFileFromInternalToSharedStorage(outputFolder,"phrases.csv");
                                         copyFileFromInternalToSharedStorage(outputFolder,"wordpairs.csv");
                                         copyFileFromInternalToSharedStorage(outputFolder,"listsofnames.csv");
@@ -2113,6 +1374,7 @@ public class SettingsActivity extends AccountActivityAbstractClass
             ge.setException1(geE1.getText().toString());
             ge.setException2(geE2.getText().toString());
             ge.setException3(geE3.getText().toString());
+            ge.setFromAssets("Y");
             realm.commitTransaction();
             // view the grammatical exceptions settings initializing GrammaticalExceptionsFragment
             // (FragmentTransaction switch between Fragments).

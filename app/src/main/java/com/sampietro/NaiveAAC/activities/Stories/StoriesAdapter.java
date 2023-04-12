@@ -19,7 +19,7 @@ import io.realm.Realm;
 /**
  * this adapter is the View "supplier" for the listview in the UI for stories list settings.
  *
- * @version     1.1, 04/22/22
+ * @version     3.0, 03/12/23
  * @see com.sampietro.NaiveAAC.activities.Stories.Stories
  * @see com.sampietro.NaiveAAC.activities.Settings.StoriesFragment
  * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
@@ -124,11 +124,6 @@ public class StoriesAdapter extends BaseAdapter
             Stories l=(Stories) getItem(position);
             TextView txt=(TextView) v.findViewById(R.id.imageDescriptionRow);
             //
-            // if ((l.getStory().equals("prova")) && (l.getPhraseNumber().equals("4")) && (l.getWordNumber().equals("1")))
-            // {
-            //    Log.v("TAGSTORY","record finded");
-            // }
-            //
             txt.setText(l.getStory()+ "-" + l.getPhraseNumber()
                     + "-" + l.getWordNumber() + " " + l.getWord());
             //
@@ -152,7 +147,7 @@ public class StoriesAdapter extends BaseAdapter
          * @see View.OnClickListener
          * @see StoriesAdapterInterface#reloadStoriesFragmentForInsertion
          */
-        private View.OnClickListener clickListenerInsertStories=new View.OnClickListener()
+        private final View.OnClickListener clickListenerInsertStories=new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -172,20 +167,12 @@ public class StoriesAdapter extends BaseAdapter
          * @see View.OnClickListener
          * @see StoriesAdapterInterface#reloadStoriesFragmentForEditing
          */
-        private View.OnClickListener clickListenerEditStories=new View.OnClickListener()
+        private final View.OnClickListener clickListenerEditStories=new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 int position=listview.getPositionForView(v);
-                // delete
-//              realm= Realm.getDefaultInstance();
-//              RealmResults<Stories> results = realm.where(Stories.class).findAll();
-//                realm.beginTransaction();
-//              Stories daModificare=results.get(position);
-//                assert daModificare != null;
-//                daCancellare.deleteFromRealm();
-//                realm.commitTransaction();
                 //
                 listener.reloadStoriesFragmentForEditing(position);
                 //
@@ -200,24 +187,15 @@ public class StoriesAdapter extends BaseAdapter
          * @see View.OnClickListener
          * @see StoriesAdapterInterface#reloadStoriesFragmentDeleteStories
          */
-        private View.OnClickListener clickListenerDeleteStories=new View.OnClickListener()
+        private final View.OnClickListener clickListenerDeleteStories=new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 int position=listview.getPositionForView(v);
-                // delete
-//                realm= Realm.getDefaultInstance();
-//                RealmResults<Stories> results = realm.where(Stories.class).findAll();
-//                realm.beginTransaction();
-//                Stories daCancellare=results.get(position);
-//                assert daCancellare != null;
-//                daCancellare.deleteFromRealm();
-//                realm.commitTransaction();
                 //
                 listener.reloadStoriesFragmentDeleteStories(position);
                 //
             }
         };
     }
-

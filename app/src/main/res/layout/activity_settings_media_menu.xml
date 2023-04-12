@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
+    tools:context=".activities.Settings.SettingsMediaActivity">
 
     <TextView
         android:id="@+id/mediasettings"
@@ -39,6 +39,17 @@
         android:text="@string/le_tue_immagini"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/videoButton" />
+
+    <Button
+        android:id="@+id/soundsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="16dp"
+        android:onClick="submitSounds"
+        android:text="I TUOI SUONI"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imagesButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

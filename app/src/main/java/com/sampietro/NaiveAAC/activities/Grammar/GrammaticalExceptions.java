@@ -66,7 +66,10 @@ public class GrammaticalExceptions extends RealmObject {
      * if exceptionType    = Article then exception2 = complement of motion to place
      */
     private String exception3;
-
+    /**
+     * contains Y if the object was imported from assets.
+     */
+    private String fromAssets;
     /*
      * getter, setter and other methods
      */
@@ -110,6 +113,14 @@ public class GrammaticalExceptions extends RealmObject {
     public String getException3() {
         return exception3;
     }
+    /**
+     * get <code>fromAssets</code>.
+     *
+     * @return fromAssets string Y if the object was imported from assets
+     */
+    public String getFromAssets() {
+        return fromAssets;
+    }
     //
     /**
      * set <code>keyword</code>.
@@ -152,6 +163,14 @@ public class GrammaticalExceptions extends RealmObject {
     public void setException3(String exception3)
     {
         this.exception3 = exception3;
+    }
+    /**
+     * set <code>fromAssets</code>.
+     *
+     * @param fromAssets string fromAssets to set
+     */
+    public void setFromAssets(String fromAssets) {
+        this.fromAssets = fromAssets;
     }
     //
     /**
@@ -262,7 +281,8 @@ public class GrammaticalExceptions extends RealmObject {
                             && oneWord[1] != null && oneWord[1].length() > 0
                             && oneWord[2] != null
                             && oneWord[3] != null
-                            && oneWord[4] != null ) {
+                            && oneWord[4] != null
+                            && oneWord[5] != null ) {
                         realm.beginTransaction();
                         GrammaticalExceptions grammaticalExceptions = realm.createObject(GrammaticalExceptions.class);
                         // set the fields here
@@ -271,6 +291,7 @@ public class GrammaticalExceptions extends RealmObject {
                         grammaticalExceptions.setException1(oneWord[2]);
                         grammaticalExceptions.setException2(oneWord[3]);
                         grammaticalExceptions.setException3(oneWord[4]);
+                        grammaticalExceptions.setFromAssets(oneWord[5]);
                         realm.commitTransaction();
                     }
                 }

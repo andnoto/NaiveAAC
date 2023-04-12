@@ -1,7 +1,7 @@
-descrizione,uri
-essere,rootdirectory/essere.png
-arrabbiato,rootdirectory/arrabbiato.png
-felice,rootdirectory/felice.png
-triste,rootdirectory/triste.png
-tornare,rootdirectory/camminaresx.png
-negazione,rootdirectory/non.png
+descrizione,uri,copyright,fromAssets
+essere,rootdirectory/essere.png,essere Image Copyright Origin : ARASAAC (http://arasaac.org) Licenza: CC (BY-NC-SA),Y
+arrabbiato,rootdirectory/arrabbiato.png,arrabbiato Image Copyright Origin : ARASAAC (http://arasaac.org) Licenza: CC (BY-NC-SA),Y
+felice,rootdirectory/felice.png,felice Image Copyright Origin : ARASAAC (http://arasaac.org) Licenza: CC (BY-NC-SA),Y
+triste,rootdirectory/triste.png,triste Image Copyright Origin : ARASAAC (http://arasaac.org) Licenza: CC (BY-NC-SA),Y
+tornare,rootdirectory/camminaresx.png,tornare Image Copyright Origin : ARASAAC (http://arasaac.org) Licenza: CC (BY-NC-SA),Y
+negazione,rootdirectory/non.png,negazione Image Copyright : come questa app,Y

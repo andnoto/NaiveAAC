@@ -3,6 +3,7 @@ package com.sampietro.NaiveAAC.activities.Game.GameADA;
 import static com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd;
 import static com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchNegationAdverb;
 import static com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb;
+import static com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.thereIsACorrespondenceWithAnAllowedMarginOfError;
 import static com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri;
 
 import android.content.Context;
@@ -13,20 +14,22 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.print.PrintHelper;
 
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
-import com.sampietro.NaiveAAC.activities.Game.Game2.Game2ArrayList;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear;
 import com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper;
@@ -59,7 +62,7 @@ import io.realm.RealmResults;
  * phrases of a story
  * </p>
  *
- * @version     1.4, 19/05/22
+ * @version     3.0, 03/12/23
  * @see GameActivityAbstractClass
  */
 public class GameADAActivity extends GameActivityAbstractClass implements
@@ -73,15 +76,16 @@ public class GameADAActivity extends GameActivityAbstractClass implements
     public Stories phraseToDisplay;
     //
     public String preference_PrintPermissions;
+    public int preference_AllowedMarginOfError;
     //
     public int wordToDisplayIndex = 0;
     public boolean ttsEnabled = true;
     //
+    ArrayList<GameADAArrayList> galleryList;
+    //
     /**
      * used for printing
      */
-    ArrayList<Game2ArrayList> galleryList;
-    //
     public Bitmap bitmap1;
     public Bitmap bitmap2;
     public Bitmap mergedImages;
@@ -121,13 +125,14 @@ public class GameADAActivity extends GameActivityAbstractClass implements
     public TextToSpeech tTS1 = null;
     //
     private ViewGroup mContentView;
+    //
+    private String gameUseVideoAndSound;
     /**
      * configurations of gameADA start screen.
      * <p>
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
      * @see SpeechRecognizerManagement#prepareSpeechRecognizer
-//     * @see ActionbarFragment
      * @see android.app.Activity#onCreate(Bundle)
      * @see #fragmentTransactionStart
      */
@@ -135,12 +140,13 @@ public class GameADAActivity extends GameActivityAbstractClass implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //
-        setContentView(R.layout.activity_game);
-        //
-        mContentView = findViewById(R.id.activity_game_id);
+        setContentView(R.layout.activity_game_ada);
+        /*
+        USED FOR FULL SCREEN
+         */
+        mContentView = findViewById(R.id.activity_game_ada_id);
         setToFullScreen();
         ViewTreeObserver viewTreeObserver = mContentView.getViewTreeObserver();
-        //
         if (viewTreeObserver.isAlive()) {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -149,9 +155,10 @@ public class GameADAActivity extends GameActivityAbstractClass implements
                 }
             });
         }
-        //
         mContentView.setOnClickListener(view -> setToFullScreen());
-        //
+        /*
+
+         */
         AndroidPermission.checkPermission(this);
         //
         SpeechRecognizerManagement.prepareSpeechRecognizer(this);
@@ -164,12 +171,18 @@ public class GameADAActivity extends GameActivityAbstractClass implements
                     intent.getStringExtra(ChoiseOfGameActivity.EXTRA_MESSAGE_GAME_PARAMETER);
             phraseToDisplayIndex = 1;
         }
+        // SEARCH IF GAME USE VIDEO AND SOUND
+        if (intent.hasExtra(ChoiseOfGameActivity.EXTRA_MESSAGE_GAME_USE_VIDEO_AND_SOUND)) {
+            gameUseVideoAndSound =
+                    intent.getStringExtra(ChoiseOfGameActivity.EXTRA_MESSAGE_GAME_USE_VIDEO_AND_SOUND);
+        }
         // if intent is from GameADAViewPagerActivity
         if (intent.hasExtra("STORY TO DISPLAY")) {
             sharedStory =
                     intent.getStringExtra("STORY TO DISPLAY");
             phraseToDisplayIndex= intent.getIntExtra("PHRASE TO DISPLAY INDEX", 1);
             wordToDisplayIndex= intent.getIntExtra("WORD TO DISPLAY INDEX", 0);
+            gameUseVideoAndSound= intent.getStringExtra("GAME USE VIDEO AND SOUND");
             ttsEnabled = false;
         }
         //
@@ -200,6 +213,9 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         // if is print permitted then preference_PrintPermissions = Y
         preference_PrintPermissions =
                 sharedPref.getString (context.getString(R.string.preference_print_permissions), "DEFAULT");
+        //
+        preference_AllowedMarginOfError =
+                sharedPref.getInt (getString(R.string.preference_allowed_margin_of_error), 20);
         //
         // SEARCH FIRST PHRASE TO DISPLAY
         // Check whether we're recreating a previously destroyed instance
@@ -253,8 +269,14 @@ public class GameADAActivity extends GameActivityAbstractClass implements
      */
     @Override
     protected void onResume() {
+        /*
+        USED FOR FULL SCREEN
+         */
         super.onResume();
         setToFullScreen();
+        /*
+        USED FOR FULL SCREEN
+         */
     }
     //
     /**
@@ -288,7 +310,7 @@ public class GameADAActivity extends GameActivityAbstractClass implements
      * This method is responsible to transfer MainActivity into fullscreen mode.
      */
     private void setToFullScreen() {
-        findViewById(R.id.activity_game_id).setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        findViewById(R.id.activity_game_ada_id).setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
     //
     /**
@@ -537,7 +559,7 @@ public class GameADAActivity extends GameActivityAbstractClass implements
     public void returnSettings(View v)
     {
     /*
-                navigate to settings screen (ChoiseOfGameActivity)
+                navigate to settings screen
     */
         Intent intent = new Intent(this, VerifyActivity.class);
         startActivity(intent);
@@ -759,6 +781,7 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         bundle.putInt("WORD TO DISPLAY INDEX", wordToDisplayIndex);
         bundle.putBoolean("TTS ENABLED", ttsEnabled);
         ttsEnabled = true;
+        bundle.putString("GAME USE VIDEO AND SOUND", gameUseVideoAndSound);
         frag.setArguments(bundle);
         FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
         GameADAFragment fragmentgotinstance =
@@ -781,9 +804,19 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         ft.addToBackStack(null);
         ft.commit();
     }
-    //
+    /**
+     * Called when the user taps a picture of the story.
+     * print or switch to viewpager
+     * @param view view of tapped picture
+     * @param i int index of tapped picture
+     * @param galleryList ArrayList<GameADAArrayList> list for choice of words
+     * @see GameADAArrayList
+     * @see #getTargetBitmapFromUrlUsingPicasso
+     * @see #getTargetBitmapFromFileUsingPicasso
+     * @see GameADAViewPagerActivity
+     */
     @Override
-    public void onItemClick(View view, int i, ArrayList<Game2ArrayList> galleryList) {
+    public void onItemClick(View view, int i, ArrayList<GameADAArrayList> galleryList) {
         if (preference_PrintPermissions.equals("Y")) {
             if (galleryList.get(i).getUrlType().equals("A"))
             {
@@ -805,8 +838,9 @@ public class GameADAActivity extends GameActivityAbstractClass implements
             intent = new Intent(this,
                     GameADAViewPagerActivity.class);
             intent.putExtra("STORY TO DISPLAY", sharedStory);
-            intent.putExtra("PHRASE TO DISPLAY INDEX", phraseToDisplayIndex);
-            intent.putExtra("WORD TO DISPLAY INDEX", i);
+            intent.putExtra("PHRASE TO DISPLAY", phraseToDisplayIndex);
+            intent.putExtra("WORD TO DISPLAY", i+1);
+            intent.putExtra("GAME USE VIDEO AND SOUND", gameUseVideoAndSound);
             startActivity(intent);
             //
         }
@@ -820,6 +854,7 @@ public class GameADAActivity extends GameActivityAbstractClass implements
      * @see com.example.voicerecognitionlibrary.RecognizerCallback
      * @see #checkAnswer
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onResult(String eText) {
         checkAnswer(eText);
@@ -895,6 +930,7 @@ public class GameADAActivity extends GameActivityAbstractClass implements
      * @see #extemporaneousInteractionWithVoice
      * @see #continueGameAda
      */
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void checkAnswer (String eText)
     {
         // convert uppercase letter to lowercase
@@ -945,7 +981,10 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         //
         int i=0;
         while(i < arrWordsLength) {
-            if (arrWords[i].equals(correspondingWord)) {
+            if (thereIsACorrespondenceWithAnAllowedMarginOfError
+                    (arrWords[i], correspondingWord,preference_AllowedMarginOfError))
+//            if (arrWords[i].equals(correspondingWord))
+            {
                 theWordMatches = true;
                 break;
             }
@@ -969,6 +1008,9 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         }
         else
         {
+            // riattivo il bottone forward
+            ImageButton forwardImageButton = (ImageButton) findViewById(R.id.continuegameadabutton);
+            forwardImageButton.setVisibility(View.VISIBLE);
             // upload the award video
             PrizeFragment frag= new PrizeFragment();
             FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
@@ -1150,7 +1192,9 @@ public class GameADAActivity extends GameActivityAbstractClass implements
                                         new VoiceToBeRecordedInHistory(sharedLastSession,
                                                 sharedLastPhraseNumber, currentTime,
                                                 1, " ", phraseToDisplayWord,
-                                                " ", image.getUriType(), image.getUriToSearch());
+                                                " ", image.getUriType(), image.getUriToSearch(),
+                                                phraseToDisplay.getVideo(), phraseToDisplay.getSound(),
+                                                phraseToDisplay.getSoundReplacesTTS());
                                 toBeRecordedInHistory.add(voiceToBeRecordedInHistory);
 
                             }
@@ -1162,7 +1206,9 @@ public class GameADAActivity extends GameActivityAbstractClass implements
                                             sharedLastPhraseNumber, currentTime,
                                             1, " ", phraseToDisplayWord,
                                             " ", phraseToDisplayUriType,
-                                            phraseToDisplay.getUri());
+                                            phraseToDisplay.getUri(),
+                                            phraseToDisplay.getVideo(), phraseToDisplay.getSound(),
+                                            phraseToDisplay.getSoundReplacesTTS());
                             toBeRecordedInHistory.add(voiceToBeRecordedInHistory);
                         }
                     }
@@ -1179,10 +1225,10 @@ public class GameADAActivity extends GameActivityAbstractClass implements
      *
      * @param v view root fragment view
      * @param t TextToSpeech
-     * @param gL ArrayList<Game2ArrayList>
+     * @param gL ArrayList<GameADAArrayList>
      */
     @Override
-    public void receiveResultGameFragment(View v, TextToSpeech t, ArrayList<Game2ArrayList> gL) {
+    public void receiveResultGameFragment(View v, TextToSpeech t, ArrayList<GameADAArrayList> gL) {
         rootViewImageFragment = v;
         tTS1 = t;
         galleryList = gL;

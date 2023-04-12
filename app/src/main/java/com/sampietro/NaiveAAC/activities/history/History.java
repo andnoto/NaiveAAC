@@ -69,6 +69,18 @@ public class History extends RealmObject {
      * contains the file path or the url of arasaac (originally contained the uri).
      */
     private String uri;
+    /**
+     * refers to a video key in the videos table .
+     */
+    private String video;
+    /**
+     * refers to a sound key in the sounds table .
+     */
+    private String sound;
+    /**
+     * indicates whether sound replaces TTS (Y or N).
+     */
+    private String soundReplacesTTS;
     /*
      * getter, setter and other methods
      */
@@ -140,6 +152,26 @@ public class History extends RealmObject {
     public String getUri() { return uri; }
     //
     /**
+     * get <code>video</code>.
+     *
+     * @return video string data to get
+     */
+    public String getVideo() { return video; }
+    //
+    /**
+     * get <code>sound</code>.
+     *
+     * @return sound string data to get
+     */
+    public String getSound() { return sound; }
+    //
+    /**
+     * get <code>soundReplacesTTS</code>.
+     *
+     * @return soundReplacesTTS string data to get
+     */
+    public String getSoundReplacesTTS() { return soundReplacesTTS; }
+    /**
      * set <code>session</code>.
      *
      * @param session integer data to set
@@ -209,6 +241,30 @@ public class History extends RealmObject {
      */
     public void setUri(String uri) {
         this.uri = uri;
+    }
+    /**
+     * set <code>video</code>.
+     *
+     * @param video string data to set
+     */
+    public void setVideo(String video) {
+        this.video = video;
+    }
+    /**
+     * set <code>sound</code>.
+     *
+     * @param sound string data to set
+     */
+    public void setSound(String sound) {
+        this.sound = sound;
+    }
+    /**
+     * set <code>setSoundReplacesTTS</code>.
+     *
+     * @param soundReplacesTTS string data to set
+     */
+    public void setSoundReplacesTTS(String soundReplacesTTS) {
+        this.soundReplacesTTS = soundReplacesTTS;
     }
     //
     /**
@@ -318,6 +374,9 @@ public class History extends RealmObject {
             history.setPlural(oneWord[6]);
             history.setUriType(oneWord[7]);
             history.setUri(oneWord[8]);
+            history.setVideo(oneWord[9]);
+            history.setSound(oneWord[10]);
+            history.setSoundReplacesTTS(oneWord[11]);
             //
             realm.commitTransaction();
         }

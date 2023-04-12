@@ -172,6 +172,9 @@ public class HistoryRegistrationHelper {
             String plural = voiceToBeRecordedInHistory.getPlural();
             String uriType = voiceToBeRecordedInHistory.getUriType();
             String uri = voiceToBeRecordedInHistory.getUri();
+            String video = voiceToBeRecordedInHistory.getVideo();
+            String sound = voiceToBeRecordedInHistory.getSound();
+            String soundReplacesTTS = voiceToBeRecordedInHistory.getSoundReplacesTTS();
             h.setSession(session);
             h.setPhraseNumber(phraseNumber);
             h.setDate(date);
@@ -181,6 +184,9 @@ public class HistoryRegistrationHelper {
             h.setPlural(plural);
             h.setUriType(uriType);
             h.setUri(uri);
+            h.setVideo(video);
+            h.setSound(sound);
+            h.setSoundReplacesTTS(soundReplacesTTS);
             realm.commitTransaction();
             //
             irm++;

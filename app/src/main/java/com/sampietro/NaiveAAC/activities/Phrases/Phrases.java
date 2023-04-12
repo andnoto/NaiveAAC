@@ -45,6 +45,10 @@ public class Phrases extends RealmObject {
      * phrase.
      */
     private String descrizione;
+    /**
+     * contains Y if the object was imported from assets.
+     */
+    private String fromAssets;
     /*
      * getter, setter and other methods
      */
@@ -64,7 +68,14 @@ public class Phrases extends RealmObject {
     public String getDescrizione() {
         return descrizione;
     }
-    //
+    /**
+     * get <code>fromAssets</code>.
+     *
+     * @return fromAssets string Y if the object was imported from assets
+     */
+    public String getFromAssets() {
+        return fromAssets;
+    }
     //
     /**
      * set <code>tipo</code>.
@@ -82,6 +93,14 @@ public class Phrases extends RealmObject {
      */
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
+    }
+    /**
+     * set <code>fromAssets</code>.
+     *
+     * @param fromAssets string fromAssets to set
+     */
+    public void setFromAssets(String fromAssets) {
+        this.fromAssets = fromAssets;
     }
     //
     /**
@@ -192,13 +211,17 @@ public class Phrases extends RealmObject {
                     // use comma as separator
                     final String[] oneWord= line.split(cvsSplitBy);
                     // checks
-                    if (oneWord[0] != null && oneWord[0].length() > 0
-                            && oneWord[1] != null && oneWord[1].length() > 0) {
+                    if (oneWord[0] != null
+                            && oneWord[0].length() > 0
+                            && oneWord[1] != null
+                            && oneWord[1].length() > 0
+                            && oneWord[2] != null ) {
                         realm.beginTransaction();
                         Phrases phrases = realm.createObject(Phrases.class);
                         // set the fields here
                         phrases.setTipo(oneWord[0]);
                         phrases.setDescrizione(oneWord[1]);
+                        phrases.setFromAssets(oneWord[2]);
                         realm.commitTransaction();
                     }
                 }

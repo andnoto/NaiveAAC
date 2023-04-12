@@ -1,25 +1,25 @@
-keyword,exceptionType,exception1,exception2,exception3
-tablet,Article,il,dal,al
-sole,Article,il,dal,al
-guanti,Article,i,dai,ai
-pantaloni,Article,i,dai,ai
-mutande,Article,le,dalle,alle
-calze,Article,le,dalle,alle
-andare,Is a verb of movement to place,,,
-correre,Is a verb of movement to place,,,
-saltare,Is a verb of movement from place,,,
-pane,Article,il,dal,al
-grissini,Article,i,dai,ai
-spaghetti,Article,gli,dagli,agli
-cioccolato,Article,il,dal,al
-denti,Article,i,dai,ai
-mani,Article,le,dalle,alle
-macchine,Article,le,dalle,alle
-cavalli,Article,i,dai,dai
-essere,Is an auxiliary verb,,,
-avere,Is an auxiliary verb,,,
-potere,Is a servile verb,,,
-volere,Is a servile verb,,,
-dovere,Is a servile verb,,,
-non,Is a negation adverb,negazione,,
-senza,Is a negation adverb,negazione,,
+keyword,exceptionType,exception1,exception2,exception3,fromAssets
+tablet,Article,il,dal,al,Y
+sole,Article,il,dal,al,Y
+guanti,Article,i,dai,ai,Y
+pantaloni,Article,i,dai,ai,Y
+mutande,Article,le,dalle,alle,Y
+calze,Article,le,dalle,alle,Y
+andare,Is a verb of movement to place,,,,Y
+correre,Is a verb of movement to place,,,,Y
+saltare,Is a verb of movement from place,,,,Y
+pane,Article,il,dal,al,Y
+grissini,Article,i,dai,ai,Y
+spaghetti,Article,gli,dagli,agli,Y
+cioccolato,Article,il,dal,al,Y
+denti,Article,i,dai,ai,Y
+mani,Article,le,dalle,alle,Y
+macchine,Article,le,dalle,alle,Y
+cavalli,Article,i,dai,dai,Y
+essere,Is an auxiliary verb,,,,Y
+avere,Is an auxiliary verb,,,,Y
+potere,Is a servile verb,,,,Y
+volere,Is a servile verb,,,,Y
+dovere,Is a servile verb,,,,Y
+non,Is a negation adverb,negazione,,,Y
+senza,Is a negation adverb,negazione,,,Y

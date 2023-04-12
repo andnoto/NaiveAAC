@@ -3,23 +3,64 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activities.Info.InfoActivity">
 
-    <ScrollView
+    <TextView
+        android:id="@+id/information"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:lines="12"
+        android:maxLines="12"
+        android:text="@string/information_this_app_was_created_by"
+        android:textIsSelectable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/information"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textIsSelectable="true" />
+    <Button
+        android:id="@+id/imagescopyrightbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/soundsscopyrightbutton"
+        app:layout_constraintTop_toBottomOf="@+id/information"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:onClick="imagesCopyright"
+        android:text="Credits \nimmagini"/>
 
+    <Button
+        android:id="@+id/soundsscopyrightbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/imagescopyrightbutton"
+        app:layout_constraintEnd_toStartOf="@+id/videosscopyrightbutton"
+        app:layout_constraintTop_toBottomOf="@+id/information"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:onClick="soundsCopyright"
+        android:text="Credits \nsuoni"/>
 
-    </ScrollView>
+    <Button
+        android:id="@+id/videosscopyrightbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/soundsscopyrightbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/information"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:onClick="videosCopyright"
+        android:text="Credits \nvideo"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

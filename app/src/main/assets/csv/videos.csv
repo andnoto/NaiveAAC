@@ -1,4 +1,10 @@
-descrizione,uri
-autismo,rootdirectory/autismo.mp4,Video Copyright Origin : https://vimeo.com/123708316 Uploader : Lightcut Film License : CC BY-NC-ND
-prize,rootdirectory/autismo-prize.mp4,Video Copyright Origin : https://vimeo.com/210037563 Uploader : Lightcut Film License : CC BY-NC-ND
-football,rootdirectory/football.mp4,Video Copyright Origin : https://vimeo.com/38018264 Uploader : Gonzalo Cordero de Ciria License : CC BY-NC-ND
+descrizione,uri,copyright,fromAssets
+autismo,rootdirectory/autismo.mp4,Video Copyright Origin : https://vimeo.com/123708316 Uploader : Lightcut Film License : CC BY-NC-ND,Y
+prize,rootdirectory/autismo-prize.mp4,Video Copyright Origin : https://vimeo.com/210037563 Uploader : Lightcut Film License : CC BY-NC-ND,Y
+football,rootdirectory/football.mp4,Video Copyright Origin : https://vimeo.com/38018264 Uploader : Gonzalo Cordero de Ciria License : CC BY-NC-ND,Y
+gatto che mangia,rootdirectory/cat-4916.mp4,Video Copyright Origin : https://pixabay.com/videos/cat-feed-black-feeding-plate-head-4916/ License : Pixabay License,Y
+gatto animazione,rootdirectory/cat-92641.mp4,Video Copyright Origin : https://pixabay.com/videos/cat-walk-walking-animal-pet-2d-92641/ License : Pixabay License,Y
+tuffo,rootdirectory/man-131605.mp4,Video Copyright Origin : https://pixabay.com/videos/man-jump-lake-mountains-water-131605/ License : Pixabay License,Y
+topo,rootdirectory/mouse-117573.mp4,Video Copyright Origin : https://pixabay.com/videos/mouse-rat-animal-green-screen-117573/ License : Pixabay License,Y
+coniglio,rootdirectory/rabbit-141719.mp4,Video Copyright Origin : https://pixabay.com/videos/rabbit-bunny-animal-furry-zoo-141719/ License : Pixabay License,Y
+piccioni,rootdirectory/tags-bird-9267.mp4,Video Copyright Origin : https://pixabay.com/videos/tags-bird-pigeon-peace-animal-9267/ License : Pixabay License,Y

@@ -20,6 +20,7 @@ import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters;
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions;
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames;
 import com.sampietro.NaiveAAC.activities.Graphics.Images;
+import com.sampietro.NaiveAAC.activities.Graphics.Sounds;
 import com.sampietro.NaiveAAC.activities.Graphics.Videos;
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases;
 import com.sampietro.NaiveAAC.activities.Settings.AccountFragment;
@@ -49,7 +50,7 @@ import io.realm.RealmResults;
  * 2) data from https://github.com/ian-hamlin/verb-data a collection of verbs and conjugations </p>
  * 3) initial settings and content such as images, videos and others from assets</p>
  *
- * @version     1.0, 06/13/22
+ * @version     3.0, 03/12/23
  * @see AccountActivityAbstractClass
  * @see SettingsFragmentAbstractClass
  */
@@ -142,6 +143,7 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             realm.commitTransaction();
             //
             Images.importFromCsvFromInternalStorage(context, realm, "Replace");
+            Sounds.importFromCsvFromInternalStorage(context, realm, "Replace");
             Videos.importFromCsvFromInternalStorage(context, realm, "Replace");
             //
             GameParameters.importFromCsvFromInternalStorage(context, realm, "Replace");
@@ -228,6 +230,7 @@ public class AccountActivity extends AccountActivityAbstractClass implements
                 copyFileCsvFromAssetsToInternalStorage("listsofnames.csv");
                 copyFileCsvFromAssetsToInternalStorage("phrases.csv");
                 copyFileCsvFromAssetsToInternalStorage("pictogramsalltomodify.csv");
+                copyFileCsvFromAssetsToInternalStorage("sounds.csv");
                 copyFileCsvFromAssetsToInternalStorage("stories.csv");
                 copyFileCsvFromAssetsToInternalStorage("videos.csv");
                 copyFileCsvFromAssetsToInternalStorage("wordpairs.csv");
@@ -236,6 +239,7 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             }
             //
             copyAssets("images");
+            copyAssets("sounds");
             copyAssets("videos");
             copyAssets("pdf");
         //
@@ -355,20 +359,4 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             out.write(buffer, 0, read);
         }
     }
-//    /**
-//     * copy file.
-//     * <p>
-//     *
-//     */
-//    private void copyManualFromAssetsToInternalStorage() throws IOException {
-//        InputStream sourceStream = getAssets().open("pdf" + "/" + "naive aac manuale istruzioni.pdf");
-//        FileOutputStream destStream = openFileOutput("naive aac manuale istruzioni.pdf", Context.MODE_PRIVATE);
-//        byte[] buffer = new byte[1024];
-//        int read;
-//        while((read = sourceStream.read(buffer)) != -1) {
-//            destStream.write(buffer, 0, read);
-//        }
-//        destStream.close();
-//        sourceStream.close();
-//    }
 }

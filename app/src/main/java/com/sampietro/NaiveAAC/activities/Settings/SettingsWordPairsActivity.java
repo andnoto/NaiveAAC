@@ -183,6 +183,7 @@ public class SettingsWordPairsActivity extends AccountActivityAbstractClass
                             wordPairs.setUriPremiumVideo(textWord6.getText().toString());
                         }
                     }
+                wordPairs.setFromAssets("");
                 realm.commitTransaction();
                 // if textword5 = V and textword6 different from no video record video on realm
                 if (textWord5.getText().toString().equals("V")

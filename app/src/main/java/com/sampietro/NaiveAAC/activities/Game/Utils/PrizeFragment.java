@@ -18,6 +18,8 @@ import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper;
 import com.sampietro.NaiveAAC.activities.Graphics.Videos;
 
+import java.io.IOException;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -186,7 +188,11 @@ public class PrizeFragment extends Fragment {
             e.printStackTrace();
         } finally{
             if (retriever != null){
-                retriever.release();
+                try {
+                    retriever.release();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return mWidthHeight;

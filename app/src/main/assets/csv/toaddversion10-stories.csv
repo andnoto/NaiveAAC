@@ -1,338 +1,409 @@
-story,phraseNumberInt,wordNumberInt,word,uriType,uri,answerActionType,answerAction
-il gatto con gli stivali,1,0,da dove vuoi iniziare ? dall'eredità dal gatto dal re dalla passeggiata dai contadini dall'orco dal matrimonio dal gatto ricco,,,null,null
-il gatto con gli stivali,1,1,eredità,A,https://api.arasaac.org/api/pictograms/11700?download=false,null,null
-il gatto con gli stivali,1,2,il gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null
-il gatto con gli stivali,1,3,dal re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,1,4,dalla passeggiata,A,https://api.arasaac.org/api/pictograms/4670?download=false,null,null
-il gatto con gli stivali,1,5,dai contadini,A,https://api.arasaac.org/api/pictograms/2982?download=false,null,null
-il gatto con gli stivali,1,6,dall'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null
-il gatto con gli stivali,1,7,matrimonio,A,https://api.arasaac.org/api/pictograms/8256?download=false,null,null
-il gatto con gli stivali,1,8,gatto ricco,A,https://api.arasaac.org/api/pictograms/4733?download=false,null,null
-il gatto con gli stivali,3,0,il figlio maggiore ebbe il mulino il secondo ebbe l'asino e il più piccolo il gatto,null,null,null,null
-il gatto con gli stivali,3,1,il figlio maggiore,A,https://api.arasaac.org/api/pictograms/4557?download=false,null,null
-il gatto con gli stivali,3,2,ebbe il mulino,A,https://api.arasaac.org/api/pictograms/13086?download=false,null,null
-il gatto con gli stivali,3,3,il secondo,A,https://api.arasaac.org/api/pictograms/4571?download=false,null,null
-il gatto con gli stivali,3,4,ebbe l'asino,A,https://api.arasaac.org/api/pictograms/2291?download=false,null,null
-il gatto con gli stivali,3,5,e il più piccolo,A,https://api.arasaac.org/api/pictograms/36887?download=false,null,null
-il gatto con gli stivali,3,6,il gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null
-il gatto con gli stivali,4,0,il fratello piccolo pensava che i fratelli avrebbero potuto lavorare insieme mentre lui non sapeva che fare del gatto,null,null,null,null
-il gatto con gli stivali,4,1,il fratello piccolo,A,https://api.arasaac.org/api/pictograms/36887?download=false,null,null
-il gatto con gli stivali,4,2,pensava,A,https://api.arasaac.org/api/pictograms/8661?download=false,null,null
-il gatto con gli stivali,4,3,che i fratelli avrebbero potuto lavorare insieme,A,https://api.arasaac.org/api/pictograms/10348?download=false,null,null
-il gatto con gli stivali,4,4,mentre lui,A,https://api.arasaac.org/api/pictograms/35575?download=false,null,null
-il gatto con gli stivali,4,5,non sapeva che fare,A,https://api.arasaac.org/api/pictograms/31847?download=false,null,null
-il gatto con gli stivali,4,6,del gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null
-il gatto con gli stivali,6,0,il ragazzo aveva notato l'abilità del gatto nel cacciare i topi e fidandosi di lui gli diede quello che chiedeva,null,null,null,null
-il gatto con gli stivali,6,1,il ragazzo,A,https://api.arasaac.org/api/pictograms/36887?download=false,null,null
-il gatto con gli stivali,6,2,aveva notato,A,https://api.arasaac.org/api/pictograms/2474?download=false,null,null
-il gatto con gli stivali,6,3,l'abilità,A,https://api.arasaac.org/api/pictograms/11750?download=false,null,null
-il gatto con gli stivali,6,4,del gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null
-il gatto con gli stivali,6,5,nel cacciare,A,https://api.arasaac.org/api/pictograms/8533?download=false,null,null
-il gatto con gli stivali,6,6,i topi,A,https://api.arasaac.org/api/pictograms/2546?download=false,null,null
-il gatto con gli stivali,6,7,e fidandosi di lui,A,https://api.arasaac.org/api/pictograms/34856?download=false,null,null
-il gatto con gli stivali,6,8,gli diede quello che chiedeva,A,https://api.arasaac.org/api/pictograms/17038?download=false,null,null
-il gatto con gli stivali,7,0,il gatto indossò gli stivali si mise il sacco sulle spalle e se ne andò vicino ad una conigliera,null,null,null,null
-il gatto con gli stivali,7,1,il gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null
-il gatto con gli stivali,7,2,indossò gli stivali,A,https://api.arasaac.org/api/pictograms/36575?download=false,null,null
-il gatto con gli stivali,7,3,si mise il sacco,A,https://api.arasaac.org/api/pictograms/6210?download=false,null,null
-il gatto con gli stivali,7,4,sulle spalle,A,https://api.arasaac.org/api/pictograms/13052?download=false,null,null
-il gatto con gli stivali,7,5,e se ne andò,A,https://api.arasaac.org/api/pictograms/2432?download=false,null,null
-il gatto con gli stivali,7,6,vicino a,A,https://api.arasaac.org/api/pictograms/5367?download=false,null,null
-il gatto con gli stivali,7,7,ad una conigliera,A,https://api.arasaac.org/api/pictograms/31398?download=false,null,null
-il gatto con gli stivali,8,0,il gatto nascose nel sacco un po' di erba fresca si distese per terra fingendosi morto vicino al sacco e aspettò che  arrivasse qualche coniglio,,,null,null
-il gatto con gli stivali,8,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,8,2,nascose,A,https://api.arasaac.org/api/pictograms/26024?download=false,null,null
-il gatto con gli stivali,8,3,nel sacco,A,https://api.arasaac.org/api/pictograms/6210?download=false,null,null
-il gatto con gli stivali,8,4,un po' d'erba fresca,A,https://api.arasaac.org/api/pictograms/3113?download=false,null,null
-il gatto con gli stivali,8,5,si distese per terra fingendosi morto,A,https://api.arasaac.org/api/pictograms/22205?download=false,null,null
-il gatto con gli stivali,8,6,vicino,A,https://api.arasaac.org/api/pictograms/5367?download=false,null,null
-il gatto con gli stivali,8,7,al sacco,A,https://api.arasaac.org/api/pictograms/6210?download=false,null,null
-il gatto con gli stivali,8,8,e aspetto',A,https://api.arasaac.org/api/pictograms/25078?download=false,null,null
-il gatto con gli stivali,8,9,che arrivasse qualche coniglio,A,https://api.arasaac.org/api/pictograms/2351?download=false,null,null
-il gatto con gli stivali,9,0,non appena un coniglio distratto entrò nel sacco per mangiare l'erbetta il gatto chiuse la sacca e lo acchiappò,,,null,null
-il gatto con gli stivali,9,1,non appena un coniglio distratto,A,https://api.arasaac.org/api/pictograms/2351?download=false,null,null
-il gatto con gli stivali,9,2,entro',A,https://api.arasaac.org/api/pictograms/37247?download=false,null,null
-il gatto con gli stivali,9,3,nel sacco,A,https://api.arasaac.org/api/pictograms/6210?download=false,null,null
-il gatto con gli stivali,9,4,per mangiare,A,https://api.arasaac.org/api/pictograms/2349?download=false,null,null
-il gatto con gli stivali,9,5,l'erba,A,https://api.arasaac.org/api/pictograms/3113?download=false,null,null
-il gatto con gli stivali,9,6,il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,9,7,chiuse la sacca,A,https://api.arasaac.org/api/pictograms/5391?download=false,null,null
-il gatto con gli stivali,9,8,e lo acchiappo',A,https://api.arasaac.org/api/pictograms/8188?download=false,null,null
-il gatto con gli stivali,11,0,fu accompagnato nelle stanze del re e dopo un inchino profondo gli disse,null,null,null,null
-il gatto con gli stivali,11,1,Il Gatto con gli stivali,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,11,2,fu accompagnato,A,https://api.arasaac.org/api/pictograms/37036?download=false,null,null
-il gatto con gli stivali,11,3,nelle stanze del re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,11,4,e dopo essersi inchinato,A,https://api.arasaac.org/api/pictograms/9003?download=false,null,null
-il gatto con gli stivali,11,5,disse,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null
-il gatto con gli stivali,12,0,maestà questo coniglio ve lo manda il marchese di calabas,,,null,null
-il gatto con gli stivali,12,1,maestà questo coniglio,A,https://api.arasaac.org/api/pictograms/2351?download=false,null,null
-il gatto con gli stivali,12,2,ve lo manda,A,https://api.arasaac.org/api/pictograms/25062?download=false,null,null
-il gatto con gli stivali,12,3,il marchese di Calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,13,0,il furbo gatto si era inventato questo nome per il suo padrone,null,null,null,null
-il gatto con gli stivali,13,1,Il furbo Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,13,2,si era inventato,A,https://api.arasaac.org/api/pictograms/6019?download=false,null,null
-il gatto con gli stivali,13,3,questo nome,A,https://api.arasaac.org/api/pictograms/27357?download=false,null,null
-il gatto con gli stivali,13,4,per il suo padrone,A,https://api.arasaac.org/api/pictograms/7176?download=false,null,null
-il gatto con gli stivali,14,0,il re contento rispose,null,null,null,null
-il gatto con gli stivali,14,1,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,14,2,contento,A,https://api.arasaac.org/api/pictograms/35547?download=false,null,null
-il gatto con gli stivali,14,3,rispose,A,https://api.arasaac.org/api/pictograms/9030?download=false,null,null
-il gatto con gli stivali,15,0,dì al marchese che il regalo mi è piaciuto molto,,,null,null
-il gatto con gli stivali,15,1,dì,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null
-il gatto con gli stivali,15,2,al marchese,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,15,3,che il regalo,A,https://api.arasaac.org/api/pictograms/3149?download=false,null,null
-il gatto con gli stivali,15,4,mi è piaciuto molto,A,https://api.arasaac.org/api/pictograms/21917?download=false,null,null
-il gatto con gli stivali,16,0,il gatto prese dei piccioni e tornò dal re a offriglieli da parte del marchese di carabas,,,null,null
-il gatto con gli stivali,16,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,16,2,prese,A,https://api.arasaac.org/api/pictograms/8533?download=false,null,null
-il gatto con gli stivali,16,3,dei piccioni,A,https://api.arasaac.org/api/pictograms/25293?download=false,null,null
-il gatto con gli stivali,16,4,e ritornò,A,https://api.arasaac.org/api/pictograms/29714?download=false,null,null
-il gatto con gli stivali,16,5,dal re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,16,6,a offrirglierli,A,https://api.arasaac.org/api/pictograms/17040?download=false,null,null
-il gatto con gli stivali,16,7,da parte del marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,17,0,il re accettò il regalo e questa volta diede una bella mancia al gatto,null,null,null,null
-il gatto con gli stivali,17,1,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,17,2,prese,A,https://api.arasaac.org/api/pictograms/17044?download=false,null,null
-il gatto con gli stivali,17,3,il regalo,A,https://api.arasaac.org/api/pictograms/16025?download=false,null,null
-il gatto con gli stivali,17,4,e questa volta diede,A,https://api.arasaac.org/api/pictograms/17040?download=false,null,null
-il gatto con gli stivali,17,5,una bella mancia,A,https://api.arasaac.org/api/pictograms/30480?download=false,null,null
-il gatto con gli stivali,17,6,al Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,18,0,il gatto continuò a prendere conigli e piccioni e a portarli al re,,,null,null
-il gatto con gli stivali,18,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,18,2,continuò a prendere,A,https://api.arasaac.org/api/pictograms/8187?download=false,null,null
-il gatto con gli stivali,18,3,conigli,A,https://api.arasaac.org/api/pictograms/2351?download=false,null,null
-il gatto con gli stivali,18,4,e piccioni,A,https://api.arasaac.org/api/pictograms/25293?download=false,null,null
-il gatto con gli stivali,18,5,e portarli,A,https://api.arasaac.org/api/pictograms/17040?download=false,null,null
-il gatto con gli stivali,18,6,al re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,20,0,corse dal suo padrone e gli disse,null,null,null,null
-il gatto con gli stivali,20,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,20,2,corse,A,https://api.arasaac.org/api/pictograms/28439?download=false,null,null
-il gatto con gli stivali,20,3,dal suo padrone,A,https://api.arasaac.org/api/pictograms/4673?download=false,null,null
-il gatto con gli stivali,20,4,gli disse,A,https://api.arasaac.org/api/pictograms/9037?download=false,null,null
-il gatto con gli stivali,21,0,presto levati i vestiti e tuffati nel fiume se mi ascolterai  diventerai ricco,,,null,null
-il gatto con gli stivali,21,1,presto levati i vestiti,A,https://api.arasaac.org/api/pictograms/11233?download=false,null,null
-il gatto con gli stivali,21,2,e tuffati,A,https://api.arasaac.org/api/pictograms/31162?download=false,null,null
-il gatto con gli stivali,21,3,nel fiume,A,https://api.arasaac.org/api/pictograms/2811?download=false,null,null
-il gatto con gli stivali,21,4,se mi ascolterai,A,https://api.arasaac.org/api/pictograms/2381?download=false,null,null
-il gatto con gli stivali,21,5,diventerai ricco,A,https://api.arasaac.org/api/pictograms/4733?download=false,null,null
-il gatto con gli stivali,22,0,il finto marchese di calabas ascoltò il gatto e si tuffò nel fiume,,,null,null
-il gatto con gli stivali,22,1,il finto marchese di Calabas,A,https://api.arasaac.org/api/pictograms/4673?download=false,null,null
-il gatto con gli stivali,22,2,ascoltò,A,https://api.arasaac.org/api/pictograms/2381?download=false,null,null
-il gatto con gli stivali,22,3,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,22,4,e si tuffò,A,https://api.arasaac.org/api/pictograms/31162?download=false,null,null
-il gatto con gli stivali,22,5,nel fiume,A,https://api.arasaac.org/api/pictograms/2811?download=false,null,null
-il gatto con gli stivali,23,0,arriva la carrozza del re e il gatto si mette a gridare,,,null,null
-il gatto con gli stivali,23,1,arriva la carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null
-il gatto con gli stivali,23,2,del re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,23,3,e Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,23,4,si mette a gridare,A,https://api.arasaac.org/api/pictograms/6552?download=false,null,null
-il gatto con gli stivali,24,0,aiuto aiuto il marchese di calabas sta affogando,,,null,null
-il gatto con gli stivali,24,1,aiuto aiuto,A,https://api.arasaac.org/api/pictograms/9046?download=false,null,null
-il gatto con gli stivali,24,2,il marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,24,3,sta affogando,A,https://api.arasaac.org/api/pictograms/9046?download=false,null,null
-il gatto con gli stivali,25,0,il re riconosce il gatto che gli aveva portato tanti regali e ordina subito alle sue guardie di salvare il marchese di calabas,,,null,null
-il gatto con gli stivali,25,1,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,25,2,riconosce,A,https://api.arasaac.org/api/pictograms/6993?download=false,null,null
-il gatto con gli stivali,25,3,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,25,4,che gli aveva portato tanti regali,A,https://api.arasaac.org/api/pictograms/3149?download=false,null,null
-il gatto con gli stivali,25,5,e ordina,A,https://api.arasaac.org/api/pictograms/37822?download=false,null,null
-il gatto con gli stivali,25,6,alle guardie,A,https://api.arasaac.org/api/pictograms/3342?download=false,null,null
-il gatto con gli stivali,25,7,di salvare il marchese di calabas,A,https://api.arasaac.org/api/pictograms/9046?download=false,null,null
-il gatto con gli stivali,26,0,il furbo gatto racconta al re che il marchese era stato rapinato e derubato dai vestiti,,,null,null
-il gatto con gli stivali,26,1,Il furbo Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,26,2,racconta,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null
-il gatto con gli stivali,26,3,al re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,26,4,che il marchese,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,26,5,era stato rapinato e derubato dei vestiti,A,https://api.arasaac.org/api/pictograms/8209?download=false,null,null
-il gatto con gli stivali,27,0,il re ordina di andare a prendere il suo vestito più bello per il marchese di calabas,,,null,null
-il gatto con gli stivali,27,1,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,27,2,ordina,A,https://api.arasaac.org/api/pictograms/37822?download=false,null,null
-il gatto con gli stivali,27,3,andare,A,https://api.arasaac.org/api/pictograms/2432?download=false,null,null
-il gatto con gli stivali,27,4,prendere,A,https://api.arasaac.org/api/pictograms/4606?download=false,null,null
-il gatto con gli stivali,27,5,il suo vestito più bello per il marchese di calabas,A,https://api.arasaac.org/api/pictograms/34836?download=false,null,null
-il gatto con gli stivali,28,0,la principessa aveva notato quel ragazzo che con l'abito del re indosso era bellissimo,,,null,null
-il gatto con gli stivali,28,1,la principessa,A,https://api.arasaac.org/api/pictograms/5554?download=false,null,null
-il gatto con gli stivali,28,2,aveva notato,A,https://api.arasaac.org/api/pictograms/28673?download=false,null,null
-il gatto con gli stivali,28,3,quel ragazzo che con l'abito del re indosso,A,https://api.arasaac.org/api/pictograms/34836?download=false,null,null
-il gatto con gli stivali,28,4,era bellissimo,A,https://api.arasaac.org/api/pictograms/4660?download=false,null,null
-il gatto con gli stivali,29,0,il re chiede di accompagnarlo nella sua passeggiata in carrozza,,,null,null
-il gatto con gli stivali,29,1,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,29,2,chiede di accompagnarlo,A,https://api.arasaac.org/api/pictograms/37485?download=false,null,null
-il gatto con gli stivali,29,3,nella sua passeggiata,A,https://api.arasaac.org/api/pictograms/4670?download=false,null,null
-il gatto con gli stivali,29,4,in carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null
-il gatto con gli stivali,31,0,dovete dire che queste terre appartengono al marchese di calabas altrimenti vi farò a pezzetti e vi mangerò come polpette,,,null,null
-il gatto con gli stivali,31,1,dovete dire,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null
-il gatto con gli stivali,31,2,che queste terre,A,https://api.arasaac.org/api/pictograms/2974?download=false,null,null
-il gatto con gli stivali,31,3,appartengono,A,https://api.arasaac.org/api/pictograms/26817?download=false,null,null
-il gatto con gli stivali,31,4,al marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,31,5,altrimenti vi farò a pezzi,A,https://api.arasaac.org/api/pictograms/27093?download=false,null,null
-il gatto con gli stivali,31,6,e vi mangerò,A,https://api.arasaac.org/api/pictograms/38431?download=false,null,null
-il gatto con gli stivali,31,7,come polpette,A,https://api.arasaac.org/api/pictograms/3249?download=false,null,null
-il gatto con gli stivali,32,0,arriva la carrozza e il re chiede ai contadini,,,null,null
-il gatto con gli stivali,32,1,arriva,A,https://api.arasaac.org/api/pictograms/16807?download=false,null,null
-il gatto con gli stivali,32,2,la carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null
-il gatto con gli stivali,32,3,e il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,32,4,chiede,A,https://api.arasaac.org/api/pictograms/9847?download=false,null,null
-il gatto con gli stivali,32,5,ai contadini,A,https://api.arasaac.org/api/pictograms/2982?download=false,null,null
-il gatto con gli stivali,33,0,chi è il proprietario di queste terre?,,,null,null
-il gatto con gli stivali,33,1,chi è il proprietario,A,https://api.arasaac.org/api/pictograms/12264?download=false,null,null
-il gatto con gli stivali,33,2,di queste terre?,A,https://api.arasaac.org/api/pictograms/2974?download=false,null,null
-il gatto con gli stivali,34,0,i contadini rispondono in coro sono del marchese di carabas,null,null,null,null
-il gatto con gli stivali,34,1,i contadini,A,https://api.arasaac.org/api/pictograms/2982?download=false,null,null
-il gatto con gli stivali,34,2,rispondono in coro,A,https://api.arasaac.org/api/pictograms/2717?download=false,null,null
-il gatto con gli stivali,34,3,sono del marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,35,0,il gatto intanto vede dei mietitori,,,null,null
-il gatto con gli stivali,35,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,35,2,vede,A,https://api.arasaac.org/api/pictograms/2474?download=false,null,null
-il gatto con gli stivali,35,3,dei mietitori,A,https://api.arasaac.org/api/pictograms/37695?download=false,null,null
-il gatto con gli stivali,36,0,dite che queste terre sono del marchese di calabas altrimenti vi farò a polpette e vi mangerò in un boccone,,,null,null
-il gatto con gli stivali,36,1,dite,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null
-il gatto con gli stivali,36,2,che queste terre,A,https://api.arasaac.org/api/pictograms/2974?download=false,null,null
-il gatto con gli stivali,36,3,sono,A,https://api.arasaac.org/api/pictograms/12264?download=false,null,null
-il gatto con gli stivali,36,4,del marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,36,5,altrimenti vi farò a polpette,A,https://api.arasaac.org/api/pictograms/3249?download=false,null,null
-il gatto con gli stivali,36,6,e vi mangerò,A,https://api.arasaac.org/api/pictograms/38431?download=false,null,null
-il gatto con gli stivali,37,0,passa la carrozza e il re chiede ai mietitori di chi fossero quelle terre e i mietitori rispondono in coro,,,null,null
-il gatto con gli stivali,37,1,passa la carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null
-il gatto con gli stivali,37,2,e il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,37,3,chiede,A,https://api.arasaac.org/api/pictograms/9847?download=false,null,null
-il gatto con gli stivali,37,4,di chi sono,A,https://api.arasaac.org/api/pictograms/12264?download=false,null,null
-il gatto con gli stivali,37,5,queste terre,A,https://api.arasaac.org/api/pictograms/2974?download=false,null,null
-il gatto con gli stivali,37,6,e i mietitori,A,https://api.arasaac.org/api/pictograms/37695?download=false,null,null
-il gatto con gli stivali,37,7,rispondono in coro,A,https://api.arasaac.org/api/pictograms/2717?download=false,null,null
-il gatto con gli stivali,38,0,sono del marchese di calabas,,,null,null
-il gatto con gli stivali,38,1,sono del marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,39,0,il re è meravigliato delle ricchezze del marchese che era un po' imbarazzato,,,null,null
-il gatto con gli stivali,39,1,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,39,2,è meravigliato,A,https://api.arasaac.org/api/pictograms/35529?download=false,null,null
-il gatto con gli stivali,39,3,delle ricchezze,A,https://api.arasaac.org/api/pictograms/4733?download=false,null,null
-il gatto con gli stivali,39,4,del marchese,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,39,5,che era un po' imbarazzato,A,https://api.arasaac.org/api/pictograms/31919?download=false,null,null
-il gatto con gli stivali,41,0,chiese alla servitù di poterlo conoscere ed onorare,null,null,null,null
-il gatto con gli stivali,41,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,41,2,chiede alla servitù,A,https://api.arasaac.org/api/pictograms/9840?download=false,null,null
-il gatto con gli stivali,41,3,di poterlo conoscere,A,https://api.arasaac.org/api/pictograms/8456?download=false,null,null
-il gatto con gli stivali,41,4,e onorare,A,https://api.arasaac.org/api/pictograms/13018?download=false,null,null
-il gatto con gli stivali,42,0,l'orco che era un po' tonto lo fece entrare subito,,,null,null
-il gatto con gli stivali,42,1,l'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null
-il gatto con gli stivali,42,2,che era un po' tonto,A,https://api.arasaac.org/api/pictograms/8618?download=false,null,null
-il gatto con gli stivali,42,3,lo fece entrare subito,A,https://api.arasaac.org/api/pictograms/6491?download=false,null,null
-il gatto con gli stivali,43,0,il gatto chiede all'orco se è vero che può diventare uguale a qualsiasi animale,,,null,null
-il gatto con gli stivali,43,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,43,2,chiede,A,https://api.arasaac.org/api/pictograms/9840?download=false,null,null
-il gatto con gli stivali,43,3,all'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null
-il gatto con gli stivali,43,4,se era vero che poteva diventare uguale,A,https://api.arasaac.org/api/pictograms/32392?download=false,null,null
-il gatto con gli stivali,43,5,a qualsiasi animale,A,https://api.arasaac.org/api/pictograms/6901?download=false,null,null
-il gatto con gli stivali,44,0,certo dice l'orco guarda adesso sono un leone,,,null,null
-il gatto con gli stivali,44,1,certo dice l'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null
-il gatto con gli stivali,44,2,guarda,A,https://api.arasaac.org/api/pictograms/6564?download=false,null,null
-il gatto con gli stivali,44,3,adesso sono un leone,A,https://api.arasaac.org/api/pictograms/2449?download=false,null,null
-il gatto con gli stivali,45,0,l'orco diventa uguale ad un leone,,,null,null
-il gatto con gli stivali,45,1,l'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null
-il gatto con gli stivali,45,2,diventa uguale,A,https://api.arasaac.org/api/pictograms/32392?download=false,null,null
-il gatto con gli stivali,45,3,ad un leone,A,https://api.arasaac.org/api/pictograms/2449?download=false,null,null
-il gatto con gli stivali,46,0,il gatto ha paura ma riesce a nasconderla,,,null,null
-il gatto con gli stivali,46,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,46,2,ha paura,A,https://api.arasaac.org/api/pictograms/35571?download=false,null,null
-il gatto con gli stivali,46,3,ma riesce a nasconderla,A,https://api.arasaac.org/api/pictograms/38050?download=false,null,null
-il gatto con gli stivali,47,0,il leone è grande come te non è facile che tu diventi uguale ad un topolino,,,null,null
-il gatto con gli stivali,47,1,il leone,A,https://api.arasaac.org/api/pictograms/2449?download=false,null,null
-il gatto con gli stivali,47,2,è grande come,A,https://api.arasaac.org/api/pictograms/32392?download=false,null,null
-il gatto con gli stivali,47,3,te,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null
-il gatto con gli stivali,47,4,non è facile,A,https://api.arasaac.org/api/pictograms/32434?download=false,null,null
-il gatto con gli stivali,47,5,che tu,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null
-il gatto con gli stivali,47,6,diventi uguale,A,https://api.arasaac.org/api/pictograms/32392?download=false,null,null
-il gatto con gli stivali,47,7,ad un topolino,A,https://api.arasaac.org/api/pictograms/2546?download=false,null,null
-il gatto con gli stivali,48,0,fatto dice l'orco,,,null,null
-il gatto con gli stivali,48,1,fatto dice,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null
-il gatto con gli stivali,48,2,l'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null
-il gatto con gli stivali,49,0,l'orco diventa uguale ad un topolino ed il gatto se lo mangia in un boccone,,,null,null
-il gatto con gli stivali,49,1,l'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null
-il gatto con gli stivali,49,2,diventa uguale,A,https://api.arasaac.org/api/pictograms/32392?download=false,null,null
-il gatto con gli stivali,49,3,ad un topolino,A,https://api.arasaac.org/api/pictograms/2546?download=false,null,null
-il gatto con gli stivali,49,4,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,49,5,se lo mangia in un boccone,A,https://api.arasaac.org/api/pictograms/38431?download=false,null,null
-il gatto con gli stivali,50,0,la carrozza del re arriva al castello il gatto gli corre incontro gridando,,,null,null
-il gatto con gli stivali,50,1,la carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null
-il gatto con gli stivali,50,2,del re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,50,3,arriva,A,https://api.arasaac.org/api/pictograms/16807?download=false,null,null
-il gatto con gli stivali,50,4,al castello,A,https://api.arasaac.org/api/pictograms/5421?download=false,null,null
-il gatto con gli stivali,50,5,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,50,6,gli corre,A,https://api.arasaac.org/api/pictograms/2719?download=false,null,null
-il gatto con gli stivali,50,7,incontro,A,https://api.arasaac.org/api/pictograms/13356?download=false,null,null
-il gatto con gli stivali,50,8,gridando,A,https://api.arasaac.org/api/pictograms/6552?download=false,null,null
-il gatto con gli stivali,51,0,maestà benvenuto nel castello del marchese di carabas,,,null,null
-il gatto con gli stivali,51,1,maestà,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,51,2,benvenuto,A,https://api.arasaac.org/api/pictograms/6936?download=false,null,null
-il gatto con gli stivali,51,3,nel castello,A,https://api.arasaac.org/api/pictograms/5950?download=false,null,null
-il gatto con gli stivali,51,4,del marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,53,0,i due ragazzi si piacevano e così si sposano,,,null,null
-il gatto con gli stivali,53,1,i due ragazzi si piacevano,A,https://api.arasaac.org/api/pictograms/6600?download=false,null,null
-il gatto con gli stivali,53,2,e così si sposano,A,https://api.arasaac.org/api/pictograms/6965?download=false,null,null
-il gatto con gli stivali,2,0,un mugnaio lasciò in eredità ai tre figli un mulino un asino e un gatto,null,null,null,null
-il gatto con gli stivali,2,1,un mugnaio,A,https://api.arasaac.org/api/pictograms/3358?download=false,null,null
-il gatto con gli stivali,2,2,lasciò in eredità,A,https://api.arasaac.org/api/pictograms/11700?download=false,null,null
-il gatto con gli stivali,2,3,ai tre figli,A,https://api.arasaac.org/api/pictograms/9887?download=false,null,null
-il gatto con gli stivali,2,4,un mulino,A,https://api.arasaac.org/api/pictograms/13086?download=false,null,null
-il gatto con gli stivali,2,5,un asino,A,https://api.arasaac.org/api/pictograms/2291?download=false,null,null
-il gatto con gli stivali,2,6,e un gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null
-il gatto con gli stivali,2,9999,eredità,,,null,null
-il gatto con gli stivali,5,0,il gatto che aveva intuito i pensieri del suo padrone disse non preoccuparti se mi darai un paio di stivali  per camminare nel bosco e un sacco ti aiuterò,null,null,null,null
-il gatto con gli stivali,5,1,il gatto,A,https://api.arasaac.org/api/pictograms/9881?download=false,null,null
-il gatto con gli stivali,5,2,che aveva intuito i pensieri del suo padrone,A,https://api.arasaac.org/api/pictograms/6019?download=false,null,null
-il gatto con gli stivali,5,3,disse,A,https://api.arasaac.org/api/pictograms/9692?download=false,null,null
-il gatto con gli stivali,5,4,non preoccuparti,A,https://api.arasaac.org/api/pictograms/26985?download=false,null,null
-il gatto con gli stivali,5,5,mi,A,https://api.arasaac.org/api/pictograms/2617?download=false,null,null
-il gatto con gli stivali,5,6,darai,A,https://api.arasaac.org/api/pictograms/5447?download=false,null,null
-il gatto con gli stivali,5,7,un paio di stivali,A,https://api.arasaac.org/api/pictograms/2287?download=false,null,null
-il gatto con gli stivali,5,8,per camminare,A,https://api.arasaac.org/api/pictograms/3251?download=false,null,null
-il gatto con gli stivali,5,9,nel bosco,A,https://api.arasaac.org/api/pictograms/2666?download=false,null,null
-il gatto con gli stivali,5,10,sacco,A,https://api.arasaac.org/api/pictograms/6210?download=false,null,null
-il gatto con gli stivali,5,11,ti,A,https://api.arasaac.org/api/pictograms/6625?download=false,null,null
-il gatto con gli stivali,5,12,aiuterò,A,https://api.arasaac.org/api/pictograms/4570?download=false,null,null
-il gatto con gli stivali,5,9999,gatto,,,null,null
-il gatto con gli stivali,10,0,tutto felice della sua preda andò in città e chiese di vedere il re,null,null,null,null
-il gatto con gli stivali,10,1,tutto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,10,2,felice della sua preda,A,https://api.arasaac.org/api/pictograms/35547?download=false,null,null
-il gatto con gli stivali,10,3,andò,A,https://api.arasaac.org/api/pictograms/2432?download=false,null,null
-il gatto con gli stivali,10,4,in città,A,https://api.arasaac.org/api/pictograms/2704?download=false,null,null
-il gatto con gli stivali,10,5,e chiese,A,https://api.arasaac.org/api/pictograms/37822?download=false,null,null
-il gatto con gli stivali,10,6,di vedere,A,https://api.arasaac.org/api/pictograms/2474?download=false,null,null
-il gatto con gli stivali,10,7,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,10,9999,re,,,null,null
-il gatto con gli stivali,19,0,udì che il re sarebbe andato in carrozza in riva al fiume per una passeggiata in campagna insieme alla principessa sua figlia,,,null,null
-il gatto con gli stivali,19,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,19,2,udì,A,https://api.arasaac.org/api/pictograms/6572?download=false,null,null
-il gatto con gli stivali,19,3,che il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,19,4,sarebbe andato in carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null
-il gatto con gli stivali,19,5,in riva al fiume,A,https://api.arasaac.org/api/pictograms/2811?download=false,null,null
-il gatto con gli stivali,19,6,per una passeggiata in campagna,A,https://api.arasaac.org/api/pictograms/38286?download=false,null,null
-il gatto con gli stivali,19,7,con la principessa,A,https://api.arasaac.org/api/pictograms/5554?download=false,null,null
-il gatto con gli stivali,19,8,sua figlia,A,https://api.arasaac.org/api/pictograms/10340?download=false,null,null
-il gatto con gli stivali,19,9999,passeggiata,,,null,null
-il gatto con gli stivali,30,0,il gatto  corre avanti e dice ad alcuni contadini,,,null,null
-il gatto con gli stivali,30,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,30,2,corre avanti,A,https://api.arasaac.org/api/pictograms/6465?download=false,null,null
-il gatto con gli stivali,30,3,e dice,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null
-il gatto con gli stivali,30,4,ad alcuni contadini,A,https://api.arasaac.org/api/pictograms/2982?download=false,null,null
-il gatto con gli stivali,30,9999,contadini,,,null,null
-il gatto con gli stivali,40,0,il gatto che precedeva la carrozza arrivò al castello di un terribile orco,null,null,null,null
-il gatto con gli stivali,40,1,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,40,2,arriva,A,https://api.arasaac.org/api/pictograms/16807?download=false,null,null
-il gatto con gli stivali,40,3,al castello,A,https://api.arasaac.org/api/pictograms/5421?download=false,null,null
-il gatto con gli stivali,40,4,di un terribile orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null
-il gatto con gli stivali,40,9999,orco,,,null,null
-il gatto con gli stivali,52,0,il re rimane a bocca aperta e si convince di dare la principessa in sposa al marchese,,,null,null
-il gatto con gli stivali,52,1,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null
-il gatto con gli stivali,52,2,rimane a bocca aperta,A,https://api.arasaac.org/api/pictograms/35565?download=false,null,null
-il gatto con gli stivali,52,3,e si convince,A,https://api.arasaac.org/api/pictograms/8661?download=false,null,null
-il gatto con gli stivali,52,4,di dare la principessa,A,https://api.arasaac.org/api/pictograms/5554?download=false,null,null
-il gatto con gli stivali,52,5,in sposa,A,https://api.arasaac.org/api/pictograms/8256?download=false,null,null
-il gatto con gli stivali,52,6,al marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null
-il gatto con gli stivali,52,9999,matrimonio,,,null,null
-il gatto con gli stivali,54,0,il gatto diventa un gran signore e smette di cacciare i topi,null,null,null,null
-il gatto con gli stivali,54,1,Il Gatto con gli stivali,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null
-il gatto con gli stivali,54,2,diventa ricco,A,https://api.arasaac.org/api/pictograms/37803?download=false,null,null
-il gatto con gli stivali,54,3,non deve più cacciare,A,https://api.arasaac.org/api/pictograms/8533?download=false,null,null
-il gatto con gli stivali,54,4,i topi,A,https://api.arasaac.org/api/pictograms/2546?download=false,null,null
-il gatto con gli stivali,54,9999,ricco,,,null,null
+story,phraseNumberInt,wordNumberInt,wordNumberIntInTheStory,word,uriType,uri,answerActionType,answerAction,video,sound,soundReplacesTTS,fromAssets
+educazionestradale,1,0,0,il bambino e la nonna vogliono andare a mangiare un gelato al cioccolato,,,,,,,N,Y
+educazionestradale,1,1,1,il bambino,A,https://api.arasaac.org/api/pictograms/7176?download=false,null,null,null,null,null,
+educazionestradale,1,2,2,e la nonna,A,https://api.arasaac.org/api/pictograms/23710?download=false,null,null,,,,
+educazionestradale,1,3,3,vogliono andare,A,https://api.arasaac.org/api/pictograms/31758?download=false,null,null,,,,
+educazionestradale,1,4,4,a mangiare,A,https://api.arasaac.org/api/pictograms/2349?download=false,null,null,,,,
+educazionestradale,1,5,5,un gelato,A,https://api.arasaac.org/api/pictograms/35209?download=false,null,null,,,,
+educazionestradale,1,6,6,al cioccolato,A,https://api.arasaac.org/api/pictograms/25940?download=false,null,null,,,,
+educazionestradale,2,0,0,il bambino e la nonna escono di casa,,,,,,,N,Y
+educazionestradale,2,1,7,il bambino,A,https://api.arasaac.org/api/pictograms/7176?download=false,null,null,,,,
+educazionestradale,2,2,8,e la nonna,A,https://api.arasaac.org/api/pictograms/23710?download=false,null,null,,,,
+educazionestradale,2,3,9,escono,A,https://api.arasaac.org/api/pictograms/28689?download=false,null,null,,,,
+educazionestradale,2,4,10,di casa,A,https://api.arasaac.org/api/pictograms/6964?download=false,null,null,,,,
+educazionestradale,3,0,0,il bambino e la nonna devono attraversare la strada,,,,,,,N,Y
+educazionestradale,3,1,11,il bambino,A,https://api.arasaac.org/api/pictograms/7176?download=false,null,null,,,,
+educazionestradale,3,2,12,e la nonna,A,https://api.arasaac.org/api/pictograms/23710?download=false,null,null,,,,
+educazionestradale,3,3,13,devono attraversare,A,https://api.arasaac.org/api/pictograms/5976?download=false,null,null,,,,
+educazionestradale,3,4,14,la strada,A,https://api.arasaac.org/api/pictograms/2302?download=false,null,null,,,,
+educazionestradale,4,0,0,la strada è senza strisce pedonali,,,,,,,N,Y
+educazionestradale,4,1,15,la strada è senza strisce pedonali,A,https://api.arasaac.org/api/pictograms/3430?download=false,null,null,,,,
+educazionestradale,4,999,0,fermare,A,https://api.arasaac.org/api/pictograms/7196?download=false,null,null,,,,
+educazionestradale,4,9999,0,strada senza strisce pedonali,A,https://api.arasaac.org/api/pictograms/3430?download=false,null,null,,,,
+educazionestradale,5,0,0,il bambino si deve fermare,,,,,,,N,Y
+educazionestradale,5,1,16,il bambino si deve fermare,A,https://api.arasaac.org/api/pictograms/7195?download=false,null,null,null,null,null,
+educazionestradale,6,0,0,il bambino e la nonna camminano e vedono le strisce pedonali,,,,,,,N,Y
+educazionestradale,6,1,17,il bambino,A,https://api.arasaac.org/api/pictograms/7176?download=false,null,null,,,,
+educazionestradale,6,2,18,e la nonna,A,https://api.arasaac.org/api/pictograms/23710?download=false,null,null,,,,
+educazionestradale,6,3,19,camminano,A,https://api.arasaac.org/api/pictograms/29951?download=false,null,null,,,,
+educazionestradale,6,4,20,e vedono,A,https://api.arasaac.org/api/pictograms/2474?download=false,null,null,,,,
+educazionestradale,6,5,21,le strisce pedonali,A,https://api.arasaac.org/api/pictograms/3430?download=false,null,null,,,,
+educazionestradale,6,9999,0,strisce pedonali,,,,,,,N,Y
+educazionestradale,7,0,0,il bambino guarda a sinistra e a destra e vede delle macchine,,,,,,,N,Y
+educazionestradale,7,1,22,il bambino,A,https://api.arasaac.org/api/pictograms/7176?download=false,null,null,,,,
+educazionestradale,7,2,23,guarda a sinistra e a destra,A,https://api.arasaac.org/api/pictograms/37101?download=false,null,null,,,,
+educazionestradale,7,3,24,e vede,A,https://api.arasaac.org/api/pictograms/2474?download=false,null,null,,,,
+educazionestradale,7,4,25,delle macchine,A,https://api.arasaac.org/api/pictograms/2339?download=false,null,null,,,,
+educazionestradale,7,999,0,fermare,A,https://api.arasaac.org/api/pictograms/21888?download=false,,,,,N,Y
+educazionestradale,8,0,0,il bambino si deve fermare,,,,,,,N,Y
+educazionestradale,8,1,26,il bambino si deve fermare,A,https://api.arasaac.org/api/pictograms/7195?download=false,null,null,,,,
+educazionestradale,9,0,0,se non ci sono macchine,,,,,,,N,Y
+educazionestradale,9,1,27,se non ci sono macchine,A,https://api.arasaac.org/api/pictograms/2339?download=false,null,null,,,,
+educazionestradale,9,999,0,attraversare,A,https://api.arasaac.org/api/pictograms/21888?download=false,,,,,N,Y
+educazionestradale,10,0,0,il bambino attraversa sulle strisce pedonali,,,,,,,N,Y
+educazionestradale,10,1,28,il bambino attraversa sulle strisce pedonali,A,https://api.arasaac.org/api/pictograms/5976?download=false,null,null,,,,
+educazionestradale,11,0,0,il bambino cammina e arriva ad un semaforo rosso,,,,,,,N,Y
+educazionestradale,11,1,29,il bambino cammina,A,https://api.arasaac.org/api/pictograms/32214?download=false,null,null,,,,
+educazionestradale,11,2,30,ed arriva,A,https://api.arasaac.org/api/pictograms/16807?download=false,null,null,,,,
+educazionestradale,11,3,31,ad un semaforo rosso,A,https://api.arasaac.org/api/pictograms/36446?download=false,null,null,,,,
+educazionestradale,11,9999,0,semaforo,A,https://api.arasaac.org/api/pictograms/21888?download=false,,,,,N,Y
+educazionestradale,12,0,0,il bambino si deve fermare,,,,,,,N,Y
+educazionestradale,12,1,32,il bambino si deve fermare,A,https://api.arasaac.org/api/pictograms/7195?download=false,null,null,,,,
+educazionestradale,13,0,0,il semaforo è verde,,,,,,,N,Y
+educazionestradale,13,1,33,il semaforo è verde,A,https://api.arasaac.org/api/pictograms/36448?download=false,null,null,,,,
+educazionestradale,14,0,0,il bambino guarda a sinistra e a destra non vede macchine,,,,,,,N,Y
+educazionestradale,14,1,34,il bambino,A,https://api.arasaac.org/api/pictograms/7176?download=false,null,null,,,,
+educazionestradale,14,2,35,guarda a sinistra e a destra,A,https://api.arasaac.org/api/pictograms/37101?download=false,null,null,,,,
+educazionestradale,14,3,36,non vede macchine,A,https://api.arasaac.org/api/pictograms/2339?download=false,null,null,,,,
+educazionestradale,15,0,0,il bambino attraversa sulle strisce pedonali,A,https://api.arasaac.org/api/pictograms/21888?download=false,,,,,N,Y
+educazionestradale,15,1,37,il bambino attraversa sulle strisce pedonali,A,https://api.arasaac.org/api/pictograms/5976?download=false,null,null,,,,
+educazionestradale,16,0,0,se non ci sono strisce pedonali il bambino si deve?,,,null,null,,,,
+educazionestradale,16,1,38,se non ci sono strisce pedonali,A,https://api.arasaac.org/api/pictograms/3430?download=false,null,null,,,,
+educazionestradale,17,0,0,fermare o attraversare?,,,,,,,N,Y
+educazionestradale,17,1,39,fermare,A,https://api.arasaac.org/api/pictograms/7195?download=false,null,null,,,,
+educazionestradale,17,2,40,o attraversare,A,https://api.arasaac.org/api/pictograms/5976?download=false,null,null,,,,
+educazionestradale,17,99,0,se non ci sono strisce pedonali mattia si deve?,,,,,,,N,Y
+educazionestradale,17,999,0,fermare,A,https://api.arasaac.org/api/pictograms/21888?download=false,,,,,N,Y
+educazionestradale,18,0,0,il bambino e la nonna mangiano un bel gelato al cioccolato,,,,,,,N,Y
+educazionestradale,18,1,41,il bambino,A,https://api.arasaac.org/api/pictograms/7176?download=false,null,null,,,,
+educazionestradale,18,2,42,e la nonna,A,https://api.arasaac.org/api/pictograms/23710?download=false,null,null,,,,
+educazionestradale,18,3,43,mangiano,A,https://api.arasaac.org/api/pictograms/2349?download=false,null,null,,,,
+educazionestradale,18,4,44,un bel gelato,A,https://api.arasaac.org/api/pictograms/35209?download=false,null,null,,,,
+educazionestradale,18,5,45,al cioccolato,A,https://api.arasaac.org/api/pictograms/25940?download=false,null,null,,,,
+il gatto con gli stivali,1,0,0,da dove vuoi iniziare ? dall'eredità dal gatto dal re dalla passeggiata dai contadini dall'orco dal matrimonio dal gatto ricco,,,null,null,,,N,Y
+il gatto con gli stivali,1,1,1,eredità,A,https://api.arasaac.org/api/pictograms/11700?download=false,null,null,,,N,Y
+il gatto con gli stivali,1,2,2,il gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null,null,gatto,N,Y
+il gatto con gli stivali,1,3,3,dal re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,1,4,4,dalla passeggiata,A,https://api.arasaac.org/api/pictograms/4670?download=false,null,null,,,N,Y
+il gatto con gli stivali,1,5,5,dai contadini,A,https://api.arasaac.org/api/pictograms/2982?download=false,null,null,,,N,Y
+il gatto con gli stivali,1,6,6,dall'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null,,orco,N,Y
+il gatto con gli stivali,1,7,7,matrimonio,A,https://api.arasaac.org/api/pictograms/8256?download=false,null,null,,matrimonio,N,Y
+il gatto con gli stivali,1,8,8,gatto ricco,A,https://api.arasaac.org/api/pictograms/4733?download=false,null,null,,,N,Y
+il gatto con gli stivali,2,0,0,un mugnaio lasciò in eredità ai tre figli un mulino un asino e un gatto,null,null,null,null,,,N,Y
+il gatto con gli stivali,2,1,9,un mugnaio,A,https://api.arasaac.org/api/pictograms/3358?download=false,null,null,,,N,Y
+il gatto con gli stivali,2,2,10,lasciò in eredità,A,https://api.arasaac.org/api/pictograms/11700?download=false,null,null,,,N,Y
+il gatto con gli stivali,2,3,11,ai tre figli,A,https://api.arasaac.org/api/pictograms/9887?download=false,null,null,,,N,Y
+il gatto con gli stivali,2,4,12,un mulino,A,https://api.arasaac.org/api/pictograms/13086?download=false,null,null,,,N,Y
+il gatto con gli stivali,2,5,13,un asino,A,https://api.arasaac.org/api/pictograms/2291?download=false,null,null,null,asino,N,Y
+il gatto con gli stivali,2,6,14,e un gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null,,gatto,N,Y
+il gatto con gli stivali,2,9999,0,eredità,,,null,null,,,N,Y
+il gatto con gli stivali,3,0,0,il figlio maggiore ebbe il mulino il secondo ebbe l'asino e il più piccolo il gatto,null,null,null,null,,,N,Y
+il gatto con gli stivali,3,1,15,il figlio maggiore,A,https://api.arasaac.org/api/pictograms/4557?download=false,null,null,,,N,Y
+il gatto con gli stivali,3,2,16,ebbe il mulino,A,https://api.arasaac.org/api/pictograms/13086?download=false,null,null,,,N,Y
+il gatto con gli stivali,3,3,17,il secondo,A,https://api.arasaac.org/api/pictograms/4571?download=false,null,null,,,N,Y
+il gatto con gli stivali,3,4,18,ebbe l'asino,A,https://api.arasaac.org/api/pictograms/2291?download=false,null,null,,asino,N,Y
+il gatto con gli stivali,3,5,19,e il più piccolo,A,https://api.arasaac.org/api/pictograms/36887?download=false,null,null,,,N,Y
+il gatto con gli stivali,3,6,20,il gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null,,gatto,N,Y
+il gatto con gli stivali,4,0,0,il fratello piccolo pensava che i fratelli avrebbero potuto lavorare insieme mentre lui non sapeva che fare del gatto,null,null,null,null,,,N,Y
+il gatto con gli stivali,4,1,21,il fratello piccolo,A,https://api.arasaac.org/api/pictograms/36887?download=false,null,null,,,N,Y
+il gatto con gli stivali,4,2,22,pensava,A,https://api.arasaac.org/api/pictograms/8661?download=false,null,null,,,N,Y
+il gatto con gli stivali,4,3,23,che i fratelli avrebbero potuto lavorare insieme,A,https://api.arasaac.org/api/pictograms/10348?download=false,null,null,,,N,Y
+il gatto con gli stivali,4,4,24,mentre lui,A,https://api.arasaac.org/api/pictograms/35575?download=false,null,null,,,N,Y
+il gatto con gli stivali,4,5,25,non sapeva che fare,A,https://api.arasaac.org/api/pictograms/31847?download=false,null,null,,,N,Y
+il gatto con gli stivali,4,6,26,del gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,0,0,il gatto che aveva intuito i pensieri del suo padrone disse non preoccuparti se mi darai un paio di stivali  per camminare nel bosco e un sacco ti aiuterò,null,null,null,null,,,N,Y
+il gatto con gli stivali,5,1,27,il gatto,A,https://api.arasaac.org/api/pictograms/9881?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,2,28,che aveva intuito i pensieri del suo padrone,A,https://api.arasaac.org/api/pictograms/6019?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,3,29,disse,A,https://api.arasaac.org/api/pictograms/9692?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,4,30,non preoccuparti,A,https://api.arasaac.org/api/pictograms/26985?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,5,31,mi,A,https://api.arasaac.org/api/pictograms/2617?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,6,32,darai,A,https://api.arasaac.org/api/pictograms/5447?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,7,33,un paio di stivali,A,https://api.arasaac.org/api/pictograms/2287?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,8,34,per camminare,A,https://api.arasaac.org/api/pictograms/3251?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,9,35,nel bosco,A,https://api.arasaac.org/api/pictograms/2666?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,10,36,e un sacco,A,https://api.arasaac.org/api/pictograms/6210?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,11,37,ti,A,https://api.arasaac.org/api/pictograms/6625?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,12,38,aiuterò,A,https://api.arasaac.org/api/pictograms/4570?download=false,null,null,,,N,Y
+il gatto con gli stivali,5,9999,0,gatto,,,null,null,,,N,Y
+il gatto con gli stivali,6,0,0,il ragazzo aveva notato l'abilità del gatto nel cacciare i topi e fidandosi di lui gli diede quello che chiedeva,null,null,null,null,,,N,Y
+il gatto con gli stivali,6,1,39,il ragazzo,A,https://api.arasaac.org/api/pictograms/36887?download=false,null,null,,,N,Y
+il gatto con gli stivali,6,2,40,aveva notato,A,https://api.arasaac.org/api/pictograms/2474?download=false,null,null,,,N,Y
+il gatto con gli stivali,6,3,41,l'abilità,A,https://api.arasaac.org/api/pictograms/11750?download=false,null,null,,,N,Y
+il gatto con gli stivali,6,4,42,del gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null,,,N,Y
+il gatto con gli stivali,6,5,43,nel cacciare,A,https://api.arasaac.org/api/pictograms/8533?download=false,null,null,,,N,Y
+il gatto con gli stivali,6,6,44,i topi,A,https://api.arasaac.org/api/pictograms/2546?download=false,null,null,,,N,Y
+il gatto con gli stivali,6,7,45,e fidandosi di lui,A,https://api.arasaac.org/api/pictograms/34856?download=false,null,null,,,N,Y
+il gatto con gli stivali,6,8,46,gli diede quello che chiedeva,A,https://api.arasaac.org/api/pictograms/17038?download=false,null,null,,,N,Y
+il gatto con gli stivali,7,0,0,il gatto indossò gli stivali si mise il sacco sulle spalle e se ne andò vicino ad una conigliera,null,null,null,null,,,N,Y
+il gatto con gli stivali,7,1,47,il gatto,A,https://api.arasaac.org/api/pictograms/2406?download=false,null,null,,,N,Y
+il gatto con gli stivali,7,2,48,indossò gli stivali,A,https://api.arasaac.org/api/pictograms/36575?download=false,null,null,,,N,Y
+il gatto con gli stivali,7,3,49,si mise il sacco,A,https://api.arasaac.org/api/pictograms/6210?download=false,null,null,,,N,Y
+il gatto con gli stivali,7,4,50,sulle spalle,A,https://api.arasaac.org/api/pictograms/13052?download=false,null,null,,,N,Y
+il gatto con gli stivali,7,5,51,e se ne andò,A,https://api.arasaac.org/api/pictograms/2432?download=false,null,null,,,N,Y
+il gatto con gli stivali,7,6,52,vicino a,A,https://api.arasaac.org/api/pictograms/5367?download=false,null,null,,,N,Y
+il gatto con gli stivali,7,7,53,ad una conigliera,A,https://api.arasaac.org/api/pictograms/31398?download=false,null,null,,,N,Y
+il gatto con gli stivali,8,0,0,il gatto nascose nel sacco un po' di erba fresca si distese per terra fingendosi morto vicino al sacco e aspettò che  arrivasse qualche coniglio,,,null,null,,,N,Y
+il gatto con gli stivali,8,1,54,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,8,2,55,nascose,A,https://api.arasaac.org/api/pictograms/26024?download=false,null,null,,,N,Y
+il gatto con gli stivali,8,3,56,nel sacco,A,https://api.arasaac.org/api/pictograms/6210?download=false,null,null,,,N,Y
+il gatto con gli stivali,8,4,57,un po' d'erba fresca,A,https://api.arasaac.org/api/pictograms/3113?download=false,null,null,,,N,Y
+il gatto con gli stivali,8,5,58,si distese per terra fingendosi morto,A,https://api.arasaac.org/api/pictograms/22205?download=false,null,null,,,N,Y
+il gatto con gli stivali,8,6,59,vicino,A,https://api.arasaac.org/api/pictograms/5367?download=false,null,null,,,N,Y
+il gatto con gli stivali,8,7,60,al sacco,A,https://api.arasaac.org/api/pictograms/6210?download=false,null,null,,,N,Y
+il gatto con gli stivali,8,8,61,e aspetto',A,https://api.arasaac.org/api/pictograms/25078?download=false,null,null,,,N,Y
+il gatto con gli stivali,8,9,62,che arrivasse qualche coniglio,A,https://api.arasaac.org/api/pictograms/2351?download=false,null,null,,,N,Y
+il gatto con gli stivali,9,0,0,non appena un coniglio distratto entrò nel sacco per mangiare l'erbetta il gatto chiuse la sacca e lo acchiappò,,,null,null,,,N,Y
+il gatto con gli stivali,9,1,63,non appena un coniglio distratto,A,https://api.arasaac.org/api/pictograms/2351?download=false,null,null,coniglio,,N,Y
+il gatto con gli stivali,9,2,64,entro',A,https://api.arasaac.org/api/pictograms/37247?download=false,null,null,,,N,Y
+il gatto con gli stivali,9,3,65,nel sacco,A,https://api.arasaac.org/api/pictograms/6210?download=false,null,null,,,N,Y
+il gatto con gli stivali,9,4,66,per mangiare,A,https://api.arasaac.org/api/pictograms/2349?download=false,null,null,,,N,Y
+il gatto con gli stivali,9,5,67,l'erba,A,https://api.arasaac.org/api/pictograms/3113?download=false,null,null,,,N,Y
+il gatto con gli stivali,9,6,68,il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,9,7,69,chiuse la sacca,A,https://api.arasaac.org/api/pictograms/5391?download=false,null,null,,,N,Y
+il gatto con gli stivali,9,8,70,e lo acchiappo',A,https://api.arasaac.org/api/pictograms/8188?download=false,null,null,,,N,Y
+il gatto con gli stivali,10,0,0,tutto felice della sua preda andò in città e chiese di vedere il re,null,null,null,null,,,N,Y
+il gatto con gli stivali,10,1,71,tutto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,10,2,72,felice della sua preda,A,https://api.arasaac.org/api/pictograms/35547?download=false,null,null,,,N,Y
+il gatto con gli stivali,10,3,73,andò,A,https://api.arasaac.org/api/pictograms/2432?download=false,null,null,,,N,Y
+il gatto con gli stivali,10,4,74,in città,A,https://api.arasaac.org/api/pictograms/2704?download=false,null,null,,,N,Y
+il gatto con gli stivali,10,5,75,e chiese,A,https://api.arasaac.org/api/pictograms/37822?download=false,null,null,,,N,Y
+il gatto con gli stivali,10,6,76,di vedere,A,https://api.arasaac.org/api/pictograms/2474?download=false,null,null,,,N,Y
+il gatto con gli stivali,10,7,77,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,10,9999,0,re,,,null,null,,,N,Y
+il gatto con gli stivali,11,0,0,fu accompagnato nelle stanze del re e dopo un inchino profondo gli disse,null,null,null,null,,,N,Y
+il gatto con gli stivali,11,1,78,Il Gatto con gli stivali,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,11,2,79,fu accompagnato,A,https://api.arasaac.org/api/pictograms/37036?download=false,null,null,,,N,Y
+il gatto con gli stivali,11,3,80,nelle stanze del re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,11,4,81,e dopo essersi inchinato,A,https://api.arasaac.org/api/pictograms/9003?download=false,null,null,,,N,Y
+il gatto con gli stivali,11,5,82,disse,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null,,,N,Y
+il gatto con gli stivali,12,0,0,maestà questo coniglio ve lo manda il marchese di calabas,,,null,null,,,N,Y
+il gatto con gli stivali,12,1,83,maestà questo coniglio,A,https://api.arasaac.org/api/pictograms/2351?download=false,null,null,,,N,Y
+il gatto con gli stivali,12,2,84,ve lo manda,A,https://api.arasaac.org/api/pictograms/25062?download=false,null,null,,,N,Y
+il gatto con gli stivali,12,3,85,il marchese di Calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,13,0,0,il furbo gatto si era inventato questo nome per il suo padrone,null,null,null,null,,,N,Y
+il gatto con gli stivali,13,1,86,Il furbo Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,13,2,87,si era inventato,A,https://api.arasaac.org/api/pictograms/6019?download=false,null,null,,,N,Y
+il gatto con gli stivali,13,3,88,questo nome,A,https://api.arasaac.org/api/pictograms/27357?download=false,null,null,,,N,Y
+il gatto con gli stivali,13,4,89,per il suo padrone,A,https://api.arasaac.org/api/pictograms/7176?download=false,null,null,,,N,Y
+il gatto con gli stivali,14,0,0,il re contento rispose,null,null,null,null,,,N,Y
+il gatto con gli stivali,14,1,90,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,14,2,91,contento,A,https://api.arasaac.org/api/pictograms/35547?download=false,null,null,,,N,Y
+il gatto con gli stivali,14,3,92,rispose,A,https://api.arasaac.org/api/pictograms/9030?download=false,null,null,,,N,Y
+il gatto con gli stivali,15,0,0,dì al marchese che il regalo mi è piaciuto molto,,,null,null,,,N,Y
+il gatto con gli stivali,15,1,93,dì,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null,,,N,Y
+il gatto con gli stivali,15,2,94,al marchese,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,15,3,95,che il regalo,A,https://api.arasaac.org/api/pictograms/3149?download=false,null,null,,,N,Y
+il gatto con gli stivali,15,4,96,mi è piaciuto molto,A,https://api.arasaac.org/api/pictograms/21917?download=false,null,null,,,N,Y
+il gatto con gli stivali,16,0,0,il gatto prese dei piccioni e tornò dal re a offriglieli da parte del marchese di carabas,,,null,null,,,N,Y
+il gatto con gli stivali,16,1,97,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,16,2,98,prese,A,https://api.arasaac.org/api/pictograms/8533?download=false,null,null,,,N,Y
+il gatto con gli stivali,16,3,99,dei piccioni,A,https://api.arasaac.org/api/pictograms/25293?download=false,null,null,piccioni,,N,Y
+il gatto con gli stivali,16,4,100,e ritornò,A,https://api.arasaac.org/api/pictograms/29714?download=false,null,null,,,N,Y
+il gatto con gli stivali,16,5,101,dal re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,16,6,102,a offrirglierli,A,https://api.arasaac.org/api/pictograms/17040?download=false,null,null,,,N,Y
+il gatto con gli stivali,16,7,103,da parte del marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,17,0,0,il re accettò il regalo e questa volta diede una bella mancia al gatto,null,null,null,null,,,N,Y
+il gatto con gli stivali,17,1,104,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,17,2,105,prese,A,https://api.arasaac.org/api/pictograms/17044?download=false,null,null,,,N,Y
+il gatto con gli stivali,17,3,106,il regalo,A,https://api.arasaac.org/api/pictograms/16025?download=false,null,null,,,N,Y
+il gatto con gli stivali,17,4,107,e questa volta diede,A,https://api.arasaac.org/api/pictograms/17040?download=false,null,null,,,N,Y
+il gatto con gli stivali,17,5,108,una bella mancia,A,https://api.arasaac.org/api/pictograms/30480?download=false,null,null,,,N,Y
+il gatto con gli stivali,17,6,109,al Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,18,0,0,il gatto continuò a prendere conigli e piccioni e a portarli al re,,,null,null,,,N,Y
+il gatto con gli stivali,18,1,110,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,18,2,111,continuò a prendere,A,https://api.arasaac.org/api/pictograms/8187?download=false,null,null,,,N,Y
+il gatto con gli stivali,18,3,112,conigli,A,https://api.arasaac.org/api/pictograms/2351?download=false,null,null,coniglio,,N,Y
+il gatto con gli stivali,18,4,113,e piccioni,A,https://api.arasaac.org/api/pictograms/25293?download=false,null,null,piccioni,,N,Y
+il gatto con gli stivali,18,5,114,e portarli,A,https://api.arasaac.org/api/pictograms/17040?download=false,null,null,,,N,Y
+il gatto con gli stivali,18,6,115,al re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,19,0,0,udì che il re sarebbe andato in carrozza in riva al fiume per una passeggiata in campagna insieme alla principessa sua figlia,,,null,null,,,N,Y
+il gatto con gli stivali,19,1,116,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,19,2,117,udì,A,https://api.arasaac.org/api/pictograms/6572?download=false,null,null,,,N,Y
+il gatto con gli stivali,19,3,118,che il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,19,4,119,sarebbe andato in carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null,,carrozza,N,Y
+il gatto con gli stivali,19,5,120,in riva al fiume,A,https://api.arasaac.org/api/pictograms/2811?download=false,null,null,,,N,Y
+il gatto con gli stivali,19,6,121,per una passeggiata in campagna,A,https://api.arasaac.org/api/pictograms/38286?download=false,null,null,,,N,Y
+il gatto con gli stivali,19,7,122,con la principessa,A,https://api.arasaac.org/api/pictograms/5554?download=false,null,null,,,N,Y
+il gatto con gli stivali,19,8,123,sua figlia,A,https://api.arasaac.org/api/pictograms/10340?download=false,null,null,,,N,Y
+il gatto con gli stivali,19,9999,0,passeggiata,,,null,null,,,N,Y
+il gatto con gli stivali,20,0,0,corse dal suo padrone e gli disse,null,null,null,null,,,N,Y
+il gatto con gli stivali,20,1,124,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,20,2,125,corse,A,https://api.arasaac.org/api/pictograms/28439?download=false,null,null,gatto animazione,,N,Y
+il gatto con gli stivali,20,3,126,dal suo padrone,A,https://api.arasaac.org/api/pictograms/4673?download=false,null,null,,,N,Y
+il gatto con gli stivali,20,4,127,gli disse,A,https://api.arasaac.org/api/pictograms/9037?download=false,null,null,,,N,Y
+il gatto con gli stivali,21,0,0,presto levati i vestiti e tuffati nel fiume se mi ascolterai  diventerai ricco,,,null,null,,,N,Y
+il gatto con gli stivali,21,1,128,presto levati i vestiti,A,https://api.arasaac.org/api/pictograms/11233?download=false,null,null,,,N,Y
+il gatto con gli stivali,21,2,129,e tuffati,A,https://api.arasaac.org/api/pictograms/31162?download=false,null,null,,,N,Y
+il gatto con gli stivali,21,3,130,nel fiume,A,https://api.arasaac.org/api/pictograms/2811?download=false,null,null,,,N,Y
+il gatto con gli stivali,21,4,131,se mi ascolterai,A,https://api.arasaac.org/api/pictograms/2381?download=false,null,null,,,N,Y
+il gatto con gli stivali,21,5,132,diventerai ricco,A,https://api.arasaac.org/api/pictograms/4733?download=false,null,null,,,N,Y
+il gatto con gli stivali,22,0,0,il finto marchese di calabas ascoltò il gatto e si tuffò nel fiume,,,null,null,,,N,Y
+il gatto con gli stivali,22,1,133,il finto marchese di Calabas,A,https://api.arasaac.org/api/pictograms/4673?download=false,null,null,,,N,Y
+il gatto con gli stivali,22,2,134,ascoltò,A,https://api.arasaac.org/api/pictograms/2381?download=false,null,null,,,N,Y
+il gatto con gli stivali,22,3,135,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,22,4,136,e si tuffò,A,https://api.arasaac.org/api/pictograms/31162?download=false,null,null,tuffo,,N,Y
+il gatto con gli stivali,22,5,137,nel fiume,A,https://api.arasaac.org/api/pictograms/2811?download=false,null,null,,,N,Y
+il gatto con gli stivali,23,0,0,arriva la carrozza del re e il gatto si mette a gridare,,,null,null,,,N,Y
+il gatto con gli stivali,23,1,138,arriva la carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null,,carrozza,N,Y
+il gatto con gli stivali,23,2,139,del re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,23,3,140,e Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,23,4,141,si mette a gridare,A,https://api.arasaac.org/api/pictograms/6552?download=false,null,null,,,N,Y
+il gatto con gli stivali,24,0,0,aiuto aiuto il marchese di calabas sta affogando,,,null,null,,,N,Y
+il gatto con gli stivali,24,1,142,aiuto aiuto,A,https://api.arasaac.org/api/pictograms/9046?download=false,null,null,,,N,Y
+il gatto con gli stivali,24,2,143,il marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,24,3,144,sta affogando,A,https://api.arasaac.org/api/pictograms/9046?download=false,null,null,,,N,Y
+il gatto con gli stivali,25,0,0,il re riconosce il gatto che gli aveva portato tanti regali e ordina subito alle sue guardie di salvare il marchese di calabas,,,null,null,,,N,Y
+il gatto con gli stivali,25,1,145,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,25,2,146,riconosce,A,https://api.arasaac.org/api/pictograms/6993?download=false,null,null,,,N,Y
+il gatto con gli stivali,25,3,147,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,25,4,148,che gli aveva portato tanti regali,A,https://api.arasaac.org/api/pictograms/3149?download=false,null,null,,,N,Y
+il gatto con gli stivali,25,5,149,e ordina,A,https://api.arasaac.org/api/pictograms/37822?download=false,null,null,,,N,Y
+il gatto con gli stivali,25,6,150,alle guardie,A,https://api.arasaac.org/api/pictograms/3342?download=false,null,null,,,N,Y
+il gatto con gli stivali,25,7,151,di salvare il marchese di calabas,A,https://api.arasaac.org/api/pictograms/9046?download=false,null,null,,,N,Y
+il gatto con gli stivali,26,0,0,il furbo gatto racconta al re che il marchese era stato rapinato e derubato dai vestiti,,,null,null,,,N,Y
+il gatto con gli stivali,26,1,152,Il furbo Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,26,2,153,racconta,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null,,,N,Y
+il gatto con gli stivali,26,3,154,al re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,26,4,155,che il marchese,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,26,5,156,era stato rapinato e derubato dei vestiti,A,https://api.arasaac.org/api/pictograms/8209?download=false,null,null,,,N,Y
+il gatto con gli stivali,27,0,0,il re ordina di andare a prendere il suo vestito più bello per il marchese di calabas,,,null,null,,,N,Y
+il gatto con gli stivali,27,1,157,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,27,2,158,ordina,A,https://api.arasaac.org/api/pictograms/37822?download=false,null,null,,,N,Y
+il gatto con gli stivali,27,3,159,andare,A,https://api.arasaac.org/api/pictograms/2432?download=false,null,null,,,N,Y
+il gatto con gli stivali,27,4,160,prendere,A,https://api.arasaac.org/api/pictograms/4606?download=false,null,null,,,N,Y
+il gatto con gli stivali,27,5,161,il suo vestito più bello per il marchese di calabas,A,https://api.arasaac.org/api/pictograms/34836?download=false,null,null,,,N,Y
+il gatto con gli stivali,28,0,0,la principessa aveva notato quel ragazzo che con l'abito del re indosso era bellissimo,,,null,null,,,N,Y
+il gatto con gli stivali,28,1,162,la principessa,A,https://api.arasaac.org/api/pictograms/5554?download=false,null,null,,,N,Y
+il gatto con gli stivali,28,2,163,aveva notato,A,https://api.arasaac.org/api/pictograms/28673?download=false,null,null,,,N,Y
+il gatto con gli stivali,28,3,164,quel ragazzo che con l'abito del re indosso,A,https://api.arasaac.org/api/pictograms/34836?download=false,null,null,,,N,Y
+il gatto con gli stivali,28,4,165,era bellissimo,A,https://api.arasaac.org/api/pictograms/4660?download=false,null,null,,,N,Y
+il gatto con gli stivali,29,0,0,il re chiede di accompagnarlo nella sua passeggiata in carrozza,,,null,null,,,N,Y
+il gatto con gli stivali,29,1,166,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,29,2,167,chiede di accompagnarlo,A,https://api.arasaac.org/api/pictograms/37485?download=false,null,null,,,N,Y
+il gatto con gli stivali,29,3,168,nella sua passeggiata,A,https://api.arasaac.org/api/pictograms/4670?download=false,null,null,,,N,Y
+il gatto con gli stivali,29,4,169,in carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null,,carrozza,N,Y
+il gatto con gli stivali,30,0,0,il gatto  corre avanti e dice ad alcuni contadini,,,null,null,,,N,Y
+il gatto con gli stivali,30,1,170,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,30,2,171,corre avanti,A,https://api.arasaac.org/api/pictograms/6465?download=false,null,null,,,N,Y
+il gatto con gli stivali,30,3,172,e dice,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null,,,N,Y
+il gatto con gli stivali,30,4,173,ad alcuni contadini,A,https://api.arasaac.org/api/pictograms/2982?download=false,null,null,,,N,Y
+il gatto con gli stivali,30,9999,0,contadini,,,null,null,,,N,Y
+il gatto con gli stivali,31,0,0,dovete dire che queste terre appartengono al marchese di calabas altrimenti vi farò a pezzetti e vi mangerò come polpette,,,null,null,,,N,Y
+il gatto con gli stivali,31,1,174,dovete dire,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null,,,N,Y
+il gatto con gli stivali,31,2,175,che queste terre,A,https://api.arasaac.org/api/pictograms/2974?download=false,null,null,,,N,Y
+il gatto con gli stivali,31,3,176,appartengono,A,https://api.arasaac.org/api/pictograms/26817?download=false,null,null,,,N,Y
+il gatto con gli stivali,31,4,177,al marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,31,5,178,altrimenti vi farò a pezzi,A,https://api.arasaac.org/api/pictograms/27093?download=false,null,null,,,N,Y
+il gatto con gli stivali,31,6,179,e vi mangerò,A,https://api.arasaac.org/api/pictograms/38431?download=false,null,null,gatto che mangia,,N,Y
+il gatto con gli stivali,31,7,180,come polpette,A,https://api.arasaac.org/api/pictograms/3249?download=false,null,null,,,N,Y
+il gatto con gli stivali,32,0,0,arriva la carrozza e il re chiede ai contadini,,,null,null,,,N,Y
+il gatto con gli stivali,32,1,181,arriva,A,https://api.arasaac.org/api/pictograms/16807?download=false,null,null,,,N,Y
+il gatto con gli stivali,32,2,182,la carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null,,carrozza,N,Y
+il gatto con gli stivali,32,3,183,e il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,32,4,184,chiede,A,https://api.arasaac.org/api/pictograms/9847?download=false,null,null,,,N,Y
+il gatto con gli stivali,32,5,185,ai contadini,A,https://api.arasaac.org/api/pictograms/2982?download=false,null,null,,,N,Y
+il gatto con gli stivali,33,0,0,chi è il proprietario di queste terre?,,,null,null,,,N,Y
+il gatto con gli stivali,33,1,186,chi è il proprietario,A,https://api.arasaac.org/api/pictograms/12264?download=false,null,null,,,N,Y
+il gatto con gli stivali,33,2,187,di queste terre?,A,https://api.arasaac.org/api/pictograms/2974?download=false,null,null,,,N,Y
+il gatto con gli stivali,34,0,0,i contadini rispondono in coro sono del marchese di carabas,null,null,null,null,,,N,Y
+il gatto con gli stivali,34,1,188,i contadini,A,https://api.arasaac.org/api/pictograms/2982?download=false,null,null,,,N,Y
+il gatto con gli stivali,34,2,189,rispondono in coro,A,https://api.arasaac.org/api/pictograms/2717?download=false,null,null,,coro,N,Y
+il gatto con gli stivali,34,3,190,sono del marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,35,0,0,il gatto intanto vede dei mietitori,,,null,null,,,N,Y
+il gatto con gli stivali,35,1,191,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,35,2,192,vede,A,https://api.arasaac.org/api/pictograms/2474?download=false,null,null,,,N,Y
+il gatto con gli stivali,35,3,193,dei mietitori,A,https://api.arasaac.org/api/pictograms/37695?download=false,null,null,,,N,Y
+il gatto con gli stivali,36,0,0,dite che queste terre sono del marchese di calabas altrimenti vi farò a polpette e vi mangerò in un boccone,,,null,null,,,N,Y
+il gatto con gli stivali,36,1,194,dite,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null,,,N,Y
+il gatto con gli stivali,36,2,195,che queste terre,A,https://api.arasaac.org/api/pictograms/2974?download=false,null,null,,,N,Y
+il gatto con gli stivali,36,3,196,sono,A,https://api.arasaac.org/api/pictograms/12264?download=false,null,null,,,N,Y
+il gatto con gli stivali,36,4,197,del marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,36,5,198,altrimenti vi farò a polpette,A,https://api.arasaac.org/api/pictograms/3249?download=false,null,null,,,N,Y
+il gatto con gli stivali,36,6,199,e vi mangerò,A,https://api.arasaac.org/api/pictograms/38431?download=false,null,null,gatto che mangia,,N,Y
+il gatto con gli stivali,37,0,0,passa la carrozza e il re chiede ai mietitori di chi fossero quelle terre e i mietitori rispondono in coro,,,null,null,,,N,Y
+il gatto con gli stivali,37,1,200,passa la carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null,,carrozza,N,Y
+il gatto con gli stivali,37,2,201,e il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,37,3,202,chiede,A,https://api.arasaac.org/api/pictograms/9847?download=false,null,null,,,N,Y
+il gatto con gli stivali,37,4,203,di chi sono,A,https://api.arasaac.org/api/pictograms/12264?download=false,null,null,,,N,Y
+il gatto con gli stivali,37,5,204,queste terre,A,https://api.arasaac.org/api/pictograms/2974?download=false,null,null,,,N,Y
+il gatto con gli stivali,37,6,205,e i mietitori,A,https://api.arasaac.org/api/pictograms/37695?download=false,null,null,,,N,Y
+il gatto con gli stivali,37,7,206,rispondono in coro,A,https://api.arasaac.org/api/pictograms/2717?download=false,null,null,,coro,N,Y
+il gatto con gli stivali,38,0,0,sono del marchese di calabas,,,null,null,,,N,Y
+il gatto con gli stivali,38,1,207,sono del marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,39,0,0,il re è meravigliato delle ricchezze del marchese che era un po' imbarazzato,,,null,null,,,N,Y
+il gatto con gli stivali,39,1,208,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,39,2,209,è meravigliato,A,https://api.arasaac.org/api/pictograms/35529?download=false,null,null,,,N,Y
+il gatto con gli stivali,39,3,210,delle ricchezze,A,https://api.arasaac.org/api/pictograms/4733?download=false,null,null,,,N,Y
+il gatto con gli stivali,39,4,211,del marchese,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,39,5,212,che era un po' imbarazzato,A,https://api.arasaac.org/api/pictograms/31919?download=false,null,null,,,N,Y
+il gatto con gli stivali,40,0,0,il gatto che precedeva la carrozza arrivò al castello di un terribile orco,null,null,null,null,,,N,Y
+il gatto con gli stivali,40,1,213,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,40,2,214,arriva,A,https://api.arasaac.org/api/pictograms/16807?download=false,null,null,,,N,Y
+il gatto con gli stivali,40,3,215,al castello,A,https://api.arasaac.org/api/pictograms/5421?download=false,null,null,,,N,Y
+il gatto con gli stivali,40,4,216,di un terribile orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null,,orco,N,Y
+il gatto con gli stivali,40,9999,0,orco,,,null,null,,,N,Y
+il gatto con gli stivali,41,0,0,chiese alla servitù di poterlo conoscere ed onorare,null,null,null,null,,,N,Y
+il gatto con gli stivali,41,1,217,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,41,2,218,chiede alla servitù,A,https://api.arasaac.org/api/pictograms/9840?download=false,null,null,,,N,Y
+il gatto con gli stivali,41,3,219,di poterlo conoscere,A,https://api.arasaac.org/api/pictograms/8456?download=false,null,null,,,N,Y
+il gatto con gli stivali,41,4,220,e onorare,A,https://api.arasaac.org/api/pictograms/13018?download=false,null,null,,,N,Y
+il gatto con gli stivali,42,0,0,l'orco che era un po' tonto lo fece entrare subito,,,null,null,,,N,Y
+il gatto con gli stivali,42,1,221,l'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null,,orco,N,Y
+il gatto con gli stivali,42,2,222,che era un po' tonto,A,https://api.arasaac.org/api/pictograms/8618?download=false,null,null,,,N,Y
+il gatto con gli stivali,42,3,223,lo fece entrare subito,A,https://api.arasaac.org/api/pictograms/6491?download=false,null,null,,,N,Y
+il gatto con gli stivali,43,0,0,il gatto chiede all'orco se è vero che può diventare uguale a qualsiasi animale,,,null,null,,,N,Y
+il gatto con gli stivali,43,1,224,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,43,2,225,chiede,A,https://api.arasaac.org/api/pictograms/9840?download=false,null,null,,,N,Y
+il gatto con gli stivali,43,3,226,all'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null,,,N,Y
+il gatto con gli stivali,43,4,227,se era vero che poteva diventare uguale,A,https://api.arasaac.org/api/pictograms/32392?download=false,null,null,,,N,Y
+il gatto con gli stivali,43,5,228,a qualsiasi animale,A,https://api.arasaac.org/api/pictograms/6901?download=false,null,null,,,N,Y
+il gatto con gli stivali,44,0,0,certo dice l'orco guarda adesso sono un leone,,,null,null,,,N,Y
+il gatto con gli stivali,44,1,229,certo dice l'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null,,orco,N,Y
+il gatto con gli stivali,44,2,230,guarda,A,https://api.arasaac.org/api/pictograms/6564?download=false,null,null,,,N,Y
+il gatto con gli stivali,44,3,231,adesso sono un leone,A,https://api.arasaac.org/api/pictograms/2449?download=false,null,null,,leone,N,Y
+il gatto con gli stivali,45,0,0,l'orco diventa uguale ad un leone,,,null,null,,,N,Y
+il gatto con gli stivali,45,1,232,l'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null,,orco,N,Y
+il gatto con gli stivali,45,2,233,diventa uguale,A,https://api.arasaac.org/api/pictograms/32392?download=false,null,null,,,N,Y
+il gatto con gli stivali,45,3,234,ad un leone,A,https://api.arasaac.org/api/pictograms/2449?download=false,null,null,,leone,N,Y
+il gatto con gli stivali,46,0,0,il gatto ha paura ma riesce a nasconderla,,,null,null,,,N,Y
+il gatto con gli stivali,46,1,235,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,46,2,236,ha paura,A,https://api.arasaac.org/api/pictograms/35571?download=false,null,null,,,N,Y
+il gatto con gli stivali,46,3,237,ma riesce a nasconderla,A,https://api.arasaac.org/api/pictograms/38050?download=false,null,null,,,N,Y
+il gatto con gli stivali,47,0,0,il leone è grande come te non è facile che tu diventi uguale ad un topolino,,,null,null,,,N,Y
+il gatto con gli stivali,47,1,238,il leone,A,https://api.arasaac.org/api/pictograms/2449?download=false,null,null,,,N,Y
+il gatto con gli stivali,47,2,239,è grande come,A,https://api.arasaac.org/api/pictograms/32392?download=false,null,null,,,N,Y
+il gatto con gli stivali,47,3,240,te,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null,,,N,Y
+il gatto con gli stivali,47,4,241,non è facile,A,https://api.arasaac.org/api/pictograms/32434?download=false,null,null,,,N,Y
+il gatto con gli stivali,47,5,242,che tu,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null,,,N,Y
+il gatto con gli stivali,47,6,243,diventi uguale,A,https://api.arasaac.org/api/pictograms/32392?download=false,null,null,,,N,Y
+il gatto con gli stivali,47,7,244,ad un topolino,A,https://api.arasaac.org/api/pictograms/2546?download=false,null,null,,,N,Y
+il gatto con gli stivali,48,0,0,fatto dice l'orco,,,null,null,,,N,Y
+il gatto con gli stivali,48,1,245,fatto dice,A,https://api.arasaac.org/api/pictograms/9693?download=false,null,null,,,N,Y
+il gatto con gli stivali,48,2,246,l'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null,,orco,N,Y
+il gatto con gli stivali,49,0,0,l'orco diventa uguale ad un topolino ed il gatto se lo mangia in un boccone,,,null,null,,,N,Y
+il gatto con gli stivali,49,1,247,l'orco,A,https://api.arasaac.org/api/pictograms/6160?download=false,null,null,,orco,N,Y
+il gatto con gli stivali,49,2,248,diventa uguale,A,https://api.arasaac.org/api/pictograms/32392?download=false,null,null,,,N,Y
+il gatto con gli stivali,49,3,249,ad un topolino,A,https://api.arasaac.org/api/pictograms/2546?download=false,null,null,topo,,N,Y
+il gatto con gli stivali,49,4,250,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,49,5,251,se lo mangia in un boccone,A,https://api.arasaac.org/api/pictograms/38431?download=false,null,null,gatto che mangia,,N,Y
+il gatto con gli stivali,50,0,0,la carrozza del re arriva al castello il gatto gli corre incontro gridando,,,null,null,,,N,Y
+il gatto con gli stivali,50,1,252,la carrozza,A,https://api.arasaac.org/api/pictograms/8063?download=false,null,null,,carrozza,N,Y
+il gatto con gli stivali,50,2,253,del re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,50,3,254,arriva,A,https://api.arasaac.org/api/pictograms/16807?download=false,null,null,,,N,Y
+il gatto con gli stivali,50,4,255,al castello,A,https://api.arasaac.org/api/pictograms/5421?download=false,null,null,,,N,Y
+il gatto con gli stivali,50,5,256,Il Gatto,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,50,6,257,gli corre,A,https://api.arasaac.org/api/pictograms/2719?download=false,null,null,,,N,Y
+il gatto con gli stivali,50,7,258,incontro,A,https://api.arasaac.org/api/pictograms/13356?download=false,null,null,,,N,Y
+il gatto con gli stivali,50,8,259,gridando,A,https://api.arasaac.org/api/pictograms/6552?download=false,null,null,,,N,Y
+il gatto con gli stivali,51,0,0,maestà benvenuto nel castello del marchese di carabas,,,null,null,,,N,Y
+il gatto con gli stivali,51,1,260,maestà,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,51,2,261,benvenuto,A,https://api.arasaac.org/api/pictograms/6936?download=false,null,null,,,N,Y
+il gatto con gli stivali,51,3,262,nel castello,A,https://api.arasaac.org/api/pictograms/5950?download=false,null,null,,,N,Y
+il gatto con gli stivali,51,4,263,del marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,52,0,0,il re rimane a bocca aperta e si convince di dare la principessa in sposa al marchese,,,null,null,,,N,Y
+il gatto con gli stivali,52,1,264,il re,A,https://api.arasaac.org/api/pictograms/5563?download=false,null,null,,,N,Y
+il gatto con gli stivali,52,2,265,rimane a bocca aperta,A,https://api.arasaac.org/api/pictograms/35565?download=false,null,null,,,N,Y
+il gatto con gli stivali,52,3,266,e si convince,A,https://api.arasaac.org/api/pictograms/8661?download=false,null,null,,,N,Y
+il gatto con gli stivali,52,4,267,di dare la principessa,A,https://api.arasaac.org/api/pictograms/5554?download=false,null,null,,,N,Y
+il gatto con gli stivali,52,5,268,in sposa,A,https://api.arasaac.org/api/pictograms/8256?download=false,null,null,,,N,Y
+il gatto con gli stivali,52,6,269,al marchese di calabas,A,https://api.arasaac.org/api/pictograms/5555?download=false,null,null,,,N,Y
+il gatto con gli stivali,52,9999,0,matrimonio,,,null,null,,,N,Y
+il gatto con gli stivali,53,0,0,i due ragazzi si piacevano e così si sposano,,,null,null,,,N,Y
+il gatto con gli stivali,53,1,270,i due ragazzi si piacevano,A,https://api.arasaac.org/api/pictograms/6600?download=false,null,null,,,N,Y
+il gatto con gli stivali,53,2,271,e così si sposano,A,https://api.arasaac.org/api/pictograms/6965?download=false,null,null,,matrimonio,N,Y
+il gatto con gli stivali,54,0,0,il gatto diventa un gran signore e smette di cacciare i topi,null,null,null,null,,,N,Y
+il gatto con gli stivali,54,1,272,Il Gatto con gli stivali,A,https://api.arasaac.org/api/pictograms/21888?download=false,null,null,,,N,Y
+il gatto con gli stivali,54,2,273,diventa ricco,A,https://api.arasaac.org/api/pictograms/37803?download=false,null,null,,,N,Y
+il gatto con gli stivali,54,3,274,non deve più cacciare,A,https://api.arasaac.org/api/pictograms/8533?download=false,null,null,,,N,Y
+il gatto con gli stivali,54,4,275,i topi,A,https://api.arasaac.org/api/pictograms/2546?download=false,null,null,topo,,N,Y
+il gatto con gli stivali,54,9999,0,ricco,,,null,null,,,N,Y

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Settings.SettingsStoriesImportExportActivity">
+
+    <TextView
+        android:id="@+id/storiesimportexport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="2dp"
+        android:ems="10"
+        android:text="IMPORTAZIONE / ESPORTAZIONE STORIA"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/storytosearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/nome_storia"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/storiesimportexport"/>
+
+    <RadioGroup
+        android:id="@+id/radiostoryimportexportRG"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/storytosearch">
+        <RadioButton android:id="@+id/radio_import"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="IMPORTA"
+            android:onClick="onStoriesImportExportButtonClicked"/>
+        <RadioButton android:id="@+id/radio_export"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ESPORTA"
+            android:onClick="onStoriesImportExportButtonClicked"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_search_stories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:onClick="storiesSearch"
+        android:text="CERCA"
+        app:layout_constraintStart_toStartOf="@+id/import_export_stories_listview"
+        app:layout_constraintTop_toBottomOf="@+id/radiostoryimportexportRG" />
+
+    <Button
+        android:id="@+id/btn_import_export_stories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:onClick="storiesImportExport"
+        android:text="IMPORTA/ESPORTA"
+        app:layout_constraintEnd_toEndOf="@+id/import_export_stories_listview"
+        app:layout_constraintTop_toBottomOf="@+id/radiostoryimportexportRG" />
+
+
+    <ListView
+        android:id="@+id/import_export_stories_listview"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_search_stories" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsMediaActivity">
+
+    <LinearLayout
+        android:id="@+id/soundDescriptionLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.069">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="descrizione suono da inserire" />
+
+            <EditText
+                android:id="@+id/soundDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:inputType="text"
+                android:autofillHints="descrizione suono da inserire" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageButton
+            android:id="@+id/soundviewTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_play_arrow_36"
+            android:onClick="listenSoundButton"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/soundDescriptionLL"
+            android:contentDescription="@string/immagine_da_inserire" />
+
+    <LinearLayout
+        android:id="@+id/soundLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/soundviewTest">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/buttonsoundsearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:onClick="soundSearch"
+                android:text="cerca suono" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:onClick="soundAdd"
+                android:text="aggiungi suono" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ListView
+            android:id="@+id/listview"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="15dp"
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/soundLL"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

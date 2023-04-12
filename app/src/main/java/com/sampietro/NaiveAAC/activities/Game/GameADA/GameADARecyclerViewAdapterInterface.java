@@ -2,8 +2,6 @@ package com.sampietro.NaiveAAC.activities.Game.GameADA;
 
 import android.view.View;
 
-import com.sampietro.NaiveAAC.activities.Game.Game2.Game2ArrayList;
-
 import java.util.ArrayList;
 
 /**
@@ -24,5 +22,5 @@ public interface GameADARecyclerViewAdapterInterface {
      * @param i int the position of the item within the adapter's data set
      * @see GameADAViewPagerActivity
      */
-    public void onItemClick(View view, int i, ArrayList<Game2ArrayList> galleryList);
+    public void onItemClick(View view, int i, ArrayList<GameADAArrayList> galleryList);
 }

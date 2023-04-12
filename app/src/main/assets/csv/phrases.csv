@@ -1,5 +1,5 @@
-tipo,descrizione
-welcome phrase first part,buongiorno
-welcome phrase second part,cosa facciamo
-reminder phrase,cosa è
-reminder phrase plural,cosa sono
+tipo,descrizione,fromAssets
+welcome phrase first part,buongiorno,Y
+welcome phrase second part,cosa facciamo,Y
+reminder phrase,cosa è,Y
+reminder phrase plural,cosa sono,Y

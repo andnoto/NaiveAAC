@@ -2,7 +2,6 @@ package com.sampietro.NaiveAAC.activities.Settings.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,9 +31,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Settings.VideosFragment;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -56,7 +55,7 @@ import io.realm.Realm;
  * 2) AccountActivityRealmCreation</p>
  * 3) SettingsActivity</p>
  *
- * @version     1.1, 04/22/22
+ * @version     3.0, 12/03/23
  * @see com.sampietro.NaiveAAC.activities.Account.AccountActivity
  * @see com.sampietro.NaiveAAC.activities.Account.AccountActivityRealmCreation
  * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
@@ -76,6 +75,7 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
     public ActivityResultLauncher<Intent> imageSearchStoriesActivityResultLauncher;
     public ActivityResultLauncher<Intent> videoSearchActivityResultLauncher;
     public ActivityResultLauncher<Intent> videoSearchWordPairsActivityResultLauncher;
+    public ActivityResultLauncher<Intent> soundSearchActivityResultLauncher;
     public ActivityResultLauncher<Intent> csvSearchActivityResultLauncher;
     public ActivityResultLauncher<Intent> exportCsvSearchActivityResultLauncher;
     public Uri csvTreeUri;
@@ -252,53 +252,6 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
                     }
                 });
         //
-        imageSearchStoriesActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            // There are no request codes
-                            Intent resultData = result.getData();
-                            // doSomeOperations();
-                            uri = null;
-                            filePath = getString(R.string.non_trovato);
-                            //
-                            if (resultData != null) {
-                                uri = Objects.requireNonNull(resultData).getData();
-                                //
-                                try {
-                                    filePath = getFilePath(context, uri);
-                                } catch (URISyntaxException e) {
-                                    e.printStackTrace();
-                                }
-                                //
-                                //
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                    final int takeFlags = resultData.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
-                                    context.getContentResolver().takePersistableUriPermission(uri, takeFlags);
-                                }
-                                //
-                                Bitmap bitmap = null;
-                                try {
-                                    bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                //
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                byteArray = stream.toByteArray();
-                                //
-                                EditText uriTypeToAdd = findViewById(R.id.uritypetoadd);
-                                EditText uriToAdd = findViewById(R.id.uritoadd);
-                                uriTypeToAdd.setText("S");
-                                uriToAdd.setText(filePath);
-                            }
-                        }
-                    }
-                });
-        //
         videoSearchActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -386,6 +339,45 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
                                 }
                                 awardType.setText(getString(R.string.character_v));
                                 uriPremiumVideo.setText(fileName);
+                            }
+                        }
+                    }
+                });
+        soundSearchActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            // There are no request codes
+                            Intent resultData = result.getData();
+                            // doSomeOperations();
+                            uri = null;
+                            stringUri = null;
+                            //
+                            if (resultData != null) {
+                                uri = Objects.requireNonNull(resultData).getData();
+                                //
+                                //
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    final int takeFlags = resultData.getFlags() & Intent.FLAG_GRANT_READ_URI_PERMISSION;
+                                    context.getContentResolver().takePersistableUriPermission(uri, takeFlags);
+                                }
+                                //
+                                stringUri = uri.toString();
+                                //
+                                try {
+                                    filePath = getFilePath(context, uri);
+                                    //
+                                    assert filePath != null;
+                                    int cut = filePath.lastIndexOf('/');
+                                    if (cut != -1) {
+                                        fileName = filePath.substring(cut + 1);
+                                    }
+                                    //
+                                } catch (URISyntaxException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }

@@ -5,7 +5,7 @@ package com.sampietro.NaiveAAC.activities.history;
  * <p><b>VoiceToBeRecordedInHistory</b> utility class for registration in history class.</p>
  *
  * @see History
- * @version     1.3, 05/05/22
+ * @version     3.0, 03/12/23
  */
 import java.util.Date;
 
@@ -54,6 +54,18 @@ public class VoiceToBeRecordedInHistory {
      */
     private String uri;
     /**
+     * refers to a video key in the videos table .
+     */
+    private String video;
+    /**
+     * refers to a sound key in the sounds table .
+     */
+    private String sound;
+    /**
+     * indicates whether sound replaces TTS (Y or N).
+     */
+    private String soundReplacesTTS;
+    /**
      * VoiceToBeRecordedInHistory constructor.
      * set fields
      */
@@ -68,6 +80,22 @@ public class VoiceToBeRecordedInHistory {
         this.plural = plural;
         this.uriType = uriType;
         this.uri = uri;
+    }
+    //
+    public VoiceToBeRecordedInHistory(Integer session, Integer phraseNumber, Date date, Integer wordNumber,
+                                      String type, String word, String plural, String uriType, String uri, String video, String sound, String soundReplacesTTS){
+        this.session = session;
+        this.phraseNumber = phraseNumber;
+        this.date = date;
+        this.wordNumber = wordNumber;
+        this.type = type;
+        this.word = word;
+        this.plural = plural;
+        this.uriType = uriType;
+        this.uri = uri;
+        this.video = video;
+        this.sound = sound;
+        this.soundReplacesTTS = soundReplacesTTS;
     }
     /*
      * getter, setter and other methods
@@ -89,6 +117,9 @@ public class VoiceToBeRecordedInHistory {
     public String getPlural() { return plural; }
     public String getUriType() { return uriType; }
     public String getUri() { return uri; }
+    public String getVideo() { return video; }
+    public String getSound() { return sound; }
+    public String getSoundReplacesTTS() { return soundReplacesTTS; }
     //
     public void setSession(Integer session) {
         this.session = session;
@@ -116,5 +147,14 @@ public class VoiceToBeRecordedInHistory {
     }
     public void setUri(String uri) {
         this.uri = uri;
+    }
+    public void setVideo(String video) {
+        this.video = video;
+    }
+    public void setSound(String sound) {
+        this.sound = sound;
+    }
+    public void setSoundReplacesTTS(String soundReplacesTTS) {
+        this.soundReplacesTTS = soundReplacesTTS;
     }
 }

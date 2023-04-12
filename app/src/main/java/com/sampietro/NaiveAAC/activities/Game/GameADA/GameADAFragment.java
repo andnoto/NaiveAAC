@@ -12,15 +12,17 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2ArrayList;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass;
+import com.sampietro.NaiveAAC.activities.Graphics.Sounds;
+import com.sampietro.NaiveAAC.activities.Graphics.Videos;
 import com.sampietro.NaiveAAC.activities.history.History;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -36,12 +38,20 @@ public class GameADAFragment extends GameFragmentAbstractClass {
     public String [] row1debugWord = new String[32];
     public String [] row1debugUrlType = new String[32];
     public String [] row1debugUrl = new String[32];
-//    public String question;
+    //
+    public String [] row1debugVideo = new String[32];
+    public String [] row1debugSound = new String[32];
+    public String [] row1debugSoundReplacesTTS = new String[32];
+    //
     public String sentence;
     //
     public GameADAOnFragmentEventListener listenerADA=null;
     //
     public boolean ttsEnabled = true;
+    //
+    private GameADARecyclerView recyclerView;
+    //
+    private String gameUseVideoAndSound;
     /**
      * listener setting for game activities callbacks , context annotation, realm get default instance
      * and get print permissions
@@ -82,29 +92,37 @@ public class GameADAFragment extends GameFragmentAbstractClass {
     {
         rootView = inflater.inflate(R.layout.activity_game_ada_recycler_view, container, false);
         //
-        hearingImageButton = (ImageButton)rootView.findViewById(R.id.btn_start);
-        hearingImageButton.setImageResource(R.drawable.ic_baseline_hearing_36_red); //set the image programmatically
-        //
         Bundle bundle = this.getArguments();
         sharedLastPhraseNumber = 0;
         if (bundle != null) {
             sharedLastPhraseNumber = bundle.getInt("LAST PHRASE NUMBER");
             wordToDisplayIndex = bundle.getInt("WORD TO DISPLAY INDEX");
             ttsEnabled = bundle.getBoolean("TTS ENABLED");
+            gameUseVideoAndSound = bundle.getString("GAME USE VIDEO AND SOUND");
         }
         //
-        RecyclerView recyclerView = (RecyclerView)rootView.findViewById(R.id.imagegallery);
+        /*
+        ADAPTED FOR VIDEO AND SOUND
+         */
+        recyclerView = (GameADARecyclerView)rootView.findViewById(R.id.game_ada_recycler_view);
         recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager =
+        LinearLayoutManager layoutManager =
                 new LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        ArrayList<Game2ArrayList> createLists = prepareData1();
+        ArrayList<GameADAArrayList> createLists = prepareData1();
+        recyclerView.setMediaObjects(createLists);
+        recyclerView.setGameUseVideoAndSound(gameUseVideoAndSound);
         GameADARecyclerViewAdapter adapter =
                 new GameADARecyclerViewAdapter(ctext, realm, createLists);
         recyclerView.setAdapter(adapter);
         //
+        recyclerView.smoothScrollBy(1, 0);
+        //
         if (!(wordToDisplayIndex == 0))
             recyclerView.getLayoutManager().scrollToPosition(wordToDisplayIndex);
+        /*
+
+         */
         // TTS
         if (ttsEnabled) {
             tTS1=new TextToSpeech(ctext, new TextToSpeech.OnInitListener() {
@@ -136,10 +154,10 @@ public class GameADAFragment extends GameFragmentAbstractClass {
      * prepare data for the recyclerview using data from the history table
      *
      * @return theimage arraylist<Game2ArrayList> data for recyclerview
-     * @see Game2ArrayList
+     * @see GameADAArrayList
      * @see History
      */
-    private ArrayList<Game2ArrayList> prepareData1(){
+    private ArrayList<GameADAArrayList> prepareData1(){
         int row1debugUrlNumber = 0;
         //
         RealmResults<History> results =
@@ -162,6 +180,19 @@ public class GameADAFragment extends GameFragmentAbstractClass {
                     //
                     row1debugUrlType[irrh - 1] = result.getUriType();
                     row1debugUrl[irrh - 1] = result.getUri();
+                    //
+                    RealmResults<Videos> resultsVideos =
+                            realm.where(Videos.class).equalTo("descrizione", result.getVideo()).findAll();
+                    if (resultsVideos.size() != 0) {
+                        row1debugVideo[irrh - 1] = resultsVideos.get(0).getUri();
+                    }
+                    RealmResults<Sounds> resultsSounds =
+                            realm.where(Sounds.class).equalTo("descrizione", result.getSound()).findAll();
+                    if (resultsSounds.size() != 0) {
+                        row1debugSound[irrh - 1] = resultsSounds.get(0).getUri();
+                        row1debugSoundReplacesTTS[irrh - 1] = result.getSoundReplacesTTS();
+                    }
+                    //
                     row1debugUrlNumber++;
                 }
                 if (wordNumber == 0)
@@ -172,25 +203,47 @@ public class GameADAFragment extends GameFragmentAbstractClass {
                 // inibisco il bottone forward
                 if (wordNumber == 99)
                 {
-                    ImageButton forwardImageButton =
-                    (ImageButton)rootView.findViewById(R.id.continuegameadabutton);
+                    ImageButton forwardImageButton = (ImageButton) requireActivity().findViewById(R.id.continuegameadabutton);
+//                    ImageButton forwardImageButton =
+//                    (ImageButton)rootView.findViewById(R.id.continuegameadabutton);
                     forwardImageButton.setVisibility(View.INVISIBLE);
                 }
                 irrh++;
             }
         }
         //
-        ArrayList<Game2ArrayList> theimage = new ArrayList<>();
+        ArrayList<GameADAArrayList> theimage = new ArrayList<>();
         for(int i = 0; i< row1debugUrlNumber; i++){
-            Game2ArrayList createList = new Game2ArrayList();
+            GameADAArrayList createList = new GameADAArrayList();
             createList.setImage_title(row1debugWord[i]);
             createList.setUrlType(row1debugUrlType[i]);
             createList.setUrl(row1debugUrl[i]);
+            createList.setVideo(row1debugVideo[i]);
+            createList.setSound(row1debugSound[i]);
+            createList.setSoundReplacesTTS(row1debugSoundReplacesTTS[i]);
             theimage.add(createList);
         }
         return theimage;
     }
     //
+    /**
+     * release the video player
+     *
+     * @see Fragment#onStop
+     * @see GameADARecyclerView#releasePlayer()
+     */
+    @Override
+    public void onStop() {
+        /*
+        ADAPTED FOR VIDEO AND SOUND
+         */
+        if(recyclerView!=null)
+            recyclerView.releasePlayer();
+        super.onStop();
+        /*
 
+         */
+    }
+    //
 }
 

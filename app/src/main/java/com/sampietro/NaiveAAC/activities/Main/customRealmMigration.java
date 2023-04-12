@@ -92,7 +92,138 @@ public class customRealmMigration implements RealmMigration {
             ;
             oldVersion++;
         }
-
+        //
+        if (oldVersion == 4) {
+            // Migrate from v4 to v5
+            RealmObjectSchema soundsSchema = schema.create("Sounds");
+            assert soundsSchema != null;
+            soundsSchema
+                    .addField("descrizione", String.class)
+                    .addField("uri", String.class)
+                    .addField("copyright", String.class)
+                    .addField("fromAssets", String.class)
+                    .addIndex("descrizione")
+            ;
+            RealmObjectSchema imagesSchema = schema.get("Images");
+            assert imagesSchema != null;
+            imagesSchema
+                    .addField("copyright", String.class)
+                    .addField("fromAssets", String.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.set("copyright", " " );
+                            obj.set("fromAssets", " " );
+                        }
+                    })
+                    .addIndex("descrizione")
+            ;
+            RealmObjectSchema videosSchema = schema.get("Videos");
+            assert videosSchema != null;
+            videosSchema
+                    .addField("fromAssets", String.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.set("fromAssets", " " );
+                        }
+                    })
+                    .addIndex("descrizione")
+            ;
+            RealmObjectSchema storiesSchema = schema.get("Stories");
+            assert storiesSchema != null;
+            storiesSchema
+                    .addField("video", String.class)
+                    .addField("sound", String.class)
+                    .addField("soundReplacesTTS", String.class)
+                    .addField("fromAssets", String.class)
+                    .addField("wordNumberIntInTheStory", int.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.set("video", " " );
+                            obj.set("sound", " " );
+                            obj.set("soundReplacesTTS", "N" );
+                            obj.set("fromAssets", " " );
+                            obj.set("wordNumberIntInTheStory", 0 );
+                        }
+                    })
+            ;
+            RealmObjectSchema historySchema = schema.get("History");
+            assert historySchema != null;
+            historySchema
+                    .addField("video", String.class)
+                    .addField("sound", String.class)
+                    .addField("soundReplacesTTS", String.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.set("video", " " );
+                            obj.set("sound", " " );
+                            obj.set("soundReplacesTTS", "N" );
+                        }
+                    })
+            ;
+            RealmObjectSchema gameParametersSchema = schema.get("GameParameters");
+            assert gameParametersSchema != null;
+            gameParametersSchema
+                    .addField("gameUseVideoAndSound", String.class)
+                    .addField("fromAssets", String.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.set("gameUseVideoAndSound", "Y" );
+                            obj.set("fromAssets", " " );
+                        }
+                    })
+            ;
+            RealmObjectSchema grammaticalExceptionsSchema = schema.get("GrammaticalExceptions");
+            assert grammaticalExceptionsSchema != null;
+            grammaticalExceptionsSchema
+                    .addField("fromAssets", String.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.set("fromAssets", " " );
+                        }
+                    })
+            ;
+            RealmObjectSchema listsOfNamesSchema = schema.get("ListsOfNames");
+            assert listsOfNamesSchema != null;
+            listsOfNamesSchema
+                    .addField("fromAssets", String.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.set("fromAssets", " " );
+                        }
+                    })
+            ;
+            RealmObjectSchema phrasesSchema = schema.get("Phrases");
+            assert phrasesSchema != null;
+            phrasesSchema
+                    .addField("fromAssets", String.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.set("fromAssets", " " );
+                        }
+                    })
+            ;
+            RealmObjectSchema wordPairsSchema = schema.get("WordPairs");
+            assert wordPairsSchema != null;
+            wordPairsSchema
+                    .addField("fromAssets", String.class)
+                    .transform(new RealmObjectSchema.Function() {
+                        @Override
+                        public void apply(@NonNull DynamicRealmObject obj) {
+                            obj.set("fromAssets", " " );
+                        }
+                    })
+            ;
+            oldVersion++;
+        }
+//
         if (oldVersion < newVersion) {
             throw new IllegalStateException(String.format(Locale.US, "Migration missing from v%d to v%d", oldVersion, newVersion));
         }

@@ -35,9 +35,10 @@ public class YoutubePrizeFragment extends Fragment {
     public Context ctext;
     //
     WebView mWebView;
-    String videoStr1Portrait = "<html><body>Promo video<br><iframe width=\"426\" height=\"240\" src=\"https://www.youtube.com/embed/";
-    String videoStr1Landscape = "<html><body>Promo video<br><iframe width=\"213\" height=\"120\" src=\"https://www.youtube.com/embed/";
-    String videoStr2 = "\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
+    String videoStr1 = "<html><body>Promo video from <br>";
+    String videoStr2Portrait = "<iframe width=\"426\" height=\"240\" src=\"https://www.youtube.com/embed/";
+    String videoStr2Landscape = "<iframe width=\"213\" height=\"120\" src=\"https://www.youtube.com/embed/";
+    String videoStr3 = "\" frameborder=\"0\" allowfullscreen></iframe></body></html>";
     String wwwUrlSplitBy = "v=";
     String androidUrlSplitBy = "be/";
     //
@@ -118,10 +119,10 @@ public class YoutubePrizeFragment extends Fragment {
             String videoStr;
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                 // code for portrait mode
-                videoStr = videoStr1Portrait + oneWord[1] + videoStr2;
+                videoStr = videoStr1 + uriPremiumVideo + videoStr2Portrait + oneWord[1] + videoStr3;
             } else {
                 // code for landscape mode
-                videoStr = videoStr1Landscape + oneWord[1] + videoStr2;
+                videoStr = videoStr1 + uriPremiumVideo + videoStr2Landscape + oneWord[1] + videoStr3;
             }
             //
             mWebView.setWebViewClient(new WebViewClient() {

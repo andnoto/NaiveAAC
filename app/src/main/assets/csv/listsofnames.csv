@@ -1,87 +1,87 @@
-keyword,word,uriType,uri
-numeri-1-5,uno,A,https://api.arasaac.org/api/pictograms/35677?download=false
-numeri-1-5,due,A,https://api.arasaac.org/api/pictograms/35679?download=false
-numeri-1-5,tre,A,https://api.arasaac.org/api/pictograms/35681?download=false
-numeri-1-5,quattro,A,https://api.arasaac.org/api/pictograms/35665?download=false
-numeri-1-5,cinque,A,https://api.arasaac.org/api/pictograms/35631?download=false
-numeri-1-10,uno,A,https://api.arasaac.org/api/pictograms/35677?download=false
-numeri-1-10,due,A,https://api.arasaac.org/api/pictograms/35679?download=false
-numeri-1-10,tre,A,https://api.arasaac.org/api/pictograms/35681?download=false
-numeri-1-10,quattro,A,https://api.arasaac.org/api/pictograms/35665?download=false
-numeri-1-10,cinque,A,https://api.arasaac.org/api/pictograms/35631?download=false
-numeri-1-10,sei,A,https://api.arasaac.org/api/pictograms/35683?download=false
-numeri-1-10,sette,A,https://api.arasaac.org/api/pictograms/35685?download=false
-numeri-1-10,otto,A,https://api.arasaac.org/api/pictograms/35687?download=false
-numeri-1-10,nove,A,https://api.arasaac.org/api/pictograms/35689?download=false
-numeri-1-10,dieci,A,https://api.arasaac.org/api/pictograms/35691?download=false
-particorpo,testa, , 
-particorpo,capelli, , 
-particorpo,occhio, , 
-particorpo,orecchio, , 
-particorpo,naso, , 
-particorpo,bocca, , 
-particorpo,collo, , 
-particorpo,braccio, , 
-particorpo,mano, , 
-particorpo,gamba, , 
-particorpo,piede, ,  
-particorpo,dito, , 
-animali,topo, , 
-animali,gatto, , 
-animali,cane, , 
-animali,giraffa, , 
-animali,elefante, , 
-animali,leone, , 
-animali,uccello, , 
-animali,anatra, , 
-animali,gallina, , 
-animali,tacchino, , 
-animali,cigno, , 
-animali,anatra, , 
-animali,piccione, , 
-animali,pesce, , 
-animali,tartaruga, , 
-animali,scoiattolo, , 
-animali,asino, , 
-animali,pecora, , 
-animali,cavallo, , 
-animali,capra, , 
-animali,ape, , 
-animali,formica, , 
-animali,rana, , 
-cibo,frittata, , 
-cibo,pane, , 
-cibo,grissini, , 
-cibo,biscotto, , 
-cibo,brioche, , 
-cibo,succo, , 
-cibo,spaghetti, , 
-cibo,risotto, , 
-cibo,minestra, , 
-cibo,formaggio, , 
-cibo,carne, , 
-cibo,polpetta, , 
-cibo,bresaola, , 
-cibo,bistecca, , 
-cibo,wurstel, , 
-cibo,pomodoro, , 
-cibo,piselli, , 
-cibo,carota, , 
-cobo,oliva, , 
-cibo,zucchina, , 
-cibo,banana, , 
-cibo,fragola, , 
-cibo,mela, , 
-cibo,gelato, , 
-cibo,cioccolato, , 
-vestiti,pigiama, , 
-vestiti,cappello, , 
-vestiti,sciarpa, , 
-vestiti,maglietta, , 
-vestiti,maglione, , 
-vestiti,giubbotto, ,
-vestiti,guanti, ,  
-vestiti,pantaloni, , 
-vestiti,mutande, , 
-vestiti,calze, , 
-vestiti,scarpe, ,     
+keyword,word,uriType,uri,fromAssets
+numeri-1-5,uno,A,https://api.arasaac.org/api/pictograms/35677?download=false,Y
+numeri-1-5,due,A,https://api.arasaac.org/api/pictograms/35679?download=false,Y
+numeri-1-5,tre,A,https://api.arasaac.org/api/pictograms/35681?download=false,Y
+numeri-1-5,quattro,A,https://api.arasaac.org/api/pictograms/35665?download=false,Y
+numeri-1-5,cinque,A,https://api.arasaac.org/api/pictograms/35631?download=false,Y
+numeri-1-10,uno,A,https://api.arasaac.org/api/pictograms/35677?download=false,Y
+numeri-1-10,due,A,https://api.arasaac.org/api/pictograms/35679?download=false,Y
+numeri-1-10,tre,A,https://api.arasaac.org/api/pictograms/35681?download=false,Y
+numeri-1-10,quattro,A,https://api.arasaac.org/api/pictograms/35665?download=false,Y
+numeri-1-10,cinque,A,https://api.arasaac.org/api/pictograms/35631?download=false,Y
+numeri-1-10,sei,A,https://api.arasaac.org/api/pictograms/35683?download=false,Y
+numeri-1-10,sette,A,https://api.arasaac.org/api/pictograms/35685?download=false,Y
+numeri-1-10,otto,A,https://api.arasaac.org/api/pictograms/35687?download=false,Y
+numeri-1-10,nove,A,https://api.arasaac.org/api/pictograms/35689?download=false,Y
+numeri-1-10,dieci,A,https://api.arasaac.org/api/pictograms/35691?download=false,Y
+particorpo,testa, , ,Y
+particorpo,capelli, , ,Y
+particorpo,occhio, , ,Y
+particorpo,orecchio, , ,Y
+particorpo,naso, , ,Y
+particorpo,bocca, , ,Y
+particorpo,collo, , ,Y
+particorpo,braccio, , ,Y
+particorpo,mano, , ,Y
+particorpo,gamba, , ,Y
+particorpo,piede, , ,Y
+particorpo,dito, , ,Y
+animali,topo, , ,Y
+animali,gatto, , ,Y
+animali,cane, , ,Y
+animali,giraffa, , ,Y
+animali,elefante, , ,Y
+animali,leone, , ,Y
+animali,uccello, , ,Y
+animali,anatra, , ,Y
+animali,gallina, , ,Y
+animali,tacchino, , ,Y
+animali,cigno, , ,Y
+animali,anatra, , ,Y
+animali,piccione, , ,Y
+animali,pesce, , ,Y
+animali,tartaruga, , ,Y
+animali,scoiattolo, , ,Y
+animali,asino, , ,Y
+animali,pecora, , ,Y
+animali,cavallo, , ,Y
+animali,capra, , ,Y
+animali,ape, , ,Y
+animali,formica, , ,Y
+animali,rana, , ,Y
+cibo,frittata, , ,Y
+cibo,pane, , ,Y
+cibo,grissini, , ,Y
+cibo,biscotto, , ,Y
+cibo,brioche, , ,Y
+cibo,succo, , ,Y
+cibo,spaghetti, , ,Y
+cibo,risotto, , ,Y
+cibo,minestra, , ,Y
+cibo,formaggio, , ,Y
+cibo,carne, , ,Y
+cibo,polpetta, , ,Y
+cibo,bresaola, , ,Y
+cibo,bistecca, , ,Y
+cibo,wurstel, , ,Y
+cibo,pomodoro, , ,Y
+cibo,piselli, , ,Y
+cibo,carota, , ,Y
+cobo,oliva, , ,Y
+cibo,zucchina, , ,Y
+cibo,banana, , ,Y
+cibo,fragola, , ,Y
+cibo,mela, , ,Y
+cibo,gelato, , ,Y
+cibo,cioccolato, , ,Y
+vestiti,pigiama, , ,Y
+vestiti,cappello, , ,Y
+vestiti,sciarpa, , ,Y
+vestiti,maglietta, , ,Y
+vestiti,maglione, , ,Y
+vestiti,giubbotto, , ,Y
+vestiti,guanti, , ,Y
+vestiti,pantaloni, , ,Y
+vestiti,mutande, , ,Y
+vestiti,calze, , ,Y
+vestiti,scarpe, , ,Y

@@ -49,15 +49,20 @@ public class Stories extends RealmObject {
      */
     private int wordNumberInt;
     /**
+     * order number of the word in a given story
+     * <p>
+     */
+    private int wordNumberIntInTheStory;
+    /**
      * sentence, word, question , answer or topic belonging to the story identified with the <code>story</code>.
      */
     private String word;
     /**
-     * represent the type of image associated with the <code>word</code>.
+     * represent the type of media associated with the <code>word</code>.
      * <p>
-     * uritype = S then , if it exists, uri refers to storage
+     * uritype = S then , if it exists, uri refers to an image from storage
      * <p>
-     * uritype = A then , if it exists, uri refers to a url of arasaac
+     * uritype = A then , if it exists, uri refers to an image from a url of arasaac
      * <p>
      * if neither the arasaac url nor the file path are indicated, the image is associated using PictogramsAll
      */
@@ -81,6 +86,22 @@ public class Stories extends RealmObject {
      * contains the video key in the videos table or the topic of a sentence
      */
     private String answerAction;
+    /**
+     * refers to a video key in the videos table .
+     */
+    private String video;
+    /**
+     * refers to a sound key in the sounds table .
+     */
+    private String sound;
+    /**
+     * indicates whether sound replaces TTS (Y or N).
+     */
+    private String soundReplacesTTS;
+    /**
+     * contains Y if the object was imported from assets.
+     */
+    private String fromAssets;
     /*
      * getter, setter and other methods
      */
@@ -91,17 +112,23 @@ public class Stories extends RealmObject {
      */
     public String getStory() { return story; }
     /**
-     * get <code>phraseNumber</code>.
+     * get <code>phraseNumberInt</code>.
      *
-     * @return phraseNumber string data to get
+     * @return phraseNumberInt int data to get
      */
     public int getPhraseNumber() { return phraseNumberInt; }
     /**
-     * get <code>wordNumber</code>.
+     * get <code>wordNumberInt</code>.
      *
-     * @return wordNumber string data to get
+     * @return wordNumberInt int data to get
      */
     public int getWordNumber() { return wordNumberInt; }
+    /**
+     * get <code>wordNumberIntInTheStory</code>.
+     *
+     * @return wordNumberIntInTheStory int data to get
+     */
+    public int getWordNumberIntInTheStory() { return wordNumberIntInTheStory; }
     /**
      * get <code>word</code>.
      *
@@ -136,6 +163,35 @@ public class Stories extends RealmObject {
     public String getAnswerAction() { return answerAction; }
     //
     /**
+     * get <code>video</code>.
+     *
+     * @return video string data to get
+     */
+    public String getVideo() { return video; }
+    //
+    /**
+     * get <code>sound</code>.
+     *
+     * @return sound string data to get
+     */
+    public String getSound() { return sound; }
+    //
+    /**
+     * get <code>soundReplacesTTS</code>.
+     *
+     * @return soundReplacesTTS string data to get
+     */
+    public String getSoundReplacesTTS() { return soundReplacesTTS; }
+    /**
+     * get <code>fromAssets</code>.
+     *
+     * @return fromAssets string Y if the object was imported from assets
+     */
+    public String getFromAssets() {
+        return fromAssets;
+    }
+    //
+    /**
      * set <code>story</code>.
      *
      * @param story string data to set
@@ -144,7 +200,7 @@ public class Stories extends RealmObject {
     /**
      * set <code>phraseNumber</code>.
      *
-     * @param phraseNumber string data to set
+     * @param phraseNumber int data to set
      */
     public void setPhraseNumber(int phraseNumber) {
         this.phraseNumberInt = phraseNumber;
@@ -152,10 +208,18 @@ public class Stories extends RealmObject {
     /**
      * set <code>wordNumber</code>.
      *
-     * @param wordNumber string data to set
+     * @param wordNumberInt int data to set
      */
-    public void setWordNumber(int wordNumber) {
-        this.wordNumberInt = wordNumber;
+    public void setWordNumber(int wordNumberInt) {
+        this.wordNumberInt = wordNumberInt;
+    }
+    /**
+     * set <code>wordNumberIntInTheStory</code>.
+     *
+     * @param wordNumberIntInTheStory int data to set
+     */
+    public void setWordNumberIntInTheStory(int wordNumberIntInTheStory) {
+        this.wordNumberIntInTheStory = wordNumberIntInTheStory;
     }
     /**
      * set <code>word</code>.
@@ -196,6 +260,38 @@ public class Stories extends RealmObject {
      */
     public void setAnswerAction(String answerAction) {
         this.answerAction = answerAction;
+    }
+    /**
+     * set <code>video</code>.
+     *
+     * @param video string data to set
+     */
+    public void setVideo(String video) {
+        this.video = video;
+    }
+    /**
+     * set <code>sound</code>.
+     *
+     * @param sound string data to set
+     */
+    public void setSound(String sound) {
+        this.sound = sound;
+    }
+    /**
+     * set <code>setSoundReplacesTTS</code>.
+     *
+     * @param soundReplacesTTS string data to set
+     */
+    public void setSoundReplacesTTS(String soundReplacesTTS) {
+        this.soundReplacesTTS = soundReplacesTTS;
+    }
+    /**
+     * set <code>fromAssets</code>.
+     *
+     * @param fromAssets string fromAssets to set
+     */
+    public void setFromAssets(String fromAssets) {
+        this.fromAssets = fromAssets;
     }
     //
     /**
@@ -246,6 +342,61 @@ public class Stories extends RealmObject {
                 }
                 else {
                     savBak(context, dataP, FILE_NAME, false);
+                }
+                irrh++;
+            }
+        }
+    }
+    //
+    /**
+     * Export a story to CSV .
+     * Refer to <a href="https://stackoverflow.com/questions/49468809/is-there-a-way-to-export-realm-database-to-csv-json">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/8989439/vrasheed">vrasheed</a>
+     *
+     * @param context context
+     * @param realm realm obtained from the activity by Realm#getDefaultInstance
+     * @param resultsDB RealmResults<Stories> story to export
+     * @param dir File with output directory
+     * @see AdvancedSettingsDataImportExportHelper#grabHeader(Realm, String)
+     * @see AdvancedSettingsDataImportExportHelper#savBak(Context, String, String)
+     * @see AdvancedSettingsDataImportExportHelper#dataProcess(String)
+     */
+    public static void exporttoCsv(Context context, Realm realm, RealmResults<Stories> resultsDB, File dir){
+//
+        String FILE_NAME = "stories.csv";
+        // Grab all data from the DB in question :
+        //        RealmResults<Stories> resultsDB = realm.where(Stories.class).findAll();
+
+        // Here we need to put in header fields
+        String dataP = null;
+        String header = AdvancedSettingsDataImportExportHelper.grabHeader(realm, "Stories");
+
+        // We write the header to file
+        savBak(context, header,FILE_NAME, dir);
+
+        // Now we write all the data corresponding to the fields grabbed above:
+        //
+        int count = resultsDB.size();
+        if (count != 0) {
+            int irrh=0;
+            while((irrh < count  )) {
+                Stories taskitems = resultsDB.get(irrh);
+                assert taskitems != null;
+                //
+                dataP = taskitems.toString();
+                // We process the data obtained and add commas and formatting:
+                dataP = dataProcess(dataP);
+                // Workaround to remove the last comma from final string
+                int total = dataP.length() - 1;
+                dataP =  dataP.substring(0,total);
+                // Workaround to remove the last line feed from final row
+                // We write the data to file
+                if (irrh == count-1)
+                {
+                    savBak(context, dataP, FILE_NAME, dir,true);
+                }
+                else {
+                    savBak(context, dataP, FILE_NAME, dir, false);
                 }
                 irrh++;
             }
@@ -311,16 +462,16 @@ public class Stories extends RealmObject {
                     // checks
                     File f = null;
                     String uri = null;
-                    if (oneWord[5] != null ) {
-                        if (oneWord[4].equals(context.getString(R.string.character_s))) {
+                    if (oneWord[6] != null ) {
+                        if (oneWord[5].equals(context.getString(R.string.character_s))) {
                             // replace with root of the external storage or data directory
-                            uri = oneWord[5].replaceFirst(context.getString(R.string.rootdirectory), rootPath);
+                            uri = oneWord[6].replaceFirst(context.getString(R.string.rootdirectory), rootPath);
                             //
-                            f = new File(oneWord[5]);
+                            f = new File(oneWord[6]);
                         }
                         else
                         {
-                            uri = oneWord[5];
+                            uri = oneWord[6];
                         }
                     }
                     if (oneWord[0] != null
@@ -331,15 +482,21 @@ public class Stories extends RealmObject {
                             && oneWord[5] != null
                             && oneWord[6] != null
                             && oneWord[7] != null
+                            && oneWord[8] != null
+                            && oneWord[9] != null
+                            && oneWord[10] != null
+                            && oneWord[11] != null
+                            && oneWord[12] != null
                           )
                     {
                         if (oneWord[0].length() > 0
                                 && oneWord[1].length() > 0
                                 && oneWord[2].length() > 0
                                 && oneWord[3].length() > 0
+                                && oneWord[4].length() > 0
                                 &&
-                                ((!oneWord[4].equals(context.getString(R.string.character_s)))
-                                || (oneWord[4].equals(context.getString(R.string.character_s))  && f.exists())))  {
+                                ((!oneWord[5].equals(context.getString(R.string.character_s)))
+                                || (oneWord[5].equals(context.getString(R.string.character_s))  && f.exists())))  {
                             //
                             realm.beginTransaction();
                             Stories history = realm.createObject(Stories.class);
@@ -347,13 +504,19 @@ public class Stories extends RealmObject {
                             history.setStory(oneWord[0]);
                             history.setPhraseNumber(Integer.parseInt(oneWord[1]));
                             history.setWordNumber(Integer.parseInt(oneWord[2]));
-                            history.setWord(oneWord[3]);
-                            history.setUriType(oneWord[4]);
+                            history.setWordNumberIntInTheStory(Integer.parseInt(oneWord[3]));
+                            history.setWord(oneWord[4]);
+                            history.setUriType(oneWord[5]);
                             //
                             history.setUri(uri);
                             //
-                            history.setAnswerActionType(oneWord[6]);
-                            history.setAnswerAction(oneWord[7]);
+                            history.setAnswerActionType(oneWord[7]);
+                            history.setAnswerAction(oneWord[8]);
+                            //
+                            history.setVideo(oneWord[9]);
+                            history.setSound(oneWord[10]);
+                            history.setSoundReplacesTTS(oneWord[11]);
+                            history.setFromAssets(oneWord[12]);
                             realm.commitTransaction();
                         }
                     }
@@ -362,5 +525,126 @@ public class Stories extends RealmObject {
         }
     }
     //
+    /**
+     * Import from CSV of a story.
+     * Refer to <a href="https://stackoverflow.com/questions/49468809/is-there-a-way-to-export-realm-database-to-csv-json">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/8989439/vrasheed">vrasheed</a>
+     *
+     * @param context context
+     * @param realm realm obtained from the activity by Realm#getDefaultInstance
+     * @param story string story to import
+     */
+    public static void importStoryFromCsvFromInternalStorage(Context context, Realm realm, String story)
+    {
+        // clear the table
+        RealmResults<Stories> daCancellare =
+                realm.where(Stories.class).equalTo("story", story).findAll();
+        realm.beginTransaction();
+        daCancellare.deleteAllFromRealm();
+        realm.commitTransaction();
+        //
+        String rootPath = context.getFilesDir().getAbsolutePath();
+        //
+        String FILE_NAME = "stories.csv";
+        //adding to db
+        BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = context.getString(R.string.character_comma);
+        //
+        try {
+            br = new BufferedReader(new InputStreamReader(context.openFileInput(FILE_NAME), StandardCharsets.UTF_8));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (br != null) {
+            boolean isTheFirstLine = true;
+            while (true) {
+                try {
+                    if (!((line = br.readLine()) != null)) break;
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                // exclusion of the first line
+                if (isTheFirstLine)
+                {
+                    isTheFirstLine = false;
+                }
+                else
+                {
+                    // added otherwise if the line ends with a comma it does not consider the last subdivision of the csv
+                    String lineLastCharacter = line.substring(line.length() - 1);
+                    if (lineLastCharacter.equals(cvsSplitBy)) {
+                        line = line + " ";
+                    }
+                    // use comma as separator
+                    // also including empty strings
+                    final String[] oneWord= line.split(cvsSplitBy, -1);
+                    // checks
+                    File f = null;
+                    String uri = null;
+                    if (oneWord[6] != null ) {
+                        if (oneWord[5].equals(context.getString(R.string.character_s))) {
+//                          uri = oneWord[5].replaceFirst(context.getString(R.string.rootdirectory), rootPath);
+                            // replace with root of data directory
+                            String fileName = oneWord[6].substring(oneWord[6].lastIndexOf("/")+1);
+                            uri = rootPath + "/" + fileName;
+                            //
+                            f = new File(uri);
+                        }
+                        else
+                        {
+                            uri = oneWord[6];
+                        }
+                    }
+                    if (oneWord[0] != null
+                            && oneWord[1] != null
+                            && oneWord[2] != null
+                            && oneWord[3] != null
+                            && oneWord[4] != null
+                            && oneWord[5] != null
+                            && oneWord[6] != null
+                            && oneWord[7] != null
+                            && oneWord[8] != null
+                            && oneWord[9] != null
+                            && oneWord[10] != null
+                            && oneWord[11] != null
+                            && oneWord[12] != null
+                    )
+                    {
+                        if (oneWord[0].length() > 0
+                                && oneWord[1].length() > 0
+                                && oneWord[2].length() > 0
+                                && oneWord[3].length() > 0
+                                && oneWord[4].length() > 0
+                                &&
+                                ((!oneWord[5].equals(context.getString(R.string.character_s)))
+                                        || (oneWord[5].equals(context.getString(R.string.character_s))  && f.exists())))  {
+                            //
+                            realm.beginTransaction();
+                            Stories history = realm.createObject(Stories.class);
+                            // set the fields here
+                            history.setStory(oneWord[0]);
+                            history.setPhraseNumber(Integer.parseInt(oneWord[1]));
+                            history.setWordNumber(Integer.parseInt(oneWord[2]));
+                            history.setWordNumberIntInTheStory(Integer.parseInt(oneWord[3]));
+                            history.setWord(oneWord[4]);
+                            history.setUriType(oneWord[5]);
+                            //
+                            history.setUri(uri);
+                            //
+                            history.setAnswerActionType(oneWord[7]);
+                            history.setAnswerAction(oneWord[8]);
+                            //
+                            history.setVideo(oneWord[9]);
+                            history.setSound(oneWord[10]);
+                            history.setSoundReplacesTTS(oneWord[11]);
+                            history.setFromAssets(oneWord[12]);
+                            realm.commitTransaction();
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 

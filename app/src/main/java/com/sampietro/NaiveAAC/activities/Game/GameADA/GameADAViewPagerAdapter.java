@@ -21,7 +21,7 @@ import io.realm.RealmResults;
  * Refer to <a href="https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started">raywenderlich.com</a>
  * By <a href="https://www.raywenderlich.com/u/rajdeep1008">Rajdeep Singh</a>
  *
- * @version     1.3, 05/05/22
+ * @version     3.0, 03/12/23
  * @see FragmentStateAdapter
  */
 public class GameADAViewPagerAdapter extends FragmentStateAdapter {
@@ -30,7 +30,9 @@ public class GameADAViewPagerAdapter extends FragmentStateAdapter {
     //
     public String sharedStory;
     public RealmResults<Stories> resultsStories;
-    public int phraseToDisplayIndex;
+    public int wordToDisplayInTheStoryIndex;
+    //
+    private String gameUseVideoAndSound;
     /**
      * Game1ViewPagerAdapter constructor.
      * context annotation
@@ -41,12 +43,14 @@ public class GameADAViewPagerAdapter extends FragmentStateAdapter {
      * @param realm realm
      */
     public GameADAViewPagerAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, Context context, Realm realm,
-                                   String sharedStory, int phraseToDisplayIndex ) {
+                                   String sharedStory, int wordToDisplayInTheStoryIndex , String gameUseVideoAndSound, RealmResults<Stories> resultsStories) {
         super(fragmentManager, lifecycle);
         this.context = context;
         this.realm = realm;
         this.sharedStory = sharedStory;
-        this.phraseToDisplayIndex = phraseToDisplayIndex;
+        this.wordToDisplayInTheStoryIndex = wordToDisplayInTheStoryIndex;
+        this.gameUseVideoAndSound = gameUseVideoAndSound;
+        this.resultsStories = resultsStories;
     }
     /**
      * returns a fragment instance for the given position to display
@@ -63,8 +67,9 @@ public class GameADAViewPagerAdapter extends FragmentStateAdapter {
         GameADAViewPagerFragment fragment=null;
         //
         bundle.putString("STORY TO DISPLAY", sharedStory);
-        bundle.putInt("PHRASE TO DISPLAY INDEX", phraseToDisplayIndex);
+//        bundle.putInt("PHRASE TO DISPLAY INDEX", phraseToDisplayIndex);
         bundle.putInt("WORD TO DISPLAY INDEX", position);
+        bundle.putString("GAME USE VIDEO AND SOUND", gameUseVideoAndSound);
         //
         fragment=new GameADAViewPagerFragment();
         fragment.setArguments(bundle);
@@ -79,15 +84,15 @@ public class GameADAViewPagerAdapter extends FragmentStateAdapter {
      */
     @Override
     public int getItemCount() {
-        resultsStories =
-                realm.where(Stories.class)
-                        .beginGroup()
-                        .equalTo("story", sharedStory)
-                        .equalTo("phraseNumberInt", phraseToDisplayIndex)
-                        .notEqualTo("wordNumberInt", 0)
-                        .lessThan("wordNumberInt", 99)
-                        .endGroup()
-                        .findAll();
+//        resultsStories =
+//                realm.where(Stories.class)
+//                        .beginGroup()
+//                        .equalTo("story", sharedStory)
+//                      .equalTo("phraseNumberInt", phraseToDisplayIndex)
+//                        .notEqualTo("wordNumberInt", 0)
+//                        .lessThan("wordNumberInt", 99)
+//                        .endGroup()
+//                        .findAll();
         return resultsStories.size();
     }
 }

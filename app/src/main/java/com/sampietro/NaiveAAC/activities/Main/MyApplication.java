@@ -8,16 +8,16 @@ import com.sampietro.NaiveAAC.BuildConfig;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters;
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions;
-import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames;
 import com.sampietro.NaiveAAC.activities.Graphics.Images;
+import com.sampietro.NaiveAAC.activities.Graphics.Sounds;
 import com.sampietro.NaiveAAC.activities.Graphics.Videos;
-import com.sampietro.NaiveAAC.activities.Phrases.Phrases;
 import com.sampietro.NaiveAAC.activities.Stories.Stories;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
@@ -64,7 +64,7 @@ public class MyApplication extends Application {
         RealmConfiguration realmConfiguration =
                 new RealmConfiguration.Builder()
                         .name("default.realm")
-                        .schemaVersion(4)
+                        .schemaVersion(5)
                         .migration(new customRealmMigration())
                         //     .deleteRealmIfMigrationNeeded()
                         .build();
@@ -149,41 +149,41 @@ public class MyApplication extends Application {
         //
         if (oldVersionCode == 6) {
             // rename video
-            Realm realm= Realm.getDefaultInstance();
-            RealmResults<Videos> results =
-                    realm.where(Videos.class).equalTo(getString(R.string.descrizione), "pensieri e parole").findAll();
-            int resultsSize = results.size();
-            if (resultsSize != 0) {
-                realm.beginTransaction();
+//            Realm realm= Realm.getDefaultInstance();
+//            RealmResults<Videos> results =
+//                    realm.where(Videos.class).equalTo(getString(R.string.descrizione), "pensieri e parole").findAll();
+//            int resultsSize = results.size();
+//            if (resultsSize != 0) {
+//                realm.beginTransaction();
                 // crash
-                Videos daRinominare=results.get(0);
-                assert daRinominare != null;
-                daRinominare.setDescrizione("AUTISMO");
-                realm.commitTransaction();
-            }
+//                Videos daRinominare=results.get(0);
+//                assert daRinominare != null;
+//                daRinominare.setDescrizione("AUTISMO");
+//                realm.commitTransaction();
+//            }
             // rename game parameters
-            RealmResults<GameParameters> resultsgp1 =
-                    realm.where(GameParameters.class).equalTo("gameName", "pensieri e parole").findAll();
-            int resultsgp1Size = resultsgp1.size();
-            if (resultsgp1Size != 0) {
-                realm.beginTransaction();
-                GameParameters daRinominaregp1=resultsgp1.get(0);
-                assert daRinominaregp1 != null;
-                daRinominaregp1.setGameName("NAVIGATORE");
-                daRinominaregp1.setGameJavaClass("NAVIGATORE");
-                realm.commitTransaction();
-            }
-            RealmResults<GameParameters> resultsgp2 =
-                    realm.where(GameParameters.class).equalTo("gameName", "parole in libertà").findAll();
-            int resultsgp2Size = resultsgp2.size();
-            if (resultsgp2Size != 0) {
-                realm.beginTransaction();
-                GameParameters daRinominaregp2=resultsgp2.get(0);
-                assert daRinominaregp2 != null;
-                daRinominaregp2.setGameName("COMUNICATORE");
-                daRinominaregp2.setGameJavaClass("COMUNICATORE");
-                realm.commitTransaction();
-            }
+//            RealmResults<GameParameters> resultsgp1 =
+//                    realm.where(GameParameters.class).equalTo("gameName", "pensieri e parole").findAll();
+//            int resultsgp1Size = resultsgp1.size();
+//            if (resultsgp1Size != 0) {
+//                realm.beginTransaction();
+//                GameParameters daRinominaregp1=resultsgp1.get(0);
+//                assert daRinominaregp1 != null;
+//                daRinominaregp1.setGameName("NAVIGATORE");
+//                daRinominaregp1.setGameJavaClass("NAVIGATORE");
+//                realm.commitTransaction();
+//            }
+//            RealmResults<GameParameters> resultsgp2 =
+//                    realm.where(GameParameters.class).equalTo("gameName", "parole in libertà").findAll();
+//            int resultsgp2Size = resultsgp2.size();
+//            if (resultsgp2Size != 0) {
+//                realm.beginTransaction();
+//                GameParameters daRinominaregp2=resultsgp2.get(0);
+//                assert daRinominaregp2 != null;
+//                daRinominaregp2.setGameName("COMUNICATORE");
+//                daRinominaregp2.setGameJavaClass("COMUNICATORE");
+//                realm.commitTransaction();
+//            }
             //
             oldVersionCode++;
         }
@@ -193,19 +193,19 @@ public class MyApplication extends Application {
                 copyFileFromAssetsToInternalStorage("images", "racconto.png", "racconto.png");
                 copyFileFromAssetsToInternalStorage("images", "non.png", "non.png");
                 //
-                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-images.csv", "images.csv");
-                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-grammaticalexceptions.csv", "grammaticalexceptions.csv");
+//                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-images.csv", "images.csv");
+//                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-grammaticalexceptions.csv", "grammaticalexceptions.csv");
                 copyFileFromAssetsToInternalStorage("csv", "toaddversion8-stories.csv", "stories.csv");
-                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-gameparameters.csv", "gameparameters.csv");
+//                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-gameparameters.csv", "gameparameters.csv");
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
             Realm realm= Realm.getDefaultInstance();
-            Images.importFromCsvFromInternalStorage(context, realm, "Append");
-            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Append");
+//            Images.importFromCsvFromInternalStorage(context, realm, "Append");
+//            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Append");
             Stories.importFromCsvFromInternalStorage(context, realm, "Append");
-            GameParameters.importFromCsvFromInternalStorage(context, realm, "Append");
+//            GameParameters.importFromCsvFromInternalStorage(context, realm, "Append");
             //
             oldVersionCode++;
         }
@@ -215,44 +215,114 @@ public class MyApplication extends Application {
             //
             // delete image
             Realm realm= Realm.getDefaultInstance();
-            RealmResults<Images> results =
-                    realm.where(Images.class).equalTo("descrizione", "negazione").findAll();
-            realm.beginTransaction();
-            results.deleteAllFromRealm();
-            realm.commitTransaction();
+//            RealmResults<Images> results =
+//                    realm.where(Images.class).equalTo("descrizione", "negazione").findAll();
+//            realm.beginTransaction();
+//            results.deleteAllFromRealm();
+//            realm.commitTransaction();
             //
             try {
-                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-images.csv", "images.csv");
+//                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-images.csv", "images.csv");
                 copyFileFromAssetsToInternalStorage("csv", "grammaticalexceptions.csv", "grammaticalexceptions.csv");
-                copyFileFromAssetsToInternalStorage("csv", "stories.csv", "stories.csv");
-                copyFileFromAssetsToInternalStorage("csv", "gameparameters.csv", "gameparameters.csv");
+//                copyFileFromAssetsToInternalStorage("csv", "stories.csv", "stories.csv");
+//                copyFileFromAssetsToInternalStorage("csv", "gameparameters.csv", "gameparameters.csv");
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Images.importFromCsvFromInternalStorage(context, realm, "Append");
+//            Images.importFromCsvFromInternalStorage(context, realm, "Append");
             GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Replace");
-            Stories.importFromCsvFromInternalStorage(context, realm, "Replace");
-            GameParameters.importFromCsvFromInternalStorage(context, realm, "Replace");
+//            Stories.importFromCsvFromInternalStorage(context, realm, "Replace");
+//            GameParameters.importFromCsvFromInternalStorage(context, realm, "Replace");
             //
             oldVersionCode++;
         }
         //
         if (oldVersionCode == 9) {
             // delete story
+//            Realm realm= Realm.getDefaultInstance();
+//            RealmResults<Stories> results =
+//                    realm.where(Stories.class).equalTo("story", "il gatto con gli stivali").findAll();
+//            realm.beginTransaction();
+//            results.deleteAllFromRealm();
+//            realm.commitTransaction();
+//            // replace story from csv in assets
+//            try {
+//                copyFileFromAssetsToInternalStorage("csv", "toaddversion10-stories.csv", "stories.csv");
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            Stories.importFromCsvFromInternalStorage(context, realm, "Append");
+            //
+            oldVersionCode++;
+        }
+        //
+        if (oldVersionCode == 10) {
+            //
             Realm realm= Realm.getDefaultInstance();
-            RealmResults<Stories> results =
+            // delete story
+             RealmResults<Stories> results =
                     realm.where(Stories.class).equalTo("story", "il gatto con gli stivali").findAll();
             realm.beginTransaction();
             results.deleteAllFromRealm();
             realm.commitTransaction();
             // replace story from csv in assets
             try {
+                copyFileFromAssetsToInternalStorage("sounds", "cat-meow-14536.mp3", "cat-meow-14536.mp3");
+                copyFileFromAssetsToInternalStorage("sounds", "fiaker-73119.mp3", "fiaker-73119.mp3");
+                copyFileFromAssetsToInternalStorage("sounds", "Hallelujah.mp3", "Hallelujah.mp3");
+                copyFileFromAssetsToInternalStorage("sounds", "jumento-101690.mp3", "jumento-101690.mp3");
+                copyFileFromAssetsToInternalStorage("sounds", "lion-roar-6011.mp3", "lion-roar-6011.mp3");
+                copyFileFromAssetsToInternalStorage("sounds", "river-stream-moderate-flow-2-24370.mp3", "river-stream-moderate-flow-2-24370.mp3");
+                copyFileFromAssetsToInternalStorage("sounds", "scary-laugh-123862.mp3", "scary-laugh-123862.mp3");
+                copyFileFromAssetsToInternalStorage("sounds", "Wedding March.mp3", "Wedding March.mp3");
+                copyFileFromAssetsToInternalStorage("images", "punto interrogativo.png", "punto interrogativo.png");
+                copyFileFromAssetsToInternalStorage("videos", "cat-4916.mp4", "cat-4916.mp4");
+                copyFileFromAssetsToInternalStorage("videos", "cat-92641.mp4", "cat-92641.mp4");
+                copyFileFromAssetsToInternalStorage("videos", "man-131605.mp4", "man-131605.mp4");
+                copyFileFromAssetsToInternalStorage("videos", "mouse-117573.mp4", "mouse-117573.mp4");
+                copyFileFromAssetsToInternalStorage("videos", "rabbit-141719.mp4", "rabbit-141719.mp4");
+                copyFileFromAssetsToInternalStorage("videos", "tags-bird-9267.mp4", "tags-bird-9267.mp4");
+                copyFileFromAssetsToInternalStorage("csv", "sounds.csv", "sounds.csv");
+                copyFileFromAssetsToInternalStorage("csv", "images.csv", "images.csv");
+                copyFileFromAssetsToInternalStorage("csv", "videos.csv", "videos.csv");
                 copyFileFromAssetsToInternalStorage("csv", "toaddversion10-stories.csv", "stories.csv");
+                copyFileFromAssetsToInternalStorage("csv", "gameparameters.csv", "gameparameters.csv");
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            // eliminazione di tutte le immagini tranne quelle relative ad "io" e a nome utente
+            String sharedLastPlayer =
+                    sharedPref.getString (getString(R.string.preference_LastPlayer), "DEFAULT");
+            RealmResults<Images> resultsImages =
+                    realm.where(Images.class)
+                            .equalTo("descrizione", "io")
+                            .or()
+                            .equalTo("descrizione", sharedLastPlayer)
+                            .findAll();
+            int imagesSize = resultsImages.size();
+            List<Images> resultsImagesList = realm.copyFromRealm(resultsImages);
+            // clear the table
+            RealmResults<Images> daCancellare = realm.where(Images.class).findAll();
+            realm.beginTransaction();
+            daCancellare.deleteAllFromRealm();
+            realm.commitTransaction();
+            //
+            int irrh=0;
+            while(irrh < imagesSize)   {
+                Images resultImages = resultsImagesList.get(irrh);
+                assert resultImages != null;
+                realm.beginTransaction();
+                realm.copyToRealm(resultImages);
+                realm.commitTransaction();
+                irrh++;
+            }
+            //
+            Sounds.importFromCsvFromInternalStorage(context, realm, "Replace");
+            Images.importFromCsvFromInternalStorage(context, realm, "Append");
+            Videos.importFromCsvFromInternalStorage(context, realm, "Replace");
             Stories.importFromCsvFromInternalStorage(context, realm, "Append");
+            GameParameters.importFromCsvFromInternalStorage(context, realm, "Replace");
             //
             oldVersionCode++;
         }

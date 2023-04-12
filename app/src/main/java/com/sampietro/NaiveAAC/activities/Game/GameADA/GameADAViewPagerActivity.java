@@ -1,8 +1,10 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +19,13 @@ import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ViewPagerAdapter;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass;
-import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment;
-import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment;
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity;
 import com.example.voicerecognitionlibrary.AndroidPermission;
 import com.example.voicerecognitionlibrary.SpeechRecognizerManagement;
+import com.sampietro.NaiveAAC.activities.Stories.Stories;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * <h1>GameAdaViewPagerActivity</h1>
@@ -33,23 +35,30 @@ import io.realm.Realm;
  * Refer to <a href="https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started">raywenderlich.com</a>
  * By <a href="https://www.raywenderlich.com/u/rajdeep1008">Rajdeep Singh</a>
  *
- * @version     1.0, 06/13/22
+ * @version     3.0, 03/12/23
  * @see GameActivityAbstractClass
- * @see GameADARecyclerViewAdapterInterface
- * @see PrizeFragment.onFragmentEventListenerPrize
- * @see YoutubePrizeFragment.onFragmentEventListenerYoutubePrize
+ * @see GameADAViewPagerAdapter
  */
-public class GameADAViewPagerActivity extends GameActivityAbstractClass
+public class GameADAViewPagerActivity extends GameActivityAbstractClass implements
+        GameADAViewPagerOnFragmentEventListener,
+        GameADAViewPagerOnFragmentSoundMediaPlayerListener,
+        GameADAViewPagerMediaContainerOnClickListener
 {
     public String sharedStory;
-    public int phraseToDisplayIndex;
-    public int wordToDisplayIndex;
+    public int phraseToDisplay;
+    public int wordToDisplay;
+    public int wordToDisplayInTheStory;
     // TTS
     public TextToSpeech tTS1;
     public String toSpeak;
     //
+    private MediaPlayer soundMediaPlayer;
+    //
     private ViewGroup mContentView;
     //
+    private String gameUseVideoAndSound;
+    //
+    private boolean isTheFirstPageSelected = true;
     //  ViewPager2
     // - 1) Create the views (activity_game_ada_viewpager_content.xml)
     // - 2) Create the fragment (GameADAViewPagerFragment)
@@ -75,16 +84,37 @@ public class GameADAViewPagerActivity extends GameActivityAbstractClass
         public void onPageSelected(int position) {
             super.onPageSelected(position);
             //  update activity variables
-            wordToDisplayIndex = position;
+//            wordToDisplayInTheStoryIndex = position;
+            /*
+            ADAPTED FOR VIDEO AND SOUND
+            */
+            // release sound mediaplayer
+            if (isTheFirstPageSelected)
+            {
+                isTheFirstPageSelected = false;
+            }
+            else
+            {
+                wordToDisplayInTheStory = position+1;
+                if(soundMediaPlayer != null) {
+                    if (soundMediaPlayer.isPlaying()) {
+                        soundMediaPlayer.stop();
+                    }
+                    soundMediaPlayer.release();
+                    soundMediaPlayer = null;
+                }
+            }
+            /*
+
+            */
         }
     };
     /**
-     * configurations of game1 start screen.
+     * configurations of gameadaviewpager start screen.
      * <p>
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
      * @see SpeechRecognizerManagement#prepareSpeechRecognizer
-     // * @see ActionbarFragment
      * @see Game1ViewPagerAdapter
      * @see android.app.Activity#onCreate(Bundle)
      * @see OnPageChangeCallback#onPageSelected
@@ -92,6 +122,8 @@ public class GameADAViewPagerActivity extends GameActivityAbstractClass
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //
+        realm= Realm.getDefaultInstance();
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             // The onSaveInstanceState method is called before an activity may be killed
@@ -100,26 +132,59 @@ public class GameADAViewPagerActivity extends GameActivityAbstractClass
             // it display the last word
             // else display the word passed by GameADAActivity
             sharedStory = savedInstanceState.getString("STORY TO DISPLAY" );
-            phraseToDisplayIndex = savedInstanceState.getInt("PHRASE TO DISPLAY INDEX" );
-            wordToDisplayIndex =
-                    savedInstanceState.getInt("WORD TO DISPLAY INDEX" );
+            phraseToDisplay = savedInstanceState.getInt("PHRASE TO DISPLAY" );
+            wordToDisplay =
+                    savedInstanceState.getInt("WORD TO DISPLAY" );
+            gameUseVideoAndSound= savedInstanceState.getString("GAME USE VIDEO AND SOUND");
+            //
+            RealmResults<Stories> resultsStories =
+                    realm.where(Stories.class)
+                            .beginGroup()
+                            .equalTo("story", sharedStory)
+                            .equalTo("phraseNumberInt", phraseToDisplay)
+                            .equalTo("wordNumberInt",  wordToDisplay)
+                            .endGroup()
+                            .findAll();
+            int storiesSize = resultsStories.size();
+            if (storiesSize > 0) {
+                assert resultsStories.get(0) != null;
+                wordToDisplayInTheStory = resultsStories.get(0).getWordNumberIntInTheStory();
+            }
+            //
         }
         //
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras != null) {
                 sharedStory= extras.getString("STORY TO DISPLAY");
-                phraseToDisplayIndex= extras.getInt("PHRASE TO DISPLAY INDEX");
-                wordToDisplayIndex= extras.getInt("WORD TO DISPLAY INDEX");
+                phraseToDisplay= extras.getInt("PHRASE TO DISPLAY");
+                wordToDisplay= extras.getInt("WORD TO DISPLAY");
+                gameUseVideoAndSound= extras.getString("GAME USE VIDEO AND SOUND");
+                //
+                RealmResults<Stories> resultsStories =
+                        realm.where(Stories.class)
+                                .beginGroup()
+                                .equalTo("story", sharedStory)
+                                .equalTo("phraseNumberInt", phraseToDisplay)
+                                .equalTo("wordNumberInt",  wordToDisplay)
+                                .endGroup()
+                                .findAll();
+                int storiesSize = resultsStories.size();
+                if (storiesSize > 0) {
+                    assert resultsStories.get(0) != null;
+                    wordToDisplayInTheStory = resultsStories.get(0).getWordNumberIntInTheStory();
+                }
+                //
             }
         }
         // viewpager
         setContentView(R.layout.activity_game_ada_viewpager);
-        //
+        /*
+        USED FOR FULL SCREEN
+         */
         mContentView = findViewById(R.id.activity_game_ada_viewpager_id);
         setToFullScreen();
         ViewTreeObserver viewTreeObserver = mContentView.getViewTreeObserver();
-        //
         if (viewTreeObserver.isAlive()) {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -128,24 +193,36 @@ public class GameADAViewPagerActivity extends GameActivityAbstractClass
                 }
             });
         }
-        //
         mContentView.setOnClickListener(view -> setToFullScreen());
+        /*
+
+         */
         //
         AndroidPermission.checkPermission(this);
         //
         realm= Realm.getDefaultInstance();
+        //
+        RealmResults<Stories> resultsStories =
+                realm.where(Stories.class)
+                        .beginGroup()
+                        .equalTo("story", sharedStory)
+                        .notEqualTo("wordNumberInt", 0)
+                        .lessThan("wordNumberInt", 99)
+                        .endGroup()
+                        .findAll();
         //
         context = this;
         // viewpager
         // Wire Adapter with ViewPager2
         mViewPager = (ViewPager2) findViewById(R.id.pager);
         Lifecycle lifecycle = getLifecycle();
-        mAdapter = new GameADAViewPagerAdapter (getSupportFragmentManager(), lifecycle, context, realm, sharedStory, phraseToDisplayIndex);
+        mAdapter = new GameADAViewPagerAdapter (getSupportFragmentManager(), lifecycle, context, realm,
+                sharedStory, wordToDisplayInTheStory-1, gameUseVideoAndSound, resultsStories);
         mViewPager.setAdapter(mAdapter);
         // Register page change callback
         mViewPager.registerOnPageChangeCallback(callbackViewPager2);
         // Set the currently selected page
-        mViewPager.setCurrentItem(wordToDisplayIndex, false);
+        mViewPager.setCurrentItem(wordToDisplayInTheStory-1, false);
      }
     /**
      * Hide the Navigation Bar
@@ -154,8 +231,14 @@ public class GameADAViewPagerActivity extends GameActivityAbstractClass
      */
     @Override
     protected void onResume() {
+        /*
+        USED FOR FULL SCREEN
+         */
         super.onResume();
         setToFullScreen();
+        /*
+
+         */
     }
     //
     /**
@@ -184,8 +267,9 @@ public class GameADAViewPagerActivity extends GameActivityAbstractClass
     public void onSaveInstanceState(Bundle savedInstanceState) {
         //
         savedInstanceState.putString("STORY TO DISPLAY", sharedStory);
-        savedInstanceState.putInt("PHRASE TO DISPLAY INDEX", phraseToDisplayIndex);
-        savedInstanceState.putInt("WORD TO DISPLAY INDEX", wordToDisplayIndex);
+        savedInstanceState.putInt("PHRASE TO DISPLAY", phraseToDisplay);
+        savedInstanceState.putInt("WORD TO DISPLAY", wordToDisplay);
+        savedInstanceState.putString("GAME USE VIDEO AND SOUND", gameUseVideoAndSound);
         //
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
@@ -236,12 +320,27 @@ public class GameADAViewPagerActivity extends GameActivityAbstractClass
      * @see GameADAActivity
      */
     public void onClickGameImage(View v) {
+        //
+        RealmResults<Stories> resultsStories =
+                realm.where(Stories.class)
+                        .beginGroup()
+                        .equalTo("story", sharedStory)
+                        .equalTo("wordNumberIntInTheStory", wordToDisplayInTheStory)
+                        .endGroup()
+                        .findAll();
+        int storiesSize = resultsStories.size();
+        if (storiesSize > 0) {
+            assert resultsStories.get(0) != null;
+            phraseToDisplay = resultsStories.get(0).getPhraseNumber();
+            wordToDisplay = resultsStories.get(0).getWordNumber();
+        }
         Intent intent = null;
         intent = new Intent(this,
                 GameADAActivity.class);
         intent.putExtra("STORY TO DISPLAY", sharedStory);
-        intent.putExtra("PHRASE TO DISPLAY INDEX", phraseToDisplayIndex);
-        intent.putExtra("WORD TO DISPLAY INDEX", wordToDisplayIndex);
+        intent.putExtra("PHRASE TO DISPLAY INDEX", phraseToDisplay);
+        intent.putExtra("WORD TO DISPLAY INDEX", wordToDisplay-1);
+        intent.putExtra("GAME USE VIDEO AND SOUND", gameUseVideoAndSound);
         startActivity(intent);
     }
     /**
@@ -254,4 +353,35 @@ public class GameADAViewPagerActivity extends GameActivityAbstractClass
     @Override
     public void onResult(String eText) {
     }
+    /**
+     * on callback from GameADAViewPagerFragment to this Activity
+     *
+     * @param v view root fragment view
+     * @param wordToDisplayInTheStory word to display in the story
+     */
+    @Override
+    public void receiveWordToDisplayIndexGameFragment(View v, int wordToDisplayInTheStory) {
+        this.wordToDisplayInTheStory = wordToDisplayInTheStory;
+    }
+    /**
+     * on callback from GameADAViewPagerFragment to this Activity
+     *
+     * @param v view root fragment view
+     * @param soundMediaPlayer MediaPlayer
+     */
+    @Override
+    public void receiveResultGameFragment(View v, MediaPlayer soundMediaPlayer) {
+        rootViewImageFragment = v;
+        this.soundMediaPlayer = soundMediaPlayer;
+    }
+    /**
+     * on callback from GameADAViewPagerFragment to this Activity
+     *
+     * @param v view root fragment view
+     */
+    @Override
+    public void receiveOnClickGameImage(View v) {
+        onClickGameImage(v);
+    }
+
 }

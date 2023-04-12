@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.Settings.SettingsActivity">
+    tools:context=".activities.Settings.SettingsContentsActivity">
 
     <TextView
         android:id="@+id/contentssettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:ems="10"
         android:hint="@string/edit_message"
         android:text="@string/impostazione_dei_contenuti"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,6 +42,18 @@
         app:layout_constraintTop_toBottomOf="@id/listsOfNames" />
 
     <Button
+        android:id="@+id/storiesimportexport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="submitStoriesImportExport"
+        android:singleLine="false"
+        android:text="STORIE - importazione / esportazione"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/wordpairs" />
+
+    <Button
         android:id="@+id/storiesquickregistration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,18 +63,7 @@
         android:text="STORIE - registrazione rapida"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/wordpairs" />
-
-    <Button
-        android:id="@+id/storyshowlist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storiesquickregistration"
-        android:onClick="submitStoriesShowList"
-        android:text="STORIE - mostra elenco" />
+        app:layout_constraintTop_toBottomOf="@id/storiesimportexport" />
 
     <Button
         android:id="@+id/stories"
@@ -72,10 +72,10 @@
         android:layout_marginTop="8dp"
         android:onClick="submitStories"
         android:singleLine="false"
-        android:text="STORIE - aggiungi parola"
+        android:text="STORIE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/storyshowlist" />
+        app:layout_constraintTop_toBottomOf="@id/storiesquickregistration" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -48,6 +48,10 @@ public class ListsOfNames extends RealmObject {
      * contains the file path or a url of arasaac  (originally contained the uri).
      */
     private String uri;
+    /**
+     * contains Y if the object was imported from assets.
+     */
+    private String fromAssets;
     /*
      * getter, setter and other methods
      */
@@ -83,6 +87,14 @@ public class ListsOfNames extends RealmObject {
     public String getUri() {
         return uri;
     }
+    /**
+     * get <code>fromAssets</code>.
+     *
+     * @return fromAssets string Y if the object was imported from assets
+     */
+    public String getFromAssets() {
+        return fromAssets;
+    }
     //
     /**
      * set <code>keyword</code>.
@@ -115,6 +127,14 @@ public class ListsOfNames extends RealmObject {
      */
     public void setUri(String uri) {
         this.uri = uri;
+    }
+    /**
+     * set <code>fromAssets</code>.
+     *
+     * @param fromAssets string fromAssets to set
+     */
+    public void setFromAssets(String fromAssets) {
+        this.fromAssets = fromAssets;
     }
     //
     /**
@@ -242,7 +262,8 @@ public class ListsOfNames extends RealmObject {
                     if (oneWord[0] != null
                             && oneWord[1] != null
                             && oneWord[2] != null
-                            && oneWord[3] != null ) {
+                            && oneWord[3] != null
+                            && oneWord[4] != null ) {
                         if (oneWord[0].length() > 0
                                 && oneWord[1].length() > 0
                                 &&
@@ -257,6 +278,7 @@ public class ListsOfNames extends RealmObject {
                             listsOfNames.setUriType(oneWord[2]);
                             //
                             listsOfNames.setUri(uri);
+                            listsOfNames.setFromAssets(oneWord[4]);
                             realm.commitTransaction();
                         }
                     }

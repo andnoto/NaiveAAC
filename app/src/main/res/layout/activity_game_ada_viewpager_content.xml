@@ -60,7 +60,6 @@
         android:id="@+id/gameimage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:contentDescription="TODO"
         android:onClick="onClickGameImage"
         android:text="@string/inizia" />
@@ -69,7 +68,6 @@
         android:id="@+id/gameimage2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:contentDescription="TODO"
         android:text="@string/inizia" />
 
@@ -79,6 +77,7 @@
         android:id="@+id/titleimage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:textColor="#000"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -27,6 +27,7 @@ import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper;
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases;
 import com.sampietro.NaiveAAC.activities.Stories.Stories;
 import com.sampietro.NaiveAAC.activities.Stories.StoriesComparator;
+import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper;
 import com.sampietro.NaiveAAC.activities.history.History;
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory;
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl;
@@ -525,6 +526,7 @@ public class SettingsStoriesQuickRegistrationActivity extends GameActivityAbstra
                     irrh++;
                 }
             }
+            StoriesHelper.renumberAStory(realm, textWord1.getText().toString().toLowerCase());
         }
         //
         fragmentTransactionStart("");

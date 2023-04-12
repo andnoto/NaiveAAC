@@ -60,4 +60,88 @@ public class StoriesHelper {
             irrh++;
         }
     }
+    /**
+     * renumber a story
+     *
+     * @param realm realm
+     * @param story string
+     */
+    public static void renumberAStory(Realm realm, String story)
+    {
+        RealmResults<Stories> resultsStories =
+                realm.where(Stories.class)
+                        .equalTo("story", story)
+                        .findAll();
+        int storiesSize = resultsStories.size();
+        //
+        List<Stories> resultsStoriesList = realm.copyFromRealm(resultsStories);
+        //
+        Collections.sort(resultsStoriesList,new StoriesComparator());
+        //
+        realm.beginTransaction();
+        resultsStories.deleteAllFromRealm();
+        realm.commitTransaction();
+        //
+        int irrh=0;
+        int wordNumberIntInTheStory = 0;
+        while(irrh < storiesSize)   {
+            Stories resultStories = resultsStoriesList.get(irrh);
+            assert resultStories != null;
+            int currentWordNumber = resultStories.getWordNumber();
+            if (!(currentWordNumber == 0) && !(currentWordNumber >= 99))
+            {
+                wordNumberIntInTheStory++;
+                resultStories.setWordNumberIntInTheStory(wordNumberIntInTheStory);
+            }
+            realm.beginTransaction();
+            realm.copyToRealm(resultStories);
+            realm.commitTransaction();
+            //
+            irrh++;
+        }
+    }
+    /**
+     * renumber stories
+     *
+     * @param realm realm
+     */
+    public static void renumberStories(Realm realm)
+    {
+        RealmResults<Stories> resultsStories =
+                realm.where(Stories.class)
+                        .findAll();
+        int storiesSize = resultsStories.size();
+        //
+        List<Stories> resultsStoriesList = realm.copyFromRealm(resultsStories);
+        //
+        Collections.sort(resultsStoriesList,new StoriesComparator());
+        //
+        realm.beginTransaction();
+        resultsStories.deleteAllFromRealm();
+        realm.commitTransaction();
+        //
+        int irrh=0;
+        String story ="";
+        int wordNumberIntInTheStory = 0;
+        while(irrh < storiesSize)   {
+            Stories resultStories = resultsStoriesList.get(irrh);
+            assert resultStories != null;
+            if (resultStories.getStory().compareTo(story) != 0)
+                {
+                story = resultStories.getStory();
+                wordNumberIntInTheStory = 0;
+                }
+            int currentWordNumber = resultStories.getWordNumber();
+            if (!(currentWordNumber == 0) && !(currentWordNumber >= 99))
+            {
+                wordNumberIntInTheStory++;
+                resultStories.setWordNumberIntInTheStory(wordNumberIntInTheStory);
+            }
+            realm.beginTransaction();
+            realm.copyToRealm(resultStories);
+            realm.commitTransaction();
+            //
+            irrh++;
+            }
+    }
 }

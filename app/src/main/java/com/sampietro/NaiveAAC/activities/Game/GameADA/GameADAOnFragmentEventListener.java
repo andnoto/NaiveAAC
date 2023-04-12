@@ -4,8 +4,6 @@ package com.sampietro.NaiveAAC.activities.Game.GameADA;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 
-import com.sampietro.NaiveAAC.activities.Game.Game2.Game2ArrayList;
-
 import java.util.ArrayList;
 
 /**
@@ -23,7 +21,7 @@ public interface GameADAOnFragmentEventListener
      *
      * @param v view of tapped button
      * @param t TextToSpeech
-     * @param galleryList ArrayList<Game2ArrayList>
+     * @param galleryList ArrayList<GameADAArrayList>
      */
-    public void receiveResultGameFragment(View v, TextToSpeech t, ArrayList<Game2ArrayList> galleryList);
+    public void receiveResultGameFragment(View v, TextToSpeech t, ArrayList<GameADAArrayList> galleryList);
 }

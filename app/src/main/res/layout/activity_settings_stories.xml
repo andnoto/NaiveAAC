@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
+    tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsStoriesActivity">
 
     <TextView
         android:id="@+id/storiessettings"
@@ -109,54 +109,10 @@
             android:inputType="text"
             android:autofillHints="@string/frase_nome_da_aggiungere_alla_storia" />
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="@string/tipo_uri_a_s_opzionale" />
-
-            <EditText
-                android:id="@+id/uritypetoadd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:inputType="text"
-                android:autofillHints="@string/tipo_uri_a_s_opzionale" />
     </LinearLayout>
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="@string/uri_opzionale" />
-
-            <EditText
-                android:id="@+id/uritoadd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:inputType="text"
-                android:autofillHints="@string/uri_opzionale" />
-    </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/storiesbuttons"
+        android:id="@+id/storiesbuttons1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="10dp"
@@ -184,13 +140,53 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/storiesbuttons2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/storiesbuttons1"
+        app:layout_constraintVertical_bias="0.069">
+
+        <Button
+            android:id="@+id/buttonvideosearchstories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="videoSearch"
+            android:text="cerca video\nin memoria" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:onClick="soundsSearch"
+            android:text="cerca suono\nin memoria" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/storyshowlist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/storiesbuttons2"
+        android:onClick="submitStoriesShowList"
+        android:text="STORIE - mostra elenco" />
+
     <Button
         android:id="@+id/storytoadd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storiesbuttons"
+        app:layout_constraintTop_toBottomOf="@+id/storyshowlist"
         android:onClick="storyToAdd"
         android:text="@string/salva" />
 

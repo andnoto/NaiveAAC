@@ -10,12 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.sampietro.NaiveAAC.R;
-import com.sampietro.NaiveAAC.activities.Game.Game2.Game2ArrayList;
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper;
 
 import java.io.File;
@@ -30,14 +28,14 @@ import io.realm.Realm;
  * Refer to <a href="https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/">androidauthority</a>
  * by <a href="https://www.androidauthority.com/author/adamsinicki/">Adam Sinicki</a>
  *
- * @version     1.4, 19/05/22
+ * @version     3.0, 03/12/23
  * @see RecyclerView.Adapter<RecyclerView.ViewHolder>
  */
 public class GameADARecyclerViewAdapter
-        extends RecyclerView.Adapter<GameADARecyclerViewAdapter.ViewHolder> {
+        extends RecyclerView.Adapter<GameADARecyclerViewViewHolder> {
     public GameADARecyclerViewAdapterInterface listener=null;
     //
-    private ArrayList<Game2ArrayList> galleryList;
+    private ArrayList<GameADAArrayList> galleryList;
     private Context context;
     //
     private Realm realm;
@@ -51,11 +49,11 @@ public class GameADARecyclerViewAdapter
      * set game list and context annotation, get print permissions
      *
      * @param context context
-     * @param galleryList arraylist<Game2ArrayList> to set
-     * @see Game2ArrayList
+     * @param galleryList arraylist<GameADAArrayList> to set
+     * @see GameADAArrayList
      */
     public GameADARecyclerViewAdapter
-            (Context context, Realm realm, ArrayList<Game2ArrayList> galleryList) {
+            (Context context, Realm realm, ArrayList<GameADAArrayList> galleryList) {
         this.galleryList = galleryList;
         this.context = context;
         //
@@ -73,9 +71,9 @@ public class GameADARecyclerViewAdapter
      * @see RecyclerView.Adapter#onCreateViewHolder
      */
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+    public GameADARecyclerViewViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_game_ada_cell_layout, viewGroup, false);
-        return new ViewHolder(view);
+        return new GameADARecyclerViewViewHolder(view);
     }
     /**
      * Called by RecyclerView to display the data at the specified position.
@@ -91,7 +89,10 @@ public class GameADARecyclerViewAdapter
      * @see #addImage
      */
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(GameADARecyclerViewViewHolder viewHolder, int i) {
+        //
+        viewHolder.onBind(galleryList.get(i));
+        //
         viewHolder.title.setText(galleryList.get(i).getImage_title());
         viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
         //
@@ -108,7 +109,7 @@ public class GameADARecyclerViewAdapter
             viewHolder.img2.setVisibility(View.VISIBLE);
         }
         //
-        viewHolder.img.setOnClickListener(new View.OnClickListener() {
+        viewHolder.media_container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onItemClick(view, i, galleryList);
@@ -144,27 +145,6 @@ public class GameADARecyclerViewAdapter
     @Override
     public int getItemCount() {
         return galleryList.size();
-    }
-    /**
-     * viewholder for game recyclerview.
-     * </p>
-     *
-     * @see RecyclerView.ViewHolder
-     */
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView title;
-        private ImageView img;
-        //
-        private ImageView img2;
-        //
-        public ViewHolder(View view) {
-            super(view);
-            //
-            title = (TextView)view.findViewById(R.id.title);
-            img = (ImageView) view.findViewById(R.id.img1);
-            //
-            img2 = (ImageView) view.findViewById(R.id.img2);
-        }
     }
 
 }

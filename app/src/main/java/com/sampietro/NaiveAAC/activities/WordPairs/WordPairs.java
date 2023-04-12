@@ -27,7 +27,7 @@ import io.realm.RealmResults;
  * in game1 they are not considered wordpairs with pairs of names or pairs of verbs
  * (only noun-verb pairs are considered or vice versa verb-noun)
  *
- * @version     1.1, 04/22/22
+ * @version     3.0, 03/12/23
  */
 public class WordPairs extends RealmObject {
     /**
@@ -74,6 +74,10 @@ public class WordPairs extends RealmObject {
      * the video prize is the one with the prize key in the videos table.
      */
     private String uriPremiumVideo;
+    /**
+     * contains Y if the object was imported from assets.
+     */
+    private String fromAssets;
     /*
      * getter, setter and other methods
      */
@@ -125,6 +129,14 @@ public class WordPairs extends RealmObject {
     public String getUriPremiumVideo() {
         return uriPremiumVideo;
     }
+    /**
+     * get <code>fromAssets</code>.
+     *
+     * @return fromAssets string Y if the object was imported from assets
+     */
+    public String getFromAssets() {
+        return fromAssets;
+    }
     //
     /**
      * set <code>word1</code>.
@@ -166,6 +178,14 @@ public class WordPairs extends RealmObject {
      * @param uriPremiumVideo string data to set
      */
     public void setUriPremiumVideo(String uriPremiumVideo) { this.uriPremiumVideo = uriPremiumVideo; }
+    /**
+     * set <code>fromAssets</code>.
+     *
+     * @param fromAssets string fromAssets to set
+     */
+    public void setFromAssets(String fromAssets) {
+        this.fromAssets = fromAssets;
+    }
     //
     /**
      * Export to CSV.
@@ -286,7 +306,8 @@ public class WordPairs extends RealmObject {
                                 && oneWord[2] != null
                                 && oneWord[3] != null
                                 && oneWord[4] != null
-                                && oneWord[5] != null ) {
+                                && oneWord[5] != null
+                                && oneWord[6] != null ) {
                             //
                             realm.beginTransaction();
                             WordPairs wordPairs = realm.createObject(WordPairs.class);
@@ -300,6 +321,7 @@ public class WordPairs extends RealmObject {
                             String uri = oneWord[5].replaceFirst("rootdirectory", rootPath);
                             //
                             wordPairs.setUriPremiumVideo(uri);
+                            wordPairs.setFromAssets(oneWord[6]);
                             realm.commitTransaction();
                         }
                     }

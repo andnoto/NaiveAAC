@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:background="@color/verde_smeraldo"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:weightSum="100"
+    android:id="@+id/parent">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/verde_smeraldo"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:textColor="#000"
+        android:textSize="20dp"
+        android:lines="2"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/media_container"
+        android:text="@string/this_is_the_title"/>
+
+
+    <FrameLayout
+        android:id="@+id/media_container"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="#fff"
+        android:scaleType="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/verde_smeraldo"
+            android:scaleType="centerInside" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/infomediaplayer"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="@android:color/holo_green_light"
+        android:textColor="#EEEEEE"
+        android:text="@string/info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/media_container"/>
+
+    <TextView
+        android:id="@+id/copyright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/verde_smeraldo"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:textColor="#000"
+        android:lines="3"
+        android:maxLines="3"
+        android:text=""
+        android:textIsSelectable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/infomediaplayer" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

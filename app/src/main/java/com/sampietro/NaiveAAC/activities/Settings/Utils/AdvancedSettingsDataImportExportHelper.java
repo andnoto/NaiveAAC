@@ -137,6 +137,37 @@ public class AdvancedSettingsDataImportExportHelper {
     //
     /**
      * writes data to the output file
+     *
+     * @param data string data to be recorded
+     * @param fileName string name of the output file
+     */
+    public static void savBak(Context context, String data, String  fileName, File dir){
+        FileOutputStream fos = null;
+
+        try {
+            //
+//          fos = context.openFileOutput(fileName, MODE_PRIVATE);
+            fos = new FileOutputStream(new File(dir, fileName));
+            fos.write(data.getBytes());
+            fos.write("\n".getBytes());
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    //
+    /**
+     * writes data to the output file
      * <p>
      * if it is the last line to write, it does not add the newline character
      *
@@ -151,6 +182,42 @@ public class AdvancedSettingsDataImportExportHelper {
             // fos = openFileOutput(FILE_NAME, MODE_PRIVATE | MODE_APPEND);
             // fos = null
             fos = context.openFileOutput(fileName, MODE_APPEND);
+            fos.write(data.getBytes());
+            if (!isLastRow)
+                fos.write("\n".getBytes());
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    //
+    /**
+     * writes data to the output file
+     * <p>
+     * if it is the last line to write, it does not add the newline character
+     *
+     * @param data string data to be recorded
+     * @param fileName string name of the output file
+     * @param isLastRow boolean true if it is the last line to write
+     */
+    public static void savBak (Context context, String data, String  fileName, File dir, Boolean isLastRow){
+        FileOutputStream fos = null;
+
+        try {
+            // fos = openFileOutput(FILE_NAME, MODE_PRIVATE | MODE_APPEND);
+            // fos = null
+            // fos = context.openFileOutput(fileName, MODE_APPEND);
+            fos = new FileOutputStream(new File(dir, fileName), true);
             fos.write(data.getBytes());
             if (!isLastRow)
                 fos.write("\n".getBytes());

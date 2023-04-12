@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.a20210823simsim.activities.Settings.SettingsActivity">
+    tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
 
     <LinearLayout
         android:id="@+id/gameDescriptionLL"
@@ -94,12 +94,44 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/gameinfoLL"
+        android:id="@+id/usevideoandsoundLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gameparameterLL">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="usare video e suoni" />
+        <RadioGroup
+            android:id="@+id/usevideoandsoundRG"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton android:id="@+id/radio_yes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="SI"
+                android:onClick="onGameParametersUseVideoAndSoundClicked"/>
+            <RadioButton android:id="@+id/radio_no"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="NO"
+                android:onClick="onGameParametersUseVideoAndSoundClicked"/>
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/gameinfoLL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usevideoandsoundLL">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

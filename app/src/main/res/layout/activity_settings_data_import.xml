@@ -45,53 +45,90 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioRG"
         app:layout_constraintVertical_bias="0.069">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <CheckBox android:id="@+id/checkbox_images"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Images"
                 android:onClick="onCheckboxClicked"/>
             <CheckBox android:id="@+id/checkbox_videos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Videos"
+                android:onClick="onCheckboxClicked"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <CheckBox android:id="@+id/checkbox_sounds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sounds"
                 android:onClick="onCheckboxClicked"/>
             <CheckBox android:id="@+id/checkbox_phrases"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Phrases"
                 android:onClick="onCheckboxClicked"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <CheckBox android:id="@+id/checkbox_wordpairs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="WordPairs"
                 android:onClick="onCheckboxClicked"/>
             <CheckBox android:id="@+id/checkbox_listsofnames"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="ListsOfNames"
                 android:onClick="onCheckboxClicked"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <CheckBox android:id="@+id/checkbox_stories"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Stories"
                 android:onClick="onCheckboxClicked"/>
             <CheckBox android:id="@+id/checkbox_grammaticalexceptions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="GrammaticalExceptions"
                 android:onClick="onCheckboxClicked"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <CheckBox android:id="@+id/checkbox_gameparameters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="GameParameters"
                 android:onClick="onCheckboxClicked"/>
         </LinearLayout>
@@ -99,8 +136,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent">
+            android:orientation="horizontal">
 
             <Button
                 android:layout_width="wrap_content"

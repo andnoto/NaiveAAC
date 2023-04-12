@@ -16,6 +16,7 @@ import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper;
 import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass;
 
 import java.io.File;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -78,9 +79,10 @@ public class GameParametersSettingsFragment extends SettingsFragmentAbstractClas
             RadioButton radio_not_active = (RadioButton) rootView.findViewById(R.id.radio_not_active);
             EditText gamejavaclass=(EditText) rootView.findViewById(R.id.gamejavaclass);
             EditText gameparameter=(EditText) rootView.findViewById(R.id.gameparameter);
+            RadioButton radioUseVideoAndSound = (RadioButton) rootView.findViewById(R.id.radio_yes);
+            RadioButton radioDoesNotUseVideoAndSound = (RadioButton) rootView.findViewById(R.id.radio_no);
             EditText gameinfo=(EditText) rootView.findViewById(R.id.gameinfo);
             ImageView imageviewgameicon=(ImageView) rootView.findViewById(R.id.imageviewgameicon);
-
             //
             gameDescription.setText(bundle.getString("GameName"));
             if (bundle.getString("GameActive").equals("A")) {
@@ -94,6 +96,14 @@ public class GameParametersSettingsFragment extends SettingsFragmentAbstractClas
                 }
             gamejavaclass.setText(bundle.getString("GameJavaClass"));
             gameparameter.setText(bundle.getString("GameParameter"));
+            //
+            radioUseVideoAndSound.setChecked(false);
+            radioDoesNotUseVideoAndSound.setChecked(true);   // default
+            if (Objects.equals(bundle.getString("GameUseVideoAndSound"), "Y")) {
+//            if (bundle.getString("GameUseVideoAndSound").equals("Y")) {
+                radioUseVideoAndSound.setChecked(true);
+                radioDoesNotUseVideoAndSound.setChecked(false);
+            }
             gameinfo.setText(bundle.getString("GameInfo"));
             String gameIconType = bundle.getString("GameIconType");
             String gameIconPath = bundle.getString("GameIconPath");
