@@ -649,6 +649,9 @@ public class SettingsStoriesImportExportActivity extends AccountActivityAbstract
      * <p>
      * Refer to <a href="https://stackoverflow.com/questions/43672241/how-to-unzip-file-with-sub-directories-in-android">stackoverflow</a>
      * answer of <a href="https://stackoverflow.com/users/4914757/a-b">A.B.</a>
+     * Refer to <a href="https://support.google.com/faqs/answer/9294009">support.google.com</a>
+     * Refer to <a href="https://stackoverflow.com/questions/56303842/fixing-a-zip-path-traversal-vulnerability-in-android">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/3577946/indra-kumar-s">Indra Kumar S</a>
      *
      * @param destination file
      * @param zipFile file
@@ -672,6 +675,20 @@ public class SettingsStoriesImportExportActivity extends AccountActivityAbstract
             ZipEntry entry = (ZipEntry) zipFileEntries.nextElement();
             String currentEntry = entry.getName();
             File destFile = new File(destination.getAbsolutePath(), currentEntry);
+            //
+            // String canonicalPath = destFile.getCanonicalPath();
+            try {
+                ensureZipPathSafety(destFile, destination);
+            } catch (Exception e) {
+                // SecurityException
+                e.printStackTrace();
+                return false;
+            }
+//            if (!canonicalPath.startsWith(destination.getAbsolutePath())) {
+                // SecurityException
+//            }
+            // Finish unzipping…
+            //
             File destinationParent = destFile.getParentFile();
             //If entry is directory create sub directory on file system
             destinationParent.mkdirs();
@@ -694,6 +711,22 @@ public class SettingsStoriesImportExportActivity extends AccountActivityAbstract
             }
         }
         return true;//some error codes etc.
+    }
+    /**
+     * ensure Zip Path Safety.
+     * <p>
+     * Refer to <a href="https://stackoverflow.com/questions/56303842/fixing-a-zip-path-traversal-vulnerability-in-android">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/3577946/indra-kumar-s">Indra Kumar S</a>
+     *
+     * @param destFile file
+     * @param destination directory
+     */
+    private void ensureZipPathSafety(final File destFile, final File destination) throws Exception {
+        String destDirCanonicalPath = destination.getCanonicalPath();
+        String destFileCanonicalPath = destFile.getCanonicalPath();
+        if (!destFileCanonicalPath.startsWith(destDirCanonicalPath)) {
+            throw new Exception(String.format("Found Zip Path Traversal Vulnerability with %s", destFileCanonicalPath));
+        }
     }
     /**
      * strip file name extension.

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.sampietro.NaiveAAC"
-    android:versionCode="11"
-    android:versionName="3.0"
+    android:versionCode="12"
+    android:versionName="3.1"
     android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -129,5 +130,5 @@
                 android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
         </activity>
     </application>
-
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
 </manifest>

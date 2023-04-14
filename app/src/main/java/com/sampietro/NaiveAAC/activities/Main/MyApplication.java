@@ -327,6 +327,10 @@ public class MyApplication extends Application {
             oldVersionCode++;
         }
         //
+        if (oldVersionCode == 11) {
+            oldVersionCode++;
+        }
+        //
         if (oldVersionCode < currentVersionCode) {
             throw new IllegalStateException(String.format(Locale.US, "Migration missing from v%d to v%d", oldVersionCode, currentVersionCode));
         }
