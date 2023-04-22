@@ -27,6 +27,7 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModify;
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModifyAdapter;
@@ -1486,6 +1487,18 @@ public class SettingsActivity extends AccountActivityAbstractClass
         ft.replace(R.id.settings_container, pictogramsToModifyFragment);
         ft.addToBackStack(null);
         ft.commit();
+    }
+    //
+    /**
+     * Called when the user taps the disable Crashlytics button from the advanced settings menu.
+     * </p>
+     *
+     * @param view view of tapped button
+     * @see AdvancedSettingsFragment
+     */
+    public void disableCrashlytics(View view) {
+        // disable Firebase Crashlytics
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
     }
 //
     /**
