@@ -27,6 +27,7 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModify;
@@ -40,6 +41,7 @@ import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames;
 import com.sampietro.NaiveAAC.activities.Graphics.Images;
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds;
 import com.sampietro.NaiveAAC.activities.Graphics.Videos;
+import com.sampietro.NaiveAAC.activities.Main.MainActivity;
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases;
 import com.sampietro.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass;
 import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass;
@@ -200,7 +202,12 @@ public class SettingsActivity extends AccountActivityAbstractClass
         EditText editText = (EditText) rootViewFragment.findViewById(R.id.editTextTextAccount);
         String textPersonName = editText.getText().toString();
         //
-        if (textPersonName.length()>0 && !filePath.equals(getString(R.string.non_trovato)))
+        EditText editTextPassword = (EditText) rootViewFragment.findViewById(R.id.editTextPasswordAccount);
+        String textPassword = editTextPassword.getText().toString();
+        //
+        if (textPersonName.length()>0 &&
+                filePath != null &&
+                !filePath.equals(getString(R.string.non_trovato)))
         {
             // register the user in the shared preferences
             registerPersonName(textPersonName);
@@ -241,6 +248,9 @@ public class SettingsActivity extends AccountActivityAbstractClass
             wordPairs.setUriPremiumVideo("");
             wordPairs.setFromAssets("");
             realm.commitTransaction();
+            // register the password
+            if (textPassword.length()>0)
+                registerPassword(textPassword);
         }
         // view the fragment settings initializing MenuSettingsFragment (FragmentTransaction
         // switch between Fragments).
@@ -1488,17 +1498,47 @@ public class SettingsActivity extends AccountActivityAbstractClass
         ft.addToBackStack(null);
         ft.commit();
     }
+    /**
+     * Called when the user taps the withdraw consent to the processing of personal data button from the advanced settings menu.
+     * </p>
+     * Refer to <a href="https://developer.android.com/guide/components/activities/tasks-and-back-stack">developer.android.com</a>
+     *
+     * @param view view of tapped button
+     * @see MainActivity
+     * @see AdvancedSettingsFragment
+     */
+    public void withdrawConsent(View view) {
+        // registers withdraw consent to the processing of personal data
+        sharedPref = this.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.preference_ConsentToTheProcessingOfPersonalData), getString(R.string.character_n));
+        editor.apply();
+        // does not allow access to the app
+        // finishAndRemoveTask();
+        //
+        Intent i = new Intent(this, MainActivity.class);
+        // FLAG_ACTIVITY_CLEAR_TOP
+        // If the activity being started is already running in the current task,
+        // then—instead of launching a new instance of that activity—the system destroys all the other activities on top of it.
+        // The intent is delivered to the resumed instance of the activity, now on top, through onNewIntent().
+        // ( MainActivity.class with launchMode attribute ="singleTask" )
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        finish();
+    }
     //
     /**
-     * Called when the user taps the disable Crashlytics button from the advanced settings menu.
+     * Called when the user taps the disable Firebase button from the advanced settings menu.
      * </p>
      *
      * @param view view of tapped button
      * @see AdvancedSettingsFragment
      */
-    public void disableCrashlytics(View view) {
-        // disable Firebase Crashlytics
+    public void disableFirebase(View view) {
+        // disable Firebase Analytics and Crashlytics
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false);
+        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(false);
     }
 //
     /**

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sampietro.NaiveAAC"
-    android:versionCode="13"
-    android:versionName="3.2"
+    android:versionCode="14"
+    android:versionName="3.3"
     android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -37,44 +37,41 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" /> 
         <activity android:name="com.sampietro.NaiveAAC.activities.Account.AccountActivity">
         </activity>
-        <activity android:name=".activities.Settings.VerifyActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Settings.VerifyActivity">
         </activity>
-        <activity android:name="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity"
-            android:parentActivityName="com.sampietro.NaiveAAC.activities.Main.MainActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
+        </activity>
+        <activity android:name="com.sampietro.NaiveAAC.activities.Settings.SettingsMediaActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sampietro.NaiveAAC.activities.Main.MainActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
         </activity>
-        <activity android:name=".activities.Settings.SettingsMediaActivity"
-            android:parentActivityName=".activities.Settings.SettingsActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Settings.SettingsContentsActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.Settings.SettingsActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
         </activity>
-        <activity android:name=".activities.Settings.SettingsContentsActivity"
-            android:parentActivityName=".activities.Settings.SettingsActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Settings.SettingsStoriesActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.Settings.SettingsActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
         </activity>
-        <activity android:name=".activities.Settings.SettingsStoriesActivity"
-            android:parentActivityName=".activities.Settings.SettingsActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Settings.SettingsStoriesImportExportActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.Settings.SettingsActivity" />
-        </activity>
-        <activity android:name=".activities.Settings.SettingsStoriesImportExportActivity"
-            android:parentActivityName=".activities.Settings.SettingsActivity">
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.Settings.SettingsActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Settings.SettingsWordPairsActivity"
             android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
@@ -83,12 +80,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
         </activity>
-        <activity android:name=".activities.Game.Game2.SettingsStoriesQuickRegistrationActivity"
-            android:parentActivityName=".activities.Settings.SettingsActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesQuickRegistrationActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.Settings.SettingsActivity" />
+                android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Info.InfoActivity">
         </activity>
@@ -96,7 +93,7 @@
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Info.PrivacyActivity">
         </activity>
-        <activity android:name=".activities.Game.Game1.Game1Activity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity">
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity"
             android:parentActivityName="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
@@ -105,13 +102,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
         </activity>
-        <activity android:name=".activities.Game.GameADA.GameADAActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAActivity">
         </activity>
-        <activity android:name=".activities.Game.GameADA.GameADAViewPagerActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAViewPagerActivity">
         </activity>
-        <activity android:name=".activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
+        </activity>
+        <activity android:name="com.sampietro.NaiveAAC.activities.Info.RequestConsentToTheProcessingOfPersonalDataActivity">
+        </activity>
+        <activity android:name="com.sampietro.NaiveAAC.activities.Info.RequestConsentFirebaseActivity">
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Main.MainActivity"
+            android:launchMode="singleTask"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

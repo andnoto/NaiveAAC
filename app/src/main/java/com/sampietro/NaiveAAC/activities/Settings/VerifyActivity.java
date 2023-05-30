@@ -40,6 +40,7 @@ public class VerifyActivity extends AppCompatActivity
     //
     public Context context;
     public SharedPreferences sharedPref;
+    public String sharedPassword;
     //
     public FragmentManager fragmentManager;
     //
@@ -76,10 +77,24 @@ public class VerifyActivity extends AppCompatActivity
         //
         if (savedInstanceState == null)
         {
-            fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .add(R.id.settings_container, new VerifyFragment(), "VerifyFragment")
-                    .commit();
+            sharedPref = this.getSharedPreferences(
+                    getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+            sharedPassword =
+                    sharedPref.getString ("password", "nessuna password");
+            if (sharedPassword.equals("nessuna password"))
+                {
+                fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .add(R.id.settings_container, new VerifyFragment(), "VerifyFragment")
+                        .commit();
+                }
+                else
+                {
+                    fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .add(R.id.settings_container, new VerifyPasswordFragment(), "VerifyPasswordFragment")
+                            .commit();
+                }
         }
     }
     /**
@@ -149,6 +164,28 @@ public class VerifyActivity extends AppCompatActivity
             System.out.println("Could not parse " + nfe);
         }
         if (calculationToBeVerified == resultToVerify)
+        {
+                /*
+                navigate to settings screen
+                */
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
+    }
+    /**
+     * Called when the user taps the submit verification password button.
+     * </p>
+     * check and if the answer is correct the activity is notified to view the fragment settings.
+     * </p>
+     *
+     * @param view view of tapped button
+     * @see VerifyPasswordFragment
+     * @see MenuSettingsFragment
+     */
+    public void submitVerificationPassword(View view) {
+        EditText passwordToBeVerifiedET = (EditText)findViewById(R.id.passwordToBeVerified);
+        String passwordToBeVerified = passwordToBeVerifiedET.getText().toString();
+        if (passwordToBeVerified.equals(sharedPassword))
         {
                 /*
                 navigate to settings screen

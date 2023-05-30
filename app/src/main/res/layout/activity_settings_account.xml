@@ -10,11 +10,13 @@
         android:id="@+id/editTextTextAccount"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginStart="116dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/edit_message"
         android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,37 +32,56 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextTextAccount"
         android:contentDescription="@string/immagine_dell_utente"/>
 
+    <TextView
+        android:id="@+id/textViewPasswordAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:text="Password impostazioni (opzionale)"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageviewaccounticon" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageviewaccounticon">
+    <EditText
+        android:id="@+id/editTextPasswordAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPasswordAccount" />
 
-            <Button
-                android:id="@+id/buttonimagesearchaccount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:onClick="imageSearch"
-                android:text="@string/search_image"
-                android:contentDescription="@string/cerca_l_immagine_dell_utente" />
+    <Button
+        android:id="@+id/buttonimagesearchaccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:onClick="imageSearch"
+        android:text="@string/search_image"
+        android:contentDescription="@string/cerca_l_immagine_dell_utente"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/buttonsaveaccount"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordAccount"/>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:onClick="saveAccount"
-                android:text="@string/save_account"
-                android:contentDescription="@string/salva_i_dati_dell_utente"/>
-        </LinearLayout>
-
-
-
+    <Button
+        android:id="@+id/buttonsaveaccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:onClick="saveAccount"
+        android:text="@string/save_account"
+        android:contentDescription="@string/salva_i_dati_dell_utente"
+        app:layout_constraintStart_toEndOf="@id/buttonimagesearchaccount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordAccount"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

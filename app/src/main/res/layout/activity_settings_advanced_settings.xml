@@ -100,17 +100,42 @@
         app:layout_constraintTop_toBottomOf="@id/grammaticalExceptionsButton" />
 
     <Button
-        android:id="@+id/crashButton"
+        android:id="@+id/withdrawconsenttotheprocessingofpersonaldataButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
-        android:onClick="disableCrashlytics"
-        android:text="Disabilita Firebase Crashlytics"
+        android:onClick="withdrawConsent"
+        android:text="REVOCA CONSENSO AL TRATTAMENTO DEI DATI PERSONALI"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pictogramsToModifyButton" />
 
+    <Button
+        android:id="@+id/disablefirebaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="disableFirebase"
+        android:text="Disabilita Firebase"
+        app:layout_constraintEnd_toStartOf="@id/crashButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/withdrawconsenttotheprocessingofpersonaldataButton" />
+
+    <Button
+        android:id="@+id/crashButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="testCrash"
+        android:text="Crash Test"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/disablefirebaseButton"
+        app:layout_constraintTop_toBottomOf="@id/withdrawconsenttotheprocessingofpersonaldataButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

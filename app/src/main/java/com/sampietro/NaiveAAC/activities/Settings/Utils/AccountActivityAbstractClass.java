@@ -409,6 +409,19 @@ public abstract class AccountActivityAbstractClass extends AppCompatActivity
             editor.apply();
         }
     /**
+     * register the last player password on shared preferences.
+     *
+     * @param textPassword string containing the player's password
+     */
+    public void registerPassword (String textPassword) {
+        //    context = this;
+        sharedPref = this.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("password", textPassword);
+        editor.apply();
+    }
+    /**
      * Called when the user taps the image search button.
      *
      * @param v view of tapped button

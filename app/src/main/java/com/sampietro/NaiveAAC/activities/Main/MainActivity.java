@@ -18,9 +18,11 @@ import androidx.core.app.ActivityCompat;
 import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Account.AccountActivity;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
+import com.sampietro.NaiveAAC.activities.Info.RequestConsentToTheProcessingOfPersonalDataActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * <h1>MainActivity</h1>
@@ -54,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
      * answer of <a href="https://stackoverflow.com/users/3586222/chefes">Chefes</a>
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see #isStoragePermissionGranted
      * @see #displayFileInAssets
      * @see #verifyLastPlayer
      * @see ChoiseOfGameActivity
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         // dynRealm.close();
         //
         // we check if the permission is granted
-        isStoragePermissionGranted();
+        //        isStoragePermissionGranted();
         // Store information with SharedPreferences
         context = this;
         sharedPref = context.getSharedPreferences(
@@ -91,45 +92,39 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         //
         displayFileInAssets();
-        verifyLastPlayer();
         //
-        if (isStoragePermissionGranted()) {
-            // I move on to the activity of choice
-            // Time to launch the another activity
-            int TIME_OUT = 4000;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
+        boolean hasConsentToTheProcessingOfPersonalData = verifyConsentToTheProcessingOfPersonalData();
+        //
+        if (hasConsentToTheProcessingOfPersonalData) {
+            boolean hasLastPlayer = verifyLastPlayer();
+            if (hasLastPlayer) {
+                //
+//                if (isStoragePermissionGranted()) {
+                    // I move on to the activity of choice
+                    // Time to launch the another activity
+                    int TIME_OUT = 4000;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
 
-                    Intent i = new Intent(MainActivity.this,
-                            ChoiseOfGameActivity.class);
-                    //
-                    String message = "Bentornato " ;
-                    i.putExtra(EXTRA_MESSAGE, message);
-                    startActivity(i);
-                    finish();
-                }
-            }, TIME_OUT);
-        }
-    }
-    /**
-     * Callback for the result from requesting permissions.
-     *
-     * @param requestCode int which represents the request code passed in requestPermissions
-     * @param permissions string which represents the request permissions
-     * @param grantResults int which represents the grant results for the corresponding permissions
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permessi = getString(R.string.permission_not_granted);
-        if (requestCode == ID_RICHIESTA_PERMISSION) {
-            // Request for camera permission.
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-                permessi = getString(R.string.permission_is_granted);
+                            Intent i = new Intent(MainActivity.this,
+                                    ChoiseOfGameActivity.class);
+                            //
+                            String message = "Bentornato " ;
+                            i.putExtra(EXTRA_MESSAGE, message);
+                            startActivity(i);
+                            finish();
+                        }
+                    }, TIME_OUT);
+//                }
             }
         }
+    }
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+        displayFileInAssets();
     }
     /**
      * start screen
@@ -156,11 +151,38 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     /**
+     * if there is no consent to the processing of personal data already registered, go to the request consent to the processing of personal data activity.
+     *
+     * @return boolean whit true if the processing of personal data is granted
+     * @see RequestConsentToTheProcessingOfPersonalDataActivity
+     */
+    public  boolean verifyConsentToTheProcessingOfPersonalData () {
+        boolean hasConsentToTheProcessingOfPersonalData = sharedPref.contains(getString(R.string.preference_ConsentToTheProcessingOfPersonalData));
+        String sharedConsentToTheProcessingOfPersonalData = "N";
+        if (hasConsentToTheProcessingOfPersonalData) {
+            sharedConsentToTheProcessingOfPersonalData =
+                    sharedPref.getString (getString(R.string.preference_ConsentToTheProcessingOfPersonalData), "N");
+        }
+        if (Objects.equals(sharedConsentToTheProcessingOfPersonalData, "N")) {
+            // go to the request consent to the processing of personal data activity
+            Intent intent = new Intent(this, RequestConsentToTheProcessingOfPersonalDataActivity.class);
+            //
+            startActivity(intent);
+            return false;
+            }
+            else
+            {
+            return true;
+            }
+    }
+    //
+    /**
      * if there is no player already registered, go to the user registration activity.
      *
+     * @return boolean whit true if has last player
      * @see AccountActivity
      */
-    public void verifyLastPlayer () {
+    public  boolean verifyLastPlayer () {
         boolean hasLastPlayer = sharedPref.contains(getString(R.string.preference_LastPlayer));
         if (!hasLastPlayer) {
             // go to the user registration activity
@@ -170,33 +192,11 @@ public class MainActivity extends AppCompatActivity {
             //
             intent.putExtra(EXTRA_MESSAGE, message);
             startActivity(intent);
-
-            }
-    }
-    //
-       /**
-         * check permissions.
-         *
-         * @return boolean whit true if permission is granted
-         */
-        public  boolean isStoragePermissionGranted() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
-                    return true;
-                } else {
-
-                    // Log.v(TAGPERMISSION,getString(R.string.permission_is_revoked));
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                    return false;
-                }
-            }
-            else { //permission is automatically granted on sdk<23 upon installation
-                // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
-                return true;
-            }
+            return false;
         }
-
-
+        else
+        {
+            return true;
+        }
+    }
 }

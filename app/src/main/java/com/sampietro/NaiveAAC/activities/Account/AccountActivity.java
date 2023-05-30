@@ -67,6 +67,7 @@ public class AccountActivity extends AccountActivityAbstractClass implements
     private final String FOLDER_SIMSIM = "simsim";
     //
     public String textPersonName;
+    public String textPassword;
     //
     /**
      * configurations of account start screen.
@@ -171,6 +172,9 @@ public class AccountActivity extends AccountActivityAbstractClass implements
         // and move on to the welcome activity
         EditText editText = (EditText) rootViewFragment.findViewById(R.id.editTextTextAccount);
         textPersonName = editText.getText().toString();
+        //
+        EditText editTextPassword = (EditText) rootViewFragment.findViewById(R.id.editTextPasswordAccount);
+        textPassword = editTextPassword.getText().toString();
         // default
         if (!(textPersonName.length() >0))
             textPersonName = "utente";
@@ -179,9 +183,11 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             File utenteFile = getFileStreamPath("utente.png");
             filePath = utenteFile.getAbsolutePath();
         }
+        if (!(textPassword.length() >0))
+            textPassword = "nessuna password";
         //
         if (textPersonName.length()>0 && !filePath.equals(getString(R.string.non_trovato))
-                && !filePath.equals("da download"))
+                && !filePath.equals("da download") && textPassword.length()>0)
         {
             // register the user
             registerPersonName(textPersonName);
@@ -206,6 +212,8 @@ public class AccountActivity extends AccountActivityAbstractClass implements
             wordPairs.setAwardType("");
             wordPairs.setUriPremiumVideo("");
             realm.commitTransaction();
+            // register the password
+            registerPassword(textPassword);
             //
             Intent intent = new Intent(this,
                     ChoiseOfGameActivity.class);
