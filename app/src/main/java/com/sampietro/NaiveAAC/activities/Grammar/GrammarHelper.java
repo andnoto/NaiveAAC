@@ -846,11 +846,11 @@ public class GrammarHelper {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean thereIsACorrespondenceWithAnAllowedMarginOfError(String phrase1, String phrase2, int percentualeErroriAmmessa)
     {
-        String alphabet = "abcdefghijklmnopqrstuvwxyz";
+        String alphabet = "0123456789abcdefghijklmnopqrstuvwxyz";
         int alphabetLengt = alphabet.length();
         //
         char[] phrase1Array = phrase1.toCharArray();
-        int[] phrase1countArray = new int[26];
+        int[] phrase1countArray = new int[36];
         for (char x : phrase1Array) {
             for (int i = 0; i < alphabetLengt; i++) {
                 if (alphabet.charAt(i) == x) {
@@ -860,7 +860,7 @@ public class GrammarHelper {
         }
         //
         char[] phrase2Array = phrase2.toCharArray();
-        int[] phrase2countArray = new int[26];
+        int[] phrase2countArray = new int[36];
         for (char x : phrase2Array) {
             for (int i = 0; i < alphabetLengt; i++) {
                 if (alphabet.charAt(i) == x) {

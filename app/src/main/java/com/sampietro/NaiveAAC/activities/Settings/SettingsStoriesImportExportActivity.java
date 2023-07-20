@@ -316,6 +316,20 @@ public class SettingsStoriesImportExportActivity extends AccountActivityAbstract
                                                                 soundsSet.add(resultsSounds.get(0).getUri());
                                                             }
                                                         }
+                                                        if (wordNumber == 999)
+                                                        {
+                                                            // video
+                                                            if (Objects.equals(result.getanswerActionType(), "V"))
+                                                            {
+                                                                RealmResults<Videos> resultsVideos =
+                                                                        realm.where(Videos.class).equalTo("descrizione", result.getAnswerAction()).findAll();
+                                                                if (resultsVideos.size() != 0) {
+                                                                    assert resultsVideos.get(0) != null;
+                                                                    videosDescriptionSet.add(resultsVideos.get(0).getDescrizione());
+                                                                    videosSet.add(resultsVideos.get(0).getUri());
+                                                                }
+                                                            }
+                                                        }
                                                         irrh++;
                                                     }
                                                 }

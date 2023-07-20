@@ -13,6 +13,7 @@ import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Graphics.Videos;
 
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -38,12 +39,14 @@ public class StoriesVideosSearchAdapter extends BaseAdapter
          */
         public interface StoriesVideosSearchAdapterInterface{
             public void reloadStoriesFragmentFromVideoSearch(String videoKey);
+            public void reloadStoriesFragmentFromActionAfterResponse(String videoKey);
         }
         public StoriesVideosSearchAdapterInterface listener;
         //
         private List<Videos> videos=null;
         private Context context=null;
         private ListView listview=null;
+        private String startingFragment=null;
         // Realm
         private Realm realm;
         /**
@@ -54,11 +57,12 @@ public class StoriesVideosSearchAdapter extends BaseAdapter
          * @param videos list<Videos> reference to the data structure through the RealmResults class
          * @param listview listview reference to the listview in the UI for videos settings
          */
-        public StoriesVideosSearchAdapter(Context context, List<Videos> videos, ListView listview)
+        public StoriesVideosSearchAdapter(Context context, List<Videos> videos, ListView listview, String startingFragment)
         {
             this.videos=videos;
             this.context=context;
             this.listview=listview;
+            this.startingFragment=startingFragment;
             //
             Activity activity = (Activity) context;
             listener=(StoriesVideosSearchAdapterInterface) activity;
@@ -150,7 +154,14 @@ public class StoriesVideosSearchAdapter extends BaseAdapter
                 Videos selectedVideo =results.get(position);
                 //
                 assert selectedVideo != null;
-                listener.reloadStoriesFragmentFromVideoSearch(selectedVideo.getDescrizione());
+                if (Objects.equals(startingFragment, "VideoSearch"))
+                    {
+                    listener.reloadStoriesFragmentFromVideoSearch(selectedVideo.getDescrizione());
+                    }
+                    else
+                    {
+                    listener.reloadStoriesFragmentFromActionAfterResponse(selectedVideo.getDescrizione());
+                    }
                 //
             }
         };

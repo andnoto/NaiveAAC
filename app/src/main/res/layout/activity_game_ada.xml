@@ -8,59 +8,68 @@
     android:layout_height="match_parent"
     tools:context=".activities.Game.GameADA.GameADAActivity">
 
-    <RelativeLayout
-        android:id="@+id/actionbarbutton"
-        android:layout_width="match_parent"
+    <View
+        android:id="@+id/background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/azzurro_pastello"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/homebutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/homebutton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:orientation="horizontal"
+        android:onClick="returnHome"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/azzurro_pastello" >
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/ic_baseline_home_36" />
 
-        <ImageButton
-            android:id="@+id/homebutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:onClick="returnHome"
-            app:backgroundTint="@color/azzurro_pastello"
-            android:src="@drawable/ic_baseline_home_36" />
+    <ImageButton
+        android:id="@+id/btn_mode_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="startWriteGameADA"
+        android:text="scrivi"
+        app:layout_constraintEnd_toStartOf="@+id/btn_start"
+        app:layout_constraintTop_toTopOf="parent"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/ic_baseline_mode_edit_36" />
 
-        <ImageButton
-            android:id="@+id/printbutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/settingsbutton"
-            android:layout_margin="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:onClick="printPhrase"
-            app:backgroundTint="@color/azzurro_pastello"
-            android:src="@drawable/ic_baseline_print_36" />
+    <ImageButton
+        android:id="@+id/btn_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="startSpeechGameADA"
+        android:text="@string/inizia"
+        app:layout_constraintEnd_toStartOf="@+id/printbutton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/ic_baseline_hearing_36_black" />
 
-        <ImageButton
-            android:id="@+id/settingsbutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_margin="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:onClick="returnSettings"
-            app:backgroundTint="@color/azzurro_pastello"
-            android:src="@drawable/ic_baseline_settings_36" />
+    <ImageButton
+        android:id="@+id/printbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="printPhrase"
+        android:text="@string/inizia"
+        app:layout_constraintEnd_toStartOf="@+id/settingsbutton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/ic_baseline_print_36" />
 
-    </RelativeLayout>
+    <ImageButton
+        android:id="@+id/settingsbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="returnSettings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/ic_baseline_settings_36" />
 
     <ImageButton
         android:id="@+id/firstpagegameadabutton"
@@ -72,9 +81,9 @@
         android:layout_marginBottom="2dp"
         android:onClick="firstPageGameAdaButton"
         android:src="@drawable/ic_baseline_first_page_36"
-        app:layout_constraintStart_toStartOf="@+id/actionbarbutton"
+        app:layout_constraintStart_toStartOf="@+id/homebutton"
         app:layout_constraintEnd_toStartOf="@+id/returngameadabutton"
-        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton" />
+        app:layout_constraintTop_toBottomOf="@+id/homebutton" />
 
     <ImageButton
         android:id="@+id/returngameadabutton"
@@ -85,21 +94,8 @@
         android:onClick="returnGameAdaButton"
         android:src="@drawable/ic_baseline_arrow_back_ios_36"
         app:layout_constraintStart_toEndOf="@+id/firstpagegameadabutton"
-        app:layout_constraintEnd_toStartOf="@+id/btn_start"
-        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton" />
-
-    <ImageButton
-        android:id="@+id/btn_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="2dp"
-        android:onClick="startSpeechGameADA"
-        android:text="@string/inizia"
-        android:src="@drawable/ic_baseline_hearing_36_black"
-        app:layout_constraintStart_toEndOf="@+id/returngameadabutton"
         app:layout_constraintEnd_toStartOf="@+id/continuegameadabutton"
-        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton" />
+        app:layout_constraintTop_toBottomOf="@+id/homebutton" />
 
     <ImageButton
         android:id="@+id/continuegameadabutton"
@@ -109,9 +105,9 @@
         android:layout_marginBottom="2dp"
         android:onClick="continueGameAdaButton"
         android:src="@drawable/ic_baseline_arrow_forward_ios_36"
-        app:layout_constraintStart_toEndOf="@+id/btn_start"
+        app:layout_constraintStart_toEndOf="@+id/returngameadabutton"
         app:layout_constraintEnd_toStartOf="@+id/lastpagegameadabutton"
-        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton" />
+        app:layout_constraintTop_toBottomOf="@+id/homebutton" />
 
     <ImageButton
         android:id="@+id/lastpagegameadabutton"
@@ -124,7 +120,7 @@
         android:src="@drawable/ic_baseline_last_page_36"
         app:layout_constraintStart_toEndOf="@+id/continuegameadabutton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton" />
+        app:layout_constraintTop_toBottomOf="@+id/homebutton" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/game_container"

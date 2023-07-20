@@ -57,7 +57,7 @@ public class StoriesVideosSearchFragment extends SettingsFragmentAbstractClass {
         //
         listView=(ListView) rootView.findViewById(R.id.listview);
         //
-        adapter=new StoriesVideosSearchAdapter(ctext, results, listView);
+        adapter=new StoriesVideosSearchAdapter(ctext, results, listView, "VideoSearch");
         //
         listView.setAdapter(adapter);
         //

@@ -19,6 +19,7 @@ import com.sampietro.NaiveAAC.R;
 import com.sampietro.NaiveAAC.activities.Account.AccountActivity;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.sampietro.NaiveAAC.activities.Info.RequestConsentToTheProcessingOfPersonalDataActivity;
+import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity;
 
 import java.io.IOException;
 import java.io.InputStream;

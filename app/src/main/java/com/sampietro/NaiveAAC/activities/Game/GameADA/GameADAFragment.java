@@ -2,6 +2,7 @@ package com.sampietro.NaiveAAC.activities.Game.GameADA;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.sampietro.NaiveAAC.activities.Graphics.Sounds;
 import com.sampietro.NaiveAAC.activities.Graphics.Videos;
 import com.sampietro.NaiveAAC.activities.history.History;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
@@ -50,6 +52,9 @@ public class GameADAFragment extends GameFragmentAbstractClass {
     public boolean ttsEnabled = true;
     //
     private GameADARecyclerView recyclerView;
+    //
+    private MediaPlayer soundMediaPlayer;
+    private String soundAssociatedWithThePhraseReplacesTheOtherSounds;
     //
     private String gameUseVideoAndSound;
     /**
@@ -198,6 +203,36 @@ public class GameADAFragment extends GameFragmentAbstractClass {
                 if (wordNumber == 0)
                 {
                     sentence = result.getWord();
+                    //
+                    soundAssociatedWithThePhraseReplacesTheOtherSounds = "N";
+                    if(soundMediaPlayer != null) {
+                        if (soundMediaPlayer.isPlaying()) {
+                            soundMediaPlayer.stop();
+                        }
+                        soundMediaPlayer.release();
+                        soundMediaPlayer = null;
+                    }
+                    //
+                    String soundPath = "non trovato";
+                    RealmResults<Sounds> resultsSounds =
+                            realm.where(Sounds.class).equalTo("descrizione", result.getSound()).findAll();
+                    if (resultsSounds.size() != 0) {
+                        soundPath = resultsSounds.get(0).getUri();
+                    }
+                    if ((soundPath != null) && (Objects.equals(gameUseVideoAndSound, "Y")) &&
+                        (!soundPath.equals("non trovato")))  {
+                            soundAssociatedWithThePhraseReplacesTheOtherSounds = "Y";
+                            // play audio file using MediaPlayer
+                            try {
+                                soundMediaPlayer = new MediaPlayer();
+                                soundMediaPlayer.setDataSource(soundPath);
+                                soundMediaPlayer.prepare();
+                                soundMediaPlayer.start();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                    }
                 }
                 // nel caso di domanda con attesa risposta
                 // inibisco il bottone forward
@@ -221,6 +256,7 @@ public class GameADAFragment extends GameFragmentAbstractClass {
             createList.setVideo(row1debugVideo[i]);
             createList.setSound(row1debugSound[i]);
             createList.setSoundReplacesTTS(row1debugSoundReplacesTTS[i]);
+            createList.setSoundAssociatedWithThePhraseReplacesTheOtherSounds(soundAssociatedWithThePhraseReplacesTheOtherSounds);
             theimage.add(createList);
         }
         return theimage;
@@ -237,6 +273,14 @@ public class GameADAFragment extends GameFragmentAbstractClass {
         /*
         ADAPTED FOR VIDEO AND SOUND
          */
+        if(soundMediaPlayer != null) {
+            if (soundMediaPlayer.isPlaying()) {
+                soundMediaPlayer.stop();
+            }
+            soundMediaPlayer.release();
+            soundMediaPlayer = null;
+        }
+        //
         if(recyclerView!=null)
             recyclerView.releasePlayer();
         super.onStop();

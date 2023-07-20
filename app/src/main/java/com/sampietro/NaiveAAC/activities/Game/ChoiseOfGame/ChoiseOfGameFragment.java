@@ -27,12 +27,12 @@ import io.realm.RealmResults;
  * @see ChoiseOfGameActivity
  */
 public class ChoiseOfGameFragment extends GameFragmentAbstractClass {
-    public String [] row1debugGameName = new String[16];
-    public String [] row1debugGameIconType = new String[16];
-    public String [] row1debugGameIconPath = new String[16];
-    public String [] row1debugGameInfo = new String[16];
-    public String [] row1debugGameVideoPath = new String[16];
-    public String [] row1debugGameVideoCopyright = new String[16];
+    public String [] row1debugGameName = new String[48];
+    public String [] row1debugGameIconType = new String[48];
+    public String [] row1debugGameIconPath = new String[48];
+    public String [] row1debugGameInfo = new String[48];
+    public String [] row1debugGameVideoPath = new String[48];
+    public String [] row1debugGameVideoCopyright = new String[48];
     //
     private ChoiseOfGameRecyclerView recyclerView;
     /**

@@ -442,6 +442,85 @@ public class SettingsStoriesActivity extends AccountActivityAbstractClass
         ft.addToBackStack(null);
         ft.commit();
     }
+    //
+    /**
+     * Called when the user taps the action after response button.
+     *
+     * @param v view of tapped button
+     */
+    public void actionAfterResponse(View v)
+    {
+        EditText textWord1=(EditText) findViewById(R.id.keywordstorytoadd);
+        EditText textWord2=(EditText) findViewById(R.id.phrasenumbertoadd);
+        EditText textWord3=(EditText) findViewById(R.id.wordnumbertoadd);
+        EditText textWord4=(EditText) findViewById(R.id.wordtoadd);
+        // Viewmodel
+        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
+        // (maybe it is not necessary to call observe)
+        voiceToBeRecordedInStories.setStory (textWord1.getText().toString().toLowerCase());
+        if ((textWord2 != null) && (!textWord2.getText().toString().equals("")))
+            voiceToBeRecordedInStories.setPhraseNumber (Integer.parseInt(textWord2.getText().toString()));
+        if ((textWord3 != null) && (!textWord3.getText().toString().equals("")))
+            voiceToBeRecordedInStories.setWordNumber (Integer.parseInt(textWord3.getText().toString()));
+        if (textWord4 != null)
+            voiceToBeRecordedInStories.setWord (textWord4.getText().toString());
+        //
+        StoriesActionAfterResponseFragment frag= new StoriesActionAfterResponseFragment();
+        //
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.settings_container, frag);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+    /**
+     * Called when the user taps the video.
+     *
+     * @param videoKey string whit video key in the videos table
+     */
+    @Override
+    public void reloadStoriesFragmentFromActionAfterResponse(String videoKey) {
+        // Viewmodel
+        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
+        // (maybe it is not necessary to call observe)
+        viewModel.getSelectedItem().observe(this, voiceToBeRecordedInStories -> {
+            voiceToBeRecordedInStories.setAnswerActionType("V");
+            voiceToBeRecordedInStories.setAnswerAction(videoKey);
+            //
+            StoriesFragment frag= new StoriesFragment();
+            //
+            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.settings_container, frag);
+            ft.addToBackStack(null);
+            ft.commit();
+        });
+    }
+    //
+    /**
+     * Called when the user taps the save link video youtube button.
+     *
+     * @param v view of tapped button
+     */
+    public void actionAfterResponseVideoYoutubeToAdd(View v)
+    {
+        // Viewmodel
+        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
+        // (maybe it is not necessary to call observe)
+        viewModel.getSelectedItem().observe(this, voiceToBeRecordedInStories -> {
+            EditText textWord1=(EditText) findViewById(R.id.link_video_youtube);
+            if ((textWord1 != null) && (!textWord1.getText().toString().equals("")))
+                {
+                voiceToBeRecordedInStories.setAnswerActionType("Y");
+                voiceToBeRecordedInStories.setAnswerAction(textWord1.getText().toString());
+                //
+                StoriesFragment frag= new StoriesFragment();
+                //
+                FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.settings_container, frag);
+                ft.addToBackStack(null);
+                ft.commit();
+                }
+        });
+    }
     /**
      * Called when the user taps the add button from stories settings.
      * </p>
@@ -540,6 +619,8 @@ public class SettingsStoriesActivity extends AccountActivityAbstractClass
                             stories.setWord(textWord4.getText().toString());
                             stories.setUriType(voiceToBeRecordedInStories.getUriType());
                             stories.setUri(voiceToBeRecordedInStories.getUri());
+                            stories.setAnswerActionType(voiceToBeRecordedInStories.getanswerActionType());
+                            stories.setAnswerAction(voiceToBeRecordedInStories.getAnswerAction());
                             stories.setVideo(voiceToBeRecordedInStories.getVideo());
                             stories.setSound(voiceToBeRecordedInStories.getSound());
                             stories.setSoundReplacesTTS(voiceToBeRecordedInStories.getSoundReplacesTTS());
@@ -585,6 +666,8 @@ public class SettingsStoriesActivity extends AccountActivityAbstractClass
                             stories.setWord(textWord4.getText().toString());
                             stories.setUriType(voiceToBeRecordedInStories.getUriType());
                             stories.setUri(voiceToBeRecordedInStories.getUri());
+                            stories.setAnswerActionType(voiceToBeRecordedInStories.getanswerActionType());
+                            stories.setAnswerAction(voiceToBeRecordedInStories.getAnswerAction());
                             stories.setVideo(voiceToBeRecordedInStories.getVideo());
                             stories.setSound(voiceToBeRecordedInStories.getSound());
                             stories.setSoundReplacesTTS(voiceToBeRecordedInStories.getSoundReplacesTTS());

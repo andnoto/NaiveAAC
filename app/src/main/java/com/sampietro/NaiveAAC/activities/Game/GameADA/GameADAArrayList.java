@@ -38,6 +38,10 @@ public class GameADAArrayList {
      */
     private String soundReplacesTTS;
     /**
+     * indicates whether the sound associated with the phrase replaces the other sounds (Y or N).
+     */
+    private String soundAssociatedWithThePhraseReplacesTheOtherSounds;
+    /**
      * get <code>image_title</code>.
      *
      * @return image_title string data to get
@@ -106,6 +110,12 @@ public class GameADAArrayList {
      */
     public String getsoundReplacesTTS() { return soundReplacesTTS; }
     /**
+     * get <code>soundAssociatedWithThePhraseReplacesTheOtherSounds</code>.
+     *
+     * @return soundAssociatedWithThePhraseReplacesTheOtherSounds string data to get
+     */
+    public String getSoundAssociatedWithThePhraseReplacesTheOtherSounds() { return soundAssociatedWithThePhraseReplacesTheOtherSounds; }
+    /**
      * set <code>video</code>.
      *
      * @param video string data to set
@@ -128,5 +138,13 @@ public class GameADAArrayList {
      */
     public void setSoundReplacesTTS(String soundReplacesTTS) {
         this.soundReplacesTTS = soundReplacesTTS;
+    }
+    /**
+     * set <code>setSoundAssociatedWithThePhraseReplacesTheOtherSounds</code>.
+     *
+     * @param soundAssociatedWithThePhraseReplacesTheOtherSounds string data to set
+     */
+    public void setSoundAssociatedWithThePhraseReplacesTheOtherSounds(String soundAssociatedWithThePhraseReplacesTheOtherSounds) {
+        this.soundAssociatedWithThePhraseReplacesTheOtherSounds = soundAssociatedWithThePhraseReplacesTheOtherSounds;
     }
 }

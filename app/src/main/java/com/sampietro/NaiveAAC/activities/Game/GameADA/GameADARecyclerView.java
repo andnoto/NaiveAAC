@@ -211,7 +211,8 @@ public class GameADARecyclerView extends RecyclerView {
         viewHolderItemView = holder.itemView;
         frameLayout = holder.itemView.findViewById(R.id.game_ada_media_container);
         //
-        if(soundMediaPlayer != null) {
+        if ((soundMediaPlayer != null)
+                && !(Objects.equals(gameArrayList.get(targetPosition).getSoundAssociatedWithThePhraseReplacesTheOtherSounds(), "Y"))) {
             if (soundMediaPlayer.isPlaying()) {
                 soundMediaPlayer.stop();
             }
@@ -221,7 +222,8 @@ public class GameADARecyclerView extends RecyclerView {
         //
         String soundPath = gameArrayList.get(targetPosition).getSound();
         if ((soundPath != null) && (Objects.equals(gameUseVideoAndSound, "Y"))
-                && !(Objects.equals(gameArrayList.get(targetPosition).getsoundReplacesTTS(), "Y"))) {
+                && !(Objects.equals(gameArrayList.get(targetPosition).getsoundReplacesTTS(), "Y"))
+                && !(Objects.equals(gameArrayList.get(targetPosition).getSoundAssociatedWithThePhraseReplacesTheOtherSounds(), "Y"))) {
             if (!soundPath.equals(context.getString(R.string.non_trovato)))  {
                 // play audio file using MediaPlayer
                 try {
@@ -337,14 +339,6 @@ public class GameADARecyclerView extends RecyclerView {
      *
      */
     public void releasePlayer() {
-        //
-        if(soundMediaPlayer != null) {
-            if (soundMediaPlayer.isPlaying()) {
-                soundMediaPlayer.stop();
-            }
-            soundMediaPlayer.release();
-            soundMediaPlayer = null;
-        }
         //
         centerVideoView.stopPlayback();
         viewHolderItemView = null;

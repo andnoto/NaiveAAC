@@ -6,6 +6,7 @@ import static com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb
 import static com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.thereIsACorrespondenceWithAnAllowedMarginOfError;
 import static com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,22 +19,31 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.print.PrintHelper;
 
 import com.sampietro.NaiveAAC.R;
+import com.sampietro.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity;
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass;
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear;
 import com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper;
 import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment;
+import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment;
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper;
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper;
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch;
@@ -52,6 +62,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -67,7 +78,10 @@ import io.realm.RealmResults;
  */
 public class GameADAActivity extends GameActivityAbstractClass implements
         GameADARecyclerViewAdapterInterface,
-        PrizeFragment.onFragmentEventListenerPrize, GameADAOnFragmentEventListener {
+        PrizeFragment.onFragmentEventListenerPrize, GameADAOnFragmentEventListener,
+        YoutubePrizeFragment.onFragmentEventListenerYoutubePrize {
+    public static final String EXTRA_MESSAGE_BALLOON ="GameJavaClass" ;
+    //
     public String sharedStory = null;
     public RealmResults<Stories> resultsStories;
     public int sharedPhraseSize;
@@ -263,7 +277,7 @@ public class GameADAActivity extends GameActivityAbstractClass implements
     }
 //
     /**
-     * Hide the Navigation Bar
+     * Hide the Navigation Bar and go to the sentence
      *
      * @see android.app.Activity#onResume
      */
@@ -277,6 +291,7 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         /*
         USED FOR FULL SCREEN
          */
+        continueGameAda();
     }
     //
     /**
@@ -565,6 +580,142 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         startActivity(intent);
     }
     /**
+     * Called when the user taps the start write button.
+     * Refer to <a href="https://stackoverflow.com/questions/9467026/changing-position-of-the-dialog-on-screen-android">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/717214/aleks-g">Aleks G</a>
+     * Refer to <a href="https://stackoverflow.com/questions/8991522/how-can-i-set-the-focus-and-display-the-keyboard-on-my-edittext-programmatical">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/443427/ungalcrys">ungalcrys</a>
+     * </p>
+     *
+     * @param v view of tapped button
+     */
+    public void startWriteGameADA(View v)
+    {
+        String correspondingWord = searchAnswer();
+        Boolean correspondingWordIsNumeric = isNumeric(correspondingWord);
+        //
+        final Dialog d=new Dialog(this);
+        // Setting dialogview
+        Window window = d.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.BOTTOM;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+        //
+        d.setTitle("inserisci la risposta o la richiesta");
+        d.setCancelable(false);
+        d.setContentView(R.layout.activity_game_ada_write_dialog);
+        //
+        ImageButton submitResponseOrRequestButton = d.findViewById(R.id.submitResponseOrRequestButton);
+        ImageButton cancelTheAnswerOrRequestButton = d.findViewById(R.id.cancelTheAnswerOrRequestButton);
+        EditText responseOrRequest = (EditText)d.findViewById(R.id.responseOrRequest);
+        if (correspondingWordIsNumeric)
+            { responseOrRequest.setInputType(InputType.TYPE_CLASS_NUMBER); }
+            else
+            { responseOrRequest.setInputType(InputType.TYPE_CLASS_TEXT); }
+        //
+        responseOrRequest.requestFocus();
+        InputMethodManager imm = (InputMethodManager)getSystemService(this.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,InputMethodManager.HIDE_IMPLICIT_ONLY);
+        //
+        submitResponseOrRequestButton.setOnClickListener(new View.OnClickListener()
+        {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View arg0)
+            {
+                //
+                String eText = responseOrRequest.getText().toString();
+                eText = eText.toLowerCase();
+                //
+                EditText responseOrRequest = (EditText)d.findViewById(R.id.responseOrRequest);
+                InputMethodManager imm = (InputMethodManager)getSystemService(context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(responseOrRequest.getWindowToken(), 0);
+                //
+                d.cancel();
+                //
+                checkAnswer(eText);
+            }
+        });
+        cancelTheAnswerOrRequestButton.setOnClickListener(new View.OnClickListener()
+        {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View arg0)
+            {
+                //
+                EditText responseOrRequest = (EditText)d.findViewById(R.id.responseOrRequest);
+                InputMethodManager imm = (InputMethodManager)getSystemService(context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(responseOrRequest.getWindowToken(), 0);
+                //
+                d.cancel();
+            }
+        });
+        //
+        d.show();
+    }
+    /**
+     * If exist return answer related to the phrase.
+     * </p>
+     *
+     * @return string answer related to the phrase
+     */
+    public String searchAnswer()
+    {
+        //
+        context = this;
+        sharedPref = context.getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        boolean hasLastPhraseNumber = sharedPref.contains("preference_LastPhraseNumber");
+        if (hasLastPhraseNumber) {
+            sharedLastPhraseNumber =
+                    sharedPref.getInt ("preference_LastPhraseNumber", 1);
+        }
+        // if wordNumber = 999 the word contain the answer related to the phrase
+        String correspondingWord = "non trovata";
+        RealmResults<History> results =
+                realm.where(History.class)
+                        .beginGroup()
+                        .equalTo("phraseNumber", String.valueOf(sharedLastPhraseNumber))
+                        .and()
+                        .equalTo("wordNumber", String.valueOf(999))
+                        .endGroup()
+                        .findAll();
+        // hystory also contains the article that I have to exclude from the comparison
+        int count = results.size();
+        if (count != 0) {
+            History result = results.get(0);
+            if (result != null) {
+                String resultHistoryCorrespondingWord = result.getWord();
+                String[] arrResultHistoryCorrespondingWords =
+                        GrammarHelper.splitString(resultHistoryCorrespondingWord);
+                int arrCorrespondingWordsLength=arrResultHistoryCorrespondingWords.length;
+                if (arrCorrespondingWordsLength == 2)
+                {
+                    correspondingWord = arrResultHistoryCorrespondingWords[1];
+                }
+                else
+                {
+                    correspondingWord = arrResultHistoryCorrespondingWords[0];
+                }
+            }
+        }
+
+        return correspondingWord;
+    }
+    /**
+     * return if a string is numeric.
+     * Refer to <a href="https://stackoverflow.com/questions/1102891/how-to-check-if-a-string-is-numeric-in-java">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/57477/craigtp">CraigTP</a>
+     * </p>
+     *
+     * @param str string to verify
+     * @return boolean true if the string is numeric
+     */
+    public static boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+    }
+    /**
      * Called when the user taps the start speech button.
      * replace with hear fragment
      * </p>
@@ -690,14 +841,23 @@ public class GameADAActivity extends GameActivityAbstractClass implements
     /**
      * Called when the user taps the continue button.
      * go to the next sentence
+     * Refer to <a href="https://stackoverflow.com/questions/9702216/get-the-latest-fragment-in-backstack">stackoverflow</a>
+     * answer of <a href="https://stackoverflow.com/users/628291/deepak-goel">Deepak Goel</a>
      * @param v view of tapped button
      * @see #continueGameAda
      */
     public void continueGameAdaButton(View v) {
+        int fragmentBackStackIndex = getSupportFragmentManager().getBackStackEntryCount() -1;
+        FragmentManager.BackStackEntry fragmentBackEntry = getSupportFragmentManager().getBackStackEntryAt(fragmentBackStackIndex);
+        String fragmenttag = fragmentBackEntry.getName();
         if (!(tTS1 == null)) {
             if (!tTS1.isSpeaking()) {
-                phraseToDisplayIndex++;
-                wordToDisplayIndex= 0;
+                // it is necessary to increase the phraseToDisplayIndex by 1 only if a prize video is not being viewed
+                if ((!Objects.equals(fragmenttag, "PrizeFragment")) && (!Objects.equals(fragmenttag, getString(R.string.youtube_prize_fragment))))
+                    {
+                    phraseToDisplayIndex++;
+                    wordToDisplayIndex= 0;
+                    }
                 continueGameAda();
             }
             else
@@ -705,8 +865,12 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         }
         else
         {
-            phraseToDisplayIndex++;
-            wordToDisplayIndex= 0;
+            // it is necessary to increase the phraseToDisplayIndex by 1 only if a prize video is not being viewed
+            if ((!Objects.equals(fragmenttag, "PrizeFragment")) && (!Objects.equals(fragmenttag, getString(R.string.youtube_prize_fragment))))
+            {
+                phraseToDisplayIndex++;
+                wordToDisplayIndex= 0;
+            }
             continueGameAda();
         }
     }
@@ -775,6 +939,7 @@ public class GameADAActivity extends GameActivityAbstractClass implements
      */
     public void fragmentTransactionStart()
     {
+        setToFullScreen();
         GameADAFragment frag= new GameADAFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("LAST PHRASE NUMBER", sharedLastPhraseNumber);
@@ -790,10 +955,13 @@ public class GameADAActivity extends GameActivityAbstractClass implements
         PrizeFragment prizefragmentgotinstance =
                 (PrizeFragment)
                         getSupportFragmentManager().findFragmentByTag("PrizeFragment");
+        YoutubePrizeFragment youtubeprizefragmentgotinstance =
+                (YoutubePrizeFragment)
+                        getSupportFragmentManager().findFragmentByTag(getString(R.string.youtube_prize_fragment));
         GameFragmentHear hearfragmentgotinstance =
                 (GameFragmentHear)
                         getSupportFragmentManager().findFragmentByTag("GameFragmentGame1Hear");
-        if ((fragmentgotinstance != null) || (prizefragmentgotinstance != null) || (hearfragmentgotinstance != null))
+        if ((fragmentgotinstance != null) || (prizefragmentgotinstance != null) || (youtubeprizefragmentgotinstance != null) || (hearfragmentgotinstance != null))
         {
             ft.replace(R.id.game_container, frag, "GameFragmentGameADA");
         }
@@ -920,6 +1088,30 @@ public class GameADAActivity extends GameActivityAbstractClass implements
     }
     //
     /**
+     * on callback from YoutubePrizeFragment to this Activity
+     * </p>
+     *
+     * @param v view inflated inside YoutubePrizeFragment
+     * @see YoutubePrizeFragment
+     */
+    @Override
+    public void receiveResultImagesFromYoutubePrizeFragment(View v) {
+    }
+    /**
+     * callback from YoutubePrizeFragment to this Activity on completatio video
+     * </p>
+     * display second level menu
+     *
+     * @param v view inflated inside YoutubePrizeFragment
+     * @see #continueGameAdaButton
+     * @see YoutubePrizeFragment
+     */
+    @Override
+    public void receiveResultOnCompletatioVideoFromYoutubePrizeFragment(View v) {
+        continueGameAdaButton(v);
+    }
+    //
+    /**
      * Called on result of speech.
      * check the speech results
      *
@@ -1011,23 +1203,126 @@ public class GameADAActivity extends GameActivityAbstractClass implements
             // riattivo il bottone forward
             ImageButton forwardImageButton = (ImageButton) findViewById(R.id.continuegameadabutton);
             forwardImageButton.setVisibility(View.VISIBLE);
-            // upload the award video
-            PrizeFragment frag= new PrizeFragment();
-            FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
-            GameADAFragment fragmentgotinstance =
-                    (GameADAFragment)
-                            getSupportFragmentManager().findFragmentByTag("GameFragmentGameADA");
-            if(fragmentgotinstance != null)
+            //
+            resultsStories =
+                    realm.where(Stories.class)
+                            .beginGroup()
+                            .equalTo("story", sharedStory)
+                            .equalTo("phraseNumberInt",
+                                    phraseToDisplayIndex)
+                            .equalTo("wordNumberInt", 999)
+                            .endGroup()
+                            .findAll();
+            int answerSize = resultsStories.size();
+            if (answerSize > 0)
             {
-                ft.replace(R.id.game_container, frag, "PrizeFragment");
+                Stories resultStories = resultsStories.get(0);
+                assert resultStories != null;
+                String answerActionType = resultStories.getanswerActionType();
+                if (answerActionType == null) {
+                    phraseToDisplayIndex++;
+                    wordToDisplayIndex= 0;
+                    // charge the activity balloon as a reward
+                    // a simple balloon game
+                    Intent intent = new Intent(getApplicationContext(), BalloonGameplayActivity.class);
+                    // ad uso futuro
+                    intent.putExtra(EXTRA_MESSAGE_BALLOON, "A/DA");
+                    startActivity(intent);
+                }
+                else
+                {
+                    String answerAction;
+                    switch(answerActionType){
+                        case "V":
+                            // upload a video as a reward
+                            answerAction = resultStories.getAnswerAction();
+                            uploadAVideoAsAReward(answerAction);
+                            //
+                            phraseToDisplayIndex++;
+                            wordToDisplayIndex= 0;
+                            //
+                            break;
+                        case "Y":
+                            // upload a Youtube video as a reward
+                            answerAction = resultStories.getAnswerAction();
+                            uploadAYoutubeVideoAsAReward(answerAction);
+                            //
+                            phraseToDisplayIndex++;
+                            wordToDisplayIndex= 0;
+                            //
+                            break;
+                        default:
+                            phraseToDisplayIndex++;
+                            wordToDisplayIndex= 0;
+                            // charge the activity balloon as a reward
+                            // a simple balloon game
+                            Intent intent = new Intent(getApplicationContext(), BalloonGameplayActivity.class);
+                            // ad uso futuro
+                            intent.putExtra(EXTRA_MESSAGE_BALLOON, "A/DA");
+                            startActivity(intent);
+                            break;
+                    }
+                }
             }
-            else
-            {
-                ft.add(R.id.game_container, frag, "PrizeFragment");
-            }
-            ft.addToBackStack(null);
-            ft.commit();
         }
+    }
+    /**
+     * upload a video as a reward
+     * <p>
+     *
+     * @see PrizeFragment
+     */
+    public void uploadAVideoAsAReward (String uriPremiumVideo) {
+        setToFullScreen();
+        // upload the award video
+        PrizeFragment frag= new PrizeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(getString(R.string.award_type), "V");
+        bundle.putString(getString(R.string.uri_premium_video), uriPremiumVideo);
+        frag.setArguments(bundle);
+        FragmentTransaction ft=getSupportFragmentManager().beginTransaction();
+        GameADAFragment fragmentgotinstance =
+                (GameADAFragment)
+                        getSupportFragmentManager().findFragmentByTag("GameFragmentGameADA");
+        if(fragmentgotinstance != null)
+        {
+            ft.replace(R.id.game_container, frag, "PrizeFragment");
+        }
+        else
+        {
+            ft.add(R.id.game_container, frag, "PrizeFragment");
+        }
+        ft.addToBackStack("PrizeFragment");
+        ft.commit();
+    }
+    /**
+     * upload a Youtube video as a reward
+     * <p>
+     *
+     * @see YoutubePrizeFragment
+     */
+    public void uploadAYoutubeVideoAsAReward (String uriPremiumVideo) {
+        setToFullScreen();
+        // upload a Youtube video as a reward
+        YoutubePrizeFragment yfrag= new YoutubePrizeFragment();
+        Bundle ybundle = new Bundle();
+        ybundle.putString(getString(R.string.award_type), "Y");
+        ybundle.putString(getString(R.string.uri_premium_video), uriPremiumVideo);
+        yfrag.setArguments(ybundle);
+        FragmentTransaction yft=getSupportFragmentManager().beginTransaction();
+        GameADAFragment yfragmentgotinstance =
+                (GameADAFragment)
+                        getSupportFragmentManager().findFragmentByTag("GameFragmentGameADA");
+        if (yfragmentgotinstance != null)
+        {
+            yft.replace(R.id.game_container, yfrag, getString(R.string.youtube_prize_fragment));
+        }
+        else
+        {
+            yft.add(R.id.game_container, yfrag, getString(R.string.youtube_prize_fragment));
+        }
+        yft.addToBackStack(getString(R.string.youtube_prize_fragment));
+        yft.commit();
     }
     //
     /**
@@ -1149,7 +1444,8 @@ public class GameADAActivity extends GameActivityAbstractClass implements
                             new VoiceToBeRecordedInHistory(sharedLastSession,
                                     sharedLastPhraseNumber, currentTime,
                                     0, " ", phraseToDisplay.getWord(),
-                                    " "," ", " ");
+                                    " "," ", " ", " ", phraseToDisplay.getSound(),
+                                    " ");
                     toBeRecordedInHistory.add(voiceToBeRecordedInHistory);
                     break;
                 case 99:
