@@ -386,7 +386,7 @@ public class AccountActivityRealmCreation extends AccountActivityAbstractClass i
             wordPairs.setWord1(getString(R.string.famiglia));
             wordPairs.setWord2(textPersonName);
             wordPairs.setComplement("");
-            wordPairs.setIsMenuItem(getString(R.string.slm));
+            wordPairs.setMenuItem(getString(R.string.slm));
             wordPairs.setAwardType("");
             wordPairs.setUriPremiumVideo("");
             realm.commitTransaction();

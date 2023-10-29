@@ -7,19 +7,58 @@
     android:layout_height="match_parent"
     tools:context="com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity">
 
+    <RelativeLayout
+        android:id="@+id/actionbarbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/azzurro_pastello" >
+
+        <ImageButton
+            android:id="@+id/homebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:onClick="returnHome"
+            app:backgroundTint="@color/azzurro_pastello"
+            android:src="@drawable/ic_baseline_home_36" />
+
+        <ImageButton
+            android:id="@+id/settingsbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:onClick="returnSettings"
+            app:backgroundTint="@color/azzurro_pastello"
+            android:src="@drawable/ic_baseline_settings_36" />
+
+    </RelativeLayout>
+
 
     <ImageButton
         android:id="@+id/btn_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:backgroundTint="@color/azzurro_pastello"
-        android:layout_marginTop="8dp"
         android:onClick="startSpeechGame2"
         android:text="@string/inizia"
         android:src="@drawable/ic_baseline_hearing_36_black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_preview"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton"
         android:contentDescription="@string/inizia_il_discorso" />
 
     <ImageButton
@@ -28,14 +67,13 @@
         android:layout_height="wrap_content"
         app:backgroundTint="@color/azzurro_pastello"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:onClick="startPreview"
         android:src="@drawable/ic_baseline_search_36"
         android:text="anteprima"
         app:layout_constraintEnd_toStartOf="@+id/btn_delete"
         app:layout_constraintStart_toEndOf="@+id/btn_start"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton"
         android:contentDescription="@string/ricerca_le_immagini" />
 
     <ImageButton
@@ -43,13 +81,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:backgroundTint="@color/azzurro_pastello"
-        android:layout_marginTop="8dp"
         android:onClick="deleteSentence"
         android:text="cancella"
         android:src="@drawable/ic_baseline_delete_36"
         app:layout_constraintStart_toEndOf="@+id/btn_preview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/actionbarbutton"
         android:contentDescription="@string/cancella_la_frase" />
 
     <com.google.android.material.textfield.TextInputLayout
