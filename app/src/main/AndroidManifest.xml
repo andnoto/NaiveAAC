@@ -108,6 +108,8 @@
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
         </activity>
+        <activity android:name="com.sampietro.NaiveAAC.activities.Main.AskIfAdultActivity">
+        </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Info.RequestConsentToTheProcessingOfPersonalDataActivity">
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Info.RequestConsentFirebaseActivity">

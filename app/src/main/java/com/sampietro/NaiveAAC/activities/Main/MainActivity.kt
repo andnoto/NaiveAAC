@@ -87,11 +87,21 @@ class MainActivity : AppCompatActivity() {
         //
         displayFileInAssets()
         //
-        val hasConsentToTheProcessingOfPersonalData = verifyConsentToTheProcessingOfPersonalData()
-        //
-        if (hasConsentToTheProcessingOfPersonalData) {
-            val hasLastPlayer = verifyLastPlayer()
-            if (hasLastPlayer) {
+        if (!sharedPref.contains(getString(R.string.preference_LastPlayer))) {
+            // ask if the user is an adult
+            val intent =
+                Intent(this, AskIfAdultActivity::class.java)
+            //
+            startActivity(intent)
+            finish()
+            }
+            else
+            {
+            val hasConsentToTheProcessingOfPersonalData = verifyConsentToTheProcessingOfPersonalData()
+            //
+            if (hasConsentToTheProcessingOfPersonalData) {
+//            val hasLastPlayer = verifyLastPlayer()
+//            if (hasLastPlayer) {
                 //
 //                if (isStoragePermissionGranted()) {
                 // I move on to the activity of choice
@@ -110,8 +120,10 @@ class MainActivity : AppCompatActivity() {
                     finish()
                 }, TIME_OUT.toLong())
                 //                }
+//            }
+                }
             }
-        }
+        //
     }
 
     override fun onNewIntent(intent: Intent) {

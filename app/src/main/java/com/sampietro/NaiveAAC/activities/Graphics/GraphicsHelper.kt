@@ -2,11 +2,16 @@ package com.sampietro.NaiveAAC.activities.Graphics
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
+import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.findViewById
 import com.squareup.picasso.Picasso
 import io.realm.Realm
 import java.io.File
+import java.io.IOException
 
 /**
  * <h1>GraphicsHelper</h1>
@@ -150,6 +155,31 @@ object GraphicsHelper {
                 val f = File(filePath!!)
                 addFileImageUsingPicasso(f, img, width, height)
             }
+        }
+    }
+    /**
+     * display file in Assets
+     *
+     *
+     * Refer to [Pete Houston](https://xjaphx.wordpress.com/2011/10/02/store-and-use-files-in-assets/)
+     * answer of [Pete Houston](https://stackoverflow.com/users/801396/pete-houston)
+     *
+     */
+    fun displayFileInAssets(
+        context: Context,
+        fileName: String,
+        myImage: ImageView
+    ) {
+        try {
+            // get input stream
+            val ims = context.assets.open(fileName)
+            // load image as Drawable
+            val d = Drawable.createFromStream(ims, null)
+            // set image to ImageView
+            myImage.setImageDrawable(d)
+            ims.close()
+        } catch (ex: IOException) {
+            return
         }
     }
 }

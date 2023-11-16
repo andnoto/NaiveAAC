@@ -6,41 +6,68 @@
     android:layout_height="match_parent"
     tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
 
+    <TextView
+        android:id="@+id/accountTV"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="32dp"
+        android:ems="10"
+        android:hint="@string/edit_message"
+        android:text="Inserisci il nome del minore o dell'adulto che utilizzerà l'app\ne una sua immagine (per esempio una foto)."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/editTextTextAccount"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="@string/edit_message"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/accountTV" />
+
+    <Button
+        android:id="@+id/buttonimagesearchaccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:onClick="imageSearch"
+        android:text="@string/search_image"
+        android:contentDescription="@string/cerca_l_immagine_dell_utente"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextAccount"/>
 
     <ImageView
         android:id="@+id/imageviewaccounticon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextAccount"
+        app:layout_constraintTop_toBottomOf="@+id/buttonimagesearchaccount"
         android:contentDescription="@string/immagine_dell_utente"/>
 
     <TextView
         android:id="@+id/textViewPasswordAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
-        android:text="Password impostazioni (opzionale)"
+        android:text="Inserisci la password per accedere alle impostazioni \n(opzionale se omessa , per accedere alle impostazioni, \nverrà richiesto il risultato di un calcolo aritmetico)"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageviewaccounticon" />
@@ -59,19 +86,6 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewPasswordAccount" />
 
     <Button
-        android:id="@+id/buttonimagesearchaccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:onClick="imageSearch"
-        android:text="@string/search_image"
-        android:contentDescription="@string/cerca_l_immagine_dell_utente"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/buttonsaveaccount"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordAccount"/>
-
-    <Button
         android:id="@+id/buttonsaveaccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,7 +94,7 @@
         android:onClick="saveAccount"
         android:text="@string/save_account"
         android:contentDescription="@string/salva_i_dati_dell_utente"
-        app:layout_constraintStart_toEndOf="@id/buttonimagesearchaccount"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPasswordAccount"/>
 
