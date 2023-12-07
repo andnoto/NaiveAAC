@@ -34,12 +34,12 @@ import java.util.*
  *
  * @see ChoiseOfGameArrayList
  */
-class ChoiseOfGameRecyclerView : RecyclerView {
+open class ChoiseOfGameRecyclerView : RecyclerView {
     //
-    private var image: ImageView? = null
-    private var viewHolderItemView: View? = null
-    private var frameLayout: FrameLayout? = null
-    private lateinit var centerVideoView: CenterVideoView
+    var image: ImageView? = null
+    var viewHolderItemView: View? = null
+    var frameLayout: FrameLayout? = null
+    lateinit var centerVideoView: CenterVideoView
 
     //
     private var gameArrayList = ArrayList<ChoiseOfGameArrayList>()
@@ -77,7 +77,7 @@ class ChoiseOfGameRecyclerView : RecyclerView {
      *
      * @see resetVideoView
      */
-    private fun init(context: Context) {
+    fun init(context: Context) {
 //      this.context = context.getApplicationContext();
         val contextA: Context = activity!!
         val display =
@@ -146,7 +146,7 @@ class ChoiseOfGameRecyclerView : RecyclerView {
      *
      * @see addVideoView
      */
-    fun playVideo(isEndOfList: Boolean) {
+    open fun playVideo(isEndOfList: Boolean) {
         val targetPosition: Int
         //
         if (!isEndOfList) {
@@ -217,7 +217,7 @@ class ChoiseOfGameRecyclerView : RecyclerView {
      * @param position int with position in game list
      * @return int visible video surface width for the video in the param position
      */
-    private fun getVisibleVideoSurfaceWidth(position: Int): Int {
+    fun getVisibleVideoSurfaceWidth(position: Int): Int {
         val positionAmongTheVisibleItems = (position
                 - (Objects.requireNonNull(
             layoutManager
@@ -242,7 +242,7 @@ class ChoiseOfGameRecyclerView : RecyclerView {
      *
      * @param videoView videoview to remove
      */
-    private fun removeVideoView(videoView: VideoView?) {
+    fun removeVideoView(videoView: VideoView?) {
         centerVideoView.setBackgroundResource(R.drawable.white_background)
         val parentViewParent = videoView?.parent ?: return
         val parent: ViewGroup = parentViewParent as ViewGroup? ?: return
@@ -260,7 +260,7 @@ class ChoiseOfGameRecyclerView : RecyclerView {
      * Add the new videoview.
      *
      */
-    private fun addVideoView() {
+    fun addVideoView() {
         frameLayout!!.addView(centerVideoView)
         isVideoViewAdded = true
         //        centerVideoView.requestFocus();
@@ -272,7 +272,7 @@ class ChoiseOfGameRecyclerView : RecyclerView {
      * Remove the old player and reset video view
      *
      */
-    private fun resetVideoView() {
+    open fun resetVideoView() {
         if (isVideoViewAdded) {
             removeVideoView(centerVideoView)
             playPosition = -1
@@ -280,7 +280,6 @@ class ChoiseOfGameRecyclerView : RecyclerView {
             image!!.visibility = VISIBLE
         }
     }
-
     /**
      * stop playback
      *
@@ -289,7 +288,6 @@ class ChoiseOfGameRecyclerView : RecyclerView {
         centerVideoView.stopPlayback()
         viewHolderItemView = null
     }
-
     /**
      * set game list
      *

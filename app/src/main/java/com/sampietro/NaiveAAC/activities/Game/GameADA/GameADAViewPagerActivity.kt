@@ -129,16 +129,16 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
             // when it comes back it can restore its state.
             // it display the last word
             // else display the word passed by GameADAActivity
-            sharedStory = savedInstanceState.getString("STORY TO DISPLAY")
-            phraseToDisplay = savedInstanceState.getInt("PHRASE TO DISPLAY")
-            wordToDisplay = savedInstanceState.getInt("WORD TO DISPLAY")
-            gameUseVideoAndSound = savedInstanceState.getString("GAME USE VIDEO AND SOUND")
+            sharedStory = savedInstanceState.getString(getString(R.string.story_to_display))
+            phraseToDisplay = savedInstanceState.getInt(getString(R.string.phrase_to_display))
+            wordToDisplay = savedInstanceState.getInt(getString(R.string.word_to_display))
+            gameUseVideoAndSound = savedInstanceState.getString(getString(R.string.game_use_video_and_sound))
             //
             val resultsStories = realm.where(Stories::class.java)
                 .beginGroup()
-                .equalTo("story", sharedStory)
-                .equalTo("phraseNumberInt", phraseToDisplay)
-                .equalTo("wordNumberInt", wordToDisplay)
+                .equalTo(getString(R.string.story), sharedStory)
+                .equalTo(getString(R.string.phrasenumberint), phraseToDisplay)
+                .equalTo(getString(R.string.wordnumberint), wordToDisplay)
                 .endGroup()
                 .findAll()
             val storiesSize = resultsStories.size
@@ -146,22 +146,21 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
                 assert(resultsStories[0] != null)
                 wordToDisplayInTheStory = resultsStories[0]!!.wordNumberIntInTheStory
             }
-            //
         }
         //
         if (savedInstanceState == null) {
             val extras = intent.extras
             if (extras != null) {
-                sharedStory = extras.getString("STORY TO DISPLAY")
-                phraseToDisplay = extras.getInt("PHRASE TO DISPLAY")
-                wordToDisplay = extras.getInt("WORD TO DISPLAY")
-                gameUseVideoAndSound = extras.getString("GAME USE VIDEO AND SOUND")
+                sharedStory = extras.getString(getString(R.string.story_to_display))
+                phraseToDisplay = extras.getInt(getString(R.string.phrase_to_display))
+                wordToDisplay = extras.getInt(getString(R.string.word_to_display))
+                gameUseVideoAndSound = extras.getString(getString(R.string.game_use_video_and_sound))
                 //
                 val resultsStories = realm.where(Stories::class.java)
                     .beginGroup()
-                    .equalTo("story", sharedStory)
-                    .equalTo("phraseNumberInt", phraseToDisplay)
-                    .equalTo("wordNumberInt", wordToDisplay)
+                    .equalTo(getString(R.string.story), sharedStory)
+                    .equalTo(getString(R.string.phrasenumberint), phraseToDisplay)
+                    .equalTo(getString(R.string.wordnumberint), wordToDisplay)
                     .endGroup()
                     .findAll()
                 val storiesSize = resultsStories.size
@@ -198,10 +197,10 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
         //
         val resultsStories: RealmResults<Stories> = realm.where(Stories::class.java)
             .beginGroup()
-            .equalTo("story", sharedStory)
+            .equalTo(getString(R.string.story), sharedStory)
 //            .notEqualTo("wordNumberInt", 0)
-            .greaterThan("wordNumberInt", 0)
-            .lessThan("wordNumberInt", 99)
+            .greaterThan(getString(R.string.wordnumberint), 0)
+            .lessThan(getString(R.string.wordnumberint), 99)
             .endGroup()
             .findAll()
         //
@@ -262,10 +261,10 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
      */
     public override fun onSaveInstanceState(savedInstanceState: Bundle) {
         //
-        savedInstanceState.putString("STORY TO DISPLAY", sharedStory)
-        savedInstanceState.putInt("PHRASE TO DISPLAY", phraseToDisplay)
-        savedInstanceState.putInt("WORD TO DISPLAY", wordToDisplay)
-        savedInstanceState.putString("GAME USE VIDEO AND SOUND", gameUseVideoAndSound)
+        savedInstanceState.putString(getString(R.string.story_to_display), sharedStory)
+        savedInstanceState.putInt(getString(R.string.phrase_to_display), phraseToDisplay)
+        savedInstanceState.putInt(getString(R.string.word_to_display), wordToDisplay)
+        savedInstanceState.putString(getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
         //
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState)
@@ -327,8 +326,8 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
         //
         val resultsStories = realm.where(Stories::class.java)
             .beginGroup()
-            .equalTo("story", sharedStory)
-            .equalTo("wordNumberIntInTheStory", wordToDisplayInTheStory)
+            .equalTo(getString(R.string.story), sharedStory)
+            .equalTo(getString(R.string.wordnumberintinthestory), wordToDisplayInTheStory)
             .endGroup()
             .findAll()
         val storiesSize = resultsStories.size
@@ -342,10 +341,10 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
             this,
             GameADAActivity::class.java
         )
-        intent.putExtra("STORY TO DISPLAY", sharedStory)
-        intent.putExtra("PHRASE TO DISPLAY INDEX", phraseToDisplay)
-        intent.putExtra("WORD TO DISPLAY INDEX", wordToDisplay - 1)
-        intent.putExtra("GAME USE VIDEO AND SOUND", gameUseVideoAndSound)
+        intent.putExtra(getString(R.string.story_to_display), sharedStory)
+        intent.putExtra(getString(R.string.phrase_to_display_index), phraseToDisplay)
+        intent.putExtra(getString(R.string.word_to_display_index), wordToDisplay - 1)
+        intent.putExtra(getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
         startActivity(intent)
     }
 

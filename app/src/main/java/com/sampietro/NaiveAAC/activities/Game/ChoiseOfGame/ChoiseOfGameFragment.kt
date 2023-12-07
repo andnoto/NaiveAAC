@@ -98,10 +98,10 @@ class ChoiseOfGameFragment : GameFragmentAbstractClass() {
         //
         var results = realm.where(GameParameters::class.java)
             .beginGroup()
-            .equalTo("gameActive", "A")
+            .equalTo(getString(R.string.gameactive), "A")
             .endGroup()
             .findAll()
-        results = results.sort("gameName")
+        results = results.sort(getString(R.string.gamename))
         val count = results.size
         //
         if (count != 0) {

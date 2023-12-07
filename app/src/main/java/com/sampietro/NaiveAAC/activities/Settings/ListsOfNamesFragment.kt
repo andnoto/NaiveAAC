@@ -27,7 +27,7 @@ class ListsOfNamesFragment : SettingsFragmentAbstractClass() {
     private lateinit var realm: Realm
 
     //
-    private var listView: ListView? = null
+    private lateinit var listView: ListView
     private var adapter: ListsOfNamesAdapter? = null
 
     /**
@@ -64,9 +64,9 @@ class ListsOfNamesFragment : SettingsFragmentAbstractClass() {
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
-        adapter = ListsOfNamesAdapter(ctext, results, listView!!)
+        adapter = ListsOfNamesAdapter(ctext, results, listView)
         //
-        listView!!.adapter = adapter
+        listView.adapter = adapter
         //
         listener.receiveResultSettings(rootView)
         //

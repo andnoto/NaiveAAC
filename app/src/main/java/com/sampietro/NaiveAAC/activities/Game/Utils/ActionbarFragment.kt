@@ -92,23 +92,23 @@ class ActionbarFragment : Fragment() {
                 /*
                 navigate to manual
                 */try {
-                    copyPdfFromAssetsToInternalStorage("naive aac manuale istruzioni.pdf")
+                    copyPdfFromAssetsToInternalStorage(getString(R.string.naive_aac_manuale_istruzioni_pdf))
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
                 assert(Realm.getApplicationContext() != null)
                 try {
                     val pdfFile = File(
-                        Realm.getApplicationContext()!!.filesDir, "naive aac manuale istruzioni.pdf"
+                        Realm.getApplicationContext()!!.filesDir, getString(R.string.naive_aac_manuale_istruzioni_pdf)
                     )
                     if (pdfFile.exists()) {
                         val pdfUri = FileProvider.getUriForFile(
                             requireContext(),
-                            "com.example.a20210823simsim.fileprovider",
+                            getString(R.string.com_sampietro_naiveaac_fileprovider),
                             pdfFile
                         )
                         val intent1 = Intent(Intent.ACTION_VIEW)
-                        intent1.setDataAndType(pdfUri, "application/pdf")
+                        intent1.setDataAndType(pdfUri, getString(R.string.application_pdf))
                         intent1.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                         startActivity(intent1)
                     }
@@ -190,8 +190,8 @@ class ActionbarFragment : Fragment() {
      */
     private fun alertDialogNeedsSomePDFApp() {
         val alertDialogBuilder = AlertDialog.Builder(activity)
-        alertDialogBuilder.setTitle("Attenzione!")
-        alertDialogBuilder.setMessage("Occorre installare un lettore PDF da Play Store")
+        alertDialogBuilder.setTitle(getString(R.string.attenzione))
+        alertDialogBuilder.setMessage(getString(R.string.occorre_installare_un_lettore_pdf_da_play_store))
         alertDialogBuilder.show()
     }
 }

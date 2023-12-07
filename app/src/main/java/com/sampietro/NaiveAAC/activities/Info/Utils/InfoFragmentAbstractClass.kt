@@ -18,8 +18,8 @@ abstract class InfoFragmentAbstractClass : Fragment() {
 //    @JvmField
     lateinit var rootView: View
     var textView: TextView? = null
-    @JvmField
-    var ctext: Context? = null
+//    @JvmField
+    lateinit var ctext: Context
 
     //
     var listener: OnFragmentEventListenerInfo? = null

@@ -12,6 +12,7 @@ import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
+import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.getString
 import io.realm.Realm
 import java.io.File
 import java.util.*
@@ -32,7 +33,7 @@ class GameADARecyclerViewAdapter(
     private val realm: Realm, //
     private val galleryList: ArrayList<GameADAArrayList>
 ) : RecyclerView.Adapter<GameADARecyclerViewViewHolder>() {
-    var listener: GameADARecyclerViewAdapterInterface? = null
+    var listener: GameADARecyclerViewAdapterInterface
 
     /**
      * used for TTS
@@ -96,18 +97,19 @@ class GameADARecyclerViewAdapter(
         // search for negation adverbs
         viewHolder.img2.visibility = View.INVISIBLE
         val negationAdverbImageToSearchFor = GrammarHelper.searchNegationAdverb(
+            context,
             galleryList[i].image_title!!.lowercase(Locale.getDefault()), realm
         )
-        if (negationAdverbImageToSearchFor != "non trovato") {
+        if (negationAdverbImageToSearchFor != context.getString(R.string.non_trovato)) {
             // INTERNAL MEMORY IMAGE SEARCH
-            val uriToSearch = ImageSearchHelper.searchUri(realm, negationAdverbImageToSearchFor)
+            val uriToSearch = ImageSearchHelper.searchUri(context, realm, negationAdverbImageToSearchFor)
             viewHolder.img2.scaleType = ImageView.ScaleType.CENTER_CROP
             addImage("S", uriToSearch, viewHolder.img2)
             viewHolder.img2.visibility = View.VISIBLE
         }
         //
         viewHolder.media_container.setOnClickListener { view ->
-            listener!!.onItemClick(
+            listener.onItemClick(
                 view,
                 i,
                 galleryList

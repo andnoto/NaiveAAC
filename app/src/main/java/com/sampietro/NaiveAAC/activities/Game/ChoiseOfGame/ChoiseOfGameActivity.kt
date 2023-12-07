@@ -78,11 +78,11 @@ class ChoiseOfGameActivity : GameActivityAbstractClass(), ChoiseOfGameRecyclerVi
         //
         val resultsGameParametersBS: RealmResults<GameParameters>? = realm.where(GameParameters::class.java)
             .beginGroup()
-            .equalTo("gameActive", "A")
+            .equalTo(getString(R.string.gameactive), "A")
             .endGroup()
             .findAll()
         if (resultsGameParametersBS != null) {
-            resultsGameParameters = resultsGameParametersBS.sort("gameName")
+            resultsGameParameters = resultsGameParametersBS.sort(getString(R.string.gamename))
         }
     }
 
@@ -205,7 +205,7 @@ class ChoiseOfGameActivity : GameActivityAbstractClass(), ChoiseOfGameRecyclerVi
                 val gameParameter = result.gameParameter
                 val gameUseVideoAndSound = result.gameUseVideoAndSound
                 when (gameJavaClass) {
-                    "NAVIGATORE" -> {
+                    getString(R.string.navigatore) -> {
                         intent = Intent(
                             this,
                             Game1Activity::class.java
@@ -217,7 +217,7 @@ class ChoiseOfGameActivity : GameActivityAbstractClass(), ChoiseOfGameRecyclerVi
                         )
                         startActivity(intent)
                     }
-                    "COMUNICATORE" -> {
+                    getString(R.string.comunicatore) -> {
                         intent = Intent(
                             this,
                             Game2Activity::class.java
@@ -229,7 +229,7 @@ class ChoiseOfGameActivity : GameActivityAbstractClass(), ChoiseOfGameRecyclerVi
                         )
                         startActivity(intent)
                     }
-                    "A/DA" -> {
+                    getString(R.string.a_da) -> {
                         intent = Intent(
                             this,
                             GameADAActivity::class.java

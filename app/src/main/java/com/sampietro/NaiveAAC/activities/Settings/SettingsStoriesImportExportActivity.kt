@@ -64,7 +64,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
 
     //
     private var voiceToBeRecordedInStories: VoiceToBeRecordedInStories? = null
-    private var viewModel: VoiceToBeRecordedInStoriesViewModel? = null
+    private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
 
     //
     var radiobuttonStoriesImportButtonClicked = false
@@ -103,7 +103,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
         viewModel = ViewModelProvider(this).get(
             VoiceToBeRecordedInStoriesViewModel::class.java
         )
-        viewModel!!.setItem(voiceToBeRecordedInStories!!)
+        viewModel.setItem(voiceToBeRecordedInStories!!)
         voiceToBeRecordedInStories!!.story = getString(R.string.nome_storia)
         //
         if (savedInstanceState == null) {
@@ -252,7 +252,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                 // Viewmodel
                                 // In the activity, sometimes it is called observe, other times it is limited to performing set directly
                                 // (maybe it is not necessary to call observe)
-                                viewModel!!.getSelectedItem()
+                                viewModel.getSelectedItem()
                                     .observe((context as LifecycleOwner)) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                                         // Perform an action with the latest item data
                                         voiceToBeRecordedInStories.story =
@@ -269,7 +269,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                     Stories::class.java
                                                 )
                                                     .equalTo(
-                                                        "story",
+                                                        getString(R.string.story),
                                                         textWord1.text.toString()
                                                             .lowercase(Locale.getDefault())
                                                     )
@@ -311,7 +311,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                             // video
                                                             val resultsVideos = realm.where(
                                                                 Videos::class.java
-                                                            ).equalTo("descrizione", resultStories.video)
+                                                            ).equalTo(getString(R.string.descrizione), resultStories.video)
                                                                 .findAll()
                                                             if (resultsVideos.size != 0) {
                                                                 assert(resultsVideos[0] != null)
@@ -323,7 +323,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                             // suoni
                                                             val resultsSounds = realm.where(
                                                                 Sounds::class.java
-                                                            ).equalTo("descrizione", resultStories.sound)
+                                                            ).equalTo(getString(R.string.descrizione), resultStories.sound)
                                                                 .findAll()
                                                             if (resultsSounds.size != 0) {
                                                                 assert(resultsSounds[0] != null)
@@ -339,7 +339,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                                 val resultsVideos = realm.where(
                                                                     Videos::class.java
                                                                 ).equalTo(
-                                                                    "descrizione",
+                                                                    getString(R.string.descrizione),
                                                                     resultStories.answerAction
                                                                 ).findAll()
                                                                 if (resultsVideos.size != 0) {
@@ -365,7 +365,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                 while (irrh < videosSize) {
                                                     val resultsVideos = realm.where(
                                                         Videos::class.java
-                                                    ).equalTo("descrizione", videosList[irrh])
+                                                    ).equalTo(getString(R.string.descrizione), videosList[irrh])
                                                         .findAll()
                                                     if (resultsVideos.size != 0) {
                                                         videosList[irrh] = resultsVideos[0]!!.uri
@@ -380,7 +380,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                 while (irrh < soundsSize) {
                                                     val resultsSounds = realm.where(
                                                         Sounds::class.java
-                                                    ).equalTo("descrizione", soundsList[irrh])
+                                                    ).equalTo(getString(R.string.descrizione), soundsList[irrh])
                                                         .findAll()
                                                     if (resultsSounds.size != 0) {
                                                         soundsList[irrh] = resultsSounds[0]!!.uri

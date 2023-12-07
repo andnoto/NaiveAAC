@@ -14,9 +14,9 @@ object AndroidPermission : Activity() {
     //
     // we check if the permission RECORD_AUDIO is granted
     @JvmStatic
-    fun checkPermission(context: Context?) {
+    fun checkPermission(context: Context) {
         val activity = context as Activity?
-        if (ContextCompat.checkSelfPermission(context!!, Manifest.permission.RECORD_AUDIO)
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
             != PackageManager.PERMISSION_GRANTED
         ) {
             // the permission has not yet been granted

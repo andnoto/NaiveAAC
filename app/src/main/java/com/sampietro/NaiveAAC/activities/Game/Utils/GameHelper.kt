@@ -1,9 +1,14 @@
 package com.sampietro.NaiveAAC.activities.Game.Utils
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.speech.tts.TextToSpeech
+import android.widget.Toast
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
+import com.sampietro.NaiveAAC.activities.Phrases.Phrases
+import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.getString
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.history.History
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
@@ -19,7 +24,7 @@ import java.util.*
  *
  * **HistoryRegistrationHelper** utility class for History Registration.
  */
-object HistoryRegistrationHelper {
+object GameHelper {
     /**
      * history registration
      *
@@ -101,7 +106,7 @@ object HistoryRegistrationHelper {
             sharedPref.getInt(context.getString(R.string.preference_LastSession), 1)
         //
         val editor = sharedPref.edit()
-        val hasLastPhraseNumber = sharedPref.contains("preference_LastPhraseNumber")
+        val hasLastPhraseNumber = sharedPref.contains(context.getString(R.string.preference_last_phrase_number))
         val sharedLastPhraseNumber: Int
         sharedLastPhraseNumber = if (!hasLastPhraseNumber) {
             // is the first recorded sentence and LastPhraseNumber log on sharedpref
@@ -109,9 +114,9 @@ object HistoryRegistrationHelper {
             1
         } else {
             // it is not the first sentence recorded and I add 1 to LastPhraseNumber on sharedprefs
-            sharedPref.getInt("preference_LastPhraseNumber", 1) + 1
+            sharedPref.getInt(context.getString(R.string.preference_last_phrase_number), 1) + 1
         }
-        editor.putInt("preference_LastPhraseNumber", sharedLastPhraseNumber)
+        editor.putInt(context.getString(R.string.preference_last_phrase_number), sharedLastPhraseNumber)
         editor.apply()
         //
         val currentTime = Calendar.getInstance().time
@@ -129,9 +134,9 @@ object HistoryRegistrationHelper {
             // image search
             var image: ResponseImageSearch? = null
             image = if (word1ToBeRecordedInHistory) {
-                ImageSearchHelper.imageSearch(realm!!, resultWordPairs.word1)
+                ImageSearchHelper.imageSearch(context, realm!!, resultWordPairs.word1)
             } else {
-                ImageSearchHelper.imageSearch(realm!!, resultWordPairs.word2)
+                ImageSearchHelper.imageSearch(context, realm!!, resultWordPairs.word2)
             }
             if (image != null) {
                 voiceToBeRecordedInHistory = if (word1ToBeRecordedInHistory) {

@@ -16,6 +16,7 @@ import androidx.print.PrintHelper
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import java.io.File
@@ -23,9 +24,9 @@ import java.lang.Exception
 import java.util.ArrayList
 
 /**
- * <h1>Game2RecyclerViewAdapter2</h1>
+ * <h1>Game2RecyclerViewAdapter1</h1>
  *
- * **Game2RecyclerViewAdapter2** adapter for game2
+ * **Game2RecyclerViewAdapter1** adapter for game2
  *
  * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
  * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
@@ -33,10 +34,10 @@ import java.util.ArrayList
  * @version     4.0, 09/09/2023
  * @see RecyclerView.Adapter<RecyclerView.ViewHolder>
 </RecyclerView.ViewHolder> */
-class Game2RecyclerViewAdapter2(
+class Game2RecyclerViewAdapter(
     private val context: Context,
-    private val galleryList: ArrayList<Game2ArrayList>
-) : RecyclerView.Adapter<Game2RecyclerViewAdapter2.ViewHolder>() {
+    private val galleryList: ArrayList<Game1ArrayList>
+) : RecyclerView.Adapter<Game2RecyclerViewAdapter.ViewHolder>() {
     /**
      * used for printing
      */
@@ -67,12 +68,11 @@ class Game2RecyclerViewAdapter2(
 //    var toSpeak: String? = null
 
     /**
-     * Game2RecyclerViewAdapter2 constructor.
+     * Game2RecyclerViewAdapter1 constructor.
      * set game2 list and context annotation, get print permissions
      *
-    */
+     */
     init {
-        //
         // if is print permitted then preference_PrintPermissions = Y
         sharedPref = context.getSharedPreferences(
             context.getString(R.string.preference_file_key), Context.MODE_PRIVATE
@@ -93,7 +93,7 @@ class Game2RecyclerViewAdapter2(
      */
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.activity_game_2_cell_layout_2, viewGroup, false)
+            .inflate(R.layout.activity_game_2_cell_layout_1, viewGroup, false)
         return ViewHolder(view)
     }
 
@@ -197,7 +197,7 @@ class Game2RecyclerViewAdapter2(
         init {
             //
             title = view.findViewById<View>(R.id.title) as TextView
-            img = view.findViewById<View>(R.id.img2) as ImageView
+            img = view.findViewById<View>(R.id.img1) as ImageView
         }
     }
 

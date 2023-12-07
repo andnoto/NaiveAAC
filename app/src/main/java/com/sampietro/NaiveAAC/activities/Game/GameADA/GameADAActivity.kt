@@ -2,7 +2,7 @@ package com.sampietro.NaiveAAC.activities.Game.GameADA
 
 import android.app.Activity
 import android.app.Dialog
-import com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment.onFragmentEventListenerPrize
 import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment.onFragmentEventListenerYoutubePrize
@@ -42,13 +42,14 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment
 import com.sampietro.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromFileUsingPicasso
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromUrlUsingPicasso
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import com.sampietro.NaiveAAC.activities.history.History
-import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import io.realm.Realm
 import java.io.File
@@ -179,11 +180,11 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                 intent.getStringExtra(ChoiseOfGameActivity.EXTRA_MESSAGE_GAME_USE_VIDEO_AND_SOUND)
         }
         // if intent is from GameADAViewPagerActivity
-        if (intent.hasExtra("STORY TO DISPLAY")) {
-            sharedStory = intent.getStringExtra("STORY TO DISPLAY")
-            phraseToDisplayIndex = intent.getIntExtra("PHRASE TO DISPLAY INDEX", 1)
-            wordToDisplayIndex = intent.getIntExtra("WORD TO DISPLAY INDEX", 0)
-            gameUseVideoAndSound = intent.getStringExtra("GAME USE VIDEO AND SOUND")
+        if (intent.hasExtra(getString(R.string.story_to_display))) {
+            sharedStory = intent.getStringExtra(getString(R.string.story_to_display))
+            phraseToDisplayIndex = intent.getIntExtra(getString(R.string.phrase_to_display_index), 1)
+            wordToDisplayIndex = intent.getIntExtra(getString(R.string.word_to_display_index), 0)
+            gameUseVideoAndSound = intent.getStringExtra(getString(R.string.game_use_video_and_sound))
             ttsEnabled = false
         }
         //
@@ -194,26 +195,26 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         )
         //
         if (sharedStory == null) {
-            sharedStory = sharedPref.getString("preference_Story", "default")
+            sharedStory = sharedPref.getString(getString(R.string.preference_story), getString(R.string.default_string))
         }
         // resumes the story from the last sentence displayed
         if (intent.hasExtra(ChoiseOfGameActivity.EXTRA_MESSAGE_GAME_PARAMETER)) {
             val hasPhraseToDisplayIndex =
-                sharedPref.contains(sharedStory + "preference_PhraseToDisplayIndex")
+                sharedPref.contains(sharedStory + getString(R.string.preference_phrasetodisplayindex))
             if (hasPhraseToDisplayIndex) {
                 phraseToDisplayIndex =
-                    sharedPref.getInt(sharedStory + "preference_PhraseToDisplayIndex", 1)
+                    sharedPref.getInt(sharedStory + getString(R.string.preference_phrasetodisplayindex), 1)
             }
         }
         //
-        val hasLastPhraseNumber = sharedPref.contains("preference_LastPhraseNumber")
+        val hasLastPhraseNumber = sharedPref.contains(getString(R.string.preference_last_phrase_number))
         if (hasLastPhraseNumber) {
-            sharedLastPhraseNumber = sharedPref.getInt("preference_LastPhraseNumber", 1)
+            sharedLastPhraseNumber = sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
         }
         // if is print permitted then preference_PrintPermissions = Y
         preference_PrintPermissions = sharedPref.getString(
             context.getString(R.string.preference_print_permissions),
-            "DEFAULT"
+            getString(R.string.default_string)
         )
         //
         preference_AllowedMarginOfError =
@@ -227,23 +228,23 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             // when it comes back it can restore its state.
             // it display the last phrase
             // else display the first phrase
-            phraseToDisplayIndex = savedInstanceState.getInt("PHRASE TO DISPLAY INDEX")
-            sharedLastPhraseNumber = savedInstanceState.getInt("LAST PHRASE NUMBER")
+            phraseToDisplayIndex = savedInstanceState.getInt(getString(R.string.phrase_to_display_index))
+            sharedLastPhraseNumber = savedInstanceState.getInt(getString(R.string.last_phrase_number))
             fragmentTransactionStart()
         } else {
             resultsStories = realm.where(Stories::class.java)
                 .beginGroup()
-                .equalTo("story", sharedStory)
-                .equalTo("phraseNumberInt", phraseToDisplayIndex)
+                .equalTo(getString(R.string.story), sharedStory)
+                .equalTo(getString(R.string.phrasenumberint), phraseToDisplayIndex)
                 .endGroup()
                 .findAll()
             sharedPhraseSize = resultsStories!!.size
             //
-            resultsStories = resultsStories!!.sort("wordNumberInt")
+            resultsStories = resultsStories!!.sort(getString(R.string.wordnumberint))
             //
             if (sharedPhraseSize != 0) {
                 val editor = sharedPref.edit()
-                editor.putInt(sharedStory + "preference_PhraseToDisplayIndex", phraseToDisplayIndex)
+                editor.putInt(sharedStory + getString(R.string.preference_phrasetodisplayindex), phraseToDisplayIndex)
                 editor.apply()
                 //
                 val toBeRecordedInHistory = gettoBeRecordedInHistory()
@@ -300,9 +301,9 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      */
     public override fun onSaveInstanceState(savedInstanceState: Bundle) {
         //
-        savedInstanceState.putInt("PHRASE TO DISPLAY INDEX", phraseToDisplayIndex)
-        savedInstanceState.putInt("WORD TO DISPLAY INDEX", wordToDisplayIndex)
-        savedInstanceState.putInt("LAST PHRASE NUMBER", sharedLastPhraseNumber!!)
+        savedInstanceState.putInt(getString(R.string.phrase_to_display_index), phraseToDisplayIndex)
+        savedInstanceState.putInt(getString(R.string.word_to_display_index), wordToDisplayIndex)
+        savedInstanceState.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState)
     }
@@ -348,7 +349,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      */
     fun printPhrase(v: View?) {
         printPhraseCacheImages()
-        val TIME_OUT = 2000
+        val TIME_OUT = 2500
         Handler(Looper.getMainLooper()).postDelayed({
             printPhraseCreateMergedImages()
             //
@@ -390,12 +391,13 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                 }
                 // search for negation adverbs
                 val negationAdverbImageToSearchFor = GrammarHelper.searchNegationAdverb(
+                    context,
                     galleryList[irrh].image_title!!.lowercase(Locale.getDefault()), realm
                 )
-                if (negationAdverbImageToSearchFor != "non trovato") {
+                if (negationAdverbImageToSearchFor != getString(R.string.non_trovato)) {
                     // INTERNAL MEMORY IMAGE SEARCH
                     val uriToSearch =
-                        ImageSearchHelper.searchUri(realm, negationAdverbImageToSearchFor)
+                        ImageSearchHelper.searchUri(context, realm, negationAdverbImageToSearchFor)
                     val f = File(uriToSearch)
                     getTargetBitmapFromFileUsingPicasso(f, target2)
                 }
@@ -440,12 +442,13 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                 }
                 // search for negation adverbs
                 val negationAdverbImageToSearchFor = GrammarHelper.searchNegationAdverb(
+                    context,
                     galleryList[irrh].image_title!!.lowercase(Locale.getDefault()), realm
                 )
-                if (negationAdverbImageToSearchFor != "non trovato") {
+                if (negationAdverbImageToSearchFor != getString(R.string.non_trovato)) {
                     // INTERNAL MEMORY IMAGE SEARCH
                     val uriToSearch =
-                        ImageSearchHelper.searchUri(realm, negationAdverbImageToSearchFor)
+                        ImageSearchHelper.searchUri(context, realm, negationAdverbImageToSearchFor)
                     val f = File(uriToSearch)
                     getTargetBitmapFromFileUsingPicasso(f, target2)
                     // addImage("S", uriToSearch, viewHolder.img2);
@@ -501,30 +504,6 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             }
         }
         //
-    }
-    //
-    /**
-     * used for printing create single bitmap image from multiple bitmap images placing them horizontally
-     * Refer to [stackoverflow](https://stackoverflow.com/questions/34719987/merging-two-images-into-one-image#:~:text=Here%20is%20the%20code%3A%20Used%20to%20combine%20Images&text=getHeight()%2C%20firstImage.,(firstImage%2C%20SecondImage)%3B%20im.)
-     * answer of [caulitomaz](https://stackoverflow.com/users/2026359/caulitomaz)
-     *
-     * @param firstImage bitmap of first image
-     * @param secondImage bitmap of second image
-     * @return bitmap single image created from multiple images
-     */
-    private fun createSingleImageFromMultipleImagesPlacingThemHorizontally(
-        firstImage: Bitmap,
-        secondImage: Bitmap
-    ): Bitmap {
-        val result = Bitmap.createBitmap(
-            firstImage.width + secondImage.width,
-            firstImage.height,
-            firstImage.config
-        )
-        val canvas = Canvas(result)
-        canvas.drawBitmap(firstImage, 0f, 0f, null)
-        canvas.drawBitmap(secondImage, firstImage.width.toFloat(), 0f, null)
-        return result
     }
     //
     /**
@@ -698,19 +677,19 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         sharedPref = context.getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
-        val hasLastPhraseNumber = sharedPref.contains("preference_LastPhraseNumber")
+        val hasLastPhraseNumber = sharedPref.contains(getString(R.string.preference_last_phrase_number))
         if (hasLastPhraseNumber) {
-            sharedLastPhraseNumber = sharedPref.getInt("preference_LastPhraseNumber", 1)
+            sharedLastPhraseNumber = sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
         }
         // if wordNumber = 999 the word contain the answer related to the phrase
-        var correspondingWord = "non trovata"
+        var correspondingWord = getString(R.string.non_trovata)
         val results = realm.where(
             History::class.java
         )
             .beginGroup()
-            .equalTo("phraseNumber", sharedLastPhraseNumber.toString())
+            .equalTo(getString(R.string.phrase_number), sharedLastPhraseNumber.toString())
             .and()
-            .equalTo("wordNumber", 999.toString())
+            .equalTo(getString(R.string.wordnumber), 999.toString())
             .endGroup()
             .findAll()
         // hystory also contains the article that I have to exclude from the comparison
@@ -748,7 +727,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         val frag = GameFragmentHear()
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
-            supportFragmentManager.findFragmentByTag("GameFragmentGameADA") as GameADAFragment?
+            supportFragmentManager.findFragmentByTag(getString(R.string.gamefragmentgameada)) as GameADAFragment?
         val hearfragmentgotinstance =
             supportFragmentManager.findFragmentByTag(getString(R.string.game_fragment_hear)) as GameFragmentHear?
         if (fragmentgotinstance != null || hearfragmentgotinstance != null) {
@@ -776,7 +755,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             } else {
                 Toast.makeText(
                     context,
-                    "TTS sta parlando : riprovare più tardi",
+                    getString(R.string.tts_sta_parlando_riprovare_pi_tardi),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -797,12 +776,12 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         // VIEW THE LAST PHRASE
         resultsStories = realm.where(Stories::class.java)
             .beginGroup()
-            .equalTo("story", sharedStory)
+            .equalTo(getString(R.string.story), sharedStory)
             .endGroup()
             .findAll()
         val resultsStoriesSize = (resultsStories)!!.size
         //
-        resultsStories = (resultsStories)!!.sort("phraseNumberInt")
+        resultsStories = (resultsStories)!!.sort(getString(R.string.phrasenumberint))
         //
         val resultStories = (resultsStories)!!.get(resultsStoriesSize - 1)!!
         if (tTS1 != null) {
@@ -813,7 +792,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             } else {
                 Toast.makeText(
                     context,
-                    "TTS sta parlando : riprovare più tardi",
+                    getString(R.string.tts_sta_parlando_riprovare_pi_tardi),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -841,7 +820,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             } else {
                 Toast.makeText(
                     context,
-                    "TTS sta parlando : riprovare più tardi",
+                    getString(R.string.tts_sta_parlando_riprovare_pi_tardi),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -869,7 +848,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         if (tTS1 != null) {
             if (!tTS1!!.isSpeaking) {
                 // it is necessary to increase the phraseToDisplayIndex by 1 only if a prize video is not being viewed
-                if (fragmenttag != "PrizeFragment" && fragmenttag != getString(R.string.youtube_prize_fragment)) {
+                if (fragmenttag != getString(R.string.prize_fragment) && fragmenttag != getString(R.string.youtube_prize_fragment)) {
                     phraseToDisplayIndex++
                     wordToDisplayIndex = 0
                 }
@@ -877,13 +856,13 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             } else {
                 Toast.makeText(
                     context,
-                    "TTS sta parlando : riprovare più tardi",
+                    getString(R.string.tts_sta_parlando_riprovare_pi_tardi),
                     Toast.LENGTH_SHORT
                 ).show()
             }
         } else {
             // it is necessary to increase the phraseToDisplayIndex by 1 only if a prize video is not being viewed
-            if (fragmenttag != "PrizeFragment" && fragmenttag != getString(R.string.youtube_prize_fragment)) {
+            if (fragmenttag != getString(R.string.prize_fragment) && fragmenttag != getString(R.string.youtube_prize_fragment)) {
                 phraseToDisplayIndex++
                 wordToDisplayIndex = 0
             }
@@ -898,7 +877,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      *
      * @see VoiceToBeRecordedInHistory
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd
+     * @see com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
      *
      * @see .gettoBeRecordedInHistory
      *
@@ -908,36 +887,36 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         // VIEW THE NEXT PHRASE
         resultsStories = realm.where(Stories::class.java)
             .beginGroup()
-            .equalTo("story", sharedStory)
+            .equalTo(getString(R.string.story), sharedStory)
             .equalTo(
-                "phraseNumberInt",
+                getString(R.string.phrasenumberint),
                 phraseToDisplayIndex
             )
             .endGroup()
             .findAll()
         sharedPhraseSize = (resultsStories)!!.size
         //
-        resultsStories = (resultsStories)!!.sort("wordNumberInt")
+        resultsStories = (resultsStories)!!.sort(getString(R.string.wordnumberint))
         // if there are no subsequent sentences, I start again from the first sentence
         if (sharedPhraseSize == 0) {
             phraseToDisplayIndex = 1
             resultsStories = realm.where(Stories::class.java)
                 .beginGroup()
-                .equalTo("story", sharedStory)
+                .equalTo(getString(R.string.story), sharedStory)
                 .equalTo(
-                    "phraseNumberInt",
+                    getString(R.string.phrasenumberint),
                     phraseToDisplayIndex
                 )
                 .endGroup()
                 .findAll()
             sharedPhraseSize = (resultsStories)!!.size
             //
-            resultsStories = (resultsStories)!!.sort("wordNumberInt")
+            resultsStories = (resultsStories)!!.sort(getString(R.string.wordnumberint))
         }
         //
         if (sharedPhraseSize != 0) {
             val editor = sharedPref.edit()
-            editor.putInt(sharedStory + "preference_PhraseToDisplayIndex", phraseToDisplayIndex)
+            editor.putInt(sharedStory + getString(R.string.preference_phrasetodisplayindex), phraseToDisplayIndex)
             editor.apply()
             //
             val toBeRecordedInHistory = gettoBeRecordedInHistory()
@@ -966,25 +945,25 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         setToFullScreen()
         val frag = GameADAFragment()
         val bundle = Bundle()
-        bundle.putInt("LAST PHRASE NUMBER", sharedLastPhraseNumber!!)
-        bundle.putInt("WORD TO DISPLAY INDEX", wordToDisplayIndex)
-        bundle.putBoolean("TTS ENABLED", ttsEnabled)
+        bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
+        bundle.putInt(getString(R.string.word_to_display_index), wordToDisplayIndex)
+        bundle.putBoolean(getString(R.string.tts_enabled), ttsEnabled)
         ttsEnabled = true
-        bundle.putString("GAME USE VIDEO AND SOUND", gameUseVideoAndSound)
+        bundle.putString(getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
         frag.arguments = bundle
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
-            supportFragmentManager.findFragmentByTag("GameFragmentGameADA") as GameADAFragment?
+            supportFragmentManager.findFragmentByTag(getString(R.string.gamefragmentgameada)) as GameADAFragment?
         val prizefragmentgotinstance =
-            supportFragmentManager.findFragmentByTag("PrizeFragment") as PrizeFragment?
+            supportFragmentManager.findFragmentByTag(getString(R.string.prize_fragment)) as PrizeFragment?
         val youtubeprizefragmentgotinstance =
             supportFragmentManager.findFragmentByTag(getString(R.string.youtube_prize_fragment)) as YoutubePrizeFragment?
         val hearfragmentgotinstance =
-            supportFragmentManager.findFragmentByTag("GameFragmentGame1Hear") as GameFragmentHear?
+            supportFragmentManager.findFragmentByTag(getString(R.string.gamefragmentgame1hear)) as GameFragmentHear?
         if (fragmentgotinstance != null || prizefragmentgotinstance != null || youtubeprizefragmentgotinstance != null || hearfragmentgotinstance != null) {
-            ft.replace(R.id.game_container, frag, "GameFragmentGameADA")
+            ft.replace(R.id.game_container, frag, getString(R.string.gamefragmentgameada))
         } else {
-            ft.add(R.id.game_container, frag, "GameFragmentGameADA")
+            ft.add(R.id.game_container, frag, getString(R.string.gamefragmentgameada))
         }
         ft.addToBackStack(null)
         ft.commit()
@@ -1022,10 +1001,10 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                 this,
                 GameADAViewPagerActivity::class.java
             )
-            intent.putExtra("STORY TO DISPLAY", sharedStory)
-            intent.putExtra("PHRASE TO DISPLAY", phraseToDisplayIndex)
-            intent.putExtra("WORD TO DISPLAY", i + 1)
-            intent.putExtra("GAME USE VIDEO AND SOUND", gameUseVideoAndSound)
+            intent.putExtra(getString(R.string.story_to_display), sharedStory)
+            intent.putExtra(getString(R.string.phrase_to_display), phraseToDisplayIndex)
+            intent.putExtra(getString(R.string.word_to_display), i + 1)
+            intent.putExtra(getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
             startActivity(intent)
             //
         }
@@ -1151,19 +1130,19 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         sharedPref = context.getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
-        val hasLastPhraseNumber = sharedPref.contains("preference_LastPhraseNumber")
+        val hasLastPhraseNumber = sharedPref.contains(getString(R.string.preference_last_phrase_number))
         if (hasLastPhraseNumber) {
-            sharedLastPhraseNumber = sharedPref.getInt("preference_LastPhraseNumber", 1)
+            sharedLastPhraseNumber = sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
         }
         // if wordNumber = 999 the word contain the answer related to the phrase
-        var correspondingWord = "non trovata"
+        var correspondingWord = getString(R.string.non_trovata)
         val results = realm.where(
             History::class.java
         )
             .beginGroup()
-            .equalTo("phraseNumber", sharedLastPhraseNumber.toString())
+            .equalTo(getString(R.string.phrase_number), sharedLastPhraseNumber.toString())
             .and()
-            .equalTo("wordNumber", 999.toString())
+            .equalTo(getString(R.string.wordnumber), 999.toString())
             .endGroup()
             .findAll()
         // hystory also contains the article that I have to exclude from the comparison
@@ -1198,7 +1177,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                 break
             }
             // check if the word in eText is a conjugation of the corresponding word
-            val verbToSearch = GrammarHelper.searchVerb(arrWords[i], realm)
+            val verbToSearch = GrammarHelper.searchVerb(context, arrWords[i], realm)
             if (verbToSearch == correspondingWord) {
                 theWordMatches = true
                 break
@@ -1221,12 +1200,12 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             val value999 = 999
             resultsStories = realm.where(Stories::class.java)
                 .beginGroup()
-                .equalTo("story", sharedStory)
+                .equalTo(getString(R.string.story), sharedStory)
                 .equalTo(
-                    "phraseNumberInt",
+                    getString(R.string.phrasenumberint),
                     phraseToDisplayIndex
                 )
-                .equalTo("wordNumberInt", value999)
+                .equalTo(getString(R.string.wordnumberint), value999)
                 .endGroup()
                 .findAll()
             val answerSize = resultsStories!!.size
@@ -1240,7 +1219,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                     // a simple balloon game
                     val intent = Intent(applicationContext, BalloonGameplayActivity::class.java)
                     // ad uso futuro
-                    intent.putExtra(EXTRA_MESSAGE_BALLOON, "A/DA")
+                    intent.putExtra(EXTRA_MESSAGE_BALLOON, getString(R.string.a_da))
                     startActivity(intent)
                 } else {
                     val answerAction: String?
@@ -1269,7 +1248,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                             val intent =
                                 Intent(applicationContext, BalloonGameplayActivity::class.java)
                             // ad uso futuro
-                            intent.putExtra(EXTRA_MESSAGE_BALLOON, "A/DA")
+                            intent.putExtra(EXTRA_MESSAGE_BALLOON, getString(R.string.a_da))
                             startActivity(intent)
                         }
                     }
@@ -1295,13 +1274,13 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         frag.arguments = bundle
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
-            supportFragmentManager.findFragmentByTag("GameFragmentGameADA") as GameADAFragment?
+            supportFragmentManager.findFragmentByTag(getString(R.string.gamefragmentgameada)) as GameADAFragment?
         if (fragmentgotinstance != null) {
-            ft.replace(R.id.game_container, frag, "PrizeFragment")
+            ft.replace(R.id.game_container, frag, getString(R.string.prize_fragment))
         } else {
-            ft.add(R.id.game_container, frag, "PrizeFragment")
+            ft.add(R.id.game_container, frag, getString(R.string.prize_fragment))
         }
-        ft.addToBackStack("PrizeFragment")
+        ft.addToBackStack(getString(R.string.prize_fragment))
         ft.commit()
     }
 
@@ -1322,7 +1301,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         yfrag.arguments = ybundle
         val yft = supportFragmentManager.beginTransaction()
         val yfragmentgotinstance =
-            supportFragmentManager.findFragmentByTag("GameFragmentGameADA") as GameADAFragment?
+            supportFragmentManager.findFragmentByTag(getString(R.string.gamefragmentgameada)) as GameADAFragment?
         if (yfragmentgotinstance != null) {
             yft.replace(R.id.game_container, yfrag, getString(R.string.youtube_prize_fragment))
         } else {
@@ -1355,13 +1334,13 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                 // go to the next sentence only if this sentence does not contain a question
                 val results: RealmResults<Stories> = realm.where(Stories::class.java)
                     .beginGroup()
-                    .equalTo("story", sharedStory)
+                    .equalTo(getString(R.string.story), sharedStory)
                     .equalTo(
-                        "phraseNumberInt",
+                        getString(R.string.phrasenumberint),
                         phraseToDisplayIndex
                     )
                     .equalTo(
-                        "wordNumberInt",
+                        getString(R.string.wordnumberint),
                         value999
                     )
                     .endGroup()
@@ -1386,8 +1365,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         val value9999 = 9999
         val results: RealmResults<Stories> = realm.where(Stories::class.java)
             .beginGroup()
-            .equalTo("story", sharedStory)
-            .equalTo("wordNumberInt", value9999)
+            .equalTo(getString(R.string.story), sharedStory)
+            .equalTo(getString(R.string.wordnumberint), value9999)
             .endGroup()
             .findAll()
         val count = results.size
@@ -1426,19 +1405,19 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         sharedPref = context.getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
-        sharedLastSession = sharedPref.getInt("preference_LastSession", 1)
+        sharedLastSession = sharedPref.getInt(getString(R.string.preference_LastSession), 1)
         //
         val editor = sharedPref.edit()
-        val hasLastPhraseNumber = sharedPref.contains("preference_LastPhraseNumber")
+        val hasLastPhraseNumber = sharedPref.contains(getString(R.string.preference_last_phrase_number))
         sharedLastPhraseNumber = if (!hasLastPhraseNumber) {
             // is the first recorded sentence and LastPhraseNumber log on sharedpref
             // with the number 1
             1
         } else {
             // it is not the first sentence recorded and I add 1 to LastPhraseNumber on sharedprefs
-            sharedPref.getInt("preference_LastPhraseNumber", 1) + 1
+            sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1) + 1
         }
-        editor.putInt("preference_LastPhraseNumber", sharedLastPhraseNumber!!)
+        editor.putInt(getString(R.string.preference_last_phrase_number), sharedLastPhraseNumber)
         editor.apply()
         //
         val currentTime = Calendar.getInstance().time
@@ -1451,8 +1430,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             when (phraseToDisplayWordNumber) {
                 0 -> {
                     voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                        sharedLastSession!!,
-                        sharedLastPhraseNumber!!, currentTime,
+                        sharedLastSession,
+                        sharedLastPhraseNumber, currentTime,
                         0, " ", phraseToDisplay!!.word!!,
                         " ", " ", " ", " ", phraseToDisplay!!.sound,
                         " "
@@ -1461,8 +1440,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                 }
                 99 -> {
                     voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                        sharedLastSession!!,
-                        sharedLastPhraseNumber!!, currentTime,
+                        sharedLastSession,
+                        sharedLastPhraseNumber, currentTime,
                         99, " ", phraseToDisplay!!.word!!,
                         " ", " ", " "
                     )
@@ -1470,8 +1449,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                 }
                 999 -> {
                     voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                        sharedLastSession!!,
-                        sharedLastPhraseNumber!!, currentTime,
+                        sharedLastSession,
+                        sharedLastPhraseNumber, currentTime,
                         999, " ", phraseToDisplay!!.word!!,
                         " ", " ", " "
                     )
@@ -1479,8 +1458,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                 }
                 9999 -> {
                     voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                        sharedLastSession!!,
-                        sharedLastPhraseNumber!!, currentTime,
+                        sharedLastSession,
+                        sharedLastPhraseNumber, currentTime,
                         9999, " ", phraseToDisplay!!.word!!,
                         " ", " ", " "
                     )
@@ -1493,11 +1472,11 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                     val phraseToDisplayUriType = phraseToDisplay!!.uriType
                     if (phraseToDisplayUriType != null) {
                         if (phraseToDisplayUriType == " " || phraseToDisplayUriType == "") {
-                            image = ImageSearchHelper.imageSearch(realm, phraseToDisplayWord)
+                            image = ImageSearchHelper.imageSearch(context, realm, phraseToDisplayWord)
                             if (image != null) {
                                 voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                                    sharedLastSession!!,
-                                    sharedLastPhraseNumber!!, currentTime,
+                                    sharedLastSession,
+                                    sharedLastPhraseNumber, currentTime,
                                     1, " ", phraseToDisplayWord!!,
                                     " ", image.uriType, image.uriToSearch,
                                     phraseToDisplay!!.video, phraseToDisplay!!.sound,
@@ -1507,8 +1486,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                             }
                         } else {
                             voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                                sharedLastSession!!,
-                                sharedLastPhraseNumber!!, currentTime,
+                                sharedLastSession,
+                                sharedLastPhraseNumber, currentTime,
                                 1, " ", phraseToDisplayWord!!,
                                 " ", phraseToDisplayUriType,
                                 phraseToDisplay!!.uri!!,
@@ -1543,33 +1522,6 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         galleryList = gL
     }
     //
-    /**
-     * used for printing load an image in a target bitmap from a file
-     *
-     * @param file file of origin
-     * @param target target bitmap
-     * @see Picasso
-     */
-    fun getTargetBitmapFromFileUsingPicasso(file: File?, target: Target?) {
-        Picasso.get()
-            .load(file!!)
-            .resize(200, 200)
-            .into(target!!)
-    }
-
-    /**
-     * used for printing load an image in a target bitmap from a url
-     *
-     * @param url string with url of origin
-     * @param target target bitmap
-     * @see Picasso
-     */
-    fun getTargetBitmapFromUrlUsingPicasso(url: String?, target: Target?) {
-        Picasso.get()
-            .load(url)
-            .resize(200, 200)
-            .into(target!!)
-    }
 
     companion object {
         const val EXTRA_MESSAGE_BALLOON = "GameJavaClass"

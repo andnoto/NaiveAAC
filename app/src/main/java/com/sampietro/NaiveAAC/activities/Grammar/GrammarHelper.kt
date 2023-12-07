@@ -1,5 +1,7 @@
 package com.sampietro.NaiveAAC.activities.Grammar
 
+import android.content.Context
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAll
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases
 import com.sampietro.NaiveAAC.activities.history.History
@@ -103,6 +105,7 @@ object GrammarHelper {
      * if plural feminine -> le
      * after checking for any exceptions
      *
+     * @param context context
      * @param kKeyword string containing the keyword Arasaac
      * @param gender string containing the gender masculine (gender = M) or feminine (gender = F) of the keyword Arasaac
      * @param plural string containing the singular (plural = N) / plural (plural = S) category of the keyword Arasaac
@@ -112,6 +115,7 @@ object GrammarHelper {
      * @see GrammaticalExceptions
      */
     fun searchArticle(
+        context: Context,
         kKeyword: String, gender: String, plural: String,
         verbOfMovement: String?, realm: Realm
     ): String {
@@ -121,8 +125,9 @@ object GrammarHelper {
             GrammaticalExceptions::class.java
         )
             .beginGroup()
-            .equalTo("keyword", kKeyword)
-            .equalTo("exceptionType", "Article")
+            .equalTo(context.getString(R.string.keyword), kKeyword)
+            .equalTo(context.getString(R.string.exceptiontype),
+                context.getString(R.string.article_uppercase))
             .endGroup()
             .findAll()
         val count = results.size
@@ -130,8 +135,8 @@ object GrammarHelper {
             val result = results[0]
             if (result != null) {
                 articleToSearch = when (verbOfMovement) {
-                    "Is a verb of movement to place" -> result.exception3 + " "
-                    "Is a verb of movement from place" -> result.exception2 + " "
+                    context.getString(R.string.is_a_verb_of_movement_to_place) -> result.exception3 + " "
+                    context.getString(R.string.is_a_verb_of_movement_from_place) -> result.exception2 + " "
                     else -> result.exception1 + " "
                 }
                 return articleToSearch
@@ -151,8 +156,8 @@ object GrammarHelper {
             keywordFirstCharVocale
         ) {
             articleToSearch = when (verbOfMovement) {
-                "Is a verb of movement to place" -> "all'"
-                "Is a verb of movement from place" -> "dall'"
+                context.getString(R.string.is_a_verb_of_movement_to_place) -> "all'"
+                context.getString(R.string.is_a_verb_of_movement_from_place) -> "dall'"
                 else -> "l'"
             }
             return articleToSearch
@@ -163,8 +168,8 @@ object GrammarHelper {
                     keywordFirstChar == "s" && !keywordSecondCharVocale)
         ) {
             articleToSearch = when (verbOfMovement) {
-                "Is a verb of movement to place" -> "allo "
-                "Is a verb of movement from place" -> "dallo "
+                context.getString(R.string.is_a_verb_of_movement_to_place) -> "allo "
+                context.getString(R.string.is_a_verb_of_movement_from_place) -> "dallo "
                 else -> "lo "
             }
             return articleToSearch
@@ -174,8 +179,8 @@ object GrammarHelper {
             !keywordFirstCharVocale
         ) {
             articleToSearch = when (verbOfMovement) {
-                "Is a verb of movement to place" -> "al "
-                "Is a verb of movement from place" -> "dal "
+                context.getString(R.string.is_a_verb_of_movement_to_place) -> "al "
+                context.getString(R.string.is_a_verb_of_movement_from_place) -> "dal "
                 else -> "il "
             }
             return articleToSearch
@@ -185,8 +190,8 @@ object GrammarHelper {
             !keywordFirstCharVocale
         ) {
             articleToSearch = when (verbOfMovement) {
-                "Is a verb of movement to place" -> "alla "
-                "Is a verb of movement from place" -> "dalla "
+                context.getString(R.string.is_a_verb_of_movement_to_place) -> "alla "
+                context.getString(R.string.is_a_verb_of_movement_from_place) -> "dalla "
                 else -> "la "
             }
             return articleToSearch
@@ -196,8 +201,8 @@ object GrammarHelper {
             keywordFirstCharVocale
         ) {
             articleToSearch = when (verbOfMovement) {
-                "Is a verb of movement to place" -> "agli "
-                "Is a verb of movement from place" -> "dagli "
+                context.getString(R.string.is_a_verb_of_movement_to_place) -> "agli "
+                context.getString(R.string.is_a_verb_of_movement_from_place) -> "dagli "
                 else -> "gli "
             }
             return articleToSearch
@@ -207,8 +212,8 @@ object GrammarHelper {
             !keywordFirstCharVocale
         ) {
             articleToSearch = when (verbOfMovement) {
-                "Is a verb of movement to place" -> "ai "
-                "Is a verb of movement from place" -> "dai "
+                context.getString(R.string.is_a_verb_of_movement_to_place) -> "ai "
+                context.getString(R.string.is_a_verb_of_movement_from_place) -> "dai "
                 else -> "i "
             }
             return articleToSearch
@@ -216,8 +221,8 @@ object GrammarHelper {
         //
         if (plural == "Y" && gender == "F") {
             articleToSearch = when (verbOfMovement) {
-                "Is a verb of movement to place" -> "alle "
-                "Is a verb of movement from place" -> "dalle "
+                context.getString(R.string.is_a_verb_of_movement_to_place) -> "alle "
+                context.getString(R.string.is_a_verb_of_movement_from_place) -> "dalle "
                 else -> "le "
             }
             return articleToSearch
@@ -237,17 +242,20 @@ object GrammarHelper {
      * if the plural ends in "i" -> masculine gender;
      * if the singular ends in "a" and the plural in "e" -> feminine gender
      *
+     * @param context context
      * @param kKeyword string containing the keyword Arasaac
      * @param realm realm
      * @return string the gender
      * @see PictogramsAll
      */
-    fun searchGender(kKeyword: String, realm: Realm): String {
-        var genderToSearchRealm = "non trovato"
+    fun searchGender(   context: Context,
+                        kKeyword: String,
+                        realm: Realm): String {
+        var genderToSearchRealm = context.getString(R.string.non_trovato)
         //
         val results = realm.where(PictogramsAll::class.java)
             .beginGroup()
-            .equalTo("keyword", kKeyword)
+            .equalTo(context.getString(R.string.keyword), kKeyword)
             .endGroup()
             .findAll()
         val count = results.size
@@ -273,17 +281,20 @@ object GrammarHelper {
     /**
      * given the keyword Arasaac returns if the argument refers to a plural
      *
+     * @param context context
      * @param kKeyword string containing the keyword Arasaac
      * @param realm realm
      * @return string plural
      * @see PictogramsAll
      */
-    fun searchPlural(kKeyword: String?, realm: Realm): String {
-        var pluralToSearchRealm = "non trovato"
+    fun searchPlural(   context: Context,
+                        kKeyword: String?,
+                        realm: Realm): String {
+        var pluralToSearchRealm = context.getString(R.string.non_trovato)
         //
         val results = realm.where(PictogramsAll::class.java)
             .beginGroup()
-            .equalTo("keyword", kKeyword)
+            .equalTo(context.getString(R.string.keyword), kKeyword)
             .endGroup()
             .findAll()
         val count = results.size
@@ -300,20 +311,24 @@ object GrammarHelper {
     /**
      * given the identifier and the keyword Arasaac returns if the arguments refer to a plural
      *
+     * @param context context
      * @param k_Id string containing the identifier Arasaac
      * @param kKeyword string containing the keyword Arasaac
      * @param realm realm
      * @return string plural
      * @see PictogramsAll
      */
-    fun searchPlural(k_Id: String?, kKeyword: String?, realm: Realm): String {
-        var pluralToSearchRealm = "non trovato"
+    fun searchPlural(   context: Context,
+                        k_Id: String?,
+                        kKeyword: String?,
+                        realm: Realm): String {
+        var pluralToSearchRealm = context.getString(R.string.non_trovato)
         //
         val results = realm.where(PictogramsAll::class.java)
             .beginGroup()
             .equalTo("_id", k_Id)
             .and()
-            .equalTo("keyword", kKeyword)
+            .equalTo(context.getString(R.string.keyword), kKeyword)
             .endGroup()
             .findAll()
         val count = results.size
@@ -330,20 +345,24 @@ object GrammarHelper {
     /**
      * given the identifier and the keyword Arasaac returns any corresponding plural
      *
+     * @param context context
      * @param k_Id string containing the identifier Arasaac
      * @param kKeyword string containing the keyword Arasaac
      * @param realm realm
      * @return string corresponding plural
      * @see PictogramsAll
      */
-    fun searchKeywordPlural(k_Id: String?, kKeyword: String?, realm: Realm): String {
-        var pluralToSearchRealm = "non trovato"
+    fun searchKeywordPlural(context: Context,
+                            k_Id: String?,
+                            kKeyword: String?,
+                            realm: Realm): String {
+        var pluralToSearchRealm = context.getString(R.string.non_trovato)
         //
         val results = realm.where(PictogramsAll::class.java)
             .beginGroup()
             .equalTo("_id", k_Id)
             .and()
-            .equalTo("keyword", kKeyword)
+            .equalTo(context.getString(R.string.keyword), kKeyword)
             .endGroup()
             .findAll()
         val count = results.size
@@ -369,15 +388,18 @@ object GrammarHelper {
      * type = 4 numbers (by the way)
      * type = 6 articles, prepositions, adverbs of place (among others)
      *
+     * @param context context
      * @param k string containing the identifier Arasaac
      * @param realm realm
      * @return string with the type of word Arasaac
      * @see PictogramsAll
      */
-    fun searchType(k: String?, realm: Realm): String {
-        var typeToSearchRealm = "non trovato"
+    fun searchType(context: Context,
+                   k: String?,
+                   realm: Realm): String {
+        var typeToSearchRealm = context.getString(R.string.non_trovato)
         //
-        val results = realm.where(PictogramsAll::class.java).equalTo("keyword", k).findAll()
+        val results = realm.where(PictogramsAll::class.java).equalTo(context.getString(R.string.keyword), k).findAll()
         val count = results.size
         if (count != 0) {
             //
@@ -392,15 +414,18 @@ object GrammarHelper {
     /**
      * given a conjugation returns the infinitive
      *
+     * @param context context
      * @param k string containing the conjugation
      * @param realm realm
      * @return string with the infinitive
      * @see Verbs
      */
-    fun searchVerb(k: String?, realm: Realm): String {
-        var verbToSearchRealm = "non trovato"
+    fun searchVerb(context: Context,
+                   k: String?,
+                   realm: Realm): String {
+        var verbToSearchRealm = context.getString(R.string.non_trovato)
         //
-        val results = realm.where(Verbs::class.java).equalTo("conjugation", k).findAll()
+        val results = realm.where(Verbs::class.java).equalTo(context.getString(R.string.conjugation), k).findAll()
         val count = results.size
         if (count != 0) {
             val result = results[0]
@@ -434,6 +459,7 @@ object GrammarHelper {
      *
      * form=p3 third person plural
      *
+     * @param context context
      * @param k string containing the infinitive
      * @param form string containing the form
      * @param realm realm
@@ -441,14 +467,18 @@ object GrammarHelper {
      * @see Verbs
      */
     @JvmStatic
-    fun searchVerb(k: String?, form: String?, realm: Realm): String {
-        var verbToSearchRealm = "non trovato"
+    fun searchVerb(context: Context,
+                   k: String?,
+                   form: String?,
+                   realm: Realm): String {
+        var verbToSearchRealm = context.getString(R.string.non_trovato)
         //
         val results = realm.where(Verbs::class.java)
             .beginGroup()
-            .equalTo("infinitive", k)
-            .equalTo("group", "indicative/present")
-            .equalTo("form", form)
+            .equalTo(context.getString(R.string.infinitive), k)
+            .equalTo(context.getString(R.string.group),
+                context.getString(R.string.indicative_present))
+            .equalTo(context.getString(R.string.form), form)
             .endGroup()
             .findAll()
         val count = results.size
@@ -464,25 +494,28 @@ object GrammarHelper {
     /**
      * given the infinitive, it returns if it is a verb of movement
      *
+     * @param context context
      * @param k string containing the infinitive
      * @param realm realm
      * @return string with if it is a verb of movement
      * @see GrammaticalExceptions
      */
-    fun searchVerbsOfMovement(k: String?, realm: Realm): String {
-        var verbToSearchRealm = "non trovato"
+    fun searchVerbsOfMovement(context: Context,
+                              k: String?,
+                              realm: Realm): String {
+        var verbToSearchRealm = context.getString(R.string.non_trovato)
         //
         val results = realm.where(
             GrammaticalExceptions::class.java
         )
             .beginGroup()
-            .equalTo("keyword", k)
-            .equalTo("exceptionType", "Is a verb of movement to place")
+            .equalTo(context.getString(R.string.keyword), k)
+            .equalTo(context.getString(R.string.exceptiontype), context.getString(R.string.is_a_verb_of_movement_to_place))
             .endGroup()
             .or()
             .beginGroup()
-            .equalTo("keyword", k)
-            .equalTo("exceptionType", "Is a verb of movement from place")
+            .equalTo(context.getString(R.string.keyword), k)
+            .equalTo(context.getString(R.string.exceptiontype), context.getString(R.string.is_a_verb_of_movement_from_place))
             .endGroup()
             .findAll()
         val count = results.size
@@ -498,20 +531,23 @@ object GrammarHelper {
     /**
      * given the infinitive, it returns if it is an auxiliary verb
      *
+     * @param context context
      * @param k string containing the infinitive
      * @param realm realm
      * @return string with if it is an auxiliary verb
      * @see GrammaticalExceptions
      */
-    fun searchAuxiliaryVerbs(k: String?, realm: Realm): String {
-        var verbToSearchRealm = "non trovato"
+    fun searchAuxiliaryVerbs(context: Context,
+                             k: String?,
+                             realm: Realm): String {
+        var verbToSearchRealm = context.getString(R.string.non_trovato)
         //
         val results = realm.where(
             GrammaticalExceptions::class.java
         )
             .beginGroup()
-            .equalTo("keyword", k)
-            .equalTo("exceptionType", "Is an auxiliary verb")
+            .equalTo(context.getString(R.string.keyword), k)
+            .equalTo(context.getString(R.string.exceptiontype), context.getString(R.string.is_an_auxiliary_verb))
             .endGroup()
             .findAll()
         val count = results.size
@@ -527,20 +563,23 @@ object GrammarHelper {
     /**
      * given the infinitive, it returns if it is a servile verb
      *
+     * @param context context
      * @param k string containing the infinitive
      * @param realm realm
      * @return string with if it is a servile verb
      * @see GrammaticalExceptions
      */
-    fun searchServileVerbs(k: String?, realm: Realm): String {
-        var verbToSearchRealm = "non trovato"
+    fun searchServileVerbs(context: Context,
+                           k: String?,
+                           realm: Realm): String {
+        var verbToSearchRealm = context.getString(R.string.non_trovato)
         //
         val results = realm.where(
             GrammaticalExceptions::class.java
         )
             .beginGroup()
-            .equalTo("keyword", k)
-            .equalTo("exceptionType", "Is a servile verb")
+            .equalTo(context.getString(R.string.keyword), k)
+            .equalTo(context.getString(R.string.exceptiontype), context.getString(R.string.is_a_servile_verb))
             .endGroup()
             .findAll()
         val count = results.size
@@ -557,13 +596,16 @@ object GrammarHelper {
      * given a string, if it contains a negation adverb
      * it returns description of the corresponding image in the images class
      *
+     * @param context context
      * @param k string
      * @param realm realm
      * @return string with if it contains a negation adverb
      * @see GrammaticalExceptions
      */
-    fun searchNegationAdverb(k: String, realm: Realm): String {
-        var NegationAdverb = "non trovato"
+    fun searchNegationAdverb(context: Context,
+                             k: String,
+                             realm: Realm): String {
+        var NegationAdverb = context.getString(R.string.non_trovato)
         //
         // decomposes k
         val arrWords = splitString(k)
@@ -575,8 +617,9 @@ object GrammarHelper {
                 GrammaticalExceptions::class.java
             )
                 .beginGroup()
-                .equalTo("keyword", arrWords[i])
-                .equalTo("exceptionType", "Is a negation adverb")
+                .equalTo(context.getString(R.string.keyword), arrWords[i])
+                .equalTo(context.getString(R.string.exceptiontype),
+                    context.getString(R.string.is_a_negation_adverb))
                 .endGroup()
                 .findAll()
             val count = results.size
@@ -595,17 +638,20 @@ object GrammarHelper {
     /**
      * given a word, check if it is a complement to the noun
      *
+     * @param context context
      * @param k string containing the word
      * @param realm realm
      * @return string with if it is a complement to the noun
      * @see ComplementsOfTheName
      */
-    fun searchComplement(k: String?, realm: Realm): String {
-        var complementToSearchRealm = "non trovato"
+    fun searchComplement(context: Context,
+                         k: String?,
+                         realm: Realm): String {
+        var complementToSearchRealm = context.getString(R.string.non_trovato)
         //
         val results = realm.where(
             ComplementsOfTheName::class.java
-        ).equalTo("keyword", k).findAll()
+        ).equalTo(context.getString(R.string.keyword), k).findAll()
         val count = results.size
         if (count != 0) {
             val result = results[0]
@@ -619,6 +665,7 @@ object GrammarHelper {
     /**
      * in game2 it creates a response phrase to the input received via speech recognizer
      *
+     * @param context context
      * @param sharedLastPhraseNumber int containing last phrase number
      * @param realm realm
      * @return string with a response phrase
@@ -629,23 +676,24 @@ object GrammarHelper {
      * @see Phrases
      */
     fun lookForTheAnswerToLastPieceOfTheSentence(
+        context: Context,
         sharedLastPhraseNumber: Int,
         realm: Realm
     ): String {
         var answerToLastPieceOfTheSentence =
-            lookForTheLastPieceOfTheSentence(sharedLastPhraseNumber, realm)
+            lookForTheLastPieceOfTheSentence(context, sharedLastPhraseNumber, realm)
         //
         val lastWordOfTheSentencePlural =
-            verifyIfLastWordOfTheSentenceIsPlural(sharedLastPhraseNumber, realm)
+            verifyIfLastWordOfTheSentenceIsPlural(context, sharedLastPhraseNumber, realm)
         //
         val phraseToSearch: Phrases?
         phraseToSearch = if (lastWordOfTheSentencePlural == "Y") {
             realm.where(Phrases::class.java)
-                .equalTo("tipo", "reminder phrase plural")
+                .equalTo(context.getString(R.string.tipo), context.getString(R.string.reminder_phrase_plural))
                 .findFirst()
         } else {
             realm.where(Phrases::class.java)
-                .equalTo("tipo", "reminder phrase")
+                .equalTo(context.getString(R.string.tipo), context.getString(R.string.reminder_phrase))
                 .findFirst()
         }
         answerToLastPieceOfTheSentence = if (phraseToSearch != null) {
@@ -660,6 +708,7 @@ object GrammarHelper {
     /**
      * used by lookForTheAnswerToLastPieceOfTheSentence to get the last part of the sentence
      *
+     * @param context context
      * @param sharedLastPhraseNumber int containing last phrase number
      * @param realm realm
      * @return string with the last part of the sentence
@@ -673,19 +722,21 @@ object GrammarHelper {
      *
      * @see searchComplement
      */
-    fun lookForTheLastPieceOfTheSentence(sharedLastPhraseNumber: Int, realm: Realm): String {
+    fun lookForTheLastPieceOfTheSentence(context: Context,
+                                         sharedLastPhraseNumber: Int,
+                                         realm: Realm): String {
         // READS REALM HISTORY
         // considering on history the whole sentence instead of the single words
         var lastPieceOfTheSentence = " "
         val results = realm.where(
             History::class.java
-        ).equalTo("phraseNumber", sharedLastPhraseNumber.toString()).findAll()
+        ).equalTo(context.getString(R.string.phrase_number), sharedLastPhraseNumber.toString()).findAll()
         val count = results.size
         if (count != 0) {
             val result = results[0]
             var sentence = result!!.word
             // search for the last noun in the sentence
-            val lastWordOfTheSentence = SearchLastWordOfTheSentence(sharedLastPhraseNumber, realm)
+            val lastWordOfTheSentence = SearchLastWordOfTheSentence(context, sharedLastPhraseNumber, realm)
             // from the last noun of the sentence it proceeds backwards including all the complements to the noun
             sentence = sentence!!.lowercase(Locale.getDefault())
             //
@@ -701,8 +752,8 @@ object GrammarHelper {
                     var ii = i - 1
                     var complement: String?
                     while (ii >= 0) {
-                        complement = searchComplement(arrSentence[ii], realm)
-                        lastPieceOfTheSentence = if (complement == "non trovato") {
+                        complement = searchComplement(context, arrSentence[ii], realm)
+                        lastPieceOfTheSentence = if (complement == context.getString(R.string.non_trovato)) {
                             break
                         } else {
                             arrSentence[ii] + lastPieceOfTheSentence
@@ -720,6 +771,7 @@ object GrammarHelper {
     /**
      * used by lookForTheAnswerToLastPieceOfTheSentence to verify if last word of the sentence is plural
      *
+     * @param context context
      * @param sharedLastPhraseNumber int containing last phrase number
      * @param realm realm
      * @return string with if last word of the sentence is plural
@@ -727,12 +779,14 @@ object GrammarHelper {
      *
      * @see History
      */
-    fun verifyIfLastWordOfTheSentenceIsPlural(sharedLastPhraseNumber: Int, realm: Realm): String {
+    fun verifyIfLastWordOfTheSentenceIsPlural(context: Context,
+                                              sharedLastPhraseNumber: Int,
+                                              realm: Realm): String {
         // scroll the sentence backwards excluding verbs (type = 3)
         var lastWordOfTheSentencePlural = " "
         val results = realm.where(
             History::class.java
-        ).equalTo("phraseNumber", sharedLastPhraseNumber.toString()).findAll()
+        ).equalTo(context.getString(R.string.phrase_number), sharedLastPhraseNumber.toString()).findAll()
         val count = results.size
         if (count != 0) {
             var i = count - 1
@@ -754,6 +808,7 @@ object GrammarHelper {
      * used by lookForTheAnswerToLastPieceOfTheSentence via lookForTheLastPieceOfTheSentence to
      * search last word of the sentence
      *
+     * @param context context
      * @param sharedLastPhraseNumber int containing last phrase number
      * @param realm realm
      * @return string with the last word of the sentence
@@ -761,12 +816,14 @@ object GrammarHelper {
      *
      * @see History
      */
-    fun SearchLastWordOfTheSentence(sharedLastPhraseNumber: Int, realm: Realm): String {
+    fun SearchLastWordOfTheSentence(context: Context,
+                                    sharedLastPhraseNumber: Int,
+                                    realm: Realm): String {
         // scroll the sentence backwards excluding verbs (type = 3)
         var lastWordOfTheSentence = " "
         val results = realm.where(
             History::class.java
-        ).equalTo("phraseNumber", sharedLastPhraseNumber.toString()).findAll()
+        ).equalTo(context.getString(R.string.phrase_number), sharedLastPhraseNumber.toString()).findAll()
         val count = results.size
         if (count != 0) {
             var i = count - 1

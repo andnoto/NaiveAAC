@@ -19,7 +19,7 @@ import androidx.fragment.app.FragmentManager
 class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() {
     //
     var rootViewFragment: View? = null
-    var context: Context? = null
+    lateinit var context: Context
     lateinit var sharedPref: SharedPreferences
 
     //

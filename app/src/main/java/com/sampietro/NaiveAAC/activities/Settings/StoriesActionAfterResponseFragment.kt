@@ -25,7 +25,7 @@ class StoriesActionAfterResponseFragment : SettingsFragmentAbstractClass() {
     private lateinit var realm: Realm
 
     //
-    private var listView: ListView? = null
+    private lateinit var listView: ListView
     private var adapter: StoriesVideosSearchAdapter? = null
 
     /**
@@ -66,9 +66,9 @@ class StoriesActionAfterResponseFragment : SettingsFragmentAbstractClass() {
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
-        adapter = StoriesVideosSearchAdapter(ctext, results, listView!!, "ActionAfterResponse")
+        adapter = StoriesVideosSearchAdapter(ctext, results, listView, "ActionAfterResponse")
         //
-        listView!!.adapter = adapter
+        listView.adapter = adapter
         //
         listener.receiveResultSettings(rootView)
         //

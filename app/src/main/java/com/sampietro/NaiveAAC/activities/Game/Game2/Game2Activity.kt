@@ -1,7 +1,7 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
 import android.content.Intent
-import com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import android.speech.tts.TextToSpeech
 import android.os.Bundle
@@ -14,7 +14,6 @@ import android.widget.EditText
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import android.speech.SpeechRecognizer
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
-import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -22,11 +21,9 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.destroyRecognizer
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.prepareSpeechRecognizer
 import io.realm.Realm
 import java.util.*
@@ -42,16 +39,9 @@ import java.util.*
  *
  * @version     4.0, 09/09/2023
  * @see GameActivityAbstractClass
+ * @see Game2ActivityAbstractClass
  */
-class Game2Activity : GameActivityAbstractClass() {
-    // lines inserted to remedy the incorrect double onresults that occurs with android 11
-    var previouseText = ""
-
-    // TTS
-    var tTS1: TextToSpeech? = null
-    var toSpeak: String? = null
-    var reminderPhraseCounter = 0
-
+class Game2Activity : Game2ActivityAbstractClass() {
     /**
      * configurations of game2 start screen.
      *
@@ -96,43 +86,14 @@ USED FOR FULL SCREEN
         //
         prepareSpeechRecognizer(this)
         //
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                .add(ActionbarFragment(), getString(R.string.actionbar_fragment)).commit()
-//        }
-        //
         realm = Realm.getDefaultInstance()
-        // TTS
-        val phraseToSearch1 = realm.where(Phrases::class.java)
-            .equalTo(getString(R.string.tipo), getString(R.string.welcome_phrase_first_part))
-            .findFirst()
+        //
         sharedPref = getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
-        val sharedLastPlayer =
-            sharedPref.getString(getString(R.string.preference_LastPlayer), "DEFAULT")
-        val phraseToSearch2 = realm.where(Phrases::class.java)
-            .equalTo(getString(R.string.tipo), getString(R.string.welcome_phrase_second_part))
-            .findFirst()
-        if (phraseToSearch1 != null && phraseToSearch2 != null) {
-            toSpeak = (phraseToSearch1.descrizione + " " + sharedLastPlayer
-                    + " " + phraseToSearch2.descrizione)
-            if (savedInstanceState == null) {
-                tTS1 = TextToSpeech(this) { status ->
-                    if (status != TextToSpeech.ERROR) {
-                        tTS1!!.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, "prova tts")
-                    } else {
-                        Toast.makeText(applicationContext, status, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
         //
         context = this
         //
-        sharedPref = context.getSharedPreferences(
-            getString(R.string.preference_file_key), MODE_PRIVATE
-        )
         sharedLastSession = sharedPref.getInt(getString(R.string.preference_LastSession), 1)
         //
         val hasLastPhraseNumber =
@@ -144,23 +105,19 @@ USED FOR FULL SCREEN
             // it is not the first recorded sentence
             sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
         }
+        // TTS
+        if (savedInstanceState == null) welcomeSpeech()
         //
         fragmentTransactionStart("")
     }
-
     /**
-     * destroy SpeechRecognizer, TTS shutdown
+     * set to full screen
      *
-     * @see androidx.fragment.app.Fragment.onDestroy
+     * @see android.app.Activity.onResume
      */
-    override fun onDestroy() {
-        super.onDestroy()
-        destroyRecognizer()
-        // TTS
-        if (tTS1 != null) {
-            tTS1!!.stop()
-            tTS1!!.shutdown()
-        }
+    override fun onResume() {
+        super.onResume()
+        setToFullScreen()
     }
     /**
      * This method is responsible to transfer MainActivity into fullscreen mode.
@@ -208,7 +165,6 @@ USED FOR FULL SCREEN
         val intent = Intent(this, VerifyActivity::class.java)
         startActivity(intent)
     }
-    //
     /**
      * Called when the user taps the start speech button.
      *
@@ -233,7 +189,6 @@ USED FOR FULL SCREEN
         ft.addToBackStack(null)
         ft.commit()
     }
-
     /**
      * Called when the user taps the preview button.
      *
@@ -242,7 +197,7 @@ USED FOR FULL SCREEN
      *
      * @see com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd
+     * @see com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
      *
      * @see fragmentTransactionStart
      */
@@ -284,8 +239,8 @@ USED FOR FULL SCREEN
     fun fragmentTransactionStart(eText: String?) {
         val frag = Game2Fragment()
         val bundle = Bundle()
-        bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber!!)
-        bundle.putString("eText", eText)
+        bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
+        bundle.putString(getString(R.string.etext), eText)
         frag.arguments = bundle
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
@@ -311,7 +266,7 @@ USED FOR FULL SCREEN
      *
      * @see VoiceToBeRecordedInHistory
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd
+     * @see com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
      *
      * @see .fragmentTransactionStart
      */
@@ -363,17 +318,17 @@ USED FOR FULL SCREEN
                 }
                 val answerToLastPieceOfTheSentence =
                     GrammarHelper.lookForTheAnswerToLastPieceOfTheSentence(
-                        sharedLastPhraseNumber!!, realm
+                        context, sharedLastPhraseNumber, realm
                     )
                 //
                 val sharedLastPlayer =
-                    sharedPref.getString(getString(R.string.preference_LastPlayer), "DEFAULT")
+                    sharedPref.getString(getString(R.string.preference_LastPlayer), getString(R.string.default_string))
                 if (answerToLastPieceOfTheSentence != " ") {
                     toSpeak = "$sharedLastPlayer $answerToLastPieceOfTheSentence"
                     tTS1 = TextToSpeech(this) { status ->
                         if (status != TextToSpeech.ERROR) {
                             // tTS1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-                            tTS1!!.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, "prova tts")
+                            tTS1!!.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, getString(R.string.prova_tts))
                         } else {
                             Toast.makeText(applicationContext, status, Toast.LENGTH_SHORT).show()
                         }
@@ -385,120 +340,33 @@ USED FOR FULL SCREEN
         //
         fragmentTransactionStart("")
     }
-
     /**
-     * Called on beginning of speech.
+     * welcome speech
      *
-     * @param eText string message from SpeechRecognizerManagement
-     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
      *
+     *
+     * @see Phrases
      */
-    override fun onBeginningOfSpeech(eText: String?) {}
-
-    /**
-     * Called on end of speech.
-     * overrides the method on GameActivityAbstractClass
-     *
-     * @param editText string message from SpeechRecognizerManagement
-     * @see GameActivityAbstractClass
-     *
-     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
-     */
-    override fun onEndOfSpeech(editText: String?) {
-//
-    }
-
-    /**
-     * prepares the list of items to be registered on History
-     *
-     * @param realm realm obtained from the activity by Realm#getDefaultInstance
-     * @param eText string to be registered on History
-     * @return ToBeRecordedInHistory<VoiceToBeRecordedInHistory> list of items to be registered on History
-     * @see VoiceToBeRecordedInHistory
-     *
-     * @see com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
-     *
-     * @see ImageSearchHelper.searchUri
-     * @see ImageSearchHelper.searchId
-     * @see GrammarHelper.searchType
-     * @see GrammarHelper.searchPlural
-    </VoiceToBeRecordedInHistory> */
-    //    public ToBeRecordedInHistory<VoiceToBeRecordedInHistory> gettoBeRecordedInHistory(Realm realm, String eText)
-    fun gettoBeRecordedInHistory(realm: Realm?, eText: String?): ToBeRecordedInHistoryImpl {
-        // decomposes EditText
-        val arrWords = GrammarHelper.splitString(eText!!)
-        // initializes the list of items to be registered on History
-        val toBeRecordedInHistory: ToBeRecordedInHistoryImpl
-        toBeRecordedInHistory = ToBeRecordedInHistoryImpl()
-        // adds the first entry to be recorded on History to the list
-        val editor = sharedPref.edit()
-        val hasLastPhraseNumber =
-            sharedPref.contains(getString(R.string.preference_last_phrase_number))
-        sharedLastPhraseNumber = if (!hasLastPhraseNumber) {
-            // is the first recorded sentence and LastPhraseNumber log on sharedpref
-            // with the number 1
-            1
-        } else {
-            // it is not the first sentence recorded and I add 1 to LastPhraseNumber on sharedprefs
-            sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1) + 1
-        }
-        editor.putInt(getString(R.string.preference_last_phrase_number), sharedLastPhraseNumber!!)
-        editor.apply()
-        //
-        val currentTime = Calendar.getInstance().time
-        //
-        voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-            sharedLastSession!!, sharedLastPhraseNumber!!, currentTime,
-            0, " ", eText!!, " ", " ", " "
-        )
-        toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
-        // SEARCH THE IMAGES OF THE WORDS
-        val arrWordsLength = arrWords.size
-        var i = 0
-        while (i < arrWordsLength) {
-            // INTERNAL MEMORY IMAGE SEARCH
-            val uriToSearch = ImageSearchHelper.searchUri(realm!!, arrWords[i])
-            if (uriToSearch != getString(R.string.non_trovata)) {
-                voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                    sharedLastSession!!,
-                    sharedLastPhraseNumber!!, currentTime,
-                    i + 1, " ", arrWords[i], " ", "S", uriToSearch
-                )
-                toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
-            } else {
-                // SEARCH VERBS WITH REALM
-                val verbToSearch = GrammarHelper.searchVerb(arrWords[i], realm)
-                var idToSearch: String
-                idToSearch = if (verbToSearch != getString(R.string.non_trovato)) {
-                    ImageSearchHelper.searchId(realm, verbToSearch)
+    fun welcomeSpeech() {
+        // TTS
+        val phraseToSearch1 = realm.where(Phrases::class.java)
+            .equalTo(getString(R.string.tipo), getString(R.string.welcome_phrase_first_part))
+            .findFirst()
+        val sharedLastPlayer =
+            sharedPref.getString(getString(R.string.preference_LastPlayer), "DEFAULT")
+        val phraseToSearch2 = realm.where(Phrases::class.java)
+            .equalTo(getString(R.string.tipo), getString(R.string.welcome_phrase_second_part))
+            .findFirst()
+        if (phraseToSearch1 != null && phraseToSearch2 != null) {
+            toSpeak = (phraseToSearch1.descrizione + " " + sharedLastPlayer
+                    + " " + phraseToSearch2.descrizione)
+            tTS1 = TextToSpeech(this) { status ->
+                if (status != TextToSpeech.ERROR) {
+                    tTS1!!.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, "prova tts")
                 } else {
-                    ImageSearchHelper.searchId(realm, arrWords[i])
-                }
-                // IMAGE SEARCH ON ARASAAC
-                if (idToSearch != getString(R.string.non_trovata)) {
-                    //  SEARCH TYPE OF WORD
-                    val typeToSearch = GrammarHelper.searchType(idToSearch, realm)
-                    // SEARCH IF IT IS PLURAL
-                    val pluralToSearch = GrammarHelper.searchPlural(idToSearch, arrWords[i], realm)
-                    //
-                    val url = REMOTE_ADDR_PICTOGRAM + idToSearch + "?download=false"
-                    voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                        sharedLastSession!!, sharedLastPhraseNumber!!,
-                        currentTime,
-                        i + 1, typeToSearch, arrWords[i], pluralToSearch, "A", url
-                    )
-                    toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
+                    Toast.makeText(applicationContext, status, Toast.LENGTH_SHORT).show()
                 }
             }
-            //
-            i++
-            // Log.d("TAG" + ": ", "some on result Response : " );
         }
-        return toBeRecordedInHistory
-    } //
-
-    companion object {
-        //
-        private const val REMOTE_ADDR_PICTOGRAM = "https://api.arasaac.org/api/pictograms/"
     }
 }

@@ -27,7 +27,7 @@ class SoundsFragment : SettingsFragmentAbstractClass() {
     private lateinit var realm: Realm
 
     //
-    private var listView: ListView? = null
+    private lateinit var listView: ListView
     private var adapter: SoundsAdapter? = null
 
     /**
@@ -64,9 +64,9 @@ class SoundsFragment : SettingsFragmentAbstractClass() {
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
-        adapter = SoundsAdapter(ctext, results, listView!!)
+        adapter = SoundsAdapter(ctext, results, listView)
         //
-        listView!!.adapter = adapter
+        listView.adapter = adapter
         //
         listener.receiveResultSettings(rootView)
         //

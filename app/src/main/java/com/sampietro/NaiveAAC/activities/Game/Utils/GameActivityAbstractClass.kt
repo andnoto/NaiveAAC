@@ -12,6 +12,7 @@ import com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import io.realm.Realm
 import java.util.*
+import kotlin.properties.Delegates
 
 /**
  * <h1>GameActivityAbstractClass</h1>
@@ -69,10 +70,10 @@ abstract class GameActivityAbstractClass : AppCompatActivity(), RecognizerCallba
     lateinit var context: Context
 //    @JvmField
     lateinit var sharedPref: SharedPreferences
-    @JvmField
-    var sharedLastSession: Int? = null
-    @JvmField
-    var sharedLastPhraseNumber: Int? = null
+//    @JvmField
+    var sharedLastSession by Delegates.notNull<Int>()
+//    @JvmField
+    var sharedLastPhraseNumber by Delegates.notNull<Int>()
     @JvmField
     var currentTime: Date? = null
     @JvmField

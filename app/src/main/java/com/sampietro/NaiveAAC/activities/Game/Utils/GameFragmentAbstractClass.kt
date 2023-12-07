@@ -123,9 +123,9 @@ abstract class GameFragmentAbstractClass : Fragment() {
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
         preference_PrintPermissions =
-            sharedPref.getString("preference_PrintPermissions", "DEFAULT").toString()
+            sharedPref.getString(getString(R.string.preference_print_permissions), getString(R.string.default_string)).toString()
         preference_TitleWritingType =
-            sharedPref.getString("preference_title_writing_type", "uppercase").toString()
+            sharedPref.getString(getString(R.string.preference_title_writing_type), getString(R.string.uppercase)).toString()
     }
 
     /**

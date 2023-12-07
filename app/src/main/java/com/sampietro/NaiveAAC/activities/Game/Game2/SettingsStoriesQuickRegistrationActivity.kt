@@ -1,6 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
 import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import android.speech.tts.TextToSpeech
@@ -17,9 +17,8 @@ import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Stories.StoriesComparator
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
-import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
 import android.view.View
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
+import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import com.sampietro.NaiveAAC.activities.history.History
@@ -35,16 +34,9 @@ import java.util.*
  *
  * @version     4.0, 09/09/2023
  * @see GameActivityAbstractClass
+ * @see Game2ActivityAbstractClass
  */
-class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
-    // lines inserted to remedy the incorrect double onresults that occurs with android 11
-    var previouseText = ""
-
-    // TTS
-    var tTS1: TextToSpeech? = null
-    var toSpeak: String? = null
-    var reminderPhraseCounter = 0
-
+class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
     //
     var keywordStoryToAdd = ""
     var phraseNumberToAdd = ""
@@ -97,22 +89,6 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
         //
         fragmentTransactionStart("")
     }
-
-    /**
-     * destroy SpeechRecognizer, TTS shutdown
-     *
-     * @see androidx.fragment.app.Fragment.onDestroy
-     */
-    override fun onDestroy() {
-        super.onDestroy()
-        SpeechRecognizerManagement.destroyRecognizer()
-        // TTS
-        if (tTS1 != null) {
-            tTS1!!.stop()
-            tTS1!!.shutdown()
-        }
-    }
-
     /**
      * Called when the user taps the start speech button.
      *
@@ -137,7 +113,6 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
         ft.addToBackStack(null)
         ft.commit()
     }
-
     /**
      * Called when the user taps the preview button.
      *
@@ -146,7 +121,7 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
      *
      * @see VoiceToBeRecordedInHistory
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd
+     * @see com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
      *
      * @see fragmentTransactionStart
      */
@@ -174,7 +149,6 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
         //
         fragmentTransactionStart(eText)
     }
-
     /**
      * Called when the user taps the delete sentence button.
      *
@@ -184,7 +158,6 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
     fun deleteSentence(v: View?) {
         fragmentTransactionStart("")
     }
-
     /**
      * initiate Fragment transaction.
      *
@@ -195,10 +168,10 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
     fun fragmentTransactionStart(eText: String?) {
         val frag = SettingsStoriesQuickRegistrationFragment()
         val bundle = Bundle()
-        bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber!!)
-        bundle.putString("eText", eText)
-        bundle.putString("keywordStoryToAdd", keywordStoryToAdd)
-        bundle.putString("phraseNumberToAdd", phraseNumberToAdd)
+        bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
+        bundle.putString(getString(R.string.etext), eText)
+        bundle.putString(getString(R.string.keywordstorytoadd), keywordStoryToAdd)
+        bundle.putString(getString(R.string.phrasenumbertoadd), phraseNumberToAdd)
         bundle.putString("wordToAdd", wordToAdd)
         frag.arguments = bundle
         val ft = supportFragmentManager.beginTransaction()
@@ -214,7 +187,6 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
         ft.addToBackStack(null)
         ft.commitAllowingStateLoss()
     }
-
     /**
      * Called on result of speech.
      *
@@ -225,7 +197,7 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
      *
      * @see VoiceToBeRecordedInHistory
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd
+     * @see com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
      *
      * @see fragmentTransactionStart
      */
@@ -250,7 +222,6 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
             reminderPhraseCounter = 0
         }
     }
-
     /**
      * Called on error from SpeechRecognizerManagement.
      *
@@ -282,7 +253,7 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
                 }
                 val answerToLastPieceOfTheSentence =
                     GrammarHelper.lookForTheAnswerToLastPieceOfTheSentence(
-                        sharedLastPhraseNumber!!, realm
+                        context, sharedLastPhraseNumber, realm
                     )
                 //
                 val sharedLastPlayer =
@@ -311,30 +282,6 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
         //
         fragmentTransactionStart("")
     }
-
-    /**
-     * Called on beginning of speech.
-     * replace with hear fragment
-     *
-     *
-     * @param eText string message from SpeechRecognizerManagement
-     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
-     */
-    override fun onBeginningOfSpeech(eText: String?) {}
-
-    /**
-     * Called on end of speech.
-     * overrides the method on GameActivityAbstractClass
-     *
-     * @param editText string message from SpeechRecognizerManagement
-     * @see GameActivityAbstractClass
-     *
-     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
-     */
-    override fun onEndOfSpeech(editText: String?) {
-//
-    }
-
     /**
      * Called when the user taps the preview button.
      *
@@ -343,7 +290,7 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
      *
      * @see VoiceToBeRecordedInHistory
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper.historyAdd
+     * @see com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
      *
      * @see fragmentTransactionStart
      */
@@ -374,7 +321,7 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
             // se textword2 = "" allora inserisco alla fine
             // se textword2 = numero inserisco prima della frase numero aumentando il numero della frase per quelle successive
             val resultsStories = realm.where(Stories::class.java)
-                .equalTo("story", textWord1.text.toString().lowercase(Locale.getDefault()))
+                .equalTo(getString(R.string.story), textWord1.text.toString().lowercase(Locale.getDefault()))
                 .findAll()
             val storiesSize = resultsStories.size
             //
@@ -388,7 +335,7 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
                 gp.gameName = textWord1.text.toString().lowercase(Locale.getDefault())
                 gp.gameActive = "A"
                 gp.gameInfo = textWord1.text.toString().lowercase(Locale.getDefault())
-                gp.gameJavaClass = "A/DA"
+                gp.gameJavaClass = getString(R.string.a_da)
                 gp.gameParameter = textWord1.text.toString().lowercase(Locale.getDefault())
                 gp.gameIconType = "AS"
                 gp.gameIconPath = "images/racconto.png"
@@ -511,109 +458,20 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
         //
         reminderPhraseCounter = 0
     }
-
-    /**
-     * prepares the list of items to be registered on History
-     *
-     * @param realm realm obtained from the activity by Realm#getDefaultInstance
-     * @param eText string to be registered on History
-     * @return ToBeRecordedInHistory<VoiceToBeRecordedInHistory> list of items to be registered on History
-     * @see VoiceToBeRecordedInHistory
-     *
-     * @see ToBeRecordedInHistory
-     *
-     * @see ImageSearchHelper.searchUri
-     * @see ImageSearchHelper.searchId
-     * @see GrammarHelper.searchType
-     * @see GrammarHelper.searchPlural
-    </VoiceToBeRecordedInHistory> */
-    fun gettoBeRecordedInHistory(realm: Realm?, eText: String?): ToBeRecordedInHistoryImpl {
-        // decomposes EditText
-        val arrWords = GrammarHelper.splitString(eText!!)
-        // initializes the list of items to be registered on History
-        val toBeRecordedInHistory: ToBeRecordedInHistoryImpl
-        toBeRecordedInHistory = ToBeRecordedInHistoryImpl()
-        // adds the first entry to be recorded on History to the list
-        val editor = sharedPref.edit()
-        val hasLastPhraseNumber =
-            sharedPref.contains(getString(R.string.preference_last_phrase_number))
-        sharedLastPhraseNumber = if (!hasLastPhraseNumber) {
-            // is the first recorded sentence and LastPhraseNumber log on sharedpref
-            // with the number 1
-            1
-        } else {
-            // it is not the first sentence recorded and I add 1 to LastPhraseNumber on sharedprefs
-            sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1) + 1
-        }
-        editor.putInt(getString(R.string.preference_last_phrase_number), sharedLastPhraseNumber!!)
-        editor.apply()
-        //
-        val currentTime = Calendar.getInstance().time
-        //
-        voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-            sharedLastSession!!, sharedLastPhraseNumber!!, currentTime,
-            0, " ", eText!!, " ", " ", " "
-        )
-        toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
-        // SEARCH THE IMAGES OF THE WORDS
-        val arrWordsLength = arrWords.size
-        var i = 0
-        while (i < arrWordsLength) {
-            // INTERNAL MEMORY IMAGE SEARCH
-            val uriToSearch = ImageSearchHelper.searchUri(realm!!, arrWords[i])
-            if (uriToSearch != getString(R.string.non_trovata)) {
-                voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                    sharedLastSession!!,
-                    sharedLastPhraseNumber!!, currentTime,
-                    i + 1, " ", arrWords[i], " ", "S", uriToSearch
-                )
-                toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
-            } else {
-                // SEARCH VERBS WITH REALM
-                val verbToSearch = GrammarHelper.searchVerb(arrWords[i], realm)
-                var idToSearch: String
-                idToSearch = if (verbToSearch != getString(R.string.non_trovato)) {
-                    ImageSearchHelper.searchId(realm, verbToSearch)
-                } else {
-                    ImageSearchHelper.searchId(realm, arrWords[i])
-                }
-                // IMAGE SEARCH ON ARASAAC
-                if (idToSearch != getString(R.string.non_trovata)) {
-                    //  SEARCH TYPE OF WORD
-                    val typeToSearch = GrammarHelper.searchType(idToSearch, realm)
-                    // SEARCH IF IT IS PLURAL
-                    val pluralToSearch = GrammarHelper.searchPlural(idToSearch, arrWords[i], realm)
-                    //
-                    val url = REMOTE_ADDR_PICTOGRAM + idToSearch + "?download=false"
-                    voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                        sharedLastSession!!, sharedLastPhraseNumber!!,
-                        currentTime,
-                        i + 1, typeToSearch, arrWords[i], pluralToSearch, "A", url
-                    )
-                    toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
-                }
-            }
-            //
-            i++
-            // Log.d("TAG" + ": ", "some on result Response : " );
-        }
-        return toBeRecordedInHistory
-    }
-    //
     /**
      * prepare data using data from the history table
      *
      * @return theimage arraylist<Game2ArrayList> data for recyclerview
-     * @see Game2ArrayList
+     * @see Game1ArrayList
      *
      * @see History
     </Game2ArrayList> */
-    private fun prepareData1(): ArrayList<Game2ArrayList> {
+    private fun prepareData1(): ArrayList<Game1ArrayList> {
         val results = realm.where(
             History::class.java
         ).equalTo(getString(R.string.phrase_number), sharedLastPhraseNumber.toString()).findAll()
         val count = results.size
-        val theimage = ArrayList<Game2ArrayList>()
+        val theimage = ArrayList<Game1ArrayList>()
         if (count != 0) {
             var irrh = 0
             while (irrh < count) {
@@ -621,7 +479,7 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
                 val wordNumber = Objects.requireNonNull(result.wordNumber)!!.toInt()
                 //
                 if (wordNumber != 0) {
-                    val createList = Game2ArrayList()
+                    val createList = Game1ArrayList()
                     createList.image_title = result.word
                     createList.urlType = result.uriType
                     createList.url = result.uri
@@ -633,9 +491,4 @@ class SettingsStoriesQuickRegistrationActivity : GameActivityAbstractClass() {
         //
         return theimage
     } //
-
-    companion object {
-        //
-        private const val REMOTE_ADDR_PICTOGRAM = "https://api.arasaac.org/api/pictograms/"
-    }
 }

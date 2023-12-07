@@ -223,14 +223,14 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             realm.beginTransaction()
             val results = realm.where(
                 Images::class.java
-            ).equalTo("descrizione", textPersonName).findAll()
+            ).equalTo(getString(R.string.descrizione), textPersonName).findAll()
             results.deleteAllFromRealm()
             realm.commitTransaction()
             //
             realm.beginTransaction()
             val resultsIo = realm.where(
                 Images::class.java
-            ).equalTo("descrizione", getString(R.string.io)).findAll()
+            ).equalTo(getString(R.string.descrizione), getString(R.string.io)).findAll()
             resultsIo.deleteAllFromRealm()
             realm.commitTransaction()
             // register the user and the linked image in realm
@@ -330,7 +330,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         // (FragmentTransaction switch between Fragments).
         val ft: FragmentTransaction
         when (textGameToSet) {
-            "COMUNICATORE" -> {
+            getString(R.string.comunicatore) -> {
                 val phrasesFragment = PhrasesFragment()
                 ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, phrasesFragment)
@@ -550,7 +550,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                     getString(R.string.preference_file_key), MODE_PRIVATE
                 )
                 val editor = sharedPref.edit()
-                editor.putString("preference_title_writing_type", "uppercase")
+                editor.putString(getString(R.string.preference_title_writing_type), getString(R.string.uppercase))
                 editor.apply()
             }
             R.id.lowercase -> if (checked) {
@@ -558,7 +558,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                     getString(R.string.preference_file_key), MODE_PRIVATE
                 )
                 val editor = sharedPref.edit()
-                editor.putString("preference_title_writing_type", "lowercase")
+                editor.putString(getString(R.string.preference_title_writing_type),
+                    getString(R.string.lowercase))
                 editor.apply()
             }
         }
@@ -791,7 +792,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         // delete
         realm = Realm.getDefaultInstance()
         var results = realm.where(GameParameters::class.java).findAll()
-        results = results.sort("gameName")
+        results = results.sort(getString(R.string.gamename))
         realm.beginTransaction()
         val daCancellare = results[position]!!
         daCancellare.deleteFromRealm()
@@ -821,15 +822,15 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         realm = Realm.getDefaultInstance()
         var results: RealmResults<GameParameters>?
         results = realm.where(GameParameters::class.java).findAll()
-        results = results.sort("gameName")
+        results = results.sort(getString(R.string.gamename))
         //
         val frag = GameParametersSettingsFragment()
         //
         val bundle = Bundle()
         val daModificare = results[position]!!
         //
-        bundle.putString("GameName", daModificare.gameName)
-        bundle.putString("GameActive", daModificare.gameActive)
+        bundle.putString(getString(R.string.gamename), daModificare.gameName)
+        bundle.putString(getString(R.string.gameactive), daModificare.gameActive)
         if (daModificare.gameActive == "A") {
             //
             radiobuttonGameParametersActiveClicked = true
@@ -843,12 +844,12 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         gameIconType = daModificare.gameIconType
         filePath = daModificare.gameIconPath
         //
-        bundle.putString("GameIconType", daModificare.gameIconType)
-        bundle.putString("GameIconPath", daModificare.gameIconPath)
-        bundle.putString("GameInfo", daModificare.gameInfo)
-        bundle.putString("GameJavaClass", daModificare.gameJavaClass)
-        bundle.putString("GameParameter", daModificare.gameParameter)
-        bundle.putString("GameUseVideoAndSound", daModificare.gameUseVideoAndSound)
+        bundle.putString(getString(R.string.gameicontype), daModificare.gameIconType)
+        bundle.putString(getString(R.string.gameiconpath), daModificare.gameIconPath)
+        bundle.putString(getString(R.string.gameinfo), daModificare.gameInfo)
+        bundle.putString(getString(R.string.gamejavaclass), daModificare.gameJavaClass)
+        bundle.putString(getString(R.string.gameparameter), daModificare.gameParameter)
+        bundle.putString(getString(R.string.gameusevideoandsound), daModificare.gameUseVideoAndSound)
         if (daModificare.gameUseVideoAndSound == "Y") {
             //
             radiobuttonGameParametersUseVideoAndSoundClicked = true
@@ -1035,8 +1036,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                             val inputFolder = DocumentFile.fromTreeUri(context, csvTreeUri!!)
                             //
                             if (isStoragePermissionGranted) {
-                                var importMode = "Append" // default import mode
-                                if (radiobuttonDataImportReplaceClicked) importMode = "Replace"
+                                var importMode = getString(R.string.append) // default import mode
+                                if (radiobuttonDataImportReplaceClicked) importMode = getString(R.string.replace)
                                 if (checkboxImagesChecked) {
                                     assert(inputFolder != null)
                                     val documentFileNewFile = inputFolder!!.findFile("images.csv")!!
@@ -1166,7 +1167,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                         realm,
                                         importMode
                                     )
-                                    if (importMode == "Replace") {
+                                    if (importMode == getString(R.string.replace)) {
                                         renumberStories(realm)
                                     }
                                 }

@@ -44,7 +44,7 @@ class MyApplication : Application() {
         super.onCreate()
         //
         var itSAFreshInstall = false
-        val fileRealm = File(this.filesDir, "default.realm")
+        val fileRealm = File(this.filesDir, getString(R.string.default_realm))
         if (!fileRealm.exists()) {
             // it's a fresh install
             itSAFreshInstall = true
@@ -57,7 +57,7 @@ class MyApplication : Application() {
         //
         Realm.init(this)
         val realmConfiguration = RealmConfiguration.Builder()
-            .name("default.realm")
+            .name(getString(R.string.default_realm))
             .schemaVersion(5)
             .migration(customRealmMigration()) //     .deleteRealmIfMigrationNeeded()
             .build()
@@ -83,7 +83,7 @@ class MyApplication : Application() {
     @Throws(IOException::class)
     fun copyFileRealm() {
         val sourceStream = assets.open("copiarealm")
-        val destStream = openFileOutput("default.realm", MODE_PRIVATE)
+        val destStream = openFileOutput(getString(R.string.default_realm), MODE_PRIVATE)
         val buffer = ByteArray(1024)
         var read = sourceStream.read(buffer)
         while (read != -1) {
@@ -108,10 +108,10 @@ class MyApplication : Application() {
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
         val editor = sharedPref.edit()
-        val hasVersionCode = sharedPref.contains("preference_VersionCode")
+        val hasVersionCode = sharedPref.contains(getString(R.string.preference_versioncode))
         if (hasVersionCode) {
             // I record the old version code (the version code is present from version 7)
-            oldVersionCode = sharedPref.getInt("preference_VersionCode", 0)
+            oldVersionCode = sharedPref.getInt(getString(R.string.preference_versioncode), 0)
         }
         //
         if (oldVersionCode == 0) {
@@ -181,8 +181,8 @@ class MyApplication : Application() {
         //
         if (oldVersionCode == 7) {
             try {
-                copyFileFromAssetsToInternalStorage("images", "racconto.png", "racconto.png")
-                copyFileFromAssetsToInternalStorage("images", "non.png", "non.png")
+                copyFileFromAssetsToInternalStorage(getString(R.string.images), "racconto.png", "racconto.png")
+                copyFileFromAssetsToInternalStorage(getString(R.string.images), "non.png", "non.png")
                 //
 //                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-images.csv", "images.csv");
 //                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-grammaticalexceptions.csv", "grammaticalexceptions.csv");
@@ -198,7 +198,7 @@ class MyApplication : Application() {
             val realm = Realm.getDefaultInstance()
             //            Images.importFromCsvFromInternalStorage(context, realm, "Append");
 //            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Append");
-            Stories.importFromCsvFromInternalStorage(context, realm, "Append")
+            Stories.importFromCsvFromInternalStorage(context, realm, getString(R.string.append))
             //            GameParameters.importFromCsvFromInternalStorage(context, realm, "Append");
             //
             oldVersionCode++
@@ -259,7 +259,7 @@ class MyApplication : Application() {
             val realm = Realm.getDefaultInstance()
             // delete story
             val results =
-                realm.where(Stories::class.java).equalTo("story", "il gatto con gli stivali")
+                realm.where(Stories::class.java).equalTo(getString(R.string.story), "il gatto con gli stivali")
                     .findAll()
             realm.beginTransaction()
             results.deleteAllFromRealm()
@@ -267,61 +267,61 @@ class MyApplication : Application() {
             // replace story from csv in assets
             try {
                 copyFileFromAssetsToInternalStorage(
-                    "sounds",
+                    getString(R.string.sounds),
                     "cat-meow-14536.mp3",
                     "cat-meow-14536.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
-                    "sounds",
+                    getString(R.string.sounds),
                     "fiaker-73119.mp3",
                     "fiaker-73119.mp3"
                 )
-                copyFileFromAssetsToInternalStorage("sounds", "Hallelujah.mp3", "Hallelujah.mp3")
+                copyFileFromAssetsToInternalStorage(getString(R.string.sounds), "Hallelujah.mp3", "Hallelujah.mp3")
                 copyFileFromAssetsToInternalStorage(
-                    "sounds",
+                    getString(R.string.sounds),
                     "jumento-101690.mp3",
                     "jumento-101690.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
-                    "sounds",
+                    getString(R.string.sounds),
                     "lion-roar-6011.mp3",
                     "lion-roar-6011.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
-                    "sounds",
+                    getString(R.string.sounds),
                     "river-stream-moderate-flow-2-24370.mp3",
                     "river-stream-moderate-flow-2-24370.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
-                    "sounds",
+                    getString(R.string.sounds),
                     "scary-laugh-123862.mp3",
                     "scary-laugh-123862.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
-                    "sounds",
+                    getString(R.string.sounds),
                     "Wedding March.mp3",
                     "Wedding March.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
-                    "images",
+                    getString(R.string.images),
                     "punto interrogativo.png",
                     "punto interrogativo.png"
                 )
-                copyFileFromAssetsToInternalStorage("videos", "cat-4916.mp4", "cat-4916.mp4")
-                copyFileFromAssetsToInternalStorage("videos", "cat-92641.mp4", "cat-92641.mp4")
-                copyFileFromAssetsToInternalStorage("videos", "man-131605.mp4", "man-131605.mp4")
+                copyFileFromAssetsToInternalStorage(getString(R.string.videos), "cat-4916.mp4", "cat-4916.mp4")
+                copyFileFromAssetsToInternalStorage(getString(R.string.videos), "cat-92641.mp4", "cat-92641.mp4")
+                copyFileFromAssetsToInternalStorage(getString(R.string.videos), "man-131605.mp4", "man-131605.mp4")
                 copyFileFromAssetsToInternalStorage(
-                    "videos",
+                    getString(R.string.videos),
                     "mouse-117573.mp4",
                     "mouse-117573.mp4"
                 )
                 copyFileFromAssetsToInternalStorage(
-                    "videos",
+                    getString(R.string.videos),
                     "rabbit-141719.mp4",
                     "rabbit-141719.mp4"
                 )
                 copyFileFromAssetsToInternalStorage(
-                    "videos",
+                    getString(R.string.videos),
                     "tags-bird-9267.mp4",
                     "tags-bird-9267.mp4"
                 )
@@ -343,13 +343,13 @@ class MyApplication : Application() {
             }
             // eliminazione di tutte le immagini tranne quelle relative ad "io" e a nome utente
             val sharedLastPlayer =
-                sharedPref.getString(getString(R.string.preference_LastPlayer), "DEFAULT")
+                sharedPref.getString(getString(R.string.preference_LastPlayer), getString(R.string.default_string))
             val resultsImages = realm.where(
                 Images::class.java
             )
-                .equalTo("descrizione", "io")
+                .equalTo(getString(R.string.descrizione), "io")
                 .or()
-                .equalTo("descrizione", sharedLastPlayer)
+                .equalTo(getString(R.string.descrizione), sharedLastPlayer)
                 .findAll()
             val imagesSize = resultsImages.size
             val resultsImagesList = realm.copyFromRealm(resultsImages)
@@ -370,11 +370,11 @@ class MyApplication : Application() {
                 irrh++
             }
             //
-            Sounds.importFromCsvFromInternalStorage(context, realm, "Replace")
-            Images.importFromCsvFromInternalStorage(context, realm, "Append")
-            Videos.importFromCsvFromInternalStorage(context, realm, "Replace")
-            Stories.importFromCsvFromInternalStorage(context, realm, "Append")
-            GameParameters.importFromCsvFromInternalStorage(context, realm, "Replace")
+            Sounds.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            Images.importFromCsvFromInternalStorage(context, realm, getString(R.string.append))
+            Videos.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            Stories.importFromCsvFromInternalStorage(context, realm, getString(R.string.append))
+            GameParameters.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             //
             oldVersionCode++
         }
@@ -405,7 +405,7 @@ class MyApplication : Application() {
             // update game parameter
             val resultsgp = realm.where(
                 GameParameters::class.java
-            ).equalTo("gameName", "COMUNICATORE").findAll()
+            ).equalTo(getString(R.string.gamename), getString(R.string.comunicatore)).findAll()
             val resultsgpSize = resultsgp.size
             if (resultsgpSize != 0) {
                 realm.beginTransaction()
@@ -428,7 +428,7 @@ class MyApplication : Application() {
 
 
         // register current VersionCode on sharedpref
-        editor.putInt("preference_VersionCode", currentVersionCode)
+        editor.putInt(getString(R.string.preference_versioncode), currentVersionCode)
         editor.apply()
     }
     //

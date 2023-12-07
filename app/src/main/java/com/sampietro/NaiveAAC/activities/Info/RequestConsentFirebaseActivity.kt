@@ -25,11 +25,11 @@ import com.sampietro.NaiveAAC.activities.Account.AccountActivity
 class RequestConsentFirebaseActivity : AppCompatActivity() {
     //
     var rootViewFragment: View? = null
-    var context: Context? = null
-    var sharedPref: SharedPreferences? = null
+    lateinit var context: Context
+    lateinit var sharedPref: SharedPreferences
 
     //
-    var fragmentManager: FragmentManager? = null
+    lateinit var fragmentManager: FragmentManager
     //
     /**
      * configurations of account start screen.
@@ -50,7 +50,7 @@ class RequestConsentFirebaseActivity : AppCompatActivity() {
         //
         if (savedInstanceState == null) {
             fragmentManager = supportFragmentManager
-            fragmentManager!!.beginTransaction()
+            fragmentManager.beginTransaction()
                 .add(
                     R.id.game_container,
                     RequestConsentFirebaseFragment(),
@@ -85,7 +85,7 @@ class RequestConsentFirebaseActivity : AppCompatActivity() {
                     ChoiseOfGameActivity::class.java
                 )
                 //
-                val message = "Bentornato "
+                val message = getString(R.string.bentornato)
                 i.putExtra(EXTRA_MESSAGE, message)
                 startActivity(i)
                 finish()
@@ -113,7 +113,7 @@ class RequestConsentFirebaseActivity : AppCompatActivity() {
                     ChoiseOfGameActivity::class.java
                 )
                 //
-                val message = "Bentornato "
+                val message = getString(R.string.bentornato)
                 i.putExtra(EXTRA_MESSAGE, message)
                 startActivity(i)
                 finish()
@@ -128,7 +128,7 @@ class RequestConsentFirebaseActivity : AppCompatActivity() {
      * @see AccountActivity
      */
     fun verifyLastPlayer(): Boolean {
-        val hasLastPlayer = sharedPref!!.contains(getString(R.string.preference_LastPlayer))
+        val hasLastPlayer = sharedPref.contains(getString(R.string.preference_LastPlayer))
         return if (!hasLastPlayer) {
             // go to the user registration activity
             val intent = Intent(this, AccountActivity::class.java)

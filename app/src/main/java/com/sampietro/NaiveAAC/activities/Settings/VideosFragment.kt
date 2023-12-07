@@ -38,7 +38,7 @@ class VideosFragment : SettingsFragmentAbstractClass(), SurfaceHolder.Callback {
     var uri: Uri? = null
 
     //
-    private var listView: ListView? = null
+    private lateinit var listView: ListView
     private var adapter: VideosAdapter? = null
 
     // for videos
@@ -141,9 +141,9 @@ class VideosFragment : SettingsFragmentAbstractClass(), SurfaceHolder.Callback {
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
-        adapter = VideosAdapter(ctext, results, listView!!)
+        adapter = VideosAdapter(ctext, results, listView)
         //
-        listView!!.adapter = adapter
+        listView.adapter = adapter
         //
         listener.receiveResultSettings(rootView)
         //

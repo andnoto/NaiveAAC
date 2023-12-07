@@ -62,7 +62,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
 
     //
     private var voiceToBeRecordedInStories: VoiceToBeRecordedInStories? = null
-    private var viewModel: VoiceToBeRecordedInStoriesViewModel? = null
+    private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
 
     /**
      * configurations of settings start screen.
@@ -91,7 +91,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         viewModel = ViewModelProvider(this).get(
             VoiceToBeRecordedInStoriesViewModel::class.java
         )
-        viewModel!!.setItem(voiceToBeRecordedInStories!!)
+        viewModel.setItem(voiceToBeRecordedInStories!!)
         voiceToBeRecordedInStories!!.story = getString(R.string.nome_storia)
         voiceToBeRecordedInStories!!.phraseNumberInt = 0
         clearFieldsOfViewmodelDataClass()
@@ -366,7 +366,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel!!.getSelectedItem()
+        viewModel.getSelectedItem()
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 voiceToBeRecordedInStories.uriType = "A"
@@ -390,7 +390,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel!!.getSelectedItem()
+        viewModel.getSelectedItem()
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 voiceToBeRecordedInStories.video = videoKey
                 //
@@ -482,7 +482,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel!!.getSelectedItem()
+        viewModel.getSelectedItem()
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 voiceToBeRecordedInStories.answerActionType = "V"
                 voiceToBeRecordedInStories.answerAction = videoKey
@@ -505,7 +505,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel!!.getSelectedItem()
+        viewModel.getSelectedItem()
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 val textWord1 = findViewById<View>(R.id.link_video_youtube) as EditText
                 if (textWord1.text.toString() != "") {
@@ -538,7 +538,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel!!.getSelectedItem()
+        viewModel.getSelectedItem()
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 voiceToBeRecordedInStories.story = getString(R.string.nome_storia)
@@ -570,10 +570,10 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                         // cancello frase vecchia dopo averne salvato copia
                         val resultsStories = realm.where(Stories::class.java)
                             .equalTo(
-                                "story",
+                                getString(R.string.story),
                                 textWord1.text.toString().lowercase(Locale.getDefault())
                             )
-                            .equalTo("phraseNumberInt", textWord2.text.toString().toInt())
+                            .equalTo(getString(R.string.phrasenumberint), textWord2.text.toString().toInt())
                             .findAll()
                         val storiesSize = resultsStories.size
                         //
@@ -782,7 +782,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel!!.getSelectedItem()
+        viewModel.getSelectedItem()
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 realm = Realm.getDefaultInstance()
@@ -795,16 +795,16 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                         realm.where(Stories::class.java).findAll()
                     } else if (voiceToBeRecordedInStories.phraseNumberInt == 0) {
                         realm.where(Stories::class.java)
-                            .equalTo("story", voiceToBeRecordedInStories.story)
+                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
                             .findAll()
                     } else {
                         realm.where(Stories::class.java)
-                            .equalTo("story", voiceToBeRecordedInStories.story)
-                            .equalTo("phraseNumberInt", voiceToBeRecordedInStories.phraseNumberInt)
+                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
+                            .equalTo(getString(R.string.phrasenumberint), voiceToBeRecordedInStories.phraseNumberInt)
                             .findAll()
                     }
                 //
-                val mStrings1 = arrayOf("story", "phraseNumberInt", "wordNumberInt")
+                val mStrings1 = arrayOf(getString(R.string.story), getString(R.string.phrasenumberint), getString(R.string.wordnumberint))
                 val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
                 //
@@ -847,7 +847,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel!!.getSelectedItem()
+        viewModel.getSelectedItem()
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 realm = Realm.getDefaultInstance()
@@ -860,16 +860,16 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                         realm.where(Stories::class.java).findAll()
                     } else if (voiceToBeRecordedInStories.phraseNumberInt == 0) {
                         realm.where(Stories::class.java)
-                            .equalTo("story", voiceToBeRecordedInStories.story)
+                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
                             .findAll()
                     } else {
                         realm.where(Stories::class.java)
-                            .equalTo("story", voiceToBeRecordedInStories.story)
-                            .equalTo("phraseNumberInt", voiceToBeRecordedInStories.phraseNumberInt)
+                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
+                            .equalTo(getString(R.string.phrasenumberint), voiceToBeRecordedInStories.phraseNumberInt)
                             .findAll()
                     }
                 //
-                val mStrings1 = arrayOf("story", "phraseNumberInt", "wordNumberInt")
+                val mStrings1 = arrayOf(getString(R.string.story), getString(R.string.phrasenumberint), getString(R.string.wordnumberint))
                 val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
                 //
@@ -924,7 +924,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel!!.getSelectedItem()
+        viewModel.getSelectedItem()
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 realm = Realm.getDefaultInstance()
@@ -937,16 +937,16 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                         realm.where(Stories::class.java).findAll()
                     } else if (voiceToBeRecordedInStories.phraseNumberInt == 0) {
                         realm.where(Stories::class.java)
-                            .equalTo("story", voiceToBeRecordedInStories.story)
+                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
                             .findAll()
                     } else {
                         realm.where(Stories::class.java)
-                            .equalTo("story", voiceToBeRecordedInStories.story)
-                            .equalTo("phraseNumberInt", voiceToBeRecordedInStories.phraseNumberInt)
+                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
+                            .equalTo(getString(R.string.phrasenumberint), voiceToBeRecordedInStories.phraseNumberInt)
                             .findAll()
                     }
                 //
-                val mStrings1 = arrayOf("story", "phraseNumberInt", "wordNumberInt")
+                val mStrings1 = arrayOf(getString(R.string.story), getString(R.string.phrasenumberint), getString(R.string.wordnumberint))
                 val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
                 //

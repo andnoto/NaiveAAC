@@ -10,7 +10,6 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.displayFileInAssets
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.findViewById
 
 /**
  * <h1>AskAParentFragment</h1>

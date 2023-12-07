@@ -198,8 +198,8 @@ open class WordPairs : RealmObject() {
                         if (oneWord[0] != null && oneWord[1] != null) {
                             var image1: ResponseImageSearch?
                             var image2: ResponseImageSearch?
-                            image1 = ImageSearchHelper.imageSearch(realm, oneWord[0])
-                            image2 = ImageSearchHelper.imageSearch(realm, oneWord[1])
+                            image1 = ImageSearchHelper.imageSearch(context, realm, oneWord[0])
+                            image2 = ImageSearchHelper.imageSearch(context, realm, oneWord[1])
                             if (image1 != null && image2 != null && oneWord[2] != null && oneWord[3] != null && oneWord[4] != null && oneWord[5] != null && oneWord[6] != null) {
                                 //
                                 realm.beginTransaction()

@@ -150,8 +150,8 @@ class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapt
         // check if the images of word1 and word 2 exist
         val image1: ResponseImageSearch?
         val image2: ResponseImageSearch?
-        image1 = imageSearch(realm, textWord1.text.toString())
-        image2 = imageSearch(realm, textWord2.text.toString())
+        image1 = imageSearch(context, realm, textWord1.text.toString())
+        image2 = imageSearch(context, realm, textWord2.text.toString())
         if (image1 != null && image2 != null) {
             // Note that the realm object was generated with the createObject method
             // and not with the new operator.

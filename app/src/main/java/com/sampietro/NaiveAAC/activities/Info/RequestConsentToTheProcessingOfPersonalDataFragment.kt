@@ -21,7 +21,7 @@ import com.sampietro.NaiveAAC.R
 class RequestConsentToTheProcessingOfPersonalDataFragment : Fragment() {
     var rootView: View? = null
     var textView: TextView? = null
-    var ctext: Context? = null
+    lateinit var ctext: Context
 
     /**
      * context annotation

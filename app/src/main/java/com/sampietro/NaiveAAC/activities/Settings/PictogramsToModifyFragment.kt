@@ -27,7 +27,7 @@ class PictogramsToModifyFragment : SettingsFragmentAbstractClass() {
     private lateinit var realm: Realm
 
     //
-    private var listView: ListView? = null
+    private lateinit var listView: ListView
     private var adapter: PictogramsAllToModifyAdapter? = null
 
     /**
@@ -67,9 +67,9 @@ class PictogramsToModifyFragment : SettingsFragmentAbstractClass() {
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
-        adapter = PictogramsAllToModifyAdapter(ctext, results, listView!!)
+        adapter = PictogramsAllToModifyAdapter(ctext, results, listView)
         //
-        listView!!.adapter = adapter
+        listView.adapter = adapter
         //
         listener.receiveResultSettings(rootView)
         //

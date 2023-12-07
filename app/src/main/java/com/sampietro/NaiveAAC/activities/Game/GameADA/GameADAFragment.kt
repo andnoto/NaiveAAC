@@ -122,7 +122,7 @@ class GameADAFragment : GameFragmentAbstractClass() {
         val layoutManager = LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false)
         recyclerView!!.layoutManager = layoutManager
         val createLists = prepareData1()
-        recyclerView!!.setMediaObjects(createLists)
+        recyclerView!!.setMediaObjectsGameADA(createLists)
         recyclerView!!.setGameUseVideoAndSound(gameUseVideoAndSound)
         val adapter = GameADARecyclerViewAdapter(ctext, realm, createLists)
         recyclerView!!.adapter = adapter

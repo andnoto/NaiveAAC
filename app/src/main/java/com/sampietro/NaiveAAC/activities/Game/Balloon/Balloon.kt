@@ -31,7 +31,7 @@ import android.widget.ImageView
 @SuppressLint("AppCompatCustomView")
 class Balloon : ImageView, AnimatorUpdateListener, Animator.AnimatorListener {
     private var mAnimator: ValueAnimator? = null
-    private var mListener: BalloonListener? = null
+    private lateinit var mListener: BalloonListener
     private var mPopped = false
 
     //
@@ -85,7 +85,7 @@ class Balloon : ImageView, AnimatorUpdateListener, Animator.AnimatorListener {
      * lose one life or lose the game depends on number of life that he has.
      */
     override fun onAnimationEnd(animator: Animator) {
-        if (!mPopped) mListener!!.popBalloon(this, false)
+        if (!mPopped) mListener.popBalloon(this, false)
     }
 
     //
@@ -105,7 +105,7 @@ class Balloon : ImageView, AnimatorUpdateListener, Animator.AnimatorListener {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!mPopped && event.action == MotionEvent.ACTION_DOWN) {
-            mListener!!.popBalloon(this, true)
+            mListener.popBalloon(this, true)
             mPopped = true
             mAnimator!!.cancel()
         }

@@ -42,7 +42,7 @@ class StoriesImportExportFragment : SettingsFragmentAbstractClass() {
 //    var phraseNumberToSearch: EditText? = null
 
     //
-    private var viewModel: VoiceToBeRecordedInStoriesViewModel? = null
+    private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
 
     /**
      * prepares the ui also using a listview and makes the callback to the activity
@@ -80,10 +80,11 @@ class StoriesImportExportFragment : SettingsFragmentAbstractClass() {
         Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
         constructor.
         The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
-         */viewModel = ViewModelProvider(requireActivity()).get(
+         */
+        viewModel = ViewModelProvider(requireActivity()).get(
             VoiceToBeRecordedInStoriesViewModel::class.java
         )
-        viewModel!!.getSelectedItem()
+        viewModel.getSelectedItem()
             .observe(viewLifecycleOwner) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 realm = Realm.getDefaultInstance()

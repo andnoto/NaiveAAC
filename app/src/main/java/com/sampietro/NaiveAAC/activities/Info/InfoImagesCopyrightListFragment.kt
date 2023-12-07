@@ -28,8 +28,8 @@ class InfoImagesCopyrightListFragment : InfoFragmentAbstractClass() {
     private lateinit var realm: Realm
 
     //
-    private var listView: ListView? = null
-    private var adapter: ImagesCopyrightAdapter? = null
+    private lateinit var listView: ListView
+    private lateinit var adapter: ImagesCopyrightAdapter
 
     /**
      * prepares the ui also using a listview and makes the callback to the activity
@@ -65,15 +65,15 @@ class InfoImagesCopyrightListFragment : InfoFragmentAbstractClass() {
         var results: RealmResults<Images>
         results = realm.where(Images::class.java).findAll()
         //
-        val mStrings1 = arrayOf("copyright")
+        val mStrings1 = arrayOf(ctext.getString(R.string.copyright))
         val mStrings2 = arrayOf(Sort.ASCENDING)
         results = results.sort(mStrings1, mStrings2)
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
-        adapter = ImagesCopyrightAdapter(ctext!!, results, listView)
+        adapter = ImagesCopyrightAdapter(ctext, results, listView)
         //
-        listView!!.adapter = adapter
+        listView.adapter = adapter
         //
         return rootView
     }

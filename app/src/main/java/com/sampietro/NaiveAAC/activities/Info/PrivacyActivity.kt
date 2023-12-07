@@ -28,7 +28,7 @@ class PrivacyActivity : InfoActivityAbstractClass() {
         //
         if (savedInstanceState == null) {
             fragmentManager = supportFragmentManager
-            fragmentManager!!.beginTransaction()
+            fragmentManager.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
                 .add(R.id.settings_container, PrivacyFragment(), "PrivacyFragment")
                 .commit()

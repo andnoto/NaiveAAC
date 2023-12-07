@@ -47,20 +47,19 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
     var wordToDisplayIndex = 0
 
     //
-    var activity: Activity? = null
+    lateinit var activity: Activity
 
     //
     private var image: ImageView? = null
     private var frameLayout: FrameLayout? = null
-    private var centerVideoView: CenterVideoView? = null
+    private lateinit var centerVideoView: CenterVideoView
     private var isVideoViewAdded = false
     private var soundMediaPlayer: MediaPlayer? = null
 
     //
-    var gameADAViewPagerOnFragmentEventlistener: GameADAViewPagerOnFragmentEventListener? = null
-    var gameADAViewPagerOnFragmentSoundMediaPlayerlistener: GameADAViewPagerOnFragmentSoundMediaPlayerListener? =
-        null
-    var media_containerOnClickListener: GameADAViewPagerMediaContainerOnClickListener? = null
+    lateinit var gameADAViewPagerOnFragmentEventlistener: GameADAViewPagerOnFragmentEventListener
+    lateinit var gameADAViewPagerOnFragmentSoundMediaPlayerlistener: GameADAViewPagerOnFragmentSoundMediaPlayerListener
+    lateinit var media_containerOnClickListener: GameADAViewPagerMediaContainerOnClickListener
     lateinit var media_container: FrameLayout
 
     //
@@ -76,10 +75,10 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
         super.onAttach(context)
         activity = context as Activity
         gameADAViewPagerOnFragmentEventlistener =
-            activity as GameADAViewPagerOnFragmentEventListener?
+            activity as GameADAViewPagerOnFragmentEventListener
         gameADAViewPagerOnFragmentSoundMediaPlayerlistener =
-            activity as GameADAViewPagerOnFragmentSoundMediaPlayerListener?
-        media_containerOnClickListener = activity as GameADAViewPagerMediaContainerOnClickListener?
+            activity as GameADAViewPagerOnFragmentSoundMediaPlayerListener
+        media_containerOnClickListener = activity as GameADAViewPagerMediaContainerOnClickListener
         //
         ctext = context
         // REALM
@@ -89,9 +88,9 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
         preference_PrintPermissions =
-            sharedPref.getString("preference_PrintPermissions", "DEFAULT")!!
+            sharedPref.getString( getString(R.string.preference_print_permissions), getString(R.string.default_string))!!
         preference_TitleWritingType =
-            sharedPref.getString("preference_title_writing_type", "uppercase")!!
+            sharedPref.getString(getString(R.string.preference_title_writing_type), getString(R.string.uppercase))!!
         //
         /*
         ADAPTED FOR VIDEO AND SOUND
@@ -99,9 +98,9 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
 //        soundMediaPlayer = new MediaPlayer();
         //
         centerVideoView = CenterVideoView(context)
-        centerVideoView!!.setOnInfoListener { mediaPlayer, i, i1 ->
+        centerVideoView.setOnInfoListener { mediaPlayer, i, i1 ->
             if (i == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                centerVideoView!!.setBackgroundResource(0)
+                centerVideoView.setBackgroundResource(0)
             }
             false
         }
@@ -142,16 +141,16 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
         //
         val bundle = this.arguments
         if (bundle != null) {
-            sharedStory = bundle.getString("STORY TO DISPLAY")
+            sharedStory = bundle.getString(ctext.getString(R.string.story_to_display))
             //            phraseToDisplayIndex = bundle.getInt("PHRASE TO DISPLAY INDEX");
-            wordToDisplayIndex = bundle.getInt("WORD TO DISPLAY INDEX")
-            gameUseVideoAndSound = bundle.getString("GAME USE VIDEO AND SOUND")
+            wordToDisplayIndex = bundle.getInt(ctext.getString(R.string.word_to_display_index))
+            gameUseVideoAndSound = bundle.getString(ctext.getString(R.string.game_use_video_and_sound))
             //
             resultsStories = realm.where(Stories::class.java)
                 .beginGroup()
-                .equalTo("story", sharedStory)
+                .equalTo(ctext.getString(R.string.story), sharedStory)
                 .equalTo(
-                    "wordNumberIntInTheStory",
+                    ctext.getString(R.string.wordnumberintinthestory),
                     wordToDisplayIndex + 1
                 ) //                            .equalTo("phraseNumberInt", phraseToDisplayIndex)
                 //                            .notEqualTo("wordNumberInt", 0)
@@ -176,11 +175,12 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
             val imageGameImage2 = rootView.findViewById<ImageView>(R.id.gameimage2)
             imageGameImage2.visibility = View.INVISIBLE
             val negationAdverbImageToSearchFor = GrammarHelper.searchNegationAdverb(
+                ctext,
                 wordToDisplay!!.word!!.lowercase(Locale.getDefault()), realm
             )
-            if (negationAdverbImageToSearchFor != "non trovato") {
+            if (negationAdverbImageToSearchFor != ctext.getString(R.string.non_trovato)) {
                 // INTERNAL MEMORY IMAGE SEARCH
-                val uriToSearch = ImageSearchHelper.searchUri(realm, negationAdverbImageToSearchFor)
+                val uriToSearch = ImageSearchHelper.searchUri(ctext, realm, negationAdverbImageToSearchFor)
                 // imageGameImage2.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 addImage("S", uriToSearch, imageGameImage2, 200, 200)
                 imageGameImage2.visibility = View.VISIBLE
@@ -193,7 +193,7 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
                             wordToDisplay!!.word,
                             TextToSpeech.QUEUE_FLUSH,
                             null,
-                            "prova tts"
+                            ctext.getString(R.string.prova_tts)
                         )
                     } else {
                         Toast.makeText(ctext, status, Toast.LENGTH_SHORT).show()
@@ -207,10 +207,10 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
             return
         }
         // remove old video views
-        removeVideoView(centerVideoView!!)
+        removeVideoView(centerVideoView)
         //
         val resultsSounds =
-            realm.where(Sounds::class.java).equalTo("descrizione", wordToDisplay!!.sound).findAll()
+            realm.where(Sounds::class.java).equalTo(ctext.getString(R.string.descrizione), wordToDisplay!!.sound).findAll()
         var soundPath: String? = null
         if (resultsSounds.size != 0) {
             soundPath = resultsSounds[0]!!.uri
@@ -224,7 +224,7 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
                     soundMediaPlayer!!.setDataSource(soundPath)
                     soundMediaPlayer!!.prepare()
                     soundMediaPlayer!!.start()
-                    gameADAViewPagerOnFragmentSoundMediaPlayerlistener!!.receiveResultGameFragment(
+                    gameADAViewPagerOnFragmentSoundMediaPlayerlistener.receiveResultGameFragment(
                         rootView,
                         soundMediaPlayer
                     )
@@ -238,7 +238,7 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
         frameLayout = rootView.findViewById(R.id.gameimageFL)
         //
         val resultsVideos =
-            realm.where(Videos::class.java).equalTo("descrizione", wordToDisplay!!.video).findAll()
+            realm.where(Videos::class.java).equalTo(ctext.getString(R.string.descrizione), wordToDisplay!!.video).findAll()
         var videoPath: String? = null
         if (resultsVideos.size != 0) {
             videoPath = resultsVideos[0]!!.uri
@@ -251,21 +251,21 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
                 }
                 //
                 val imageSize = calculateImageSize()
-                centerVideoView!!.layoutParams.height = imageSize
-                centerVideoView!!.layoutParams.width = imageSize
+                centerVideoView.layoutParams.height = imageSize
+                centerVideoView.layoutParams.width = imageSize
                 //
-                centerVideoView!!.setBackgroundResource(R.drawable.white_background)
-                centerVideoView!!.setVideoPath(videoPath)
-                centerVideoView!!.seekTo(1)
-                centerVideoView!!.start()
-                centerVideoView!!.setOnPreparedListener { mp ->
+                centerVideoView.setBackgroundResource(R.drawable.white_background)
+                centerVideoView.setVideoPath(videoPath)
+                centerVideoView.seekTo(1)
+                centerVideoView.start()
+                centerVideoView.setOnPreparedListener { mp ->
                     mp.setVolume(0f, 0f)
                     mp.isLooping = true
                 }
                 //
                 media_container = rootView.findViewById(R.id.gameimageFL)
                 media_container.setOnClickListener(View.OnClickListener { view ->
-                    media_containerOnClickListener!!.receiveOnClickGameImage(
+                    media_containerOnClickListener.receiveOnClickGameImage(
                         view
                     )
                 })
@@ -273,7 +273,7 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
         }
         /*
 
-         */gameADAViewPagerOnFragmentEventlistener!!.receiveWordToDisplayIndexGameFragment(
+         */gameADAViewPagerOnFragmentEventlistener.receiveWordToDisplayIndexGameFragment(
             rootView,
             wordToDisplayIndex + 1
         )
@@ -331,7 +331,7 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
      * @param videoView videoview to remove
      */
     private fun removeVideoView(videoView: VideoView?) {
-        centerVideoView!!.setBackgroundResource(R.drawable.white_background)
+        centerVideoView.setBackgroundResource(R.drawable.white_background)
         val parentViewParent = videoView?.parent ?: return
         val parent: ViewGroup = parentViewParent as ViewGroup? ?: return
         val indexOfChild = parent.indexOfChild(videoView)
@@ -350,8 +350,8 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
     private fun addVideoView() {
         frameLayout!!.addView(centerVideoView)
         isVideoViewAdded = true
-        centerVideoView!!.visibility = View.VISIBLE
-        centerVideoView!!.alpha = 1f
+        centerVideoView.visibility = View.VISIBLE
+        centerVideoView.alpha = 1f
     }
 
     /**
@@ -372,7 +372,7 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
             e.printStackTrace()
         }
         //
-        centerVideoView!!.stopPlayback()
+        centerVideoView.stopPlayback()
     }
     //
     /**

@@ -8,6 +8,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.getString
 import io.realm.Realm
 
 /**
@@ -55,10 +57,10 @@ class GameADAViewPagerAdapter
         val bundle = Bundle()
         val fragment: GameADAViewPagerFragment?
         //
-        bundle.putString("STORY TO DISPLAY", sharedStory)
+        bundle.putString(context.getString(R.string.story_to_display), sharedStory)
         //        bundle.putInt("PHRASE TO DISPLAY INDEX", phraseToDisplayIndex);
-        bundle.putInt("WORD TO DISPLAY INDEX", position)
-        bundle.putString("GAME USE VIDEO AND SOUND", gameUseVideoAndSound)
+        bundle.putInt(context.getString(R.string.word_to_display_index), position)
+        bundle.putString(context.getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
         //
         fragment = GameADAViewPagerFragment()
         fragment.arguments = bundle

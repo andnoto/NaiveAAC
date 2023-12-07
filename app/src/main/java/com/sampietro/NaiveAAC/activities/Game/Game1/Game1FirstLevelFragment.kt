@@ -57,8 +57,8 @@ class Game1FirstLevelFragment : GameFragmentAbstractClass() {
         if (bundle != null) {
             wordToSearchSecondLevelMenu =
                 bundle.getString(getString(R.string.word_to_search_second_level_menu))
-            leftArrow = bundle.getString("LEFT ARROW")
-            rightArrow = bundle.getString("RIGHT ARROW")
+            leftArrow = bundle.getString(getString(R.string.left_arrow))
+            rightArrow = bundle.getString(getString(R.string.right_arrow))
             //
             val textFirstLevelMenuView =
                 rootView.findViewById<View>(R.id.titlefirstlevelmenu) as TextView
@@ -66,7 +66,7 @@ class Game1FirstLevelFragment : GameFragmentAbstractClass() {
                 wordToSearchSecondLevelMenu!!.uppercase(Locale.getDefault())
             // ricerca immagine
             val image: ResponseImageSearch?
-            image = ImageSearchHelper.imageSearch(realm, wordToSearchSecondLevelMenu)
+            image = ImageSearchHelper.imageSearch(ctext, realm, wordToSearchSecondLevelMenu)
             val imageFirstLevelMenuView = rootView.findViewById<ImageView>(R.id.imagefirstlevelmenu)
             imageFirstLevelMenuView.contentDescription = wordToSearchSecondLevelMenu!!.uppercase(
                 Locale.getDefault()

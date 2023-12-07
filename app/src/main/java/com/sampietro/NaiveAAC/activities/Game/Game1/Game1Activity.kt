@@ -21,11 +21,9 @@ import android.content.Intent
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
-import androidx.annotation.RequiresApi
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import com.sampietro.NaiveAAC.activities.Game.Utils.HistoryRegistrationHelper
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
@@ -37,11 +35,12 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.print.PrintHelper
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases
 import com.sampietro.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromFileUsingPicasso
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromUrlUsingPicasso
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.destroyRecognizer
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.prepareSpeechRecognizer
-import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import io.realm.Realm
 import java.io.File
@@ -134,7 +133,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
     var wordToSearchSecondLevelMenu: String? = null
 
     //
-    lateinit var preference_PrintPermissions: String
+    var preference_PrintPermissions: String? = null
     var preference_AllowedMarginOfError = 0
 
     //
@@ -167,8 +166,8 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
     //   - a) Sets the content view to be the layout with the ViewPager2.
     //   - b) Hooks up the FragmentStateAdapter to the ViewPager2 objects.
     //
-    private var mViewPager: ViewPager2? = null
-    private var mAdapter: Game1ViewPagerAdapter? = null
+    private lateinit var mViewPager: ViewPager2
+    private lateinit var mAdapter: Game1ViewPagerAdapter
 //    private val lifecycle: Any? = null
     var callbackViewPager2: OnPageChangeCallback = object : OnPageChangeCallback() {
         /**
@@ -188,7 +187,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
             //  update activity variables
             val resultsWordPairs = realm.where(WordPairs::class.java)
                 .beginGroup()
-                .equalTo("isMenuItem", "TLM")
+                .equalTo(getString(R.string.is_menu_item), getString(R.string.tlm))
                 .endGroup()
                 .findAll()
             val resultsWordPairsSize = resultsWordPairs.size
@@ -299,7 +298,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
         preference_PrintPermissions =
-            sharedPref.getString(getString(R.string.preference_print_permissions), "DEFAULT")!!
+            sharedPref.getString(getString(R.string.preference_print_permissions), "DEFAULT")
         preference_AllowedMarginOfError =
             sharedPref.getInt(getString(R.string.preference_allowed_margin_of_error), 20)
         // TTS
@@ -310,9 +309,9 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
 //        val lifecycle = getLifecycle()
 //        mAdapter = Game1ViewPagerAdapter(supportFragmentManager, lifecycle, this, realm)
         mAdapter = Game1ViewPagerAdapter(this, this, realm)
-        mViewPager!!.adapter = mAdapter
+        mViewPager.adapter = mAdapter
         // Register page change callback
-        mViewPager!!.registerOnPageChangeCallback(callbackViewPager2)
+        mViewPager.registerOnPageChangeCallback(callbackViewPager2)
     }
 
     /**
@@ -339,7 +338,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
             tTS1!!.shutdown()
         }
         // Unregister page change callback
-        mViewPager!!.unregisterOnPageChangeCallback(callbackViewPager2)
+        mViewPager.unregisterOnPageChangeCallback(callbackViewPager2)
     }
 
     /**
@@ -572,7 +571,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
      * 2) convert RealmResults<Model> to ArrayList<Model>
      * 3) record History and initiate Fragment transaction
      *
-     * @see HistoryRegistrationHelper.historyRegistration
+     * @see GameHelper.historyRegistration
      *
      * @see fragmentTransactionStart
     </Model></Model> */
@@ -591,7 +590,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
             resultsWordPairsCenterList =
                 GetResultsWordPairsList.getResultsWordPairsList(realm, resultsWordPairsCenter)
             // record History and initiate Fragment transaction
-            HistoryRegistrationHelper.historyRegistration(
+            GameHelper.historyRegistration(
                 context, realm,
                 resultsWordPairsCenterList!!, resultsWordPairsCenterSize, false
             )
@@ -693,7 +692,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
      *
      * @see refineSearchWordPairs
      *
-     * @see HistoryRegistrationHelper.historyRegistration
+     * @see GameHelper.historyRegistration
      *
      * @see com.sampietro.NaiveAAC.activities.history.History
      *
@@ -745,7 +744,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                 // proposing in the right column the choices compatible with the choice (it should be a verb)
                 var image: ResponseImageSearch?
                 numberOfWordsChosen++
-                val middleColumnContentType = GrammarHelper.searchType(middleColumnContent, realm)
+                val middleColumnContentType = GrammarHelper.searchType(context, middleColumnContent, realm)
                 // type = 3 verbs
                 if (middleColumnContentType == "3") {
                     when (view!!.id) {
@@ -758,7 +757,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                             leftColumnMenuPhraseNumber = 0
                             // image search
 //                            image = null
-                            image = ImageSearchHelper.imageSearch(realm, leftColumnContent)
+                            image = ImageSearchHelper.imageSearch(context, realm, leftColumnContent)
                             if (image != null) {
                                 leftColumnContentUrlType = image.uriType
                                 leftColumnContentUrl = image.uriToSearch
@@ -792,7 +791,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                             rightColumnMenuPhraseNumber = 0
                             // image search
 //                            image = null
-                            image = ImageSearchHelper.imageSearch(realm, rightColumnContent)
+                            image = ImageSearchHelper.imageSearch(context, realm, rightColumnContent)
                             if (image != null) {
                                 rightColumnContentUrlType = image.uriType
                                 rightColumnContentUrl = image.uriToSearch
@@ -823,7 +822,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                             middleColumnMenuPhraseNumber = 0
                             // image search
 //                            image = null
-                            image = ImageSearchHelper.imageSearch(realm, middleColumnContent)
+                            image = ImageSearchHelper.imageSearch(context, realm, middleColumnContent)
                             if (image != null) {
                                 middleColumnContentUrlType = image.uriType
                                 middleColumnContentUrl = image.uriToSearch
@@ -860,7 +859,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                                 //
                                 if (resultsWordPairsLeftSize > 1) {
                                     // History registration
-                                    HistoryRegistrationHelper.historyRegistration(
+                                    GameHelper.historyRegistration(
                                         context, realm,
                                         resultsWordPairsLeftList!!, resultsWordPairsLeftSize, true
                                     )
@@ -909,7 +908,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                             middleColumnMenuPhraseNumber = 0
                             // image search
 //                            image = null
-                            image = ImageSearchHelper.imageSearch(realm, middleColumnContent)
+                            image = ImageSearchHelper.imageSearch(context, realm, middleColumnContent)
                             if (image != null) {
                                 middleColumnContentUrlType = image.uriType
                                 middleColumnContentUrl = image.uriToSearch
@@ -946,7 +945,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                                 //
                                 if (resultsWordPairsRightSize > 1) {
                                     // History registration
-                                    HistoryRegistrationHelper.historyRegistration(
+                                    GameHelper.historyRegistration(
                                         context, realm,
                                         resultsWordPairsRightList!!, resultsWordPairsRightSize, false
                                     )
@@ -997,7 +996,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                             // image search
 //                          image = null
                             var image: ResponseImageSearch?
-                            image = ImageSearchHelper.imageSearch(realm, leftColumnContent)
+                            image = ImageSearchHelper.imageSearch(context, realm, leftColumnContent)
                             if (image != null) {
                                 leftColumnContentUrlType = image.uriType
                                 leftColumnContentUrl = image.uriToSearch
@@ -1031,7 +1030,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                             // image search
 //                          image = null
                             var image: ResponseImageSearch?
-                            image = ImageSearchHelper.imageSearch(realm, rightColumnContent)
+                            image = ImageSearchHelper.imageSearch(context, realm, rightColumnContent)
                             if (image != null) {
                                 rightColumnContentUrlType = image.uriType
                                 rightColumnContentUrl = image.uriToSearch
@@ -1055,7 +1054,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                                 leftColumnContent,
                                 TextToSpeech.QUEUE_FLUSH,
                                 null,
-                                "prova tts"
+                                getString(R.string.prova_tts)
                             )
                         } else {
                             Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
@@ -1082,7 +1081,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                                 middleColumnContent,
                                 TextToSpeech.QUEUE_FLUSH,
                                 null,
-                                "prova tts"
+                                getString(R.string.prova_tts)
                             )
                         } else {
                             Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
@@ -1109,7 +1108,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                                 rightColumnContent,
                                 TextToSpeech.QUEUE_FLUSH,
                                 null,
-                                "prova tts"
+                                getString(R.string.prova_tts)
                             )
                         } else {
                             Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
@@ -1147,7 +1146,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         middleColumnContent = resultWordPairs!!.word2
         // search for the corresponding image
         var image: ResponseImageSearch?
-        image = ImageSearchHelper.imageSearch(realm, middleColumnContent)
+        image = ImageSearchHelper.imageSearch(context, realm, middleColumnContent)
         if (image != null) {
             middleColumnContentUrlType = image.uriType
             middleColumnContentUrl = image.uriToSearch
@@ -1178,7 +1177,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
             //
             if (resultsWordPairsLeftSize > 1) {
                 // History registration
-                HistoryRegistrationHelper.historyRegistration(
+                GameHelper.historyRegistration(
                     context, realm,
                     resultsWordPairsLeftList!!, resultsWordPairsLeftSize, true
                 )
@@ -1209,7 +1208,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
             //
             if (resultsWordPairsRightSize > 1) {
                 // History registration
-                HistoryRegistrationHelper.historyRegistration(
+                GameHelper.historyRegistration(
                     context, realm,
                     resultsWordPairsRightList!!, resultsWordPairsRightSize, false
                 )
@@ -1232,7 +1231,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         // 2) if the first word chosen (the middle one) is a verb, check if I have only one
         // possible choice in the recycler views on the right and left
         // in this case I register the choice
-        val middleColumnContentType = GrammarHelper.searchType(middleColumnContent, realm)
+        val middleColumnContentType = GrammarHelper.searchType(context, middleColumnContent, realm)
         // type = 3 verbs
         if (middleColumnContentType != "3") {
             if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 0) {
@@ -1252,7 +1251,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                 rightColumnUriPremiumVideo = resultWordPairs!!.uriPremiumVideo
                 // image search
 //                image = null
-                image = ImageSearchHelper.imageSearch(realm, middleColumnContent)
+                image = ImageSearchHelper.imageSearch(context, realm, middleColumnContent)
                 if (image != null) {
                     middleColumnContentUrlType = image.uriType
                     middleColumnContentUrl = image.uriToSearch
@@ -1279,7 +1278,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                     //
                     if (resultsWordPairsLeftSize > 1) {
                         // History registration
-                        HistoryRegistrationHelper.historyRegistration(
+                        GameHelper.historyRegistration(
                             context, realm,
                             resultsWordPairsLeftList!!, resultsWordPairsLeftSize, true
                         )
@@ -1321,7 +1320,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                 middleColumnMenuPhraseNumber = 0
                 // image search
 //                image = null
-                image = ImageSearchHelper.imageSearch(realm, middleColumnContent)
+                image = ImageSearchHelper.imageSearch(context, realm, middleColumnContent)
                 if (image != null) {
                     middleColumnContentUrlType = image.uriType
                     middleColumnContentUrl = image.uriToSearch
@@ -1350,7 +1349,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                     //
                     if (resultsWordPairsRightSize > 1) {
                         // History registration
-                        HistoryRegistrationHelper.historyRegistration(
+                        GameHelper.historyRegistration(
                             context, realm,
                             resultsWordPairsRightList, resultsWordPairsRightSize, false
                         )
@@ -1382,14 +1381,14 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                 // 1c) if I have only one possible choice verb both on the left and on the right,
                 // I propose the choice both in the column on the right and in the one on the left
                 // History registration
-                HistoryRegistrationHelper.historyRegistration(
+                GameHelper.historyRegistration(
                     context, realm,
                     resultsWordPairsLeftList, resultsWordPairsLeftSize, true
                 )
                 sharedLastPhraseNumber =
                     sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
                 leftColumnMenuPhraseNumber = sharedLastPhraseNumber
-                HistoryRegistrationHelper.historyRegistration(
+                GameHelper.historyRegistration(
                     context, realm,
                     resultsWordPairsRightList, resultsWordPairsRightSize, false
                 )
@@ -1440,7 +1439,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         leftColumnMenuPhraseNumber = 0
         // image search
         var image: ResponseImageSearch?
-        image = ImageSearchHelper.imageSearch(realm, leftColumnContent)
+        image = ImageSearchHelper.imageSearch(context, realm, leftColumnContent)
         if (image != null) {
             leftColumnContentUrlType = image.uriType
             leftColumnContentUrl = image.uriToSearch
@@ -1466,7 +1465,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         rightColumnMenuPhraseNumber = 0
         // image search
         var image: ResponseImageSearch?
-        image = ImageSearchHelper.imageSearch(realm, rightColumnContent)
+        image = ImageSearchHelper.imageSearch(context, realm, rightColumnContent)
         if (image != null) {
             rightColumnContentUrlType = image.uriType
             rightColumnContentUrl = image.uriToSearch
@@ -1497,13 +1496,14 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         var resultsWordPairsSize = resultsWordPairsList!!.size
         while (i < resultsWordPairsSize) {
             resultWordPairs = resultsWordPairsList[i]
-            val word1Type = GrammarHelper.searchType(resultWordPairs!!.word1, realm)
+            val word1Type = GrammarHelper.searchType(context, resultWordPairs!!.word1, realm)
             // type = 3 verbs
-            val word2Type = GrammarHelper.searchType(resultWordPairs!!.word2, realm)
+            val word2Type = GrammarHelper.searchType(context, resultWordPairs!!.word2, realm)
             //
-            auxiliaryVerb = GrammarHelper.searchAuxiliaryVerbs(resultWordPairs!!.word1, realm)
-            servileVerb = GrammarHelper.searchServileVerbs(resultWordPairs!!.word1, realm)
-            if (word1Type == "3" && word2Type == "3" && auxiliaryVerb != "Is an auxiliary verb" && servileVerb != "Is a servile verb"
+            auxiliaryVerb = GrammarHelper.searchAuxiliaryVerbs(context, resultWordPairs!!.word1, realm)
+            servileVerb = GrammarHelper.searchServileVerbs(context, resultWordPairs!!.word1, realm)
+            if (word1Type == "3" && word2Type == "3"
+                && auxiliaryVerb != getString(R.string.is_an_auxiliary_verb) && servileVerb != getString(R.string.is_a_servile_verb)
                 || word1Type != "3" && word2Type != "3"
             ) {
                 resultsWordPairsList.removeAt(i)
@@ -1568,20 +1568,21 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         val verbOfMovement: String
         //
         val leftColumnContentIsAServileVerb =
-            GrammarHelper.searchServileVerbs(leftColumnContent, realm)
-        if (leftColumnContentIsAServileVerb == "Is a servile verb") {
+            GrammarHelper.searchServileVerbs(context, leftColumnContent, realm)
+        if (leftColumnContentIsAServileVerb == getString(R.string.is_a_servile_verb)) {
             formToSearchRealm = getString(R.string.s1)
             val conjugationOfTheVerb =
-                GrammarHelper.searchVerb(leftColumnContent, formToSearchRealm, realm)
+                GrammarHelper.searchVerb(context, leftColumnContent, formToSearchRealm, realm)
             leftColumnContent = conjugationOfTheVerb
         } else {
             if (leftColumnContent != sharedLastPlayer && leftColumnContent != getString(R.string.io)) {
                 // adds the corresponding article
                 // search if plural
                 // if gender male / female
-                pluralToSearchRealm = GrammarHelper.searchPlural(leftColumnContent, realm)
-                genderToSearchRealm = GrammarHelper.searchGender(leftColumnContent!!, realm)
+                pluralToSearchRealm = GrammarHelper.searchPlural(context, leftColumnContent, realm)
+                genderToSearchRealm = GrammarHelper.searchGender(context, leftColumnContent!!, realm)
                 val articleToSearch = GrammarHelper.searchArticle(
+                    context,
                     leftColumnContent!!,
                     genderToSearchRealm, pluralToSearchRealm, "", realm
                 )
@@ -1589,7 +1590,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
             }
         }
         // verb group verb
-        if (leftColumnContentIsAServileVerb != "Is a servile verb") {
+        if (leftColumnContentIsAServileVerb != getString(R.string.is_a_servile_verb)) {
             if (!(leftColumnContent == " " && rightColumnContent == " ")) {
                 formToSearchRealm = if (leftColumnContent == getString(R.string.io)) {
                     getString(R.string.s1)
@@ -1606,7 +1607,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                 }
                 middleColumnContentVerbInTheInfinitiveForm = middleColumnContent
                 val conjugationOfTheVerb =
-                    GrammarHelper.searchVerb(middleColumnContent, formToSearchRealm, realm)
+                    GrammarHelper.searchVerb(context, middleColumnContent, formToSearchRealm, realm)
                 middleColumnContent = conjugationOfTheVerb
             }
         } else {
@@ -1638,12 +1639,14 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                     // search if plural
                     // if gender male / female
                     verbOfMovement = GrammarHelper.searchVerbsOfMovement(
+                        context,
                         middleColumnContentVerbInTheInfinitiveForm,
                         realm
                     )
-                    pluralToSearchRealm = GrammarHelper.searchPlural(rightColumnContent, realm)
-                    genderToSearchRealm = GrammarHelper.searchGender(rightColumnContent!!, realm)
+                    pluralToSearchRealm = GrammarHelper.searchPlural(context, rightColumnContent, realm)
+                    genderToSearchRealm = GrammarHelper.searchGender(context, rightColumnContent!!, realm)
                     val articleToSearch = GrammarHelper.searchArticle(
+                        context,
                         rightColumnContent!!,
                         genderToSearchRealm, pluralToSearchRealm, verbOfMovement, realm
                     )
@@ -1664,7 +1667,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                 + " " + rightColumnContent)
         tTS1 = TextToSpeech(this) { status ->
             if (status != TextToSpeech.ERROR) {
-                tTS1!!.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, "prova tts")
+                tTS1!!.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, getString(R.string.prova_tts))
             } else {
                 Toast.makeText(applicationContext, status, Toast.LENGTH_SHORT).show()
             }
@@ -1758,34 +1761,6 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         } else {
             fragmentTransactionStart()
         }
-    }
-
-    /**
-     * used for printing load an image in a target bitmap from a file
-     *
-     * @param file file of origin
-     * @param target target bitmap
-     * @see Picasso
-     */
-    fun getTargetBitmapFromFileUsingPicasso(file: File?, target: Target?) {
-        Picasso.get()
-            .load(file!!)
-            .resize(200, 200)
-            .into(target!!)
-    }
-
-    /**
-     * used for printing load an image in a target bitmap from a url
-     *
-     * @param url string with url of origin
-     * @param target target bitmap
-     * @see Picasso
-     */
-    fun getTargetBitmapFromUrlUsingPicasso(url: String?, target: Target?) {
-        Picasso.get()
-            .load(url)
-            .resize(200, 200)
-            .into(target!!)
     }
 
     /**

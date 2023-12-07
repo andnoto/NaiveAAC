@@ -42,7 +42,7 @@ class StoriesListFragment : SettingsFragmentAbstractClass() {
     var phraseNumberToSearch: EditText? = null
 
     //
-    private var viewModel: VoiceToBeRecordedInStoriesViewModel? = null
+    private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
 
     /**
      * prepares the ui also using a listview and makes the callback to the activity
@@ -83,7 +83,7 @@ class StoriesListFragment : SettingsFragmentAbstractClass() {
          */viewModel = ViewModelProvider(requireActivity()).get(
             VoiceToBeRecordedInStoriesViewModel::class.java
         )
-        viewModel!!.getSelectedItem()
+        viewModel.getSelectedItem()
             .observe(viewLifecycleOwner) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 realm = Realm.getDefaultInstance()
@@ -98,22 +98,22 @@ class StoriesListFragment : SettingsFragmentAbstractClass() {
                     if (voiceToBeRecordedInStories.phraseNumberInt == 0) {
                         realm.where(Stories::class.java)
                             .equalTo(
-                                "story",
+                                getString(R.string.story),
                                 voiceToBeRecordedInStories.story!!.lowercase(Locale.getDefault())
                             )
                             .findAll()
                     } else {
                         realm.where(Stories::class.java)
                             .equalTo(
-                                "story",
+                                getString(R.string.story),
                                 voiceToBeRecordedInStories.story!!.lowercase(Locale.getDefault())
                             )
-                            .equalTo("phraseNumberInt", voiceToBeRecordedInStories.phraseNumberInt)
+                            .equalTo(getString(R.string.phrasenumberint), voiceToBeRecordedInStories.phraseNumberInt)
                             .findAll()
                     }
                 }
                 //
-                val mStrings1 = arrayOf("story", "phraseNumberInt", "wordNumberInt")
+                val mStrings1 = arrayOf(getString(R.string.story), getString(R.string.phrasenumberint), getString(R.string.wordnumberint))
                 val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
                 //

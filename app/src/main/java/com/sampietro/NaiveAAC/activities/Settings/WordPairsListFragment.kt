@@ -26,7 +26,7 @@ class WordPairsListFragment : SettingsFragmentAbstractClass() {
     private lateinit var realm: Realm
 
     //
-    private var listView: ListView? = null
+    private lateinit var listView: ListView
     private var adapter: WordPairsAdapter? = null
 
     /**
@@ -65,9 +65,9 @@ class WordPairsListFragment : SettingsFragmentAbstractClass() {
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
-        adapter = WordPairsAdapter(ctext, results, listView!!)
+        adapter = WordPairsAdapter(ctext, results, listView)
         //
-        listView!!.adapter = adapter
+        listView.adapter = adapter
         //
         listener.receiveResultSettings(rootView)
         //

@@ -3,12 +3,13 @@ package com.sampietro.NaiveAAC.activities.Graphics
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
-import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.findViewById
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import io.realm.Realm
 import java.io.File
 import java.io.IOException
@@ -123,7 +124,35 @@ object GraphicsHelper {
             .resize(width, height)
             .into(img)
     }
+    /**
+     * used for printing load an image in a target bitmap from a file
+     *
+     * @param file file of origin
+     * @param target target bitmap
+     * @see Picasso
+     */
+    @JvmStatic
+    fun getTargetBitmapFromFileUsingPicasso(file: File?, target: Target?) {
+        Picasso.get()
+            .load(file!!)
+            .resize(200, 200)
+            .into(target!!)
+    }
 
+    /**
+     * used for printing load an image in a target bitmap from a url
+     *
+     * @param url string with url of origin
+     * @param target target bitmap
+     * @see Picasso
+     */
+    @JvmStatic
+    fun getTargetBitmapFromUrlUsingPicasso(url: String?, target: Target?) {
+        Picasso.get()
+            .load(url)
+            .resize(200, 200)
+            .into(target!!)
+    }
     /**
      * inserts an image whose address is found via realm into a view
      * Refer to [picasso](https://square.github.io/picasso/#license)
@@ -181,5 +210,29 @@ object GraphicsHelper {
         } catch (ex: IOException) {
             return
         }
+    }
+    //
+    /**
+     * used for printing create single bitmap image from multiple bitmap images placing them horizontally
+     * Refer to [stackoverflow](https://stackoverflow.com/questions/34719987/merging-two-images-into-one-image#:~:text=Here%20is%20the%20code%3A%20Used%20to%20combine%20Images&text=getHeight()%2C%20firstImage.,(firstImage%2C%20SecondImage)%3B%20im.)
+     * answer of [caulitomaz](https://stackoverflow.com/users/2026359/caulitomaz)
+     *
+     * @param firstImage bitmap of first image
+     * @param secondImage bitmap of second image
+     * @return bitmap single image created from multiple images
+     */
+    private fun createSingleImageFromMultipleImagesPlacingThemHorizontally(
+        firstImage: Bitmap,
+        secondImage: Bitmap
+    ): Bitmap {
+        val result = Bitmap.createBitmap(
+            firstImage.width + secondImage.width,
+            firstImage.height,
+            firstImage.config
+        )
+        val canvas = Canvas(result)
+        canvas.drawBitmap(firstImage, 0f, 0f, null)
+        canvas.drawBitmap(secondImage, firstImage.width.toFloat(), 0f, null)
+        return result
     }
 }

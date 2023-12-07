@@ -27,7 +27,7 @@ class ImagesFragment : SettingsFragmentAbstractClass() {
     private lateinit var realm: Realm
 
     //
-    private var listView: ListView? = null
+    private lateinit var listView: ListView
     private var adapter: ImagesAdapter? = null
 
     /**
@@ -66,9 +66,9 @@ class ImagesFragment : SettingsFragmentAbstractClass() {
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
-        adapter = ImagesAdapter(ctext, results, listView!!)
+        adapter = ImagesAdapter(ctext, results, listView)
         //
-        listView!!.adapter = adapter
+        listView.adapter = adapter
         //
         listener.receiveResultSettings(rootView)
         //

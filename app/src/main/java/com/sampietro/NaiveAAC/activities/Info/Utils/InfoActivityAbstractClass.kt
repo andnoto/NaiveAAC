@@ -30,8 +30,8 @@ import androidx.fragment.app.FragmentManager
  * @see com.sampietro.NaiveAAC.activities.Game.Utils.OnFragmentEventListenerGame
  */
 abstract class InfoActivityAbstractClass : AppCompatActivity(), OnFragmentEventListenerInfo {
-    @JvmField
-    var fragmentManager: FragmentManager? = null
+//    @JvmField
+    lateinit var fragmentManager: FragmentManager
 
     //
     var rootViewImageFragment: View? = null

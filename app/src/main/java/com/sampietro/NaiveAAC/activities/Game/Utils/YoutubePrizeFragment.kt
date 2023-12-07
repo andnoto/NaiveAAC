@@ -32,21 +32,21 @@ import java.util.*
 class YoutubePrizeFragment : Fragment() {
     lateinit var rootView: View
     var textView: TextView? = null
-    var ctext: Context? = null
+    lateinit var ctext: Context
 
     //
     var mWebView: WebView? = null
-    var videoStr1 = "<html><body>Promo video from <br>"
-    var videoStr2Portrait =
+    val videoStr1 = "<html><body>Promo video from <br>"
+    val videoStr2Portrait =
         "<iframe width=\"426\" height=\"240\" src=\"https://www.youtube.com/embed/"
-    var videoStr2Landscape =
+    val videoStr2Landscape =
         "<iframe width=\"213\" height=\"120\" src=\"https://www.youtube.com/embed/"
-    var videoStr3 = "\" frameborder=\"0\" allowfullscreen></iframe></body></html>"
-    var wwwUrlSplitBy = "v="
-    var androidUrlSplitBy = "be/"
+    val videoStr3 = "\" frameborder=\"0\" allowfullscreen></iframe></body></html>"
+    val wwwUrlSplitBy = "v="
+    val androidUrlSplitBy = "be/"
 
     //
-    var listener: onFragmentEventListenerYoutubePrize? = null
+    lateinit var listener: onFragmentEventListenerYoutubePrize
 
     /**
      * <h1>onFragmentEventListenerYoutubePrize</h1>
@@ -113,7 +113,7 @@ class YoutubePrizeFragment : Fragment() {
             // has been completed and therefore you can continue
             mWebView!!.visibility = View.INVISIBLE
             //
-            listener!!.receiveResultOnCompletatioVideoFromYoutubePrizeFragment(rootView)
+            listener.receiveResultOnCompletatioVideoFromYoutubePrizeFragment(rootView)
         } else {
             // build your own src link with your video ID
             val oneWord: Array<String?>
@@ -151,7 +151,7 @@ class YoutubePrizeFragment : Fragment() {
                 override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                     val TIME_OUT = 180000
                     Handler(Looper.getMainLooper()).postDelayed({
-                        listener!!.receiveResultOnCompletatioVideoFromYoutubePrizeFragment(
+                        listener.receiveResultOnCompletatioVideoFromYoutubePrizeFragment(
                             rootView
                         )
                                                                 }, TIME_OUT.toLong())
@@ -166,7 +166,7 @@ class YoutubePrizeFragment : Fragment() {
             ws.javaScriptEnabled = true
             mWebView!!.loadData(videoStr, "text/html", "utf-8")
         }
-        listener!!.receiveResultImagesFromYoutubePrizeFragment(rootView)
+        listener.receiveResultImagesFromYoutubePrizeFragment(rootView)
         return rootView
     }
 

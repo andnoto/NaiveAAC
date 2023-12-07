@@ -24,12 +24,12 @@ import androidx.fragment.app.Fragment
  */
 class ChoiseOfGameToSetFragment : Fragment() {
     lateinit var rootView: View
-    var textView: TextView? = null
+//    var textView: TextView? = null
 
     //
     var textGameToSet: String? = null
-    private var spinnerAdapter: ArrayAdapter<String>? = null
-    var ctext: Context? = null
+    private lateinit var spinnerAdapter: ArrayAdapter<String>
+    lateinit var ctext: Context
 
     /**
      * <h1>onFragmentEventListenerChoiseOfGameToSet</h1>
@@ -82,7 +82,7 @@ class ChoiseOfGameToSetFragment : Fragment() {
             getString(R.string.parole_in_liberta)
         )
         spinnerAdapter = ArrayAdapter(
-            ctext!!,
+            ctext,
             R.layout.activity_settings_choiseofgametoset_row, arraySpinner
         )
         val sp = rootView.findViewById<Spinner>(R.id.gametoset)

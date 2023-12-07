@@ -31,7 +31,7 @@ class GameParametersSettingsFragment : SettingsFragmentAbstractClass() {
     private lateinit var realm: Realm
 
     //
-    private var listView: ListView? = null
+    private lateinit var listView: ListView
     private var adapter: GameParametersAdapter? = null
 
     /**
@@ -70,9 +70,9 @@ class GameParametersSettingsFragment : SettingsFragmentAbstractClass() {
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
-        adapter = GameParametersAdapter(ctext, results, listView!!)
+        adapter = GameParametersAdapter(ctext, results, listView)
         //
-        listView!!.adapter = adapter
+        listView.adapter = adapter
         //
         val bundle = this.arguments
         //
@@ -88,27 +88,27 @@ class GameParametersSettingsFragment : SettingsFragmentAbstractClass() {
             val gameinfo = rootView.findViewById<View>(R.id.gameinfo) as EditText
             val imageviewgameicon = rootView.findViewById<View>(R.id.imageviewgameicon) as ImageView
             //
-            gameDescription.setText(bundle.getString("GameName"))
-            if (bundle.getString("GameActive") == "A") {
+            gameDescription.setText(bundle.getString(getString(R.string.gamename)))
+            if (bundle.getString(getString(R.string.gameactive)) == "A") {
                 radio_active.isChecked = true
                 radio_not_active.isChecked = false
             } else {
                 radio_active.isChecked = false
                 radio_not_active.isChecked = true // default
             }
-            gamejavaclass.setText(bundle.getString("GameJavaClass"))
-            gameparameter.setText(bundle.getString("GameParameter"))
+            gamejavaclass.setText(bundle.getString(getString(R.string.gamejavaclass)))
+            gameparameter.setText(bundle.getString(getString(R.string.gameparameter)))
             //
             radioUseVideoAndSound.isChecked = false
             radioDoesNotUseVideoAndSound.isChecked = true // default
-            if (bundle.getString("GameUseVideoAndSound") == "Y") {
+            if (bundle.getString(getString(R.string.gameusevideoandsound)) == "Y") {
 //            if (bundle.getString("GameUseVideoAndSound").equals("Y")) {
                 radioUseVideoAndSound.isChecked = true
                 radioDoesNotUseVideoAndSound.isChecked = false
             }
-            gameinfo.setText(bundle.getString("GameInfo"))
-            val gameIconType = bundle.getString("GameIconType")
-            val gameIconPath = bundle.getString("GameIconPath")
+            gameinfo.setText(bundle.getString(getString(R.string.gameinfo)))
+            val gameIconType = bundle.getString(getString(R.string.gameicontype))
+            val gameIconPath = bundle.getString(getString(R.string.gameiconpath))
             //
             val f = File(gameIconPath!!)
             addFileImageUsingPicasso(f, imageviewgameicon, 200, 200)

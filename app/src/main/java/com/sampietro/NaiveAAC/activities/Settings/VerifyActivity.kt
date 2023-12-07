@@ -41,7 +41,7 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
     var resultToVerify = 0
 
     //
-    var context: Context? = null
+    lateinit var context: Context
     lateinit var sharedPref: SharedPreferences
     var sharedPassword: String? = null
 

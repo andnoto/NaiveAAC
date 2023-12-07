@@ -28,7 +28,7 @@ import java.lang.RuntimeException
  * @version     4.0, 09/09/2023
  */
 class PrizeFragment : Fragment() {
-    private var realm: Realm? = null
+    private lateinit var realm: Realm
 
     //
     var uri: Uri? = null
@@ -37,7 +37,7 @@ class PrizeFragment : Fragment() {
     //
     lateinit var rootView: View
     lateinit var textView: TextView
-    var ctext: Context? = null
+    lateinit var ctext: Context
 
     //
 //    private val mediaPlayer: MediaPlayer? = null
@@ -68,7 +68,7 @@ class PrizeFragment : Fragment() {
      *
      * @see androidx.fragment.app.Fragment.onAttach
      */
-    private var listener: onFragmentEventListenerPrize? = null
+    private lateinit var listener: onFragmentEventListenerPrize
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val activity = context as Activity
@@ -116,7 +116,7 @@ class PrizeFragment : Fragment() {
                 parent.removeViewAt(index)
             }
             //
-            listener!!.receiveResultOnCompletatioVideoFromPrizeFragment(rootView)
+            listener.receiveResultOnCompletatioVideoFromPrizeFragment(rootView)
         }
         //
         val bundle = this.arguments
@@ -133,7 +133,7 @@ class PrizeFragment : Fragment() {
         // int rn01 = rn.nextInt(2);
         //
         // if (rn01 == 1) {
-        val results = realm!!.where(Videos::class.java)
+        val results = realm.where(Videos::class.java)
             .equalTo(getString(R.string.descrizione), uriPremiumVideo).findAll()
         val count = results.size
         if (count != 0) {
@@ -154,9 +154,9 @@ class PrizeFragment : Fragment() {
             // has been completed and therefore you can continue
             prizeVideoView!!.visibility = View.INVISIBLE
             //
-            listener!!.receiveResultOnCompletatioVideoFromPrizeFragment(rootView)
+            listener.receiveResultOnCompletatioVideoFromPrizeFragment(rootView)
         }
-        listener!!.receiveResultImagesFromPrizeFragment(rootView)
+        listener.receiveResultImagesFromPrizeFragment(rootView)
         return rootView
     }
 

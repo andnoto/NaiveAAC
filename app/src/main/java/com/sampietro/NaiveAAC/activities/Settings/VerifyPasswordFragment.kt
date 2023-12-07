@@ -17,7 +17,7 @@ import com.sampietro.NaiveAAC.R
  * @see SettingsActivity
  */
 class VerifyPasswordFragment : Fragment() {
-    var rootView: View? = null
+    lateinit var rootView: View
 
     /**
      * prepares the ui.
@@ -29,7 +29,7 @@ class VerifyPasswordFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         rootView = inflater.inflate(R.layout.activity_settings_verify_password, container, false)
         // logic of fragment
         //

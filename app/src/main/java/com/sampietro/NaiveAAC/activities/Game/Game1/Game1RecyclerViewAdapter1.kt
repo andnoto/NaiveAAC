@@ -35,7 +35,7 @@ class Game1RecyclerViewAdapter1(
      * set game1 list, listener setting for settings activity callbacks and context annotation
      *
      * @see Game1RecyclerViewAdapterInterface
-    </Game1ArrayList> */
+    */
     init {
         //
         val activity = context as Activity

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.sampietro.NaiveAAC"
     android:versionCode="17"
     android:versionName="4.0"
     android:installLocation="preferExternal">
@@ -30,7 +29,7 @@
         android:theme="@style/Theme.20210823simsim">
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.NaiveAAC.fileprovider"
+            android:authorities="com.sampietro.NaiveAAC.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -95,12 +94,7 @@
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity">
         </activity>
-        <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity"
-            android:parentActivityName="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity">
-            <!-- The meta-data tag is required if you support API level 15 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity">
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAActivity">
         </activity>

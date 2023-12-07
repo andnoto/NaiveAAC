@@ -26,7 +26,7 @@ class ChoiseOfGameRecyclerViewAdapter(
     context: Context?, //
     private val gameArrayList: ArrayList<ChoiseOfGameArrayList>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var listener: ChoiseOfGameRecyclerViewAdapterInterface? = null
+    lateinit var listener: ChoiseOfGameRecyclerViewAdapterInterface
 
     /**
      * ChoiseOfGameRecyclerViewAdapter constructor.
@@ -36,7 +36,7 @@ class ChoiseOfGameRecyclerViewAdapter(
     init {
         //
         val activity = context as Activity?
-        listener = activity as ChoiseOfGameRecyclerViewAdapterInterface?
+        listener = activity as ChoiseOfGameRecyclerViewAdapterInterface
     }
 
     /**
@@ -70,10 +70,10 @@ class ChoiseOfGameRecyclerViewAdapter(
         (viewHolder as ChoiseOfGameRecyclerViewViewHolder).onBind(gameArrayList[i])
         //
         viewHolder.media_container.setOnClickListener(
-            View.OnClickListener { view -> listener!!.onItemClick(view, i) })
+            View.OnClickListener { view -> listener.onItemClick(view, i) })
         viewHolder.info.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
-                listener!!.onItemClick(view, i)
+                listener.onItemClick(view, i)
             }
         })
     }

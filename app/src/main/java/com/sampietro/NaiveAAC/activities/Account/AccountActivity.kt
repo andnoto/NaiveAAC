@@ -191,16 +191,16 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
             daCancellare.deleteAllFromRealm()
             realm.commitTransaction()
             //
-            Images.importFromCsvFromInternalStorage(context, realm, "Replace")
-            Sounds.importFromCsvFromInternalStorage(context, realm, "Replace")
-            Videos.importFromCsvFromInternalStorage(context, realm, "Replace")
+            Images.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            Sounds.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            Videos.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             //
-            GameParameters.importFromCsvFromInternalStorage(context, realm, "Replace")
-            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Replace")
-            ListsOfNames.importFromCsvFromInternalStorage(context, realm, "Replace")
-            Phrases.importFromCsvFromInternalStorage(context, realm, "Replace")
-            Stories.importFromCsvFromInternalStorage(context, realm, "Replace")
-            WordPairs.importFromCsvFromInternalStorage(context, realm, "Replace")
+            GameParameters.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            ListsOfNames.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            Phrases.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            Stories.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            WordPairs.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             //
 //        }
         //
@@ -214,11 +214,11 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
             getString(R.string.character_n)
         )
         editor.apply()
-        editor.putString("preference_title_writing_type", "uppercase")
+        editor.putString(getString(R.string.preference_title_writing_type), getString(R.string.uppercase))
         editor.apply()
         editor.putString(getString(R.string.preference_list_mode), getString(R.string.sorted))
         editor.apply()
-        editor.putInt("preference_AllowedMarginOfError", 20)
+        editor.putInt(getString(R.string.preference_allowed_margin_of_error), 20)
         editor.apply()
         // register the user in the shared preferences
         // and move on to the welcome activity

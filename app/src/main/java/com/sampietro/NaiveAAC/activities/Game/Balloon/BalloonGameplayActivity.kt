@@ -56,9 +56,9 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
     private var mGameStopped = true
 
     //
-    lateinit private var mContentView: ViewGroup
-    private var mSoundHelper: SoundHelper? = null
-    private var mMusicHelper: SoundHelper? = null
+    lateinit var mContentView: ViewGroup
+    private lateinit var mSoundHelper: SoundHelper
+    private lateinit var mMusicHelper: SoundHelper
     private val mHeartImages: MutableList<ImageView> = ArrayList()
     private val mBalloons: MutableList<Balloon> = ArrayList()
     lateinit private var mAnimation: Animation
@@ -81,13 +81,13 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_balloon_gameplay)
-        window.setBackgroundDrawableResource(R.drawable.balloon_background)
+//        window.setBackgroundDrawableResource(R.drawable.balloon_background)
+        /*
+        USED FOR FULL SCREEN
+        */
         mContentView = findViewById(R.id.activity_game_balloon_gameplay_id)
         setToFullScreen()
         val viewTreeObserver = mContentView.getViewTreeObserver()
-        mMusicHelper = SoundHelper(this)
-        mMusicHelper!!.prepareMusicPlayer(this)
-        //        Intent intent = getIntent();
         //
         if (viewTreeObserver.isAlive) {
             viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
@@ -100,6 +100,14 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
         }
         //
         mContentView.setOnClickListener({ view: View? -> setToFullScreen() })
+        /*
+
+        */
+        window.setBackgroundDrawableResource(R.drawable.balloon_background)
+        //
+        mMusicHelper = SoundHelper(this)
+        mMusicHelper.prepareMusicPlayer(this)
+        //        Intent intent = getIntent();
         mHeartImages.add(findViewById(R.id.heart1))
         mHeartImages.add(findViewById(R.id.heart2))
         mHeartImages.add(findViewById(R.id.heart3))
@@ -107,7 +115,7 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
         mHeartImages.add(findViewById(R.id.heart5))
         //
         mSoundHelper = SoundHelper(this)
-        mSoundHelper!!.prepareMusicPlayer(this)
+        mSoundHelper.prepareMusicPlayer(this)
         mAnimation = AnimationUtils.loadAnimation(applicationContext, R.anim.balloon_fade)
         mAnimation.setDuration(100)
         //
@@ -116,7 +124,7 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
             gameOver()
         }
         //
-        val TIME_OUT = 500
+        val TIME_OUT = 1000
         Handler(Looper.getMainLooper()).postDelayed({ startGame()  }, TIME_OUT.toLong())
 //        Handler().postDelayed({ startGame() }, TIME_OUT.toLong())
     }
@@ -125,7 +133,7 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
      * This method is responsible to transfer MainActivity into fullscreen mode.
      */
     private fun setToFullScreen() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val insetsController = WindowCompat.getInsetsController(window, window.decorView)
         insetsController.systemBarsBehavior =
@@ -156,7 +164,7 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
     override fun onRestart() {
         super.onRestart()
         if (mGame) {
-            mMusicHelper!!.playMusic()
+            mMusicHelper.playMusic()
         }
     }
 
@@ -174,7 +182,7 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
         mHeartsUsed = 0
         mGameStopped = false
         mGame = true
-        mMusicHelper!!.playMusic()
+        mMusicHelper.playMusic()
         for (pin in mHeartImages) pin.setImageResource(R.drawable.heart)
         startLevel()
     }
@@ -242,7 +250,7 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
      */
     override fun popBalloon(balloon: Balloon?, userTouch: Boolean) {
         mBalloonsPopped++
-        if (mPlaying) mSoundHelper!!.playSound()
+        if (mPlaying) mSoundHelper.playSound()
         mContentView.removeView(balloon)
         mBalloons.remove(balloon)
         if (userTouch) mScore++ else {
@@ -296,7 +304,7 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
     override fun onPause() {
         super.onPause()
         if (mGame) {
-            mMusicHelper!!.pauseMusic()
+            mMusicHelper.pauseMusic()
         }
     }
 

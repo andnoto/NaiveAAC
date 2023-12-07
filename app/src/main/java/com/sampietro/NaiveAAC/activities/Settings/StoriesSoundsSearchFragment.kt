@@ -25,7 +25,7 @@ class StoriesSoundsSearchFragment : SettingsFragmentAbstractClass() {
     private lateinit var realm: Realm
 
     //
-    private var listView: ListView? = null
+    private lateinit var listView: ListView
     private var adapter: StoriesSoundsSearchAdapter? = null
 
     /**
@@ -62,9 +62,9 @@ class StoriesSoundsSearchFragment : SettingsFragmentAbstractClass() {
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
-        adapter = StoriesSoundsSearchAdapter(ctext, results, listView!!)
+        adapter = StoriesSoundsSearchAdapter(ctext, results, listView)
         //
-        listView!!.adapter = adapter
+        listView.adapter = adapter
         //
         listener.receiveResultSettings(rootView)
         //
