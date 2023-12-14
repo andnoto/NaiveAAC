@@ -60,7 +60,7 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
     lateinit var gameADAViewPagerOnFragmentEventlistener: GameADAViewPagerOnFragmentEventListener
     lateinit var gameADAViewPagerOnFragmentSoundMediaPlayerlistener: GameADAViewPagerOnFragmentSoundMediaPlayerListener
     lateinit var media_containerOnClickListener: GameADAViewPagerMediaContainerOnClickListener
-    lateinit var media_container: FrameLayout
+    var media_container: FrameLayout? = null
 
     //
     private var gameUseVideoAndSound: String? = null
@@ -203,7 +203,8 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
         }
         /*
         ADAPTED FOR VIDEO AND SOUND
-         */if (centerVideoView == null) {
+         */
+        if (centerVideoView == null) {
             return
         }
         // remove old video views
@@ -263,8 +264,9 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
                     mp.isLooping = true
                 }
                 //
-                media_container = rootView.findViewById(R.id.gameimageFL)
-                media_container.setOnClickListener(View.OnClickListener { view ->
+//                media_container = rootView.findViewById(R.id.gameimageFL)
+                media_container = frameLayout
+                media_container!!.setOnClickListener(View.OnClickListener { view ->
                     media_containerOnClickListener.receiveOnClickGameImage(
                         view
                     )

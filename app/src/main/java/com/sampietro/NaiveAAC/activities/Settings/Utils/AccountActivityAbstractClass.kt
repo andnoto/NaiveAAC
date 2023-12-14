@@ -52,11 +52,11 @@ import java.util.*
  * 3) SettingsActivity
  *
  * @version     4.0, 09/09/2023
- * @see com.example.a20210823simsim.activities.Account.AccountActivity
+ * @see com.sampietro.NaiveAAC.activities.Account.AccountActivity
  *
- * @see com.example.a20210823simsim.activities.Account.AccountActivityRealmCreation
+ * @see com.sampietro.NaiveAAC.activities.Account.AccountActivityRealmCreation
  *
- * @see com.example.a20210823simsim.activities.Settings.SettingsActivity
+ * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  */
 abstract class AccountActivityAbstractClass : AppCompatActivity() {
     //
@@ -268,54 +268,58 @@ abstract class AccountActivityAbstractClass : AppCompatActivity() {
                                 e.printStackTrace()
                             }
                             //
-                            if (filePath == "da download") {
-                                val ctw = ContextThemeWrapper(context, R.style.CustomSnackbarTheme)
-                                val snackbar = Snackbar.make(
-                                    ctw,
-                                    findViewById(R.id.imageviewaccounticon),
-                                    "al momento l'app non è in grado di accedere ad immagini nella cartella download",
-                                    10000
-                                )
-                                snackbar.setTextMaxLines(5)
-                                snackbar.setTextColor(Color.BLACK)
-                                snackbar.show()
-                            }
-                            if (filePath != getString(R.string.non_trovato)
-                                && filePath != "da download"
-                            ) {
-                                //
+                            if (filePath != getString(R.string.non_trovato))
+                            {
+                                if (filePath == "da download") {
+                                    val ctw = ContextThemeWrapper(context, R.style.CustomSnackbarTheme)
+                                    val snackbar = Snackbar.make(
+                                        ctw,
+                                        findViewById(R.id.imageviewaccounticon),
+                                        "al momento l'app non è in grado di accedere ad immagini nella cartella download",
+                                        10000
+                                    )
+                                    snackbar.setTextMaxLines(5)
+                                    snackbar.setTextColor(Color.BLACK)
+                                    snackbar.show()
+                                }
+//                                if (filePath != getString(R.string.non_trovato)
+//                                    && filePath != "da download"
+//                                ) {
+                                    //
 //                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                else {
                                     val takeFlags =
                                         resultData.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION
-                                    context.contentResolver.takePersistableUriPermission(
+                                        context.contentResolver.takePersistableUriPermission(
                                         uri!!,
                                         takeFlags
                                     )
 //                                }
-                                //
-                                var bitmap: Bitmap? = null
-                                //
-                                try {
-                                    val source = ImageDecoder.createSource(
-                                        context.contentResolver,
-                                        uri!!
-                                    )
-                                    bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-                                        decoder.setTargetSampleSize(1) // shrinking by
-                                        decoder.isMutableRequired = true // this resolve the hardware type of bitmap problem
+                                    //
+                                    var bitmap: Bitmap? = null
+                                    //
+                                    try {
+                                        val source = ImageDecoder.createSource(
+                                            context.contentResolver,
+                                            uri!!
+                                        )
+                                        bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                                            decoder.setTargetSampleSize(1) // shrinking by
+                                            decoder.isMutableRequired = true // this resolve the hardware type of bitmap problem
+                                        }
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
                                     }
-                                } catch (e: Exception) {
-                                    e.printStackTrace()
+                                    //
+                                    //
+                                    val stream = ByteArrayOutputStream()
+                                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                                    byteArray = stream.toByteArray()
+                                    //
+                                    val myImage: ImageView
+                                    myImage = findViewById<View>(R.id.imageviewaccounticon) as ImageView
+                                    showImage(uri, myImage)
                                 }
-                                //
-                                //
-                                val stream = ByteArrayOutputStream()
-                                bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                                byteArray = stream.toByteArray()
-                                //
-                                val myImage: ImageView
-                                myImage = findViewById<View>(R.id.imageviewaccounticon) as ImageView
-                                showImage(uri, myImage)
                             }
                         }
                     }

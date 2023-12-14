@@ -4,14 +4,12 @@ import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.chec
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import android.speech.tts.TextToSpeech
 import android.media.MediaPlayer
-import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import android.os.Bundle
 import io.realm.RealmResults
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.R
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.content.Intent
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
@@ -173,20 +171,24 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
         }
         // viewpager
         setContentView(R.layout.activity_game_ada_viewpager)
+        //
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
+        }
         /*
         USED FOR FULL SCREEN
          */
-        val mContentView:ViewGroup = findViewById(R.id.activity_game_ada_viewpager_id)
+//        val mContentView:ViewGroup = findViewById(R.id.activity_game_ada_viewpager_id)
         setToFullScreen()
-        val viewTreeObserver = mContentView.getViewTreeObserver()
-        if (viewTreeObserver.isAlive) {
-            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-                }
-            })
-        }
-        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
+//        val viewTreeObserver = mContentView.getViewTreeObserver()
+//        if (viewTreeObserver.isAlive) {
+//            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+//                }
+//            })
+//        }
+//        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
         /*
 
          */

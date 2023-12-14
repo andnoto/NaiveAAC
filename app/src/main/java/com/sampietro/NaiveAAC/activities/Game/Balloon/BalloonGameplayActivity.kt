@@ -81,6 +81,10 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_balloon_gameplay)
+        //
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
+        }
 //        window.setBackgroundDrawableResource(R.drawable.balloon_background)
         /*
         USED FOR FULL SCREEN

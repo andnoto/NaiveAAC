@@ -14,7 +14,6 @@ import android.graphics.drawable.Drawable
 import android.speech.tts.TextToSpeech
 import android.os.Bundle
 import com.sampietro.NaiveAAC.R
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.content.Intent
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import android.graphics.Canvas
@@ -146,20 +145,24 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         super.onCreate(savedInstanceState)
         //
         setContentView(R.layout.activity_game_ada)
+        //
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
+        }
         /*
         USED FOR FULL SCREEN
          */
-        val mContentView:ViewGroup = findViewById(R.id.activity_game_ada_id)
+//        val mContentView:ViewGroup = findViewById(R.id.activity_game_ada_id)
         setToFullScreen()
-        val viewTreeObserver = mContentView.getViewTreeObserver()
-        if (viewTreeObserver.isAlive) {
-            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-                }
-            })
-        }
-        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
+//        val viewTreeObserver = mContentView.getViewTreeObserver()
+//        if (viewTreeObserver.isAlive) {
+//            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+//                }
+//            })
+//        }
+//        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
         /*
 
          */

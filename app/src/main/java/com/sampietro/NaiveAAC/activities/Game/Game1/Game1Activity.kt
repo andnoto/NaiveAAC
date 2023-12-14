@@ -7,14 +7,12 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import io.realm.RealmResults
-import android.view.ViewGroup
 import android.graphics.Bitmap
 import com.squareup.picasso.Picasso.LoadedFrom
 import android.graphics.drawable.Drawable
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.sampietro.NaiveAAC.R
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment
 import android.content.Intent
@@ -267,22 +265,26 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         }
         // viewpager
         setContentView(R.layout.activity_game_1_viewpager)
+        //
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
+        }
         /*
         USED FOR FULL SCREEN
         */
-        val mContentView:ViewGroup = findViewById(R.id.activity_game_1_viewpager_id)
+//        val mContentView:ViewGroup = findViewById(R.id.activity_game_1_viewpager_id)
         setToFullScreen()
-        val viewTreeObserver = mContentView.getViewTreeObserver()
+//        val viewTreeObserver = mContentView.getViewTreeObserver()
         //
-        if (viewTreeObserver.isAlive) {
-            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-                }
-            })
-        }
+//        if (viewTreeObserver.isAlive) {
+//            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+//                }
+//            })
+//        }
         //
-        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
+//        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
         /*
 
         */

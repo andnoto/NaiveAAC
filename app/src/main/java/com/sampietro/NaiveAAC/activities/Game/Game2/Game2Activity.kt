@@ -15,8 +15,6 @@ import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import android.speech.SpeechRecognizer
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -60,23 +58,27 @@ class Game2Activity : Game2ActivityAbstractClass() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        //
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
+        }
         /*
 USED FOR FULL SCREEN
 */
-        val mContentView: ViewGroup = findViewById(R.id.activity_game_2_id)
+//        val mContentView: ViewGroup = findViewById(R.id.activity_game_2_id)
         setToFullScreen()
-        val viewTreeObserver = mContentView.getViewTreeObserver()
+//        val viewTreeObserver = mContentView.getViewTreeObserver()
         //
-        if (viewTreeObserver.isAlive) {
-            viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-                }
-            })
-        }
+//        if (viewTreeObserver.isAlive) {
+//            viewTreeObserver.addOnGlobalLayoutListener(object :
+//                ViewTreeObserver.OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+//                }
+//            })
+//        }
         //
-        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
+//        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
         /*
 
         */

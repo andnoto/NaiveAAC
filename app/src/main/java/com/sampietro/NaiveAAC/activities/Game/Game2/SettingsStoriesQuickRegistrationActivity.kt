@@ -339,6 +339,8 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
                 gp.gameParameter = textWord1.text.toString().lowercase(Locale.getDefault())
                 gp.gameIconType = "AS"
                 gp.gameIconPath = "images/racconto.png"
+                gp.gameUseVideoAndSound = "N"
+                gp.fromAssets = "N"
                 realm.commitTransaction()
                 // registro nuova riga per nuova storia
                 val createLists1 = prepareData1()
@@ -453,6 +455,8 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
             }
             renumberAStory(realm, textWord1.text.toString().lowercase(Locale.getDefault()))
 //        }
+        //
+        phraseNumberToAdd = ""
         //
         fragmentTransactionStart("")
         //

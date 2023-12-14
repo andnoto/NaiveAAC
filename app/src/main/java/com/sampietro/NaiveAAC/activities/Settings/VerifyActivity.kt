@@ -63,22 +63,26 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        //
+        if (supportActionBar != null) {
+            supportActionBar!!.hide()
+        }
         /*
         USED FOR FULL SCREEN
         */
-        val mContentView:ViewGroup = findViewById(R.id.activity_settings_id)
+//        val mContentView:ViewGroup = findViewById(R.id.activity_settings_id)
         setToFullScreen()
-        val viewTreeObserver = mContentView.getViewTreeObserver()
+//        val viewTreeObserver = mContentView.getViewTreeObserver()
         //
-        if (viewTreeObserver.isAlive) {
-            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-                }
-            })
-        }
+//        if (viewTreeObserver.isAlive) {
+//            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+//                override fun onGlobalLayout() {
+//                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
+//                }
+//            })
+//        }
         //
-        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
+//        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
         /*
 
          */

@@ -85,7 +85,7 @@ open class GameParameters : RealmObject() {
      */
     var gameParameter: String? = null
     /**
-     * indicates whether the game uses video and sound.
+     * contains Y if the game uses video and sound.
      */
     var gameUseVideoAndSound: String? = null
     /**

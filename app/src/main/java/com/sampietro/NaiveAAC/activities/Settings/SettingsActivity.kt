@@ -24,6 +24,7 @@ import android.provider.DocumentsContract
 import android.os.Environment
 import androidx.activity.result.ActivityResultCallback
 import android.app.Activity
+import android.app.Dialog
 import androidx.documentfile.provider.DocumentFile
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
@@ -32,7 +33,11 @@ import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModify
 import android.content.pm.PackageManager
+import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.ImageButton
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -73,6 +78,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     var message = "messaggio non formato"
     var textView: TextView? = null
 
+    //
+    var textPassword: String? = null
     //
     var rootViewChoiseOfGameToSetFragment: View? = null
     var textGameToSet: String? = null
@@ -190,7 +197,56 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         ft.addToBackStack(null)
         ft.commit()
     }
-
+    /**
+     * Called when the user taps the enter password button.
+     *
+     * @param v view of tapped button
+     */
+    fun enterPassword(v: View?) {
+        //
+        val d = Dialog(this)
+        // Setting dialogview
+        val window = d.window
+        val wlp = window!!.attributes
+        wlp.gravity = Gravity.BOTTOM
+        wlp.flags = wlp.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv()
+        window.attributes = wlp
+        //
+        d.setTitle("Inserisci la password per accedere alle impostazioni \\n(opzionale se omessa , per accedere alle impostazioni, \\nverrà richiesto il risultato di un calcolo aritmetico)")
+        d.setCancelable(false)
+        d.setContentView(R.layout.activity_account_write_dialog)
+        //
+        val submitPasswordButton =
+            d.findViewById<ImageButton>(R.id.submitPasswordButton)
+        val cancelPasswordButton =
+            d.findViewById<ImageButton>(R.id.cancelPasswordButton)
+        val editTextPasswordAccount = d.findViewById<View>(R.id.editTextPasswordAccount) as EditText
+        //
+        editTextPasswordAccount.requestFocus()
+        val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(d.findViewById<View>(R.id.editTextPasswordAccount),
+            InputMethodManager.SHOW_IMPLICIT
+        )
+        imm.hideSoftInputFromWindow(d.findViewById<View>(R.id.editTextPasswordAccount).getWindowToken(),
+            InputMethodManager.HIDE_IMPLICIT_ONLY
+        )
+        //
+        submitPasswordButton.setOnClickListener {
+            //
+            textPassword = editTextPasswordAccount.text.toString()
+            imm.hideSoftInputFromWindow(editTextPasswordAccount.windowToken, 0)
+            //
+            d.cancel()
+        }
+        cancelPasswordButton.setOnClickListener {
+            //
+            imm.hideSoftInputFromWindow(editTextPasswordAccount.windowToken, 0)
+            //
+            d.cancel()
+        }
+        //
+        d.show()
+    }
     /**
      * Called when the user taps the save account button from account settings.
      *
@@ -210,9 +266,9 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         val editText = rootViewFragment!!.findViewById<View>(R.id.editTextTextAccount) as EditText
         val textPersonName = editText.text.toString()
         //
-        val editTextPassword =
-            rootViewFragment!!.findViewById<View>(R.id.editTextPasswordAccount) as EditText
-        val textPassword = editTextPassword.text.toString()
+//        val editTextPassword =
+//            rootViewFragment!!.findViewById<View>(R.id.editTextPasswordAccount) as EditText
+//        val textPassword = editTextPassword.text.toString()
         //
         if (textPersonName.length > 0 && filePath != null &&
             filePath != getString(R.string.non_trovato)
@@ -263,7 +319,11 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             wordPairs.fromAssets = ""
             realm.commitTransaction()
             // register the password
-            if (textPassword.length > 0) registerPassword(textPassword)
+            if (textPassword == null)   { textPassword = "nessuna password" }
+            else
+            { if (textPassword!!.length <= 0) textPassword = "nessuna password" }
+//            if (textPassword.length > 0) registerPassword(textPassword)
+            registerPassword(textPassword)
         }
         // view the fragment settings initializing MenuSettingsFragment (FragmentTransaction
         // switch between Fragments).
