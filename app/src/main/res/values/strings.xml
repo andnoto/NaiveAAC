@@ -199,6 +199,8 @@
     <string name="navigatore" translatable="false">NAVIGATORE</string>
     <string name="nessun_video" translatable="false">nessun video</string>
     <string name="nessuno" translatable="false">nessuno</string>
+    <string name="notification_channel_name" translatable="false">naiveAAC</string>
+    <string name="notification_channel_description" translatable="false">naiveAAC PictureExchangeCommunicationSystem</string>
     <string name="number" translatable="false">number</string>
     <string name="number_1" translatable="false">1</string>
     <string name="number_2" translatable="false">2</string>

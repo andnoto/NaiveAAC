@@ -30,8 +30,21 @@
         android:layout_marginEnd="32dp"
         android:onClick="generalSettings"
         android:text="@string/generali"
-        app:layout_constraintEnd_toStartOf="@id/gameParametersButton"
+        app:layout_constraintEnd_toStartOf="@id/bluetoothDevicesButton"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings" />
+
+    <Button
+        android:id="@+id/bluetoothDevicesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:onClick="bluetoothDevicesSettings"
+        android:text="BLUETOOTH"
+        app:layout_constraintEnd_toStartOf="@id/gameParametersButton"
+        app:layout_constraintStart_toEndOf="@id/generalSettingsButton"
         app:layout_constraintTop_toBottomOf="@id/settings" />
 
     <Button
@@ -44,7 +57,7 @@
         android:onClick="gameParametersSettings"
         android:text="@string/parametri_dei_giochi"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/generalSettingsButton"
+        app:layout_constraintStart_toEndOf="@id/bluetoothDevicesButton"
         app:layout_constraintTop_toBottomOf="@id/settings" />
 
     <Button

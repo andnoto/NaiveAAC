@@ -20,8 +20,8 @@ android {
         applicationId "com.sampietro.NaiveAAC"
         minSdkVersion 29
         targetSdkVersion 34
-        versionCode 17
-        versionName "4.0"
+        versionCode 18
+        versionName "5.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -53,7 +53,7 @@ dependencies {
 
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     // ExoPlayer
     // def exoPlayerVersion = "2.8.4"  // 2.9.0 has min sdk 26
@@ -68,11 +68,11 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
 //    def lifecycle_version = "2.5.1"
     // Annotation processor
-    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.6.2"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.7.0"
     // optional - helpers for implementing LifecycleOwner in a Service
-    implementation "androidx.lifecycle:lifecycle-service:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-service:2.7.0"
     // optional - ProcessLifecycleOwner provides a lifecycle for the whole application process
-    implementation "androidx.lifecycle:lifecycle-process:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-process:2.7.0"
     //
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -89,6 +89,6 @@ dependencies {
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
     //
-    implementation "androidx.core:core-ktx:1.9.0"
+    implementation "androidx.core:core-ktx:1.12.0"
 //    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

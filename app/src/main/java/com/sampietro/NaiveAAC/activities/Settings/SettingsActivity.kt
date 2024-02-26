@@ -46,6 +46,8 @@ import androidx.fragment.app.FragmentTransaction
 import com.sampietro.NaiveAAC.activities.Main.MainActivity
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
+import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevicesAdapter
 import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
@@ -60,20 +62,20 @@ import java.util.*
  * **SettingsActivity** app settings.
  *
  * @version     4.0, 09/09/2023
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass
+ * @see com.sampietro.simsimtest.activities.Settings.Utils.AccountActivityAbstractClass
  *
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
  *
  * @see VerifyFragment
  *
  * @see ChoiseOfGameToSetFragment
  *
- * @see com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptionsAdapter
+ * @see com.sampietro.simsimtest.activities.Grammar.GrammaticalExceptionsAdapter
  *
- * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter
+ * @see com.sampietro.simsimtest.activities.Game.GameParameters.GameParametersAdapter
  */
 class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListenerChoiseOfGameToSet,
-    onFragmentEventListenerSettings, GameParametersAdapterInterface,
+    onFragmentEventListenerSettings, BluetoothDevicesAdapter.BluetoothDevicesAdapterInterface, GameParametersAdapterInterface,
     GrammaticalExceptionsAdapterInterface, PictogramsAllToModifyAdapterInterface {
     var message = "messaggio non formato"
     var textView: TextView? = null
@@ -151,7 +153,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * receives calls from fragment listeners.
      *
      * @param v view of calling fragment
-     * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+     * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
      */
     override fun receiveResultSettings(v: View?) {
         rootViewFragment = v
@@ -717,7 +719,85 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             ft.commit()
         }
     }
+    /**
+     * Called when the user taps Bluetooth Devices button from the advanced settings menu.
+     *
+     * the activity is notified to view the Bluetooth Devices settings.
+     *
+     *
+     * @param view view of tapped button
+     * @see AdvancedSettingsFragment
+     *
+     * @see BluetoothDevicesFragment
+     */
+    fun bluetoothDevicesSettings(view: View?) {
+        // view the Bluetooth Devices settings initializing BluetoothDevicesFragment (FragmentTransaction
+        // switch between Fragments).
+        val frag = BluetoothDevicesFragment()
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
 
+    /**
+     * Called when the user taps the save button from the Bluetooth Devices settings.
+     *
+     * after the checks it adds the Bluetooth Devices on realm
+     *
+     * and the activity is notified to view the updated Bluetooth Devices settings.
+     *
+     * @param v view of tapped button
+     * @see BluetoothDevicesFragment
+     *
+     * @see BluetoothDevices
+     */
+    fun bluetoothDevicesSave(v: View?) {
+        realm = Realm.getDefaultInstance()
+        //
+        val bdUN = findViewById<View>(R.id.bluetoothdevicesdeviceusername) as EditText
+        val bdDN = findViewById<View>(R.id.bluetoothdevicesdevicename) as EditText
+        if (bdUN.length() > 0 && bdDN.length() > 0) {
+            // Note that the realm object was generated with the createObject method
+            // and not with the new operator.
+            // The modification operations will be performed within a Transaction.
+            realm.beginTransaction()
+            val bd = realm.createObject(
+                BluetoothDevices::class.java
+            )
+            bd.deviceUserName = bdUN.text.toString()
+            bd.deviceName = bdDN.text.toString()
+            bd.fromAssets = "N"
+            realm.commitTransaction()
+            // view the Bluetooth Devices settings initializing BluetoothDevicesFragment
+            // (FragmentTransaction switch between Fragments).
+            val frag = BluetoothDevicesFragment()
+            val ft = supportFragmentManager.beginTransaction()
+            ft.replace(R.id.settings_container, frag)
+            ft.addToBackStack(null)
+            ft.commit()
+        }
+    }
+
+    /**
+     * on callback from BluetoothDevicesAdapter to this Activity
+     *
+     * after deleting a Bluetooth Devices the activity is notified to view the Bluetooth Devices settings
+     *
+     *
+     * @see com.sampietro.simsimtest.activities.Bluetooth.BluetoothDevicesAdapter
+     *
+     * @see BluetoothDevicesFragment
+     */
+    override fun reloadBluetoothDevicesFragment() {
+        // view the Bluetooth Devices settings initializing BluetoothDevicesFragment
+        // (FragmentTransaction switch between Fragments).
+        val frag = BluetoothDevicesFragment()
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
     /**
      * Called when the user taps the game parameters button from the advanced settings menu.
      *
@@ -844,7 +924,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * after deleting game parameters the activity is notified to view the updated game parameters settings
      *
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter
+     * @see com.sampietro.simsimtest.activities.Game.GameParameters.GameParametersAdapter
      *
      * @see GameParametersSettingsFragment
      */
@@ -872,7 +952,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * for editing a Game Parameter the activity is notified to view the Game Parameters settings
      *
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter
+     * @see com.sampietro.simsimtest.activities.Game.GameParameters.GameParametersAdapter
      *
      * @see GameParametersSettingsFragment
      */
@@ -1517,7 +1597,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * after deleting a grammatical exceptions the activity is notified to view the grammatical exceptions settings
      *
      *
-     * @see com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptionsAdapter
+     * @see com.sampietro.simsimtest.activities.Grammar.GrammaticalExceptionsAdapter
      *
      * @see GrammaticalExceptionsFragment
      */
@@ -1600,7 +1680,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * after deleting a pictogram to modify the activity is notified to view the pictograms to modify settings
      *
      *
-     * @see com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModifyAdapter
+     * @see com.sampietro.simsimtest.activities.Arasaac.PictogramsAllToModifyAdapter
      *
      * @see PictogramsToModifyFragment
      */

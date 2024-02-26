@@ -5,8 +5,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -18,6 +16,7 @@ import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import com.google.android.material.snackbar.Snackbar
+import com.sampietro.NaiveAAC.activities.Game.Game1.Game1BleActivity
 import io.realm.Realm
 import io.realm.RealmResults
 
@@ -161,7 +160,7 @@ class ChoiseOfGameActivity : GameActivityAbstractClass(), ChoiseOfGameRecyclerVi
      * Called on result of speech.
      *
      * @param eText string result from SpeechRecognizerManagement
-     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
+     * @see com.sampietro.simsimtest.activities.VoiceRecognition.RecognizerCallback
      */
     override fun onResult(eText: String?) {}
 
@@ -237,6 +236,18 @@ class ChoiseOfGameActivity : GameActivityAbstractClass(), ChoiseOfGameRecyclerVi
                         intent = Intent(
                             this,
                             GameADAActivity::class.java
+                        )
+                        intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter)
+                        intent.putExtra(
+                            EXTRA_MESSAGE_GAME_USE_VIDEO_AND_SOUND,
+                            gameUseVideoAndSound
+                        )
+                        startActivity(intent)
+                    }
+                    "PECS" -> {
+                        intent = Intent(
+                            this,
+                            Game1BleActivity::class.java
                         )
                         intent.putExtra(EXTRA_MESSAGE_GAME_PARAMETER, gameParameter)
                         intent.putExtra(

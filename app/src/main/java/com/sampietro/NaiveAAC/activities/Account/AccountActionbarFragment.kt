@@ -23,7 +23,7 @@ import kotlin.Throws
  *
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/appbar)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 24/02/2024
  * @see Fragment
  *
  */
@@ -86,7 +86,7 @@ class AccountActionbarFragment : Fragment() {
                 if (pdfFile.exists()) {
                     val pdfUri = FileProvider.getUriForFile(
                         requireContext(),
-                        "com.example.NaiveAAC.fileprovider",
+                        getString(R.string.com_sampietro_naiveaac_fileprovider),
                         pdfFile
                     )
                     val intent1 = Intent(Intent.ACTION_VIEW)
@@ -127,7 +127,7 @@ class AccountActionbarFragment : Fragment() {
                 if (pdfFilePrivacy.exists()) {
                     val pdfUri = FileProvider.getUriForFile(
                         requireContext(),
-                        "com.example.NaiveAAC.fileprovider",
+                        getString(R.string.com_sampietro_naiveaac_fileprovider),
                         pdfFilePrivacy
                     )
                     val intent5 = Intent(Intent.ACTION_VIEW)

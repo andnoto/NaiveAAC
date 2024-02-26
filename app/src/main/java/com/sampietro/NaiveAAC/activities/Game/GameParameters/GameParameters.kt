@@ -426,7 +426,7 @@ open class GameParameters : RealmObject() {
                                 gameParameters.gameIconType = oneWord[2]
                                 if (oneWord[2] == context.getString(R.string.character_s) && !f!!.exists()) {
                                     val puntoInterrogativoFile =
-                                        context.getFileStreamPath("punto interrogativo.png")
+                                        context.getFileStreamPath("puntointerrogativo.png")
                                     uri = puntoInterrogativoFile.absolutePath
                                 }
                                 gameParameters.gameIconPath = uri

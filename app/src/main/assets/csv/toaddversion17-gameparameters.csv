@@ -1,0 +1,2 @@
+gameName,gameActive,gameIconType,gameIconPath,gameInfo,gameJavaClass,gameParameter,gameUseVideoAndSound,fromAssets
+PECS,A,AS,images/pecs.png,Picture Exchange Communication System,PECS,,Y,Y

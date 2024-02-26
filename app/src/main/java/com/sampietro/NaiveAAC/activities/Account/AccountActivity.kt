@@ -30,6 +30,7 @@ import android.widget.ImageButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAActivity
 import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.history.History
@@ -254,6 +255,7 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
             Sounds.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             Videos.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             //
+            BluetoothDevices.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             GameParameters.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             ListsOfNames.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
@@ -349,6 +351,7 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
      */
     fun prepareTheSimsimDirectory() {
         try {
+            copyFileCsvFromAssetsToInternalStorage("bluetoothdevices.csv")
             copyFileCsvFromAssetsToInternalStorage("gameparameters.csv")
             copyFileCsvFromAssetsToInternalStorage("grammaticalexceptions.csv")
             copyFileCsvFromAssetsToInternalStorage("images.csv")

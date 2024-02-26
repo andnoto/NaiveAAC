@@ -10,11 +10,11 @@
         android:id="@+id/mediasettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="130dp"
         android:layout_marginTop="64dp"
         android:ems="10"
         android:hint="@string/edit_message"
         android:text="@string/media_settings"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -22,10 +22,10 @@
         android:id="@+id/videoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="130dp"
         android:layout_marginTop="16dp"
         android:onClick="submitVideo"
         android:text="@string/i_tuoi_video"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/mediasettings" />
 
@@ -33,10 +33,10 @@
         android:id="@+id/imagesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="130dp"
         android:layout_marginTop="16dp"
         android:onClick="submitImages"
         android:text="@string/le_tue_immagini"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/videoButton" />
 
@@ -44,10 +44,10 @@
         android:id="@+id/soundsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="130dp"
         android:layout_marginTop="16dp"
         android:onClick="submitSounds"
         android:text="I TUOI SUONI"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imagesButton" />
 

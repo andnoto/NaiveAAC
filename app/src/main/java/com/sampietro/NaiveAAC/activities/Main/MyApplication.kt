@@ -5,6 +5,7 @@ import android.content.Context
 import io.realm.RealmConfiguration
 import com.sampietro.NaiveAAC.BuildConfig
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import kotlin.Throws
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
@@ -58,7 +59,7 @@ class MyApplication : Application() {
         Realm.init(this)
         val realmConfiguration = RealmConfiguration.Builder()
             .name(getString(R.string.default_realm))
-            .schemaVersion(5)
+            .schemaVersion(6)
             .migration(customRealmMigration()) //     .deleteRealmIfMigrationNeeded()
             .build()
         Realm.setDefaultConfiguration(realmConfiguration)
@@ -304,8 +305,8 @@ class MyApplication : Application() {
                 )
                 copyFileFromAssetsToInternalStorage(
                     getString(R.string.images),
-                    "punto interrogativo.png",
-                    "punto interrogativo.png"
+                    "puntointerrogativo.png",
+                    "puntointerrogativo.png"
                 )
                 copyFileFromAssetsToInternalStorage(getString(R.string.videos), "cat-4916.mp4", "cat-4916.mp4")
                 copyFileFromAssetsToInternalStorage(getString(R.string.videos), "cat-92641.mp4", "cat-92641.mp4")
@@ -413,6 +414,29 @@ class MyApplication : Application() {
                 daModificaregp.gameActive = "A"
                 realm.commitTransaction()
             }
+            //
+            oldVersionCode++
+        }
+        //
+        if (oldVersionCode == 17) {
+            //
+            val realm = Realm.getDefaultInstance()
+            try {
+                copyFileFromAssetsToInternalStorage(
+                    getString(R.string.images),
+                    "pecs.png",
+                    "pecs.png"
+                )
+                copyFileFromAssetsToInternalStorage("csv", "toaddversion17-images.csv", "images.csv")
+                copyFileFromAssetsToInternalStorage("csv", "toaddversion17-gameparameters.csv", "gameparameters.csv")
+                copyFileFromAssetsToInternalStorage("csv", "bluetoothdevices.csv", "bluetoothdevices.csv")
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            //
+            Images.importFromCsvFromInternalStorage(context, realm, "Append");
+            GameParameters.importFromCsvFromInternalStorage(context, realm, "Append");
+            BluetoothDevices.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             //
             oldVersionCode++
         }

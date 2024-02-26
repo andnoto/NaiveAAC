@@ -137,6 +137,16 @@ class customRealmMigration : RealmMigration {
             oldVersion++
         }
         //
+        if (oldVersion == 5L) {
+            // Migrate from v5 to v6
+            val bluetoothDevicesSchema = schema.create("BluetoothDevices")!!
+            bluetoothDevicesSchema
+                .addField("deviceUserName", String::class.java)
+                .addField("deviceName", String::class.java)
+                .addField("fromAssets", String::class.java)
+            oldVersion++
+        }
+        //
         check(oldVersion >= newVersion) {
             String.format(
                 Locale.US,

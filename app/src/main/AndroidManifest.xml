@@ -1,14 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:versionCode="17"
-    android:versionName="4.0"
+    android:versionCode="18"
+    android:versionName="5.0"
     android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- Request legacy Bluetooth permissions on older devices. -->
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+    <!-- Needed only if your app looks for Bluetooth devices.
+         If your app doesn't use Bluetooth scan results to derive physical
+         location information, you can
+         <a href="#assert-never-for-location">strongly assert that your app
+         doesn't derive physical location</a>. -->
+    <!-- Include "neverForLocation" only if you can strongly assert that
+          your app never derives physical location from Bluetooth scan results. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <!-- Needed only if your app makes the device discoverable to Bluetooth
+         devices. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <!-- Needed only if your app communicates with already-paired Bluetooth
+         devices. -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Needed only if your app uses Bluetooth scan results to derive physical location. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
     <queries>
         <intent>
@@ -94,6 +122,8 @@
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity">
         </activity>
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game1.Game1BleActivity">
+        </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity">
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAActivity">
@@ -127,6 +157,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity" />
         </activity>
+        <service android:name="com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothLeService" android:enabled="true"/>
     </application>
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
 </manifest>
