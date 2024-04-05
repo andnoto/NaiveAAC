@@ -102,7 +102,7 @@ class StoriesAdapter(private val context: Context, private val stories: List<Sto
 //        var v = v
         val v1: View
         if (v == null) {
-            v1 = LayoutInflater.from(context).inflate(R.layout.activity_settings_row_stories, null)
+            v1 = LayoutInflater.from(context).inflate(R.layout.activity_settings_row_crud, null)
             }
             else
             { v1 = v}

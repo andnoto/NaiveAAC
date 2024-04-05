@@ -1,280 +1,189 @@
-word1,word2,word1WithWord2,isMenuItem,awardType,uriPremiumVideo,fromAssets
-cane,abbaiare, , , , ,Y
-abbottonare,pantaloni, , , , ,Y
-mamma,abbracciare, , , , ,Y
-papà,abbracciare, , , , ,Y
-nonna,abbracciare, , , , ,Y
-mamma,accarezzare, , , , ,Y
-papà,accarezzare, , , , ,Y
-nonna,accarezzare, , , , ,Y
-accendere,televisione, , , , ,Y
-accendere,tablet, , , , ,Y
-accendere,luce, , , , ,Y
-aggiustare,giocattolo, , , , ,Y
-aggiustare,macchina, , , , ,Y
-aiutare,mamma, , ,V, ,Y
-aiutare,papà, , , , ,Y
-io,aiutare, , , , ,Y
-allacciare,scarpe, , , , ,Y
-mamma,andare, , , , ,Y
-papà,andare, , , , ,Y
-io,andare, , , , ,Y
-andare,scuola, , , , ,Y
-andare,casa, , , , ,Y
-andare,bosco, , , , ,Y
-andare,parco, , , , ,Y
-andare,cavalli, , , , ,Y
-apparecchiare,tavola, , , , ,Y
-aprire,porta, , , , ,Y
-arrivare,mamma, , , , ,Y
-arrivare,papà, , , , ,Y
-aspettare,mamma, , , , ,Y
-aspettare,papà, , , , ,Y
-io,aspettare, , , , ,Y
-mamma,baciare, , , , ,Y
-papà,baciare, , , , ,Y
-nonna,baciare, , , , ,Y
-baciare,mamma, , , , ,Y
-baciare,papà, , , , ,Y
-baciare,nonna, , , , ,Y
-io,baciare, , , , ,Y
-bere,bicchiere, , , , ,Y
-bere,bottiglia, , , , ,Y
-io,bere, , , , ,Y
-bere,acqua, , , , ,Y
-io,cadere, , , , ,Y
-io,camminare, , , , ,Y
-mamma,cantare, , , , ,Y
-mamma,chiamare, , , , ,Y
-papà,chiamare, , , , ,Y
-nonna,chiamare, , , , ,Y
-chiudere,porta, , , , ,Y
-io,correre, , , , ,Y
-papà,correre, , , , ,Y
-correre,parco, , , , ,Y
-papà,cucinare, , , , ,Y
-mamma,cucinare, , , , ,Y
-nonna,cucinare, , , , ,Y
-io,dire, , , , ,Y
-io,disegnare, , , , ,Y
-disegnare,geco, , , , ,Y
-disegnare,gufetta, , , , ,Y
-disegnare,gattoboi, , , , ,Y
-io,dormire, , , , ,Y
-entrare,porta, , , , ,Y
-entrare,casa, , , , ,Y
-entrare,scuola, , , , ,Y
-gettare,sasso, , , , ,Y
-io,giocare, , , , ,Y
-giocare,capanna, , , , ,Y
-giocare,macchine, , , , ,Y
-giocare,nascondino, , , , ,Y
-giocare,palla, , ,V,football,Y
-giocare,chitarra, , , , ,Y
-io,gridare, , , , ,Y
-io,guardare, , , , ,Y
-guardare,pigiamask, , , , ,Y
-guardare,tre porcellini, , , , ,Y
-guardare,tutti i giorni, , ,Y,https://www.youtube.com/watch?v=y8cRTh15jIc,Y
-guardare,o mai darlin, , ,Y,https://www.youtube.com/watch?v=4-Qh-zRh58g,Y
-guardare,cavalli, , , , ,Y
-lavare,denti, , , , ,Y
-lavare,mani, , , , ,Y
-lavare,viso, , , , ,Y
-io,lavare, , , , ,Y
-io,mangiare, , , , ,Y
-mangiare,pane, , , , ,Y
-mangiare,grissino, , , , ,Y
-mangiare,banana, , , , ,Y
-mangiare,fragole, , , , ,Y
-mangiare,frittata, , , , ,Y
-mangiare,pomodoro, , , , ,Y
-mangiare,polpetta, , , , ,Y
-mangiare,spaghetti, , , , ,Y
-mettere,cappello, , , , ,Y
-mettere,scarpe, , , , ,Y
-gatto,miagolare, , , , ,Y
-io,nascondere, , , , ,Y
-nonna,nascondere, , , , ,Y
-nonno,nascondere, , , , ,Y
-io,piangere, , , , ,Y
-nonna,piangere, , , , ,Y
-nonno,piangere, , , , ,Y
-pulire,tovagliolo, , , , ,Y
-pulire,bocca, , , , ,Y
-io,ridere, , , , ,Y
-salire,scale, , , , ,Y
-io,saltare, , , , ,Y
-saltare,divano, , , , ,Y
-scendere,scale, , , , ,Y
-slacciare,scarpe, , , , ,Y
-io,sorridere, , , , ,Y
-io,specchiare, , , , ,Y
-specchio,specchiare, , , , ,Y
-spegnere,televisione, , , , ,Y
-spegnere,luce, , , , ,Y
-spegnere,tablet, , , , ,Y
-togliere,cappello, , , , ,Y
-togliere,scarpe, , , , ,Y
-sole,tramontare, , , , ,Y
-desideri,desideri, ,TLM, , ,Y
-emozioni,emozioni, ,TLM, , ,Y
-famiglia,famiglia, ,TLM, , ,Y
-giochi,giochi, ,TLM, , ,Y
-cibo,cibo, ,TLM, , ,Y
-animali,animali, ,TLM, , ,Y
-numeri,uno, ,SLM, , ,Y
-numeri,due, ,SLM, , ,Y
-numeri,tre, ,SLM, , ,Y
-numeri,quattro, ,SLM, , ,Y
-numeri,cinque, ,SLM, , ,Y
-numeri,sei, ,SLM, , ,Y
-numeri,sette, ,SLM, , ,Y
-numeri,otto, ,SLM, , ,Y
-numeri,nove, ,SLM, , ,Y
-numeri,dieci, ,SLM, , ,Y
-colorare,tablet, ,SLM, , ,Y
-colorare,foglio, ,SLM, , ,Y
-animali,scoiattolo, ,SLM, , ,Y 
-animali,topo, ,SLM, , ,Y
-animali,balena, ,SLM, , ,Y
-animali,gatto, ,SLM, , ,Y
-animali,cane, ,SLM, , ,Y
-animali,giraffa, ,SLM, , ,Y
-animali,elefante, ,SLM, , ,Y
-animali,leone, ,SLM, , ,Y
-animali,uccello, ,SLM, , ,Y
-animali,anatra, ,SLM, , ,Y
-animali,gallina, ,SLM, , ,Y
-animali,tacchino, ,SLM, , ,Y
-animali,cigno, ,SLM, , ,Y
-animali,piccione, ,SLM, , ,Y
-animali,pesce, ,SLM, , ,Y
-animali,tartaruga, ,SLM, , ,Y
-animali,asino, ,SLM, , ,Y
-animali,pecora, ,SLM, , ,Y
-animali,cavallo, ,SLM, , ,Y
-animali,capra, ,SLM, , ,Y
-animali,ape, ,SLM, , ,Y
-animali,formica, ,SLM, , ,Y
-animali,rana, ,SLM, , ,Y
-spiaggia,ombrelloni, ,SLM, , ,Y
-spiaggia,mare, ,SLM, , ,Y
-spiaggia,sole, ,SLM, , ,Y
-spiaggia,nuotare, ,SLM, , ,Y
-abbigliamento,berretto, ,SLM, , ,Y
-abbigliamento,pigiama, ,SLM, , ,Y
-abbigliamento,cappello, ,SLM, , ,Y
-abbigliamento,sciarpa, ,SLM, , ,Y
-abbigliamento,maglietta, ,SLM, , ,Y
-abbigliamento,maglione, ,SLM, , ,Y
-abbigliamento,giubbotto, ,SLM, , ,Y
-abbigliamento,guanti, ,SLM, , ,Y
-abbigliamento,pantaloni, ,SLM, , ,Y
-abbigliamento,mutande, ,SLM, , ,Y
-abbigliamento,calze, ,SLM, , ,Y
-abbigliamento,scarpe, ,SLM, , ,Y  
-fiabe,tre porcellini, ,SLM, , ,Y
-giochi,palla, ,SLM, , ,Y
-giochi,tablet, ,SLM, , ,Y
-giochi,macchine, ,SLM, , ,Y
-giochi,puzzle, ,SLM, , ,Y
-giochi,correre, ,SLM, , ,Y
-giochi,saltare, ,SLM, , ,Y
-giochi,parco, ,SLM, , ,Y
-cibo,frittata, ,SLM, , ,Y
-cibo,pane, ,SLM, , ,Y
-cibo,grissini, ,SLM, , ,Y
-cibo,biscotto, ,SLM, , ,Y
-cibo,brioche, ,SLM, , ,Y
-cibo,succo, ,SLM, , ,Y
-cibo,spaghetti, ,SLM, , ,Y
-cibo,risotto, ,SLM, , ,Y
-cibo,minestra, ,SLM, , ,Y
-cibo,formaggio, ,SLM, , ,Y
-cibo,carne, ,SLM, , ,Y
-cibo,polpetta, ,SLM, , ,Y
-cibo,bresaola, ,SLM, , ,Y
-cibo,bistecca, ,SLM, , ,Y
-cibo,wurstel, ,SLM, , ,Y
-cibo,pomodoro, ,SLM, , ,Y
-cibo,piselli, ,SLM, , ,Y
-cibo,carota, ,SLM, , ,Y
-cobo,oliva, ,SLM, , ,Y
-cibo,zucchina, ,SLM, , ,Y
-cibo,banana, ,SLM, , ,Y
-cibo,fragola, ,SLM, , ,Y
-cibo,mela, ,SLM, , ,Y
-cibo,gelato, ,SLM, , ,Y
-cibo,cioccolato, ,SLM, , ,Y
-famiglia,io, ,SLM, , ,Y
-famiglia,papà, ,SLM, , ,Y
-famiglia,mamma, ,SLM, , ,Y
-famiglia,nonno, ,SLM, , ,Y
-famiglia,nonna, ,SLM, , ,Y
-famiglia,zio, ,SLM, , ,Y
-televisione,masha, ,SLM, , ,Y
-televisione,pigiamask, ,SLM, , ,Y
-televisione,frozen, ,SLM, , ,Y
-televisione,musica, ,SLM, , ,Y
-veicoli,automobili, ,SLM, , ,Y
-meteo,neve, ,SLM, , ,Y
-meteo,pioggia, ,SLM, , ,Y
-meteo,nebbia, ,SLM, , ,Y
-meteo,nuvole, ,SLM, , ,Y
-meteo,vento, ,SLM, , ,Y
-meteo,sole, ,SLM, , ,Y
-desideri,volere, ,SLM, , ,Y
-emozioni,essere, ,SLM, , ,Y
-uccello,volare, , , , ,Y
-pesce,nuotare, , , , ,Y
-ape,volare, , , , ,Y
-vedere,scoiattolo, , , , ,Y
-vedere,gatto, , , , ,Y
-vedere,cane, , , , ,Y
-vedere,uccello, , , , ,Y
-vedere,anatra, , , , ,Y
-vedere,gallina, , , , ,Y
-vedere,cigno, , , , ,Y
-vedere,anatra, , , , ,Y
-vedere,piccione, , , , ,Y
-vedere,pesce, , , , ,Y
-vedere,tartaruga, , , , ,Y
-vedere,cavallo, , , , ,Y
-vedere,ape, , , , ,Y
-indossare,berretto, , , , ,Y
-indossare,pigiama, , , , ,Y
-indossare,cappello, , , , ,Y
-indossare,sciarpa, , , , ,Y
-indossare,maglietta, , , , ,Y
-indossare,maglione, , , , ,Y
-indossare,giubbotto, , , , ,Y
-indossare,guanti, , , , ,Y
-indossare,pantaloni, , , , ,Y
-indossare,mutande, , , , ,Y
-indossare,calze, , , , ,Y
-indossare,scarpe, , , , ,Y
-mangiare,grissini, , , , ,Y
-mangiare,carota, , , , ,Y
-mangiare,fragola, , , , ,Y
-mangiare,gelato, , ,Y,https://www.youtube.com/watch?v=ck03Yb2d1s0,Y
-zio,giocare, , , , ,Y
-ascoltare,musica, , , , ,Y
-neve,scendere, , , , ,Y
-pioggia,scendere, , , , ,Y
-nebbia,scendere, , , , ,Y
-vento,soffiare, , , , ,Y
-sole,splendere, , , , ,Y
-volere,mangiare, , , , ,Y
-volere,bere, , , , ,Y
-volere,giocare, , , , ,Y
-volere,correre, , , , ,Y
-volere,vedere la TV, , , , ,Y
-volere,dormire, , , , ,Y
-volere,fare pipì, , , , ,Y
-volere,fare la cacca, , , , ,Y
-io,volere, , , , ,Y
-essere,felice, , , , ,Y
-essere,arrabbiato, , , , ,Y
-essere,triste, , , , ,Y
-io,essere, , , , ,Y
+word1,word2,word1WithWord2,awardType,uriPremiumVideo,fromAssets
+cane,abbaiare, , , ,Y
+abbottonare,pantaloni, , , ,Y
+mamma,abbracciare, , , ,Y
+papà,abbracciare, , , ,Y
+nonna,abbracciare, , , ,Y
+mamma,accarezzare, , , ,Y
+papà,accarezzare, , , ,Y
+nonna,accarezzare, , , ,Y
+accendere,televisione, , , ,Y
+accendere,tablet, , , ,Y
+accendere,luce, , , ,Y
+aggiustare,giocattolo, , , ,Y
+aggiustare,macchina, , , ,Y
+aiutare,mamma, ,V, ,Y
+aiutare,papà, , , ,Y
+io,aiutare, , , ,Y
+allacciare,scarpe, , , ,Y
+mamma,andare, , , ,Y
+papà,andare, , , ,Y
+io,andare, , , ,Y
+andare,scuola, , , ,Y
+andare,casa, , , ,Y
+andare,bosco, , , ,Y
+andare,parco, , , ,Y
+andare,cavalli, , , ,Y
+apparecchiare,tavola, , , ,Y
+aprire,porta, , , ,Y
+arrivare,mamma, , , ,Y
+arrivare,papà, , , ,Y
+aspettare,mamma, , , ,Y
+aspettare,papà, , , ,Y
+io,aspettare, , , ,Y
+mamma,baciare, , , ,Y
+papà,baciare, , , ,Y
+nonna,baciare, , , ,Y
+baciare,mamma, , , ,Y
+baciare,papà, , , ,Y
+baciare,nonna, , , ,Y
+io,baciare, , , ,Y
+bere,bicchiere, , , ,Y
+bere,bottiglia, , , ,Y
+io,bere, , , ,Y
+bere,acqua, , , ,Y
+io,cadere, , , ,Y
+io,camminare, , , ,Y
+mamma,cantare, , , ,Y
+mamma,chiamare, , , ,Y
+papà,chiamare, , , ,Y
+nonna,chiamare, , , ,Y
+chiudere,porta, , , ,Y
+io,correre, , , ,Y
+papà,correre, , , ,Y
+correre,parco, , , ,Y
+papà,cucinare, , , ,Y
+mamma,cucinare, , , ,Y
+nonna,cucinare, , , ,Y
+io,dire, , , ,Y
+io,disegnare, , , ,Y
+disegnare,geco, , , ,Y
+disegnare,gufetta, , , ,Y
+disegnare,gattoboi, , , ,Y
+io,dormire, , , ,Y
+entrare,porta, , , ,Y
+entrare,casa, , , ,Y
+entrare,scuola, , , ,Y
+gettare,sasso, , , ,Y
+io,giocare, , , ,Y
+giocare,capanna, , , ,Y
+giocare,macchine, , , ,Y
+giocare,nascondino, , , ,Y
+giocare,palla, ,V,football,Y
+giocare,chitarra, , , ,Y
+io,gridare, , , ,Y
+io,guardare, , , ,Y
+guardare,pigiamask, , , ,Y
+guardare,tre porcellini, , , ,Y
+guardare,tutti i giorni, ,Y,https://www.youtube.com/watch?v=y8cRTh15jIc,Y
+guardare,o mai darlin, ,Y,https://www.youtube.com/watch?v=4-Qh-zRh58g,Y
+guardare,cavalli, , , ,Y
+lavare,denti, , , ,Y
+lavare,mani, , , ,Y
+lavare,viso, , , ,Y
+io,lavare, , , ,Y
+io,mangiare, , , ,Y
+mangiare,pane, , , ,Y
+mangiare,grissino, , , ,Y
+mangiare,banana, , , ,Y
+mangiare,fragole, , , ,Y
+mangiare,frittata, , , ,Y
+mangiare,pomodoro, , , ,Y
+mangiare,polpetta, , , ,Y
+mangiare,spaghetti, , , ,Y
+mettere,cappello, , , ,Y
+mettere,scarpe, , , ,Y
+gatto,miagolare, , , ,Y
+io,nascondere, , , ,Y
+nonna,nascondere, , , ,Y
+nonno,nascondere, , , ,Y
+io,piangere, , , ,Y
+nonna,piangere, , , ,Y
+nonno,piangere, , , ,Y
+pulire,tovagliolo, , , ,Y
+pulire,bocca, , , ,Y
+io,ridere, , , ,Y
+salire,scale, , , ,Y
+io,saltare, , , ,Y
+saltare,divano, , , ,Y
+scendere,scale, , , ,Y
+slacciare,scarpe, , , ,Y
+io,sorridere, , , ,Y
+io,specchiare, , , ,Y
+specchio,specchiare, , , ,Y
+spegnere,televisione, , , ,Y
+spegnere,luce, , , ,Y
+spegnere,tablet, , , ,Y
+togliere,cappello, , , ,Y
+togliere,scarpe, , , ,Y
+sole,tramontare, , , ,Y
+colorare,tablet, , , ,Y
+colorare,foglio, , , ,Y
+spiaggia,ombrelloni, , , ,Y
+spiaggia,mare, , , ,Y
+spiaggia,sole, , , ,Y
+spiaggia,nuotare, , , ,Y
+fiabe,tre porcellini, , , ,Y
+televisione,masha, , , ,Y
+televisione,pigiamask, , , ,Y
+televisione,frozen, , , ,Y
+televisione,musica, , , ,Y
+veicoli,automobili, , , ,Y
+meteo,neve, , , ,Y
+meteo,pioggia, , , ,Y
+meteo,nebbia, , , ,Y
+meteo,nuvole, , , ,Y
+meteo,vento, , , ,Y
+meteo,sole, , , ,Y
+uccello,volare, , , ,Y
+pesce,nuotare, , , ,Y
+ape,volare, , , ,Y
+vedere,scoiattolo, , , ,Y
+vedere,gatto, , , ,Y
+vedere,cane, , , ,Y
+vedere,uccello, , , ,Y
+vedere,anatra, , , ,Y
+vedere,gallina, , , ,Y
+vedere,cigno, , , ,Y
+vedere,anatra, , , ,Y
+vedere,piccione, , , ,Y
+vedere,pesce, , , ,Y
+vedere,tartaruga, , , ,Y
+vedere,cavallo, , , ,Y
+vedere,ape, , , ,Y
+indossare,berretto, , , ,Y
+indossare,pigiama, , , ,Y
+indossare,cappello, , , ,Y
+indossare,sciarpa, , , ,Y
+indossare,maglietta, , , ,Y
+indossare,maglione, , , ,Y
+indossare,giubbotto, , , ,Y
+indossare,guanti, , , ,Y
+indossare,pantaloni, , , ,Y
+indossare,mutande, , , ,Y
+indossare,calze, , , ,Y
+indossare,scarpe, , , ,Y
+mangiare,grissini, , , ,Y
+mangiare,carota, , , ,Y
+mangiare,fragola, , , ,Y
+mangiare,gelato, ,Y,https://www.youtube.com/watch?v=ck03Yb2d1s0,Y
+zio,giocare, , , ,Y
+ascoltare,musica, , , ,Y
+neve,scendere, , , ,Y
+pioggia,scendere, , , ,Y
+nebbia,scendere, , , ,Y
+vento,soffiare, , , ,Y
+sole,splendere, , , ,Y
+volere,mangiare, , , ,Y
+volere,bere, , , ,Y
+volere,giocare, , , ,Y
+volere,correre, , , ,Y
+volere,vedere la TV, , , ,Y
+volere,dormire, , , ,Y
+volere,fare pipì, , , ,Y
+volere,fare la cacca, , , ,Y
+io,volere, , , ,Y
+essere,felice, , , ,Y
+essere,arrabbiato, , , ,Y
+essere,triste, , , ,Y
+io,essere, , , ,Y

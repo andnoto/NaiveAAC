@@ -309,22 +309,20 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             iIo.uri = filePath
             i.fromAssets = ""
             realm.commitTransaction()
-            // register the linked word pairs
+            // register the linked lists of names
             realm.beginTransaction()
-            val wordPairs = realm.createObject(WordPairs::class.java)
-            wordPairs.word1 = getString(R.string.famiglia)
-            wordPairs.word2 = textPersonName
-            wordPairs.complement = ""
-            wordPairs.isMenuItem = getString(R.string.slm)
-            wordPairs.awardType = ""
-            wordPairs.uriPremiumVideo = ""
-            wordPairs.fromAssets = ""
+            val listsOfNames = realm.createObject(ListsOfNames::class.java)
+            // set the fields here
+            listsOfNames.keyword = getString(R.string.famiglia)
+            listsOfNames.word = textPersonName
+            listsOfNames.elementActive = "A"
+            listsOfNames.isMenuItem = "N"
+            listsOfNames.fromAssets = ""
             realm.commitTransaction()
             // register the password
             if (textPassword == null)   { textPassword = "nessuna password" }
             else
             { if (textPassword!!.length <= 0) textPassword = "nessuna password" }
-//            if (textPassword.length > 0) registerPassword(textPassword)
             registerPassword(textPassword)
         }
         // view the fragment settings initializing MenuSettingsFragment (FragmentTransaction
@@ -1503,7 +1501,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      */
     val isStoragePermissionGranted: Boolean
         get() =
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED
             ) {
@@ -1519,11 +1516,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                 )
                 false
             }
-//        }
-//            else { //permission is automatically granted on sdk<23 upon installation
-//            // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
-//            true
-//        }
 
     /**
      * Called when the user taps grammatical exceptions button from the advanced settings menu.

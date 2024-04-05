@@ -1,6 +1,5 @@
-package com.sampietro.NaiveAAC.activities.Settings
+package com.sampietro.NaiveAAC.activities.Settings.Utils
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
 import com.android.volley.RequestQueue
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import android.widget.EditText
@@ -8,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import com.sampietro.NaiveAAC.R
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
@@ -18,17 +18,17 @@ import com.android.volley.Request
 import java.util.ArrayList
 
 /**
- * <h1>StoriesImageSearchArasaacFragment</h1>
+ * <h1>ImageSearchArasaacFragment</h1>
  *
- * **StoriesImageSearchArasaacFragment** UI for game1
+ * **ImageSearchArasaacFragment** UI for game1
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see SettingsFragmentAbstractClass
  *
  * @see SettingsActivity
  */
-class StoriesImageSearchArasaacFragment : SettingsFragmentAbstractClass() {
+class ImageSearchArasaacFragment : SettingsFragmentAbstractClass() {
     //
     var keywordToSearchArasaac: String? = null
     private var mRequestQueue: RequestQueue? = null
@@ -50,7 +50,7 @@ class StoriesImageSearchArasaacFragment : SettingsFragmentAbstractClass() {
      *
      * @see Game1ArrayList
      *
-     * @see StoriesImageSearchArasaacRecyclerViewAdapter
+     * @see ImageSearchArasaacRecyclerViewAdapter
      */
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -118,7 +118,7 @@ class StoriesImageSearchArasaacFragment : SettingsFragmentAbstractClass() {
                     val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
                     recyclerView.layoutManager = layoutManager
                     // ArrayList<Game1ArrayList> createLists = prepareData();
-                    val adapter = StoriesImageSearchArasaacRecyclerViewAdapter(ctext, createLists)
+                    val adapter = ImageSearchArasaacRecyclerViewAdapter(ctext, createLists)
                     recyclerView.adapter = adapter
                 }
             ) {
@@ -129,7 +129,12 @@ class StoriesImageSearchArasaacFragment : SettingsFragmentAbstractClass() {
             mRequestQueue!!.add(request)
         }
         //
-        listener.receiveResultSettings(rootView)
+        val buttonSearchArasaac =
+            rootView.findViewById<View>(R.id.btn_search_arasaac) as ImageButton
+        buttonSearchArasaac.setOnClickListener {
+            listener.receiveResultSettings(buttonSearchArasaac)
+        }
+        //
         return rootView
     }
 

@@ -87,6 +87,8 @@ class Game1BleDialogFragment: DialogFragment()  {
         val cvsSplitBy = ctext.getString(R.string.character_comma)
         val oneWord: Array<String?> =
             messageFromGattServer.split(cvsSplitBy.toRegex()).toTypedArray()
+        if (oneWord[0] == getString(R.string.io))
+            { oneWord[0] = " " }
         if (oneWord[0] != getString(R.string.nessuno) && oneWord[0] != " " && preference_TitleWritingType == getString(R.string.uppercase))
         { leftColumnContent = oneWord[0]!!.uppercase(Locale.getDefault()) }
         else { leftColumnContent = oneWord[0]!!.lowercase(Locale.getDefault()) }

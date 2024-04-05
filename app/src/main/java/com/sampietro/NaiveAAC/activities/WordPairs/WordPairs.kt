@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets
  * in game1 they are not considered wordpairs with pairs of names or pairs of verbs
  * (only noun-verb pairs are considered or vice versa verb-noun)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  */
 open class WordPairs : RealmObject() {
     /**
@@ -42,14 +42,6 @@ open class WordPairs : RealmObject() {
      * andare - nonno insert "con il"
      */
     var complement: String? = null
-    /**
-     * game1 is designed as a search engine where categories are represented by image menus.
-     * isMenuItem = TLM : `word1` is a top-level menu item of Game1
-     * (in this case word1 must be equal to word2).
-     * isMenuItem = SLM : `word2` is a second level menu item in Game1
-     * where `word1` is its top level menu.
-     */
-    var isMenuItem: String? = null
     /**
      * game1 displays collections of word images that you can select to form simple sentences.
      * when the sentence is completed the app listens and
@@ -200,7 +192,7 @@ open class WordPairs : RealmObject() {
                             var image2: ResponseImageSearch?
                             image1 = ImageSearchHelper.imageSearch(context, realm, oneWord[0])
                             image2 = ImageSearchHelper.imageSearch(context, realm, oneWord[1])
-                            if (image1 != null && image2 != null && oneWord[2] != null && oneWord[3] != null && oneWord[4] != null && oneWord[5] != null && oneWord[6] != null) {
+                            if (image1 != null && image2 != null && oneWord[2] != null && oneWord[3] != null && oneWord[4] != null && oneWord[5] != null) {
                                 //
                                 realm.beginTransaction()
                                 val wordPairs = realm.createObject(
@@ -210,20 +202,75 @@ open class WordPairs : RealmObject() {
                                 wordPairs.word1 = oneWord[0]
                                 wordPairs.word2 = oneWord[1]
                                 wordPairs.complement = oneWord[2]
-                                wordPairs.isMenuItem = oneWord[3]
-                                wordPairs.awardType = oneWord[4]
+                                wordPairs.awardType = oneWord[3]
                                 // replace with root of the external storage or data directory
-                                val uri = oneWord[5]!!
+                                val uri = oneWord[4]!!
                                     .replaceFirst("rootdirectory".toRegex(), rootPath)
                                 //
                                 wordPairs.uriPremiumVideo = uri
-                                wordPairs.fromAssets = oneWord[6]
+                                wordPairs.fromAssets = oneWord[5]
                                 realm.commitTransaction()
                             }
                         }
                     }
                 }
             }
-        } //
+        }
+        /**
+         * word1 and word2 were given, search type award
+         *
+         * @param context context
+         * @param word1 string containing the word1
+         * @param word2 string containing the word2
+         * @param realm realm
+         * @return string type award
+         */
+        fun searchAwardType (context: Context,
+                                              word1: String?,
+                                              word2: String?,
+                                              realm: Realm): String {
+            if (word1 == null || word2 == null) { return context.getString(R.string.non_trovato) }
+//
+            val resultsWordPairs = realm.where(WordPairs::class.java)
+                .beginGroup()
+                .equalTo(context.getString(R.string.word1), word1)
+                .equalTo(context.getString(R.string.word2), word2)
+                .endGroup()
+                .findAll()
+            val resultsWordPairsSize = resultsWordPairs!!.size
+            if (resultsWordPairsSize == 0)
+            { return context.getString(R.string.non_trovato) }
+            else
+            { return resultsWordPairs[0]!!.awardType!!
+            }
+        }
+        /**
+         * word1 and word2 were given, search uri Premium Video
+         *
+         * @param context context
+         * @param word1 string containing the word1
+         * @param word2 string containing the word2
+         * @param realm realm
+         * @return string uri Premium Video
+         */
+        fun searchUriPremiumVideo (context: Context,
+                             word1: String?,
+                             word2: String?,
+                             realm: Realm): String {
+            if (word1 == null || word2 == null) { return context.getString(R.string.non_trovato) }
+//
+            val resultsWordPairs = realm.where(WordPairs::class.java)
+                .beginGroup()
+                .equalTo(context.getString(R.string.word1), word1)
+                .equalTo(context.getString(R.string.word2), word2)
+                .endGroup()
+                .findAll()
+            val resultsWordPairsSize = resultsWordPairs!!.size
+            if (resultsWordPairsSize == 0)
+            { return context.getString(R.string.non_trovato) }
+            else
+            { return resultsWordPairs[0]!!.uriPremiumVideo!!
+            }
+        }
     }
 }

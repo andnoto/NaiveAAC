@@ -21,7 +21,6 @@ import android.content.Intent
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import kotlin.Throws
 import android.content.pm.PackageManager
-import android.text.InputType
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -31,14 +30,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
-import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAActivity
 import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.util.Locale
 
 /**
  * <h1>AccountActivity</h1>
@@ -51,10 +48,10 @@ import java.util.Locale
  * 2) data from https://github.com/ian-hamlin/verb-data a collection of verbs and conjugations
  * 3) initial settings and content such as images, videos and others from assets
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see AccountActivityAbstractClass
  *
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
  */
 class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerSettings {
     //
@@ -207,7 +204,6 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
      * if the case creates creates the initial realm database.
      *
      * @param view view of tapped button
-//     * @see isStoragePermissionGranted
      *
      * @see com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.findExternalStorageRoot
      * @see prepareTheSimsimDirectory
@@ -319,15 +315,15 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
             iIo.descrizione = getString(R.string.io)
             iIo.uri = filePath
             realm.commitTransaction()
-            // register the linked word pairs
+            // register the linked lists of names
             realm.beginTransaction()
-            val wordPairs = realm.createObject(WordPairs::class.java)
-            wordPairs.word1 = getString(R.string.famiglia)
-            wordPairs.word2 = textPersonName
-            wordPairs.complement = ""
-            wordPairs.isMenuItem = getString(R.string.slm)
-            wordPairs.awardType = ""
-            wordPairs.uriPremiumVideo = ""
+            val listsOfNames = realm.createObject(ListsOfNames::class.java)
+            // set the fields here
+            listsOfNames.keyword = getString(R.string.famiglia)
+            listsOfNames.word = textPersonName
+            listsOfNames.elementActive = "A"
+            listsOfNames.isMenuItem = "N"
+            listsOfNames.fromAssets = ""
             realm.commitTransaction()
             // register the password
             registerPassword(textPassword)
@@ -469,10 +465,6 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
     }
 
     companion object {
-        //
-//        private const val TAG = "VERBO"
-//        private const val TAGPERMISSION = "Permission"
-
         //
         const val EXTRA_MESSAGE = "helloworldandroidMessage"
     }

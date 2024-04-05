@@ -7,65 +7,71 @@
     android:layout_height="match_parent"
     tools:context="com.sampietro.NaiveAAC.activities.Game.Game1.Game1BleActivity">
 
-    <ImageView
-        android:id="@+id/sendtobluetoothimage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:contentDescription="spedisce la frase appena composta"
-        app:backgroundTint="@color/azzurro_pastello"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/listenagainbutton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/btn_startLL"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/rilegge_il_testo_della_frase_appena_composta"
-        android:onClick="listenAgainButton"
-        android:src="@drawable/ic_baseline_play_arrow_36"
-        app:backgroundTint="@color/azzurro_pastello"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/continuegamebutton"
-        app:layout_constraintTop_toBottomOf="@+id/sendtobluetoothimage" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/continuegamebutton"
-        android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/sendtobluetoothimage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:gravity="center_horizontal"
+            android:contentDescription="spedisce la frase appena composta"
+            app:backgroundTint="@color/azzurro_pastello" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/azzurro_pastello"
-        android:onClick="continueGameButton"
-        android:src="@drawable/ic_baseline_delete_36"
-        android:contentDescription="@string/passa_alla_composizione_di_una_nuova_frase"
-        app:layout_constraintStart_toEndOf="@+id/listenagainbutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sendtobluetoothimage" />
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/listenagainbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:contentDescription="@string/rilegge_il_testo_della_frase_appena_composta"
+            android:onClick="listenAgainButton"
+            android:src="@drawable/ic_baseline_play_arrow_36"
+            app:backgroundTint="@color/azzurro_pastello" />
+
+        <ImageButton
+            android:id="@+id/continuegamebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            app:backgroundTint="@color/azzurro_pastello"
+            android:onClick="continueGameButton"
+            android:src="@drawable/ic_baseline_delete_36"
+            android:contentDescription="@string/passa_alla_composizione_di_una_nuova_frase" />
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listenagainbutton">
+        android:orientation="horizontal">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imagegallery1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imagegallery2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imagegallery3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
-
-
+</LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

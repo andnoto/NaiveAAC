@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.history.History
 import java.util.*
 
@@ -23,7 +24,7 @@ import java.util.*
  * for the game class subclasses ball, tablet, running, etc.
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameFragmentAbstractClass
  *
  * @see Game1Activity
@@ -48,6 +49,7 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
     var rightColumnContent: String? = null
     var rightColumnContentUrlType: String? = null
     var rightColumnContentUrl: String? = null
+    var theSentenceIsCompleted: Boolean = false
 
     //
     var column1debugWord = arrayOfNulls<String>(32)
@@ -108,12 +110,15 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
             rightColumnContentUrlType =
                 bundle.getString(getString(R.string.right_column_content_url_type))
             rightColumnContentUrl = bundle.getString(getString(R.string.right_column_content_url))
+            //
+            theSentenceIsCompleted = bundle.getBoolean("THE SENTENCE IS COMPLETED")
         }
         //
-        if (leftColumnContent != getString(R.string.nessuno)
-            && middleColumnContent != getString(R.string.nessuno)
-            && rightColumnContent != getString(R.string.nessuno)
-        ) {
+        if (theSentenceIsCompleted) {
+//        if (leftColumnContent != getString(R.string.nessuno)
+//            && middleColumnContent != getString(R.string.nessuno)
+//            && rightColumnContent != getString(R.string.nessuno)
+//        ) {
             hearingImageButton.visibility = View.VISIBLE
             listenAgainButton.visibility = View.VISIBLE
             continueGameButton.visibility = View.VISIBLE
@@ -127,7 +132,7 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
         recyclerView1.setHasFixedSize(true)
         val layoutManager1: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView1.layoutManager = layoutManager1
-        val createLists1 = prepareData(leftColumnContent, leftColumnContentUrlType, leftColumnContentUrl, leftColumnMenuPhraseNumber )
+        val createLists1 = prepareData(leftColumnMenuPhraseNumber )
         val adapter1 = Game1RecyclerViewAdapter1(ctext, createLists1)
         recyclerView1.adapter = adapter1
         //
@@ -135,7 +140,7 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
         recyclerView2.setHasFixedSize(true)
         val layoutManager2: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView2.layoutManager = layoutManager2
-        val createLists2 = prepareData(middleColumnContent, middleColumnContentUrlType, middleColumnContentUrl, middleColumnMenuPhraseNumber )
+        val createLists2 = prepareData(middleColumnMenuPhraseNumber )
         val adapter2 = Game1RecyclerViewAdapter2(ctext, createLists2)
         recyclerView2.adapter = adapter2
         //
@@ -143,7 +148,7 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
         recyclerView3.setHasFixedSize(true)
         val layoutManager3: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView3.layoutManager = layoutManager3
-        val createLists3 = prepareData(rightColumnContent, rightColumnContentUrlType, rightColumnContentUrl, rightColumnMenuPhraseNumber )
+        val createLists3 = prepareData(rightColumnMenuPhraseNumber )
         val adapter3 = Game1RecyclerViewAdapter3(ctext, createLists3)
         recyclerView3.adapter = adapter3
         //
@@ -160,23 +165,23 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
      * @see History
     </GameFragmentChoiseOfGameArrayList> */
     private fun prepareData(
-        columnContent: String?,
-        columnContentUrlType: String?,
-        columnContentUrl: String?,
+//        columnContent: String?,
+//        columnContentUrlType: String?,
+//        columnContentUrl: String?,
         columnMenuPhraseNumber: Int
     ): ArrayList<Game1ArrayList> {
         var column1debugUrlNumber = 0
         //
-        if (columnContent != getString(R.string.nessuno) && columnContent != " ") {
-            column1debugUrlNumber = 1
-            if (preference_TitleWritingType == getString(R.string.uppercase)) column1debugWord[0] =
-                columnContent!!.uppercase(
-                    Locale.getDefault()
-                ) else column1debugWord[0] = columnContent!!.lowercase(Locale.getDefault())
+//        if (columnContent != getString(R.string.nessuno) && columnContent != " ") {
+//           column1debugUrlNumber = 1
+//            if (preference_TitleWritingType == getString(R.string.uppercase)) column1debugWord[0] =
+//                columnContent!!.uppercase(
+//                    Locale.getDefault()
+//                ) else column1debugWord[0] = columnContent!!.lowercase(Locale.getDefault())
             //
-            column1debugUrlType[0] = columnContentUrlType
-            column1debugUrl[0] = columnContentUrl
-        } else {
+//            column1debugUrlType[0] = columnContentUrlType
+//            column1debugUrl[0] = columnContentUrl
+//        } else {
             //
             if (columnMenuPhraseNumber != 0) {
                 val results = realm.where(
@@ -209,7 +214,7 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
                     }
                 }
             }
-        }
+//        }
         //
         val theimage = ArrayList<Game1ArrayList>()
         for (i in 0 until column1debugUrlNumber) {
@@ -217,6 +222,17 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
             createList.image_title = column1debugWord[i]
             createList.urlType = column1debugUrlType[i]
             createList.url = column1debugUrl[i]
+            createList.theTitleRepresentsAClass = false
+            if (column1debugWord.size > 1) {
+                //
+                val wordToSearch = column1debugWord[i]!!.lowercase(Locale.getDefault())
+                if (ListsOfNames.checksWhetherWordRepresentsAClass(ctext,
+                        wordToSearch,
+                        realm ))
+                {
+                    createList.theTitleRepresentsAClass = true
+                }
+            }
             theimage.add(createList)
         }
         return theimage

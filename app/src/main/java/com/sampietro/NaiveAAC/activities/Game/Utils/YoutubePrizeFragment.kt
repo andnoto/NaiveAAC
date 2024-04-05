@@ -27,7 +27,7 @@ import java.util.*
  * Refer to [stackoverflow](https://stackoverflow.com/questions/4654878/how-to-play-youtube-video-in-my-android-application)
  * answer of [JanB](https://stackoverflow.com/users/957925/janb)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  */
 class YoutubePrizeFragment : Fragment() {
     lateinit var rootView: View
@@ -155,11 +155,6 @@ class YoutubePrizeFragment : Fragment() {
                             rootView
                         )
                                                                 }, TIME_OUT.toLong())
-//                    Handler().postDelayed({
-//                        listener!!.receiveResultOnCompletatioVideoFromYoutubePrizeFragment(
-//                            rootView
-//                        )
-//                    }, TIME_OUT.toLong())
                 }
             }
             val ws = mWebView!!.settings

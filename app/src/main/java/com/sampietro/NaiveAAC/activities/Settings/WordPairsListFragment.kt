@@ -10,6 +10,7 @@ import android.widget.ListView
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import io.realm.Realm
+import io.realm.Sort
 
 /**
  * <h1>WordPairsListFragment</h1>
@@ -17,7 +18,7 @@ import io.realm.Realm
  * **WordPairsListFragment** UI for word pairs list settings
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see SettingsFragmentAbstractClass
  *
  * @see SettingsActivity
@@ -61,7 +62,9 @@ class WordPairsListFragment : SettingsFragmentAbstractClass() {
         // which will be your View "supplier".
         var results = realm.where(WordPairs::class.java).findAll()
         //
-        results = results.sort("word1")
+        val mStrings1 = arrayOf("word1", "word2")
+        val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
+        results = results.sort(mStrings1, mStrings2)
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //

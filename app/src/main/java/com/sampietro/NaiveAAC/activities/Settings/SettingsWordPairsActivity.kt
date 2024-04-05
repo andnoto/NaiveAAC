@@ -13,10 +13,15 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
+import com.sampietro.NaiveAAC.activities.WordPairs.VoiceToBeRecordedInWordPairs
+import com.sampietro.NaiveAAC.activities.WordPairs.VoiceToBeRecordedInWordPairsViewModel
 import io.realm.Realm
+import io.realm.RealmResults
+import io.realm.Sort
 
 /**
  * <h1>SettingsWordPairsActivity</h1>
@@ -24,16 +29,23 @@ import io.realm.Realm
  * **SettingsWordPairsActivity** word pairs settings.
  * Called when the user taps the word pairs button from the contents settings menu
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see AccountActivityAbstractClass
  *
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
  *
- * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
+ * @see com.sampietro.simsimtest.activities.WordPairs.WordPairsAdapter
  */
 class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapterInterface,
     onFragmentEventListenerSettings {
-    //
+    /*
+    used for viewmodel
+     */
+    private var voiceToBeRecordedInWordPairs: VoiceToBeRecordedInWordPairs? = null
+    private lateinit var viewModel: VoiceToBeRecordedInWordPairsViewModel
+    /*
+
+     */
     var fragmentManager: FragmentManager? = null
 
     /**
@@ -53,6 +65,18 @@ class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapt
         setContentView(R.layout.activity_settings)
         //
         context = this
+        /*
+        Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
+        constructor.
+        The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
+        */
+        // In the Activity#onCreate make the only setItem
+        voiceToBeRecordedInWordPairs = VoiceToBeRecordedInWordPairs()
+        viewModel = ViewModelProvider(this).get(
+            VoiceToBeRecordedInWordPairsViewModel::class.java
+        )
+        viewModel.setItem(voiceToBeRecordedInWordPairs!!)
+        clearFieldsOfViewmodelDataClass()
         //
         setActivityResultLauncher()
         //
@@ -73,7 +97,7 @@ class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapt
      * receives calls from fragment listeners.
      *
      * @param v view of calling fragment
-     * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+     * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
      */
     override fun receiveResultSettings(v: View?) {
         rootViewFragment = v
@@ -143,16 +167,30 @@ class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapt
         val textWord1 = findViewById<View>(R.id.firstword) as EditText
         val textWord2 = findViewById<View>(R.id.secondword) as EditText
         val textWord3 = findViewById<View>(R.id.complement) as EditText
-        val textWord4 = findViewById<View>(R.id.ismenuitem) as EditText
-        val textWord5 = findViewById<View>(R.id.awardtype) as EditText
-        val textWord6 = findViewById<View>(R.id.uripremiumvideo) as TextView
-        val textWord7 = findViewById<View>(R.id.linkyoutube) as EditText
+        val textWord4 = findViewById<View>(R.id.awardtype) as EditText
+        val textWord5 = findViewById<View>(R.id.uripremiumvideo) as TextView
+        val textWord6 = findViewById<View>(R.id.linkyoutube) as EditText
         // check if the images of word1 and word 2 exist
         val image1: ResponseImageSearch?
         val image2: ResponseImageSearch?
         image1 = imageSearch(context, realm, textWord1.text.toString())
         image2 = imageSearch(context, realm, textWord2.text.toString())
         if (image1 != null && image2 != null) {
+            // cancello il vecchio item
+            val resultsWordPairs = realm.where(WordPairs::class.java)
+                .equalTo(
+                    "word1",
+                    textWord1.text.toString()
+                )
+                .equalTo("word2", textWord2.text.toString())
+                .findAll()
+            val resultsWordPairsSize = resultsWordPairs.size
+            //
+            if (resultsWordPairsSize > 0) {
+                realm.beginTransaction()
+                resultsWordPairs.deleteAllFromRealm()
+                realm.commitTransaction()
+            }
             // Note that the realm object was generated with the createObject method
             // and not with the new operator.
             // The modification operations will be performed within a Transaction.
@@ -162,57 +200,123 @@ class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapt
             wordPairs.word1 = textWord1.text.toString()
             wordPairs.word2 = textWord2.text.toString()
             wordPairs.complement = textWord3.text.toString()
-            wordPairs.isMenuItem = textWord4.text.toString()
-            wordPairs.awardType = textWord5.text.toString()
-            // if textword5 = V and textword6 = no video -> uripremiumvideo = prize otherwise see below
-            if (textWord5.text.toString() == getString(R.string.character_v) && textWord6.text.toString() == getString(
+            wordPairs.awardType = textWord4.text.toString()
+             if (textWord4.text.toString() == getString(R.string.character_v) && textWord5.text.toString() == getString(
                     R.string.nessun_video
                 )
             ) {
                 wordPairs.uriPremiumVideo = getString(R.string.prize)
             } else {
-                // if textword5 = Y -> uripremiumvideo = linkyoutube otherwise see below
-                if (textWord5.text.toString() == getString(R.string.character_y)) {
-                    wordPairs.uriPremiumVideo = textWord7.text.toString()
-                } else {
+                // if textword4 = Y -> uripremiumvideo = linkyoutube otherwise see below
+                if (textWord4.text.toString() == getString(R.string.character_y)) {
                     wordPairs.uriPremiumVideo = textWord6.text.toString()
+                } else {
+                    wordPairs.uriPremiumVideo = textWord5.text.toString()
                 }
             }
             wordPairs.fromAssets = ""
             realm.commitTransaction()
-            // if textword5 = V and textword6 different from no video record video on realm
-            if (textWord5.text.toString() == "V" && textWord6.text.toString() != getString(R.string.nessun_video)) {
+            // if textword4 = V and textword5 different from no video record video on realm
+            if (textWord4.text.toString() == "V" && textWord5.text.toString() != getString(R.string.nessun_video)) {
                 // Note that the realm object was generated with the createObject method
                 // and not with the new operator.
                 // The modification operations will be performed within a Transaction.
                 realm.beginTransaction()
                 val videos = realm.createObject(Videos::class.java)
-                videos.descrizione = textWord6.text.toString()
+                videos.descrizione = textWord5.text.toString()
                 videos.uri = filePath
                 realm.commitTransaction()
             }
             //
         }
-        // view the word pairs settings fragment initializing WordPairsFragment (FragmentTransaction
-        // switch between Fragments).
-        val frag = WordPairsFragment()
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.settings_container, frag)
-        ft.addToBackStack(null)
-        ft.commit()
+        //
+        clearFieldsOfViewmodelDataClass()
+        //
+        reloadWordPairsFragment()
+    }
+    /**
+     * clear fields of viewmodel data class
+     *
+     *
+     * @see VoiceToBeRecordedInWordPairs
+     */
+    fun clearFieldsOfViewmodelDataClass() {
+        voiceToBeRecordedInWordPairs!!.word1 = ""
+        voiceToBeRecordedInWordPairs!!.word2 = ""
+        voiceToBeRecordedInWordPairs!!.complement = ""
+        voiceToBeRecordedInWordPairs!!.awardType = ""
+        voiceToBeRecordedInWordPairs!!.uriPremiumVideo = ""
+        voiceToBeRecordedInWordPairs!!.fromAssets = ""
+    }
+    override fun reloadWordPairsFragmentForDeletion(position: Int) {
+        // delete
+        realm = Realm.getDefaultInstance()
+        var results = realm.where(WordPairs::class.java).findAll()
+        val mStrings1 = arrayOf("word1", "word2")
+        val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
+        results = results.sort(mStrings1, mStrings2)
+        //
+        realm.beginTransaction()
+        val daCancellare = results[position]
+        daCancellare!!.deleteFromRealm()
+        realm.commitTransaction()
+        //
+        wordsToMatchShowList(null)
+        //
     }
 
+    override fun reloadWordPairsFragmentForInsertion(position: Int) {
+        // Viewmodel
+        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
+        // (maybe it is not necessary to call observe)
+        viewModel.getSelectedItem()
+            .observe(this) { voiceToBeRecordedInWordPairs: VoiceToBeRecordedInWordPairs ->
+                realm = Realm.getDefaultInstance()
+                var results: RealmResults<WordPairs>
+                results = realm.where(WordPairs::class.java).findAll()
+                val mStrings1 = arrayOf("word1", "word2")
+                val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
+                results = results.sort(mStrings1, mStrings2)
+                val daInserire = results[position]!!
+                voiceToBeRecordedInWordPairs.word1 = daInserire.word1
+                reloadWordPairsFragment()
+            }
+    }
+
+    override fun reloadWordPairsFragmentForEditing(position: Int) {
+        // Viewmodel
+        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
+        // (maybe it is not necessary to call observe)
+        viewModel.getSelectedItem()
+            .observe(this) { voiceToBeRecordedInWordPairs: VoiceToBeRecordedInWordPairs ->
+                realm = Realm.getDefaultInstance()
+                var results: RealmResults<WordPairs>
+                results = realm.where(WordPairs::class.java).findAll()
+                val mStrings1 = arrayOf("word1", "word2")
+                val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
+                results = results.sort(mStrings1, mStrings2)
+                val daModificare = results[position]!!
+                voiceToBeRecordedInWordPairs.word1 = daModificare.word1
+                voiceToBeRecordedInWordPairs.word2 = daModificare.word2
+                voiceToBeRecordedInWordPairs.complement = daModificare.complement
+                voiceToBeRecordedInWordPairs.awardType = daModificare.awardType
+                voiceToBeRecordedInWordPairs.uriPremiumVideo = daModificare.uriPremiumVideo
+                 voiceToBeRecordedInWordPairs.fromAssets = daModificare.fromAssets
+                //
+                reloadWordPairsFragment()
+            }
+    }
     /**
      * on callback from WordPairsAdapter to this Activity
      *
      * after deleting a word pairs the activity is notified to view the word pairs settings
      *
      *
-     * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
+     * @see com.sampietro.simsimtest.activities.WordPairs.WordPairsAdapter
      *
      * @see WordPairsFragment
      */
-    override fun reloadWordPairsFragment() {
+    fun reloadWordPairsFragment() {
         // view the word pairs settings fragment initializing WordPairsFragment (FragmentTransaction
         // switch between Fragments).
         val ft: FragmentTransaction

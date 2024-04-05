@@ -1,14 +1,9 @@
 package com.sampietro.NaiveAAC.activities.Game.Utils
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.speech.tts.TextToSpeech
-import android.widget.Toast
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
-import com.sampietro.NaiveAAC.activities.Phrases.Phrases
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.getString
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.history.History
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
@@ -41,7 +36,7 @@ object GameHelper {
      * @see gettoBeRecordedInHistory
      *
      * @see historyAdd
-    </WordPairs></WordPairs> */
+    */
     fun historyRegistration(
         context: Context,
         realm: Realm,
@@ -49,7 +44,6 @@ object GameHelper {
         resultsWordPairsSize: Int,
         word1ToBeRecordedInHistory: Boolean
     ) {
-//        val toBeRecordedInHistory: ToBeRecordedInHistory<VoiceToBeRecordedInHistory>
         var toBeRecordedInHistory = ToBeRecordedInHistoryImpl()
         toBeRecordedInHistory = gettoBeRecordedInHistory(
             context,
@@ -57,6 +51,42 @@ object GameHelper {
             resultsWordPairsList,
             resultsWordPairsSize,
             word1ToBeRecordedInHistory
+        )
+        //
+        val voicesToBeRecordedInHistory = toBeRecordedInHistory.voicesToBeRecordedInHistory
+        //
+        val numberOfVoicesToBeRecordedInHistory =
+            toBeRecordedInHistory.getNumberOfVoicesToBeRecordedInHistory()
+        //
+        historyAdd(realm, numberOfVoicesToBeRecordedInHistory, voicesToBeRecordedInHistory!!)
+    }
+    /**
+     * history registration
+     *
+     * @param context context
+     * @param realm realm obtained from the activity by Realm#getDefaultInstance
+     * @param listOfWords ArrayList<String> to be registered on History
+     * @param listOfWordsSize int with listOfWords size
+     * @see ToBeRecordedInHistoryImpl
+     * @see ToBeRecordedInHistory
+     * @see gettoBeRecordedInHistory
+     * @see historyAdd
+     *
+     */
+    fun historyRegistration(
+        context: Context,
+        realm: Realm,
+        content: String,
+        listOfWords: ArrayList<String>?,
+        listOfWordsSize: Int,
+    ) {
+        var toBeRecordedInHistory = ToBeRecordedInHistoryImpl()
+        toBeRecordedInHistory = gettoBeRecordedInHistory(
+            context,
+            realm,
+            content,
+            listOfWords,
+            listOfWordsSize,
         )
         //
         val voicesToBeRecordedInHistory = toBeRecordedInHistory.voicesToBeRecordedInHistory
@@ -87,7 +117,7 @@ object GameHelper {
      * @see ResponseImageSearch
      *
      * @see ImageSearchHelper.imageSearch
-    </VoiceToBeRecordedInHistory></WordPairs></WordPairs></WordPairs> */
+    */
     fun gettoBeRecordedInHistory(
         context: Context,
         realm: Realm?,
@@ -96,7 +126,6 @@ object GameHelper {
         word1ToBeRecordedInHistory: Boolean
     ): ToBeRecordedInHistoryImpl {
         // initializes the list of items to be registered on History
-//        val toBeRecordedInHistory: ToBeRecordedInHistory<VoiceToBeRecordedInHistory>
         val toBeRecordedInHistory = ToBeRecordedInHistoryImpl()
         // adds the first entry to be recorded on History to the list
         val sharedPref = context.getSharedPreferences(
@@ -161,7 +190,82 @@ object GameHelper {
         }
         return toBeRecordedInHistory
     }
-
+    /**
+     * prepares the list of items to be registered on History
+     *
+     * @param context context
+     * @param realm realm obtained from the activity by Realm#getDefaultInstance
+     * @param content string with the text to be registered
+     * @param listOfWords ArrayList<String> to be registered on History
+     * @param listOfWordsSize int with size of listOfWords to be registered on History
+     * @return ToBeRecordedInHistory<VoiceToBeRecordedInHistory> list of items to be registered on History
+     * @see ToBeRecordedInHistoryImpl
+     * @see VoiceToBeRecordedInHistory
+     * @see ToBeRecordedInHistory
+     * @see ResponseImageSearch
+     * @see ImageSearchHelper.imageSearch
+     *
+    */
+    fun gettoBeRecordedInHistory(
+        context: Context,
+        realm: Realm?,
+        content: String,
+        listOfWords: ArrayList<String>?,
+        listOfWordsSize: Int,
+    ): ToBeRecordedInHistoryImpl {
+        // initializes the list of items to be registered on History
+        val toBeRecordedInHistory = ToBeRecordedInHistoryImpl()
+        // adds the first entry to be recorded on History to the list
+        val sharedPref = context.getSharedPreferences(
+            context.getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
+        val sharedLastSession =
+            sharedPref.getInt(context.getString(R.string.preference_LastSession), 1)
+        //
+        val editor = sharedPref.edit()
+        val hasLastPhraseNumber = sharedPref.contains(context.getString(R.string.preference_last_phrase_number))
+        val sharedLastPhraseNumber: Int
+        sharedLastPhraseNumber = if (!hasLastPhraseNumber) {
+            // is the first recorded sentence and LastPhraseNumber log on sharedpref
+            //with the number 1
+            1
+        } else {
+            // it is not the first sentence recorded and I add 1 to LastPhraseNumber on sharedprefs
+            sharedPref.getInt(context.getString(R.string.preference_last_phrase_number), 1) + 1
+        }
+        editor.putInt(context.getString(R.string.preference_last_phrase_number), sharedLastPhraseNumber)
+        editor.apply()
+        //
+        val currentTime = Calendar.getInstance().time
+        //
+        var voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
+            sharedLastSession, sharedLastPhraseNumber, currentTime,
+            0, " ", "menu", " ", " ", " "
+        )
+        toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
+        // SEARCH THE IMAGES OF THE WORDS
+        var i = 0
+        while (i < listOfWordsSize) {
+            // image search
+            var image: ResponseImageSearch? = null
+            image = ImageSearchHelper.imageSearch(context, realm!!, listOfWords!![i])
+            var textToRecord: String
+            if (content != context.getString(R.string.nessuno))
+            { textToRecord = content }
+            else
+            { textToRecord = listOfWords[i] }
+            voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
+                        sharedLastSession,
+                        sharedLastPhraseNumber, currentTime,
+                        i + 1, " ", textToRecord,
+                        " ", image!!.uriType, image.uriToSearch
+                    )
+            toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
+            //
+            i++
+        }
+        return toBeRecordedInHistory
+    }
     /**
      * registers items in History table
      *
@@ -171,12 +275,11 @@ object GameHelper {
      * @see VoiceToBeRecordedInHistory
      *
      * @see History
-    </VoiceToBeRecordedInHistory> */
+    */
     @JvmStatic
     fun historyAdd(
         realm: Realm, numberOfVoicesToBeRecordedInHistory: Int,
         voicesToBeRecordedInHistory: MutableList<VoiceToBeRecordedInHistory?>
-//        voicesToBeRecordedInHistory: ToBeRecordedInHistoryImpl?
     ) {
         var voiceToBeRecordedInHistory: VoiceToBeRecordedInHistory
         var irm = 0

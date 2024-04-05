@@ -20,7 +20,6 @@ import android.os.IBinder
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -39,26 +38,26 @@ import com.sampietro.NaiveAAC.activities.Game.Utils.AndroidNotificationPermissio
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper
 import com.sampietro.NaiveAAC.activities.Game.Utils.OnFragmentEventListenerGame
+import com.sampietro.NaiveAAC.activities.Grammar.ComposesASentenceResults
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.composesASentence
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromFileUsingPicasso
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromUrlUsingPicasso
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
-import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.squareup.picasso.Picasso.LoadedFrom
 import com.squareup.picasso.Target
 import io.realm.Realm
-import io.realm.RealmResults
 import java.io.File
 import java.util.*
 import kotlin.properties.Delegates
 
 /**
- * <h1>Game1Activity</h1>
+ * <h1>Game1BleActivity</h1>
  *
- * **Game1Activity** displays collections of word images that you can select to form simple sentences
+ * **Game1BleActivity** displays collections of word images that you can select to form simple sentences
  *
  * the search for words takes place via a two-level menu
  * the first level contains the main research classes such as games, food, family, animals
@@ -74,7 +73,7 @@ import kotlin.properties.Delegates
  * The communication is performed using a bound service which allows the activity to connect to the
  * BluetoothLeService and call functions to connect to the devices.
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameActivityAbstractClass
  *
  * @see Game1RecyclerViewAdapterInterface
@@ -160,20 +159,10 @@ class Game1BleActivity : AppCompatActivity(),
     var tTS1: TextToSpeech? = null
     var toSpeak: String? = null
     //
-    var resultsWordPairsList: MutableList<WordPairs>? = null
-    var resultWordPairs: WordPairs? = null
-    //
-    var resultsWordPairsCenter: RealmResults<WordPairs>? = null
-    var resultsWordPairsCenterList: MutableList<WordPairs>? = null
-    var resultsWordPairsCenterSize = 0
-    //
-    var resultsWordPairsRight: RealmResults<WordPairs>? = null
-    var resultsWordPairsRightList: MutableList<WordPairs>? = null
-    var resultsWordPairsRightSize = 0
-    //
-    var resultsWordPairsLeft: RealmResults<WordPairs>? = null
-    var resultsWordPairsLeftList: MutableList<WordPairs>? = null
-    var resultsWordPairsLeftSize = 0
+    var listOfWordsLeft = arrayListOf<String>()
+    var listOfWordsCenter = arrayListOf<String>()
+    var listOfWordsRight = arrayListOf<String>()
+
     // at the fragment I pass three strings with, for each column,
     // the possible content of the chosen words
     // and three numbers which, if applicable, indicate the choice menus for each column
@@ -187,21 +176,20 @@ class Game1BleActivity : AppCompatActivity(),
     var rightColumnContent: String? = null
     var rightColumnContentUrlType: String? = null
     var rightColumnContentUrl: String? = null
-    //
-    var leftColumnContentWord: String? = null
-    var middleColumnContentWord: String? = null
-    var rightColumnContentWord: String? = null
+
     //
     var leftColumnMenuPhraseNumber: Int? = null
     var middleColumnMenuPhraseNumber: Int? = null
     var rightColumnMenuPhraseNumber: Int? = null
     //
+    var leftColumnContentWord: String? = null
+    var middleColumnContentWord: String? = null
+    var rightColumnContentWord: String? = null
+    //
     var dialog: Game1BleDialogFragment? = null
     var messageLeftColumnContent: String? = null
     var messageMiddleColumnContent: String? = null
     var messageRightColumnContent: String? = null
-    //
-    var middleColumnContentVerbInTheInfinitiveForm: String? = null
     //
     var numberOfWordsChosen = 0
     //
@@ -254,16 +242,16 @@ class Game1BleActivity : AppCompatActivity(),
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             //  update activity variables
-            val resultsWordPairs = realm.where(WordPairs::class.java)
+            val resultsListsOfNames = realm.where(ListsOfNames::class.java)
                 .beginGroup()
-                .equalTo(getString(R.string.is_menu_item), getString(R.string.tlm))
+                .equalTo("isMenuItem", "F")
+                .equalTo("elementActive", "A")
                 .endGroup()
                 .findAll()
-            val resultsWordPairsSize = resultsWordPairs.size
-            if (resultsWordPairsSize != 0) {
-                val result = resultsWordPairs[position]!!
-                wordToSearchSecondLevelMenu = result.word1
-                //
+            val resultsListsOfNamesSize = resultsListsOfNames.size
+            if (resultsListsOfNamesSize != 0) {
+                val result = resultsListsOfNames[position]!!
+                wordToSearchSecondLevelMenu = result.keyword
                 // aggiungere ripristino video prize ?
                 if (onCreateSavedInstanceState != null) {
                     // The onSaveInstanceState method is called before an activity may be killed
@@ -323,8 +311,6 @@ class Game1BleActivity : AppCompatActivity(),
         */
         AndroidNotificationPermission.checkPermission(this)
         //
-//        prepareSpeechRecognizer(this)
-        //
         realm = Realm.getDefaultInstance()
         //
         context = this
@@ -332,6 +318,10 @@ class Game1BleActivity : AppCompatActivity(),
         sharedPref = getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
+        //
+        sharedLastPlayer =
+            sharedPref.getString(getString(R.string.preference_LastPlayer), "DEFAULT")
+        //
         preference_PrintPermissions =
             sharedPref.getString(getString(R.string.preference_print_permissions), "DEFAULT")
         preference_AllowedMarginOfError =
@@ -478,7 +468,6 @@ class Game1BleActivity : AppCompatActivity(),
         return IntentFilter().apply {
             addAction(BluetoothLeService.ACTION_GATT_CONNECTED)
             addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED)
-//            addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED)
             addAction(BluetoothLeService.MESSAGE_FROM_GATT_SERVER)
         }
     }
@@ -577,9 +566,6 @@ class Game1BleActivity : AppCompatActivity(),
                 bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
             }
     }
-
-//    override fun onResult(editText: String?) {}
-
     /*
     BluetootLeService -> 18 -> BluetootLeService
     Once the service broadcasts the connection updates, the activity needs to implement a BroadcastReceiver.
@@ -610,8 +596,6 @@ class Game1BleActivity : AppCompatActivity(),
                     messageFromGattServer = bluetoothService!!.getMessageFromGattServer()
                     if (messageFromGattServer == "I'M DISCONNECTING")
                     {
-//                        mConnected = false
-//                        disableTransmitToDisconnectedBluetooth()
                     }
                     else
                     {
@@ -640,9 +624,7 @@ class Game1BleActivity : AppCompatActivity(),
             {
             bluetoothService!!.sendMessage("I'M DISCONNECTING")
             bluetoothService!!.stopAdvertising()
-//            bluetoothService!!.stopServer()
             bluetoothService!!.stopScanner()
-//            bluetoothService!!.disconnect()
             //
             bluetoothService!!.activityInPausedState()
             }
@@ -656,7 +638,6 @@ class Game1BleActivity : AppCompatActivity(),
     @SuppressLint("MissingPermission")
     override fun onDestroy() {
         super.onDestroy()
-//        destroyRecognizer()
         bluetoothService!!.stopServer()
         bluetoothService!!.disconnect()
         // TTS
@@ -705,7 +686,7 @@ class Game1BleActivity : AppCompatActivity(),
      * @see ChoiseOfGameActivity
      */
     fun returnHome(v: View?) {
-        /*
+    /*
                 navigate to home screen (ChoiseOfGameActivity)
     */
         val intent = Intent(this, ChoiseOfGameActivity::class.java)
@@ -721,14 +702,13 @@ class Game1BleActivity : AppCompatActivity(),
      * @see ChoiseOfGameActivity
      */
     fun returnSettings(v: View?) {
-        /*
+    /*
                 navigate to settings screen (ChoiseOfGameActivity)
     */
         val intent = Intent(this, VerifyActivity::class.java)
         startActivity(intent)
         finish()
     }
-
     /**
      * Called when the user taps the listen again button.
      *
@@ -758,31 +738,26 @@ class Game1BleActivity : AppCompatActivity(),
         if (leftColumnContent == getString(R.string.nessuno))
             { leftColumnMessageToSend = leftColumnContent + ","  + "," + ","  + "," }
             else
-            { if (leftColumnContentUrlType == "A")
-                { leftColumnMessageToSend = leftColumnContent + ","  + leftColumnContentUrlType + "," + leftColumnContentUrl + "," + "," }
-                else
-                { leftColumnMessageToSend = leftColumnContent + ","  + leftColumnContentUrlType + ","  + "," + leftColumnContentWord + ","}
-            }
+            { leftColumnMessageToSend = leftColumnContent + ","  + ","  + "," + leftColumnContentWord + ","}
         if (middleColumnContent == getString(R.string.nessuno))
             { middleColumnMessageToSend = middleColumnContent + ","  + "," + ","  + "," }
             else
-            { if (middleColumnContentUrlType == "A")
-                { middleColumnMessageToSend = middleColumnContent + ","  + middleColumnContentUrlType + "," + middleColumnContentUrl + "," + "," }
-                else
-                { middleColumnMessageToSend = middleColumnContent + ","  + middleColumnContentUrlType + ","  + "," + middleColumnContentWord + "," }
-        }
+            { middleColumnMessageToSend = middleColumnContent + "," + ","  + "," + middleColumnContentWord + "," }
         if (rightColumnContent == getString(R.string.nessuno))
             { rightColumnMessageToSend = rightColumnContent + ","  + "," + ","  + "," }
-        else
-            { if (rightColumnContentUrlType == "A")
-                { rightColumnMessageToSend = rightColumnContent + ","  + rightColumnContentUrlType + "," + rightColumnContentUrl + "," + "," }
-                else
-                { rightColumnMessageToSend = rightColumnContent + ","  + rightColumnContentUrlType + ","  + "," + rightColumnContentWord + ","}
-            }
+            else
+            {rightColumnMessageToSend = rightColumnContent + "," + ","  + "," + rightColumnContentWord + ","}
         messageToSend = leftColumnMessageToSend + middleColumnMessageToSend + rightColumnMessageToSend
         bluetoothService!!.sendMessage(messageToSend)
     }
-    //
+    /**
+     * enable transmit to connected Bluetooth .
+     *
+     * @see readingOfTheText
+     * @see sendMessage
+     * @see prepareTheFragmentTransaction
+     * @see fragmentTransactionStart
+     */
     @SuppressLint("MissingPermission")
     fun enableTransmitToConnectedBluetooth() {
         deviceEnabledUserName = "non trovato"
@@ -797,20 +772,22 @@ class Game1BleActivity : AppCompatActivity(),
             }
         }
         //
-//        displaySecondLevelMenu()
-        if (leftColumnContent != getString(R.string.nessuno)
-            && middleColumnContent != getString(R.string.nessuno)
-            && rightColumnContent != getString(R.string.nessuno)
-        ) {
+        if (numberOfWordsChosen == 3)
+        {
             // text reading
             readingOfTheText()
             // send message
             if (deviceEnabledName != "non trovato")
             { sendMessage() }
         }
+        prepareTheFragmentTransaction()
         fragmentTransactionStart()
     }
-
+    /**
+     * disable transmit to disconnected Bluetooth .
+     *
+     * @see displaySecondLevelMenu
+     */
     @SuppressLint("MissingPermission")
     fun disableTransmitToDisconnectedBluetooth() {
         deviceEnabledName = "non trovato"
@@ -818,15 +795,30 @@ class Game1BleActivity : AppCompatActivity(),
         //
         displaySecondLevelMenu()
     }
-    //
+    /**
+     * scan request Bluetooth Devices from Game1BleSecondLevelFragment .
+     *
+     * @see Game1BleSecondLevelFragment
+     * @see BluetoothLeService.scan
+     */
     override fun scanRequestBluetoothDevicesFromGame1BleSecondLevelFragment() {
         bluetoothService!!.scan()
     }
-    //
+    /**
+     * Show Game1BleDialogFragment .
+     *
+     * @see Game1BleDialogFragment
+     */
     fun dialogFragmentShow() {
         dialog = Game1BleDialogFragment.newInstance(deviceEnabledUserName!!, messageFromGattServer )
         dialog!!.show(supportFragmentManager, "GAME_DIALOG")
     }
+    /**
+     * Called when the user taps the Game1BleDialogFragment buttons.
+     *
+     * @param v view of tapped button
+     * @see Game1BleDialogFragment
+     */
     override fun receiveResultOnClickFromGame1DialogFragment(v: View?) {
         when (v!!.id) {
             R.id.dialog_sendtobluetoothimage -> {
@@ -912,14 +904,28 @@ class Game1BleActivity : AppCompatActivity(),
         }
     }
 
+    /**
+     * Callback from Game1BleDialogFragment
+     *
+     * @see Game1BleDialogFragment
+     */
     override fun receiveResultFromGame1DialogFragment() {
         // TTS
+        var messageLeftColumnContentToSpeak = messageLeftColumnContent
+        var messageMiddleColumnContentToSpeak = messageMiddleColumnContent
+        var messageRightColumnContentToSpeak = messageRightColumnContent
+        if (messageLeftColumnContent == getString(R.string.nessuno))
+            { messageLeftColumnContentToSpeak = " "}
+        if (messageMiddleColumnContent == getString(R.string.nessuno))
+            { messageMiddleColumnContentToSpeak = " "}
+        if (messageRightColumnContent == getString(R.string.nessuno))
+            { messageRightColumnContentToSpeak = " "}
         tTS1 = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
                 tTS1!!.speak(
-                messageLeftColumnContent + " " +
-                     messageMiddleColumnContent + " " +
-                     messageRightColumnContent,
+                messageLeftColumnContentToSpeak + " " +
+                     messageMiddleColumnContentToSpeak + " " +
+                     messageRightColumnContentToSpeak,
                     TextToSpeech.QUEUE_FLUSH,
                     null,
                     getString(R.string.prova_tts)
@@ -936,7 +942,7 @@ class Game1BleActivity : AppCompatActivity(),
      * display second level menu
      *
      * @param v view of tapped button
-     * @see .displaySecondLevelMenu
+     * @see displaySecondLevelMenu
      */
     fun continueGameButton(v: View?) {
         displaySecondLevelMenu()
@@ -954,55 +960,115 @@ class Game1BleActivity : AppCompatActivity(),
      * 2) convert RealmResults<Model> to ArrayList<Model>
      * 3) record History and initiate Fragment transaction
      *
-     * @see GameHelper.historyRegistration
-     *
+     * @see ComposesASentenceResults
+     * @see prepareTheFragmentTransaction
      * @see fragmentTransactionStart
      */
     fun displaySecondLevelMenu() {
-        numberOfWordsChosen = 1
-        // search for the second level menu words in the wordpairs table
-        resultsWordPairsCenter = realm.where(WordPairs::class.java)
+        numberOfWordsChosen = 0
+        leftColumnContent = getString(R.string.nessuno)
+        middleColumnContent = getString(R.string.nessuno)
+        rightColumnContent = getString(R.string.nessuno)
+        listOfWordsLeft.clear()
+        listOfWordsCenter.clear()
+        listOfWordsRight.clear()
+        // search for the second level menu words in the listsofnames table
+        val resultsListsOfNames = realm.where(ListsOfNames::class.java)
             .beginGroup()
-            .equalTo(getString(R.string.word1), wordToSearchSecondLevelMenu)
-            .equalTo(getString(R.string.is_menu_item), getString(R.string.slm))
+            .equalTo("keyword", wordToSearchSecondLevelMenu)
+            .equalTo("isMenuItem", "S")
             .endGroup()
             .findAll()
-        resultsWordPairsCenterSize = this.resultsWordPairsCenter!!.size
-        if (resultsWordPairsCenterSize != 0) {
-            // convert RealmResults<Model> to ArrayList<Model>
-            resultsWordPairsCenterList =
-                GetResultsWordPairsList.getResultsWordPairsList(realm, resultsWordPairsCenter)
+        val resultsListsOfNamesSize = resultsListsOfNames!!.size
+        var resultsListsOfNamesIndex = 0
+        while (resultsListsOfNamesSize > resultsListsOfNamesIndex) {
+            listOfWordsCenter.add(resultsListsOfNames[resultsListsOfNamesIndex]!!.word!!)
+            resultsListsOfNamesIndex++
+        }
+        val composesASentenceResults: ComposesASentenceResults = composesASentence (
+            context,
+            realm,
+            numberOfWordsChosen,
+            "none",
+            leftColumnContent!!,
+            middleColumnContent!!,
+            rightColumnContent!!,
+            listOfWordsLeft,
+            listOfWordsCenter,
+            listOfWordsRight,
+            sharedLastPlayer!!
+        )
+        //
+        numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
+        leftColumnContent = composesASentenceResults.leftColumnContent
+        middleColumnContent = composesASentenceResults.middleColumnContent
+        rightColumnContent = composesASentenceResults.rightColumnContent
+        listOfWordsLeft.clear()
+        listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
+        listOfWordsCenter.clear()
+        listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
+        listOfWordsRight.clear()
+        listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
+        //
+        if (numberOfWordsChosen == 3)
+            {
+            // sentence completion check, grammar arrangement and text reading
+            sentenceReadingOfTheText()
+            // send message
+            if (deviceEnabledName != "non trovato")
+                { sendMessage() }
+            }
+        prepareTheFragmentTransaction()
+        fragmentTransactionStart()
+    }
+    /**
+     * prepare fragment transaction:
+     * record History
+     *
+     * @see GameHelper.historyRegistration
+     */
+    fun prepareTheFragmentTransaction() {
+        //
+        if (listOfWordsLeft.size != 0) {
+            // History registration
+            GameHelper.historyRegistration(
+                context, realm,
+                leftColumnContent!!,
+                listOfWordsLeft, listOfWordsLeft.size
+            )
+            sharedLastPhraseNumber =
+                sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
+            leftColumnMenuPhraseNumber = sharedLastPhraseNumber
+        } else { leftColumnMenuPhraseNumber = 0 }
+        if (listOfWordsCenter.size != 0) {
             // record History and initiate Fragment transaction
             GameHelper.historyRegistration(
                 context, realm,
-                resultsWordPairsCenterList!!, resultsWordPairsCenterSize, false
+                middleColumnContent!!,
+                listOfWordsCenter, listOfWordsCenter.size
             )
-            leftColumnMenuPhraseNumber = 0
             sharedLastPhraseNumber =
                 sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
             middleColumnMenuPhraseNumber = sharedLastPhraseNumber
-            rightColumnMenuPhraseNumber = 0
-            leftColumnContent = getString(R.string.nessuno)
-            middleColumnContent = getString(R.string.nessuno)
-            rightColumnContent = getString(R.string.nessuno)
-            if (resultsWordPairsCenterSize == 1) {
-                // the first word of the sentence was chosen
-                // (in the case of noun and verb only possible choice,
-                // the second word of the sentence is also considered to be chosen -
-                // in the case of verb and nouns the only possible choice is considered
-                // also chosen the second or second and third word of the sentence)
-                theFirstWordOfTheSentenceWasChosen(0)
-            }
-            fragmentTransactionStart()
-        }
+        } else { middleColumnMenuPhraseNumber = 0 }
+        if (listOfWordsRight.size != 0) {
+            // History registration
+            GameHelper.historyRegistration(
+                context, realm,
+                rightColumnContent!!,
+                listOfWordsRight, listOfWordsRight.size
+            )
+            sharedLastPhraseNumber =
+                sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
+            rightColumnMenuPhraseNumber = sharedLastPhraseNumber
+        } else { rightColumnMenuPhraseNumber = 0 }
     }
-
     /**
      * initiate Fragment transaction.
      *
      *
      *
-     * @see Game1SecondLevelFragment
+     * @see Game1BleSecondLevelFragment
      */
     fun fragmentTransactionStart() {
         val frag = Game1BleSecondLevelFragment()
@@ -1034,6 +1100,11 @@ class Game1BleActivity : AppCompatActivity(),
             getString(R.string.right_column_menu_phrase_number),
             rightColumnMenuPhraseNumber!!
         )
+        //
+        if (numberOfWordsChosen == 3)
+            { bundle.putBoolean("THE SENTENCE IS COMPLETED", true) }
+            else
+            { bundle.putBoolean("THE SENTENCE IS COMPLETED", false) }
         //
         bundle.putString("DEVICE ENABLED NAME", deviceEnabledName)
         bundle.putString("DEVICE ENABLED USER NAME", deviceEnabledUserName)
@@ -1068,46 +1139,62 @@ class Game1BleActivity : AppCompatActivity(),
      *
      * @param view view of clicked item
      * @param i int the position of the item within the adapter's data set
-     * @see Game1RecyclerViewAdapterInterface
      *
-     * @see WordPairs
-     *
-     * @see ImageSearchHelper.imageSearch
-     *
-     * @see GetResultsWordPairsList.getResultsWordPairsList
-     *
-     * @see refineSearchWordPairs
-     *
-     * @see GameHelper.historyRegistration
-     *
-     * @see com.sampietro.simsimtest.activities.history.History
-     *
-     * @see GrammarHelper.searchType
-     *
-     * @see registerTheChoiceForTheViewOnTheLeft
-     *
-     * @see sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText
-     *
-     * @see registerTheChoiceForTheViewOnTheRight
-     *
+     * @see GrammarHelper.ComposesASentenceResults
+     * @see sentenceReadingOfTheText
+     * @see sendMessage
+     * @see prepareTheFragmentTransaction
      * @see fragmentTransactionStart
-     *
-     * @see getTargetBitmapFromUrlUsingPicasso
-     * @see getTargetBitmapFromFileUsingPicasso
      */
     override fun onItemClick(view: View?, i: Int) {
         when (numberOfWordsChosen) {
-            1 -> {
+            0 -> {
+                val chosenWordCenter = listOfWordsCenter[i]
+                listOfWordsCenter.clear()
+                listOfWordsCenter.add(chosenWordCenter)
+                val composesASentenceResults: ComposesASentenceResults = composesASentence (
+                    context,
+                    realm,
+                    numberOfWordsChosen,
+                    "center",
+                    leftColumnContent!!,
+                    middleColumnContent!!,
+                    rightColumnContent!!,
+                    listOfWordsLeft,
+                    listOfWordsCenter,
+                    listOfWordsRight,
+                    sharedLastPlayer!!
+                )
+                //
+                numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
+                leftColumnContent = composesASentenceResults.leftColumnContent
+                middleColumnContent = composesASentenceResults.middleColumnContent
+                rightColumnContent = composesASentenceResults.rightColumnContent
+                listOfWordsLeft.clear()
+                listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
+                listOfWordsCenter.clear()
+                listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
+                listOfWordsRight.clear()
+                listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
                 // the first word of the sentence was chosen
                 // (in the case of noun and verb only possible choice,
                 // the second word of the sentence is also considered to be chosen -
                 // in the case of verb and nouns the only possible choice is considered
                 // also chosen the second or second and third word of the sentence)
-                theFirstWordOfTheSentenceWasChosen(i)
-                // start of transaction Fragment
-                fragmentTransactionStart()
+                if (numberOfWordsChosen == 3)
+                {
+                    // sentence completion check, grammar arrangement and text reading
+                    sentenceReadingOfTheText()
+                    // send message
+                    if (deviceEnabledName != "non trovato")
+                    { sendMessage() }
+                }
+                    // start of transaction Fragment
+                    prepareTheFragmentTransaction()
+                    fragmentTransactionStart()
+                    return
             }
-            2 -> {
+            1 -> {
                 // the second word of the sentence was chosen
                 // 1) if the chosen word (central) is a verb (type = 3 verbs)
                 // 1a) if the chosen word is on the left, I register the choice and keep the options
@@ -1128,295 +1215,191 @@ class Game1BleActivity : AppCompatActivity(),
                 // 2c) if the word chosen is on the right, i register the choice moving the central
                 // column to the left and the right column (that of the choice) to the center and
                 // proposing in the right column the choices compatible with the choice (it should be a verb)
-                var image: ResponseImageSearch?
-                numberOfWordsChosen++
-                val middleColumnContentType = GrammarHelper.searchType(context, middleColumnContent, realm)
-                // type = 3 verbs
-                if (middleColumnContentType == "3") {
-                    when (view!!.id) {
-                        R.id.img1 -> {
-                            // 1a) if the chosen word is on the left, I register the choice and keep the options
-                            // list in the recycler view on the right
-                            // if there are no options on the right, i consider the sentence completed
-                            resultWordPairs = resultsWordPairsLeftList!![i]
-                            leftColumnContent = resultWordPairs!!.word1
-                            leftColumnMenuPhraseNumber = 0
-                            // image search
-                            image = ImageSearchHelper.imageSearch(context, realm, leftColumnContent)
-                            if (image != null) {
-                                leftColumnContentUrlType = image.uriType
-                                leftColumnContentUrl = image.uriToSearch
-                            }
-                            if (rightColumnMenuPhraseNumber == 0) {
-                                rightColumnContent = " "
-                                numberOfWordsChosen++
-                                // sentence completion check, grammar arrangement and text reading
-                                sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                            }
-                            // start of transaction Fragment
-                            fragmentTransactionStart()
-                        }
-                        R.id.img2 -> {
-                            // 1b) if the chosen word is in the center the choice is not allowed
-                            // (because it has already been chosen) i keep both option lists in the recycler views
-                            // both on the right and on the left
-                            // start of transaction Fragment
-                            numberOfWordsChosen--
-                            fragmentTransactionStart()
-                        }
-                        R.id.img3 -> {
-                            // 1c) if the word chosen is on the right i register the choice and
-                            // keep the options list in the recycler view on the left
-                            resultWordPairs = resultsWordPairsRightList!![i]
-                            rightColumnContent = resultWordPairs!!.word2
-                            //
-                            rightColumnMenuPhraseNumber = 0
-                            // image search
-                            image = ImageSearchHelper.imageSearch(context, realm, rightColumnContent)
-                            if (image != null) {
-                                rightColumnContentUrlType = image.uriType
-                                rightColumnContentUrl = image.uriToSearch
-                            }
-                            // start of transaction Fragment
-                            fragmentTransactionStart()
-                        }
+                when (view!!.id) {
+                    R.id.img1 -> {
+                        val chosenWordLeft = listOfWordsLeft[i]
+                        listOfWordsLeft.clear()
+                        listOfWordsLeft.add(chosenWordLeft)
+                        val composesASentenceResults: ComposesASentenceResults = composesASentence (
+                            context,
+                            realm,
+                            numberOfWordsChosen,
+                            "left",
+                            leftColumnContent!!,
+                            middleColumnContent!!,
+                            rightColumnContent!!,
+                            listOfWordsLeft,
+                            listOfWordsCenter,
+                            listOfWordsRight,
+                            sharedLastPlayer!!
+                        )
+                        //
+                        numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
+                        leftColumnContent = composesASentenceResults.leftColumnContent
+                        middleColumnContent = composesASentenceResults.middleColumnContent
+                        rightColumnContent = composesASentenceResults.rightColumnContent
+                        listOfWordsLeft.clear()
+                        listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
+                        listOfWordsCenter.clear()
+                        listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
+                        listOfWordsRight.clear()
+                        listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
                     }
-                } else {
-                    when (view!!.id) {
-                        R.id.img1 -> {
-                            // 2a) if the chosen word is on the left, i register the choice,
-                            // moving the central column to the right (retrieving the data of the
-                            // eventual prize video) and the left column (that of the choice)
-                            // to the center and proposing in the left column the choices compatible
-                            // with the choice (it should be a verb)
-                            rightColumnContent = middleColumnContent
-                            rightColumnContentUrlType = middleColumnContentUrlType
-                            rightColumnContentUrl = middleColumnContentUrl
-                            rightColumnMenuPhraseNumber = 0
-                            //
-                            resultWordPairs = resultsWordPairsLeftList!![i]
-                            //
-                            middleColumnContent = resultWordPairs!!.word1
-                            middleColumnMenuPhraseNumber = 0
-                            // image search
-                            image = ImageSearchHelper.imageSearch(context, realm, middleColumnContent)
-                            if (image != null) {
-                                middleColumnContentUrlType = image.uriType
-                                middleColumnContentUrl = image.uriToSearch
-                            }
-                            //
-                            resultsWordPairsLeft = realm.where(WordPairs::class.java)
-                                .beginGroup()
-                                .equalTo(getString(R.string.word2), middleColumnContent)
-                                .notEqualTo(
-                                    getString(R.string.is_menu_item),
-                                    getString(R.string.tlm)
-                                )
-                                .notEqualTo(
-                                    getString(R.string.is_menu_item),
-                                    getString(R.string.slm)
-                                )
-                                .endGroup()
-                                .findAll()
-                            resultsWordPairsLeftSize = resultsWordPairsLeft!!.size
-                            if (resultsWordPairsLeftSize != 0) {
-                                // convert RealmResults<Model> to ArrayList<Model>
-                                resultsWordPairsList =
-                                    GetResultsWordPairsList.getResultsWordPairsList(
-                                        realm,
-                                        resultsWordPairsLeft
-                                    )
-                                // does not consider wordpairs with pairs of nouns or pairs of verbs
-                                // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
-                                // (leaves only noun-verb pairs or vice versa verb-noun
-                                // or verb-verb if the first is an auxiliary verb or a servile verb)
-                                resultsWordPairsLeftList =
-                                    refineSearchWordPairs(resultsWordPairsList)
-                                resultsWordPairsLeftSize = resultsWordPairsLeftList!!.size
-                                //
-                                if (resultsWordPairsLeftSize > 1) {
-                                    // History registration
-                                    GameHelper.historyRegistration(
-                                        context, realm,
-                                        resultsWordPairsLeftList!!, resultsWordPairsLeftSize, true
-                                    )
-                                    sharedLastPhraseNumber = sharedPref.getInt(
-                                        getString(R.string.preference_last_phrase_number),
-                                        1
-                                    )
-                                    leftColumnMenuPhraseNumber = sharedLastPhraseNumber
-                                    leftColumnContent = getString(R.string.nessuno)
-                                } else {
-                                    if (resultsWordPairsLeftSize == 1) {
-                                        registerTheChoiceForTheViewOnTheLeft()
-                                        // sentence completion check, grammar arrangement and text reading
-                                        sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                                    }
-                                }
-                            } else {
-                                // resultsWordPairsLeftSize == 0 : the sentence is complete with just two words
-                                leftColumnContent = " "
-                                leftColumnMenuPhraseNumber = 0
-                                numberOfWordsChosen++
-                                // sentence completion check, grammar arrangement and text reading
-                                sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                            }
-                            // start of transaction Fragment
-                            fragmentTransactionStart()
-                        }
-                        R.id.img2 -> {
-                            // 2b) if the chosen word is in the center the choice is not allowed (because it has
-                            // already been chosen) i keep both option lists in the recycler views
-                            // both on the right and on the left
-                            numberOfWordsChosen--
-                            fragmentTransactionStart()
-                        }
-                        R.id.img3 -> {
-                            // 2c) if the word chosen is on the right, i register the choice moving the central
-                            // column to the left and the right column (that of the choice) to the center and
-                            // proposing in the right column the choices compatible with the choice (it should be a verb)
-                            leftColumnContent = middleColumnContent
-                            leftColumnContentUrlType = middleColumnContentUrlType
-                            leftColumnContentUrl = middleColumnContentUrl
-                            leftColumnMenuPhraseNumber = 0
-                            //
-                            resultWordPairs = resultsWordPairsRightList!![i]
-                            middleColumnContent = resultWordPairs!!.word2
-                            middleColumnMenuPhraseNumber = 0
-                            // image search
-                            image = ImageSearchHelper.imageSearch(context, realm, middleColumnContent)
-                            if (image != null) {
-                                middleColumnContentUrlType = image.uriType
-                                middleColumnContentUrl = image.uriToSearch
-                            }
-                            //
-                            resultsWordPairsRight = realm.where(WordPairs::class.java)
-                                .beginGroup()
-                                .equalTo(getString(R.string.word1), middleColumnContent)
-                                .notEqualTo(
-                                    getString(R.string.is_menu_item),
-                                    getString(R.string.tlm)
-                                )
-                                .notEqualTo(
-                                    getString(R.string.is_menu_item),
-                                    getString(R.string.slm)
-                                )
-                                .endGroup()
-                                .findAll()
-                            resultsWordPairsRightSize = this.resultsWordPairsRight!!.size
-                            if (resultsWordPairsRightSize != 0) {
-                                // convert RealmResults<Model> to ArrayList<Model>
-                                resultsWordPairsList =
-                                    GetResultsWordPairsList.getResultsWordPairsList(
-                                        realm,
-                                        resultsWordPairsRight
-                                    )
-                                // does not consider wordpairs with pairs of nouns or pairs of verbs
-                                // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
-                                // (leaves only noun-verb pairs or vice versa verb-noun
-                                // or verb-verb if the first is an auxiliary verb or a servile verb)
-                                resultsWordPairsRightList =
-                                    refineSearchWordPairs(resultsWordPairsList)
-                                resultsWordPairsRightSize = resultsWordPairsRightList!!.size
-                                //
-                                if (resultsWordPairsRightSize > 1) {
-                                    // History registration
-                                    GameHelper.historyRegistration(
-                                        context, realm,
-                                        resultsWordPairsRightList!!, resultsWordPairsRightSize, false
-                                    )
-                                    sharedLastPhraseNumber = sharedPref.getInt(
-                                        getString(R.string.preference_last_phrase_number),
-                                        1
-                                    )
-                                    rightColumnMenuPhraseNumber = sharedLastPhraseNumber
-                                    rightColumnContent = getString(R.string.nessuno)
-                                } else {
-                                    if (resultsWordPairsRightSize == 1) {
-                                        registerTheChoiceForTheViewOnTheRight()
-                                        // sentence completion check, grammar arrangement and text reading
-                                        sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                                    }
-                                }
-                            } else {
-                                // resultsWordPairsRightSize == 0 : the sentence is complete with just two words
-                                rightColumnContent = " "
-                                rightColumnMenuPhraseNumber = 0
-                                numberOfWordsChosen++
-                                // sentence completion check, grammar arrangement and text reading
-                                sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                            }
-                            // start of transaction Fragment
-                            fragmentTransactionStart()
-                        }
+                    R.id.img2 -> {
+                        val chosenWordCenter = listOfWordsCenter[i]
+                        listOfWordsCenter.clear()
+                        listOfWordsCenter.add(chosenWordCenter)
+                        val composesASentenceResults: ComposesASentenceResults = composesASentence (
+                            context,
+                            realm,
+                            numberOfWordsChosen,
+                            "center",
+                            leftColumnContent!!,
+                            middleColumnContent!!,
+                            rightColumnContent!!,
+                            listOfWordsLeft,
+                            listOfWordsCenter,
+                            listOfWordsRight,
+                            sharedLastPlayer!!
+                        )
+                        //
+                        numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
+                        leftColumnContent = composesASentenceResults.leftColumnContent
+                        middleColumnContent = composesASentenceResults.middleColumnContent
+                        rightColumnContent = composesASentenceResults.rightColumnContent
+                        listOfWordsLeft.clear()
+                        listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
+                        listOfWordsCenter.clear()
+                        listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
+                        listOfWordsRight.clear()
+                        listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
+                    }
+                    R.id.img3 -> {
+                        val chosenWordRight = listOfWordsRight[i]
+                        listOfWordsRight.clear()
+                        listOfWordsRight.add(chosenWordRight)
+                        val composesASentenceResults: ComposesASentenceResults = composesASentence (
+                            context,
+                            realm,
+                            numberOfWordsChosen,
+                            "right",
+                            leftColumnContent!!,
+                            middleColumnContent!!,
+                            rightColumnContent!!,
+                            listOfWordsLeft,
+                            listOfWordsCenter,
+                            listOfWordsRight,
+                            sharedLastPlayer!!
+                        )
+                        //
+                        numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
+                        leftColumnContent = composesASentenceResults.leftColumnContent
+                        middleColumnContent = composesASentenceResults.middleColumnContent
+                        rightColumnContent = composesASentenceResults.rightColumnContent
+                        listOfWordsLeft.clear()
+                        listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
+                        listOfWordsCenter.clear()
+                        listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
+                        listOfWordsRight.clear()
+                        listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
+                        listOfWordsRight = composesASentenceResults.listOfWordsRight
                     }
                 }
+                //
+                if (numberOfWordsChosen == 3)
+                {
+                    // sentence completion check, grammar arrangement and text reading
+                    sentenceReadingOfTheText()
+                    // send message
+                    if (deviceEnabledName != "non trovato")
+                    { sendMessage() }
+                }
+                prepareTheFragmentTransaction()
+                fragmentTransactionStart()
             }
-            3 -> {
+            2 -> {
                 // chosen the 3rd and last word of the sentence (to be checked if the sentence completes)
-                // the following clicks on the words (case 4) will start the tts
+                // the following clicks on the words (case 3) will start the tts
                 // 1a) if the word chosen is on the left, register the choice (if it has not already been made)
                 // 1b) if the chosen word is in the center, the choice is not allowed
                 // (because it has already been chosen)
                 // 1c) if the word chosen is on the right I register the choice
                 // (if it has not already been made)
-                numberOfWordsChosen++
                 when (view!!.id) {
                     R.id.img1 -> {
-                        // 1a) if the word chosen is on the left, register the choice
-                        // (if it has not already been made)
-                        if (leftColumnContent == getString(R.string.nessuno)) {
-                            resultWordPairs = resultsWordPairsLeftList!![i]
-                            leftColumnContent = resultWordPairs!!.word1
-                            leftColumnMenuPhraseNumber = 0
-                            // image search
-                            var image: ResponseImageSearch?
-                            image = ImageSearchHelper.imageSearch(context, realm, leftColumnContent)
-                            if (image != null) {
-                                leftColumnContentUrlType = image.uriType
-                                leftColumnContentUrl = image.uriToSearch
-                            }
-                            // sentence completion check, grammar arrangement and text reading
-                            sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                        } else {
-                            numberOfWordsChosen--
-                        }
-                        // start of transaction Fragment
-                        fragmentTransactionStart()
+                        val chosenWordLeft = listOfWordsLeft[i]
+                        listOfWordsLeft.clear()
+                        listOfWordsLeft.add(chosenWordLeft)
+                        val composesASentenceResults: ComposesASentenceResults = composesASentence (
+                            context,
+                            realm,
+                            numberOfWordsChosen,
+                            "left",
+                            leftColumnContent!!,
+                            middleColumnContent!!,
+                            rightColumnContent!!,
+                            listOfWordsLeft,
+                            listOfWordsCenter,
+                            listOfWordsRight,
+                            sharedLastPlayer!!
+                        )
+                        //
+                        numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
+                        leftColumnContent = composesASentenceResults.leftColumnContent
+                        middleColumnContent = composesASentenceResults.middleColumnContent
+                        rightColumnContent = composesASentenceResults.rightColumnContent
+                        listOfWordsLeft.clear()
+                        listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
+                        listOfWordsCenter.clear()
+                        listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
+                        listOfWordsRight.clear()
+                        listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
                     }
                     R.id.img2 -> {
-                        // 1b) if the chosen word is in the center, the choice is not allowed
-                        // (because it has already been chosen)
-                        // start of transaction Fragment
-                        numberOfWordsChosen--
-                        fragmentTransactionStart()
                     }
                     R.id.img3 -> {
-                        // 1c) if the word chosen is on the right I register the choice
-                        // (if it has not already been made)
-                        if (rightColumnContent == getString(R.string.nessuno)) {
-                            resultWordPairs = resultsWordPairsRightList!![i]
-                            rightColumnContent = resultWordPairs!!.word2
-                            //
-                            rightColumnMenuPhraseNumber = 0
-                            // image search
-                            var image: ResponseImageSearch?
-                            image = ImageSearchHelper.imageSearch(context, realm, rightColumnContent)
-                            if (image != null) {
-                                rightColumnContentUrlType = image.uriType
-                                rightColumnContentUrl = image.uriToSearch
-                            }
-                            // sentence completion check, grammar arrangement and text reading
-                            sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                        } else {
-                            numberOfWordsChosen--
-                        }
-                        // start of transaction Fragment
-                        fragmentTransactionStart()
+                        val chosenWordRight = listOfWordsRight[i]
+                        listOfWordsRight.clear()
+                        listOfWordsRight.add(chosenWordRight)
+                        val composesASentenceResults: ComposesASentenceResults = composesASentence (
+                            context,
+                            realm,
+                            numberOfWordsChosen,
+                            "right",
+                            leftColumnContent!!,
+                            middleColumnContent!!,
+                            rightColumnContent!!,
+                            listOfWordsLeft,
+                            listOfWordsCenter,
+                            listOfWordsRight,
+                            sharedLastPlayer!!
+                        )
+                        //
+                        numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
+                        leftColumnContent = composesASentenceResults.leftColumnContent
+                        middleColumnContent = composesASentenceResults.middleColumnContent
+                        rightColumnContent = composesASentenceResults.rightColumnContent
+                        listOfWordsLeft.clear()
+                        listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
+                        listOfWordsCenter.clear()
+                        listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
+                        listOfWordsRight.clear()
+                        listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
                     }
                 }
+                //
+                if (numberOfWordsChosen == 3)
+                {
+                    // sentence completion check, grammar arrangement and text reading
+                    sentenceReadingOfTheText()
+                    // send message
+                    if (deviceEnabledName != "non trovato")
+                    { sendMessage() }
+                }
+                prepareTheFragmentTransaction()
+                fragmentTransactionStart()
             }
-            4 -> when (view!!.id) {
+            3 -> when (view!!.id) {
                 R.id.img1 -> {
                     // TTS
                     tTS1 = TextToSpeech(context) { status ->
@@ -1503,382 +1486,7 @@ class Game1BleActivity : AppCompatActivity(),
         }
     }
 
-    fun theFirstWordOfTheSentenceWasChosen(i: Int) {
-        numberOfWordsChosen++
-        //
-        leftColumnMenuPhraseNumber = 0
-        middleColumnMenuPhraseNumber = 0
-        rightColumnMenuPhraseNumber = 0
-        leftColumnContent = getString(R.string.nessuno)
-        middleColumnContent = getString(R.string.nessuno)
-        rightColumnContent = getString(R.string.nessuno)
-        // retrieves the chosen word
-        resultWordPairs = resultsWordPairsCenterList!![i]
-        middleColumnContent = resultWordPairs!!.word2
-        // search for the corresponding image
-        var image: ResponseImageSearch?
-        image = ImageSearchHelper.imageSearch(context, realm, middleColumnContent)
-        if (image != null) {
-            middleColumnContentUrlType = image.uriType
-            middleColumnContentUrl = image.uriToSearch
-        }
-        // search for related words on wordpairs
-        // if the chosen word is the first of the pair,
-        // the corresponding second words go to the right column
-        // vice versa if the chosen word is the second of the pair,
-        // the corresponding second words go to the left column
-        resultsWordPairsLeft = realm.where(WordPairs::class.java)
-            .beginGroup()
-            .equalTo(getString(R.string.word2), middleColumnContent)
-            .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
-            .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
-            .endGroup()
-            .findAll()
-        resultsWordPairsLeftSize = this.resultsWordPairsLeft!!.size
-        if (resultsWordPairsLeftSize != 0) {
-            // convert RealmResults<Model> to ArrayList<Model>
-            resultsWordPairsList =
-                GetResultsWordPairsList.getResultsWordPairsList(realm, resultsWordPairsLeft)
-            // does not consider wordpairs with pairs of nouns or pairs of verbs
-            // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
-            // (leaves only noun-verb pairs or vice versa verb-noun
-            // or verb-verb if the first is an auxiliary verb or a servile verb)
-            resultsWordPairsLeftList = refineSearchWordPairs(resultsWordPairsList)
-            resultsWordPairsLeftSize = resultsWordPairsLeftList!!.size
-            //
-            if (resultsWordPairsLeftSize > 1) {
-                // History registration
-                GameHelper.historyRegistration(
-                    context, realm,
-                    resultsWordPairsLeftList!!, resultsWordPairsLeftSize, true
-                )
-                sharedLastPhraseNumber =
-                    sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
-                leftColumnMenuPhraseNumber = sharedLastPhraseNumber
-            }
-        }
-        //
-        resultsWordPairsRight = realm.where(WordPairs::class.java)
-            .beginGroup()
-            .equalTo(getString(R.string.word1), middleColumnContent)
-            .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
-            .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
-            .endGroup()
-            .findAll()
-        resultsWordPairsRightSize = this.resultsWordPairsRight!!.size
-        if (resultsWordPairsRightSize != 0) {
-            // convert RealmResults<Model> to ArrayList<Model>
-            resultsWordPairsList =
-                GetResultsWordPairsList.getResultsWordPairsList(realm, resultsWordPairsRight)
-            // does not consider wordpairs with pairs of nouns or pairs of verbs
-            // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
-            // (leaves only noun-verb pairs or vice versa verb-noun
-            // or verb-verb if the first is an auxiliary verb or a servile verb)
-            resultsWordPairsRightList = refineSearchWordPairs(resultsWordPairsList)
-            resultsWordPairsRightSize = resultsWordPairsRightList!!.size
-            //
-            if (resultsWordPairsRightSize > 1) {
-                // History registration
-                GameHelper.historyRegistration(
-                    context, realm,
-                    resultsWordPairsRightList!!, resultsWordPairsRightSize, false
-                )
-                sharedLastPhraseNumber =
-                    sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
-                rightColumnMenuPhraseNumber = sharedLastPhraseNumber
-            }
-        }
-        // if you have only one possible choice (in the recycler views on the right and left)
-        // and this is a verb (if the first word chosen is not a verb, the proposed choices
-        // can only be verbs)
-        // 1a) if the verb only possible choice is on the left, register the choice
-        // by moving the central column to the right and the left column in the center
-        // and proposing in the left column the choices compatible with the verb
-        // 1b) if the verb only possible choice is on the right, register the choice
-        // moving the middle column to the left and the right column in the center
-        // and proposing in the right column the choices compatible with the verb
-        // 1c) if I have only one possible choice verb both on the left and on the right,
-        // I propose the choice both in the column on the right and in the one on the left
-        // 2) if the first word chosen (the middle one) is a verb, check if I have only one
-        // possible choice in the recycler views on the right and left
-        // in this case I register the choice
-        val middleColumnContentType = GrammarHelper.searchType(context, middleColumnContent, realm)
-        // type = 3 verbs
-        if (middleColumnContentType != "3") {
-            if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 0) {
-                // 1a) if the verb only possible choice is on the left, register the choice
-                // by moving the central column to the right and the left column in the center
-                // and proposing in the left column the choices compatible with the verb
-                rightColumnContent = middleColumnContent
-                rightColumnContentUrlType = middleColumnContentUrlType
-                rightColumnContentUrl = middleColumnContentUrl
-                rightColumnMenuPhraseNumber = 0
-                //
-                resultWordPairs = resultsWordPairsLeftList!![0]
-                middleColumnContent = resultWordPairs!!.word1
-                middleColumnMenuPhraseNumber = 0
-                // image search
-                image = ImageSearchHelper.imageSearch(context, realm, middleColumnContent)
-                if (image != null) {
-                    middleColumnContentUrlType = image.uriType
-                    middleColumnContentUrl = image.uriToSearch
-                }
-                //
-                resultsWordPairsLeft = realm.where(WordPairs::class.java)
-                    .beginGroup()
-                    .equalTo(getString(R.string.word2), middleColumnContent)
-                    .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
-                    .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
-                    .endGroup()
-                    .findAll()
-                var resultsWordPairsLeftSize = this.resultsWordPairsLeft!!.size
-                if (resultsWordPairsLeftSize != 0) {
-                    // convert RealmResults<Model> to ArrayList<Model>
-                    resultsWordPairsList =
-                        GetResultsWordPairsList.getResultsWordPairsList(realm, resultsWordPairsLeft)
-                    // does not consider wordpairs with pairs of nouns or pairs of verbs
-                    // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
-                    // (leaves only noun-verb pairs or vice versa verb-noun
-                    // or verb-verb if the first is an auxiliary verb or a servile verb)
-                    resultsWordPairsLeftList = refineSearchWordPairs(resultsWordPairsList)
-                    resultsWordPairsLeftSize = resultsWordPairsLeftList!!.size
-                    //
-                    if (resultsWordPairsLeftSize > 1) {
-                        // History registration
-                        GameHelper.historyRegistration(
-                            context, realm,
-                            resultsWordPairsLeftList!!, resultsWordPairsLeftSize, true
-                        )
-                        sharedLastPhraseNumber = sharedPref.getInt(
-                            getString(R.string.preference_last_phrase_number),
-                            1
-                        )
-                        leftColumnMenuPhraseNumber = sharedLastPhraseNumber
-                        leftColumnContent = getString(R.string.nessuno)
-                    } else {
-                        if (resultsWordPairsLeftSize == 1) {
-                            registerTheChoiceForTheViewOnTheLeft()
-                            numberOfWordsChosen++
-                            // sentence completion check, grammar arrangement and text reading
-                            sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                        }
-                    }
-                } else {
-                    // resultsWordPairsLeftSize == 0 : the sentence is complete
-                    leftColumnContent = " "
-                    leftColumnMenuPhraseNumber = 0
-                    numberOfWordsChosen++
-                    // sentence completion check, grammar arrangement and text reading
-                    sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                }
-                numberOfWordsChosen++
-            }
-            if (resultsWordPairsLeftSize == 0 && resultsWordPairsRightSize == 1) {
-                // 1b) if the verb only possible choice is on the right, register the choice
-                // moving the middle column to the left and the right column in the center
-                // and proposing in the right column the choices compatible with the verb
-                leftColumnContent = middleColumnContent
-                leftColumnContentUrlType = middleColumnContentUrlType
-                leftColumnContentUrl = middleColumnContentUrl
-                leftColumnMenuPhraseNumber = 0
-                //
-                resultWordPairs = resultsWordPairsRightList!![0]
-                middleColumnContent = resultWordPairs!!.word2
-                middleColumnMenuPhraseNumber = 0
-                // image search
-                image = ImageSearchHelper.imageSearch(context, realm, middleColumnContent)
-                if (image != null) {
-                    middleColumnContentUrlType = image.uriType
-                    middleColumnContentUrl = image.uriToSearch
-                }
-                //
-                resultsWordPairsRight = realm.where(WordPairs::class.java)
-                    .beginGroup()
-                    .equalTo(getString(R.string.word1), middleColumnContent)
-                    .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
-                    .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
-                    .endGroup()
-                    .findAll()
-                var resultsWordPairsRightSize = this.resultsWordPairsRight!!.size
-                if (resultsWordPairsRightSize != 0) {
-                    // convert RealmResults<Model> to ArrayList<Model>
-                    resultsWordPairsList = GetResultsWordPairsList.getResultsWordPairsList(
-                        realm,
-                        resultsWordPairsRight
-                    )
-                    // does not consider wordpairs with pairs of nouns or pairs of verbs
-                    // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
-                    // (leaves only noun-verb pairs or vice versa verb-noun
-                    // or verb-verb if the first is an auxiliary verb or a servile verb)
-                    resultsWordPairsRightList = refineSearchWordPairs(resultsWordPairsList)
-                    resultsWordPairsRightSize = resultsWordPairsRightList!!.size
-                    //
-                    if (resultsWordPairsRightSize > 1) {
-                        // History registration
-                        GameHelper.historyRegistration(
-                            context, realm,
-                            resultsWordPairsRightList, resultsWordPairsRightSize, false
-                        )
-                        sharedLastPhraseNumber = sharedPref.getInt(
-                            getString(R.string.preference_last_phrase_number),
-                            1
-                        )
-                        rightColumnMenuPhraseNumber = sharedLastPhraseNumber
-                        rightColumnContent = getString(R.string.nessuno)
-                    } else {
-                        if (resultsWordPairsRightSize == 1) {
-                            registerTheChoiceForTheViewOnTheRight()
-                            numberOfWordsChosen++
-                            // sentence completion check, grammar arrangement and text reading
-                            sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                        }
-                    }
-                } else {
-                    // resultsWordPairsRightSize == 0 : la frase è completa
-                    rightColumnContent = " "
-                    rightColumnMenuPhraseNumber = 0
-                    numberOfWordsChosen++
-                    // sentence completion check, grammar arrangement and text reading
-                    sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-                }
-                numberOfWordsChosen++
-            }
-            if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 1) {
-                // 1c) if I have only one possible choice verb both on the left and on the right,
-                // I propose the choice both in the column on the right and in the one on the left
-                // History registration
-                GameHelper.historyRegistration(
-                    context, realm,
-                    resultsWordPairsLeftList, resultsWordPairsLeftSize, true
-                )
-                sharedLastPhraseNumber =
-                    sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
-                leftColumnMenuPhraseNumber = sharedLastPhraseNumber
-                GameHelper.historyRegistration(
-                    context, realm,
-                    resultsWordPairsRightList, resultsWordPairsRightSize, false
-                )
-                sharedLastPhraseNumber =
-                    sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
-                rightColumnMenuPhraseNumber = sharedLastPhraseNumber
-            }
-        } else {
-            // 2) if the first word chosen (the middle one) is a verb, check if I have only one
-            // possible choice in the recycler views on the right and left
-            // in this case I register the choice
-            if (resultsWordPairsLeftSize == 1) {
-                registerTheChoiceForTheViewOnTheLeft()
-            }
-            if (resultsWordPairsRightSize == 1) {
-                registerTheChoiceForTheViewOnTheRight()
-            }
-            if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 1) {
-                // sentence completion check, grammar arrangement and text reading
-                sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-            }
-        }
-        // if you do not have possible choices neither on the recycler view on the right
-        // nor on that one on the left, the sentence is completed with a single word
-        if (resultsWordPairsLeftSize == 0 && resultsWordPairsRightSize == 0) {
-            leftColumnContent = " "
-            leftColumnMenuPhraseNumber = 0
-            numberOfWordsChosen++
-            rightColumnContent = " "
-            rightColumnMenuPhraseNumber = 0
-            numberOfWordsChosen++
-            // sentence completion check, grammar arrangement and text reading
-            sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText()
-        }
-    }
-
-    /**
-     * register the choice for the view on the left.
-     *
-     *
-     *
-     * @see ImageSearchHelper.imageSearch
-     */
-    fun registerTheChoiceForTheViewOnTheLeft() {
-        //
-        resultWordPairs = resultsWordPairsLeftList!![0]
-        leftColumnContent = resultWordPairs!!.word1
-        leftColumnMenuPhraseNumber = 0
-        // image search
-        var image: ResponseImageSearch?
-        image = ImageSearchHelper.imageSearch(context, realm, leftColumnContent)
-        if (image != null) {
-            leftColumnContentUrlType = image.uriType
-            leftColumnContentUrl = image.uriToSearch
-        }
-        numberOfWordsChosen++
-    }
-
-    /**
-     * register the choice for the view on the right.
-     *
-     *
-     *
-     * @see ImageSearchHelper.imageSearch
-     */
-    fun registerTheChoiceForTheViewOnTheRight() {
-        //
-        resultWordPairs = resultsWordPairsRightList!![0]
-        rightColumnContent = resultWordPairs!!.word2
-        //
-        rightColumnMenuPhraseNumber = 0
-        // image search
-        var image: ResponseImageSearch?
-        image = ImageSearchHelper.imageSearch(context, realm, rightColumnContent)
-        if (image != null) {
-            rightColumnContentUrlType = image.uriType
-            rightColumnContentUrl = image.uriToSearch
-        }
-        numberOfWordsChosen++
-    }
-
-    /**
-     * leaves only noun-verb pairs or vice versa verb-noun.
-     *
-     *
-     *
-     * @param resultsWordPairsList List<WordPairs> to clean up
-     * @return List<WordPairs> cleaned up
-     * @see WordPairs
-     *
-     * @see GrammarHelper.searchType
-     */
-    fun refineSearchWordPairs(resultsWordPairsList: MutableList<WordPairs>?): MutableList<WordPairs> {
-        // does not consider wordpairs with pairs of nouns or pairs of verbs
-        // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
-        // (leaves only noun-verb pairs or vice versa verb-noun
-        // or verb-verb if the first is an auxiliary verb or a servile verb)
-        var auxiliaryVerb: String
-        var servileVerb: String
-        //
-        var i = 0
-        var resultsWordPairsSize = resultsWordPairsList!!.size
-        while (i < resultsWordPairsSize) {
-            resultWordPairs = resultsWordPairsList[i]
-            val word1Type = GrammarHelper.searchType(context, resultWordPairs!!.word1, realm)
-            // type = 3 verbs
-            val word2Type = GrammarHelper.searchType(context, resultWordPairs!!.word2, realm)
-            //
-            auxiliaryVerb = GrammarHelper.searchAuxiliaryVerbs(context, resultWordPairs!!.word1, realm)
-            servileVerb = GrammarHelper.searchServileVerbs(context, resultWordPairs!!.word1, realm)
-            if (word1Type == "3" && word2Type == "3"
-                && auxiliaryVerb != getString(R.string.is_an_auxiliary_verb) && servileVerb != getString(R.string.is_a_servile_verb)
-                || word1Type != "3" && word2Type != "3"
-            ) {
-                resultsWordPairsList.removeAt(i)
-                resultsWordPairsSize--
-            } else {
-                i++
-            }
-        }
-        return resultsWordPairsList
-    }
-
-    /**
+     /**
      * sentence completion check, grammar arrangement and text reading.
      *
      *
@@ -1889,136 +1497,15 @@ class Game1BleActivity : AppCompatActivity(),
      *
      * @see .startSpeechGame1
      */
-    fun sentenceCompletionCheckGrammaticalArrangementAndReadingOfTheText() {
-        leftColumnContentWord = leftColumnContent
-        middleColumnContentWord = middleColumnContent
-        rightColumnContentWord = rightColumnContent
-        // sentence completion check
-        if (leftColumnContent != getString(R.string.nessuno)
-            && middleColumnContent != getString(R.string.nessuno)
-            && rightColumnContent != getString(R.string.nessuno)
-        ) {
-            // grammar arrangement and text reading
-            grammaticalArrangement()
+    fun sentenceReadingOfTheText() {
+         if (listOfWordsLeft.isEmpty()) { leftColumnContentWord = " " }
+                                    else { leftColumnContentWord = listOfWordsLeft[0] }
+         if (listOfWordsCenter.isEmpty()) { middleColumnContentWord = " " }
+                                    else { middleColumnContentWord = listOfWordsCenter[0] }
+         if (listOfWordsRight.isEmpty()) { rightColumnContentWord = " " }
+                                    else { rightColumnContentWord = listOfWordsRight[0] }
+            //
             readingOfTheText()
-            // send message
-            if (deviceEnabledName != "non trovato")
-            { sendMessage() }
-        }
-    }
-
-    /**
-     * grammar arrangement:
-     * adds the corresponding article.
-     *
-     *
-     *
-     * @see WordPairs
-     *
-     * @see GrammarHelper.searchPlural
-     *
-     * @see GrammarHelper.searchGender
-     *
-     * @see GrammarHelper.searchArticle
-     *
-     * @see GrammarHelper.searchVerb
-     *
-     * @see GrammarHelper.searchVerbsOfMovement
-     */
-    fun grammaticalArrangement() {
-        // nominal group subject
-        var pluralToSearchRealm = ""
-        var genderToSearchRealm: String?
-        var formToSearchRealm: String
-        val verbOfMovement: String
-        //
-        val leftColumnContentIsAServileVerb =
-            GrammarHelper.searchServileVerbs(context, leftColumnContent, realm)
-        if (leftColumnContentIsAServileVerb == getString(R.string.is_a_servile_verb)) {
-            formToSearchRealm = getString(R.string.s1)
-            val conjugationOfTheVerb =
-                GrammarHelper.searchVerb(context, leftColumnContent, formToSearchRealm, realm)
-            leftColumnContent = conjugationOfTheVerb
-        } else {
-            if (leftColumnContent != sharedLastPlayer && leftColumnContent != getString(R.string.io)) {
-                // adds the corresponding article
-                // search if plural
-                // if gender male / female
-                pluralToSearchRealm = GrammarHelper.searchPlural(context, leftColumnContent, realm)
-                genderToSearchRealm = GrammarHelper.searchGender(context, leftColumnContent!!, realm)
-                val articleToSearch = GrammarHelper.searchArticle(
-                    context,
-                    leftColumnContent!!,
-                    genderToSearchRealm, pluralToSearchRealm, "", realm
-                )
-                leftColumnContent = articleToSearch + leftColumnContent
-            }
-        }
-        // verb group verb
-        if (leftColumnContentIsAServileVerb != getString(R.string.is_a_servile_verb)) {
-            if (!(leftColumnContent == " " && rightColumnContent == " ")) {
-                formToSearchRealm = if (leftColumnContent == getString(R.string.io)) {
-                    getString(R.string.s1)
-                } else {
-                    if (leftColumnContent == getString(R.string.la_famiglia) || leftColumnContent == " ") {
-                        getString(R.string.p1)
-                    } else {
-                        if (pluralToSearchRealm != getString(R.string.character_y)) {
-                            getString(R.string.s3)
-                        } else {
-                            getString(R.string.p3)
-                        }
-                    }
-                }
-                middleColumnContentVerbInTheInfinitiveForm = middleColumnContent
-                val conjugationOfTheVerb =
-                    GrammarHelper.searchVerb(context, middleColumnContent, formToSearchRealm, realm)
-                middleColumnContent = conjugationOfTheVerb
-            }
-        } else {
-            middleColumnContentVerbInTheInfinitiveForm = middleColumnContent
-        }
-        // verbal group direct object
-        if (rightColumnContent != sharedLastPlayer
-            && rightColumnContent != getString(R.string.io)
-            && rightColumnContent != " "
-        ) {
-            // ricerca complementi
-            val resultsWordPairs = realm.where(WordPairs::class.java)
-                .beginGroup()
-                .equalTo(getString(R.string.word1), middleColumnContentVerbInTheInfinitiveForm)
-                .equalTo(getString(R.string.word2), rightColumnContent)
-                .notEqualTo(getString(R.string.is_menu_item), getString(R.string.tlm))
-                .notEqualTo(getString(R.string.is_menu_item), getString(R.string.slm))
-                .endGroup()
-                .findAll()
-            val resultsWordPairsSize = resultsWordPairs.size
-            if (resultsWordPairsSize != 0) {
-                val resultWordPairs = resultsWordPairs[0]!!
-                val rightColumnComplement = resultWordPairs.complement
-                if (rightColumnComplement != " " && rightColumnComplement != "") {
-                    rightColumnContent = "$rightColumnComplement $rightColumnContent"
-                } else {
-                    //
-                    // adds the corresponding article
-                    // search if plural
-                    // if gender male / female
-                    verbOfMovement = GrammarHelper.searchVerbsOfMovement(
-                        context,
-                        middleColumnContentVerbInTheInfinitiveForm,
-                        realm
-                    )
-                    pluralToSearchRealm = GrammarHelper.searchPlural(context, rightColumnContent, realm)
-                    genderToSearchRealm = GrammarHelper.searchGender(context, rightColumnContent!!, realm)
-                    val articleToSearch = GrammarHelper.searchArticle(
-                        context,
-                        rightColumnContent!!,
-                        genderToSearchRealm, pluralToSearchRealm, verbOfMovement, realm
-                    )
-                    rightColumnContent = articleToSearch + rightColumnContent
-                }
-            }
-        }
     }
 
     /**
@@ -2028,8 +1515,15 @@ class Game1BleActivity : AppCompatActivity(),
      */
     fun readingOfTheText() {
         // text reading
-        toSpeak = (leftColumnContent + " " + middleColumnContent
-                + " " + rightColumnContent)
+        var leftColumnToSpeak: String
+        var middleColumnToSpeak: String
+        var rightColumnToSpeak: String
+        if (leftColumnContent == getString(R.string.nessuno))
+        { leftColumnToSpeak = " " } else { leftColumnToSpeak = leftColumnContent!! }
+        if (rightColumnContent == getString(R.string.nessuno))
+        { rightColumnToSpeak = " " } else { rightColumnToSpeak = rightColumnContent!! }
+        toSpeak = (leftColumnToSpeak + " " + middleColumnContent
+                + " " + rightColumnToSpeak)
         tTS1 = TextToSpeech(this) { status ->
             if (status != TextToSpeech.ERROR) {
                 tTS1!!.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, getString(R.string.prova_tts))
@@ -2039,24 +1533,6 @@ class Game1BleActivity : AppCompatActivity(),
         }
     }
 
-    /**
-     * load an image in imageview from a url or from a file
-     *
-     * @param urlType if string equal to "A" the image is loaded from a url otherwise it is loaded from a file
-     * @param url string with url or file path of origin
-     * @param img target imageview
-     * @param width int with the width of the target imageview
-     * @param height int with the height of the target imageview
-     * @see GraphicsHelper.addImageUsingPicasso
-     */
-    fun addImage(urlType: String, url: String?, img: ImageView?, width: Int, height: Int) {
-        if (urlType == "A") {
-            GraphicsHelper.addImageUsingPicasso(url, img, width, height)
-        } else {
-            val f = File(url!!)
-            GraphicsHelper.addFileImageUsingPicasso(f, img, width, height)
-        }
-    }
     companion object {
         //
         private const val TAG = "Game1BleActivity"

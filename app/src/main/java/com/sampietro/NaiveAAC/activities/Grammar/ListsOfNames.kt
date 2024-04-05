@@ -24,22 +24,19 @@ open class ListsOfNames : RealmObject() {
      */
     var word: String? = null
     /**
-     * represent the type of image associated with the `word`.
+     * indicates whether the table element is active or not.
      *
      *
-     * uritype = S then , if it exists, uri refers to storage
-     *
-     *
-     * uritype = A then , if it exists, uri refers to a url of arasaac
-     *
-     *
-     * if neither the arasaac url nor the file path are indicated, the image is associated using PictogramsAll
+     * elementActive = A then the table element is active
      */
-    var uriType: String? = null
+    var elementActive: String? = null
     /**
-     * contains the file path or a url of arasaac  (originally contained the uri).
+     * game1 is designed as a search engine where categories are represented by image menus.
+     * isMenuItem = F : `word1` is a first-level (top-level) menu item of Game1
+     * (in this case word1 must be equal to word2).
+     * isMenuItem = S : `word1` is a second-level menu item of Game1
      */
-    var uri: String? = null
+    var isMenuItem: String? = null
     /**
      * contains Y if the object was imported from assets.
      */
@@ -166,26 +163,14 @@ open class ListsOfNames : RealmObject() {
                             line!!.split(cvsSplitBy.toRegex()).dropLastWhile { it.isEmpty() }
                                 .toTypedArray()
                         // checks
-                        var f: File? = null
-                        var uri: String? = null
-                        if (oneWord[3] != null) {
-                            if (oneWord[2] == context.getString(R.string.character_s)) {
-                                // replace with root of the external storage or data directory
-                                uri = oneWord[3]!!
-                                    .replaceFirst(
-                                        context.getString(R.string.rootdirectory).toRegex(),
-                                        rootPath
-                                    )
-                                //
-                                f = File(uri)
-                            } else {
-                                uri = oneWord[3]
-                            }
-                        }
-                        if (oneWord[0] != null && oneWord[1] != null && oneWord[2] != null && oneWord[3] != null && oneWord[4] != null) {
+                        if (oneWord[0] != null && oneWord[1] != null && oneWord[2] != null
+                            && oneWord[3] != null && oneWord[4] != null) {
                             if (oneWord[0]!!.length > 0 && oneWord[1]!!.length > 0 &&
-                                (oneWord[2] != context.getString(R.string.character_s)
-                                        || oneWord[2] == context.getString(R.string.character_s) && f!!.exists())
+                                (oneWord[2] == context.getString(R.string.character_a)
+                                        || oneWord[2] == context.getString(R.string.character_n))
+                                &&
+                                    (oneWord[3] == "F" || oneWord[3] == "S"
+                                        || oneWord[3] == context.getString(R.string.character_n))
                             ) {
                                 //
                                 realm.beginTransaction()
@@ -195,9 +180,9 @@ open class ListsOfNames : RealmObject() {
                                 // set the fields here
                                 listsOfNames.keyword = oneWord[0]
                                 listsOfNames.word = oneWord[1]
-                                listsOfNames.uriType = oneWord[2]
+                                listsOfNames.elementActive = oneWord[2]
+                                listsOfNames.isMenuItem = oneWord[3]
                                 //
-                                listsOfNames.uri = uri
                                 listsOfNames.fromAssets = oneWord[4]
                                 realm.commitTransaction()
                             }
@@ -205,6 +190,70 @@ open class ListsOfNames : RealmObject() {
                     }
                 }
             }
-        } //
+        }
+        // data una parola controlla se si tratta di una classe (classe, categoria o insieme di nomi)
+        /**
+         * given a word, checks whether word represents a class
+         *
+         * @param context context
+         * @param word string containing the word
+         * @param realm realm
+         * @return boolean with if the word represents a class
+         * @see ListsOfNames
+         */
+        fun checksWhetherWordRepresentsAClass(context: Context,
+                                              word: String?,
+                                              realm: Realm): Boolean {
+            if (word == null) { return false }
+//
+            val resultsListsOfNames = realm.where(ListsOfNames::class.java)
+                .beginGroup()
+                .equalTo("keyword", word)
+                .notEqualTo("isMenuItem", "F")
+                .notEqualTo("isMenuItem", "S")
+                .endGroup()
+                .findAll()
+            val resultsListsOfNamesSize = resultsListsOfNames!!.size
+            if (resultsListsOfNamesSize == 0)
+            { return false }
+            else
+            { return true }
+        }
+        // data una classe (classe, categoria o insieme di nomi)
+        /**
+         * given the name of a class it returns the list of its members
+         *
+         * @param context context
+         * @param word string containing the word
+         * @param realm realm
+         * @return boolean with if the word represents a class
+         * @see ListsOfNames
+         */
+        fun listOfMembers(context: Context,
+                          word: String?,
+                          realm: Realm): ArrayList<String> {
+            var listOfWordsToReturn: MutableList<String> = mutableListOf()
+            listOfWordsToReturn.clear()
+            if (word != null) {
+                val resultsListsOfNames = realm.where(ListsOfNames::class.java)
+                    .beginGroup()
+                    .equalTo("keyword", word)
+                    .notEqualTo("isMenuItem", "F")
+                    .notEqualTo("isMenuItem", "S")
+                    .endGroup()
+                    .findAll()
+                val resultsListsOfNamesSize = resultsListsOfNames!!.size
+                if (resultsListsOfNamesSize != 0)
+                {
+                    var resultsListsOfNamesIndex = 0
+                    while (resultsListsOfNamesSize > resultsListsOfNamesIndex) {
+                        listOfWordsToReturn.add(resultsListsOfNames[resultsListsOfNamesIndex]!!.word!!)
+                        resultsListsOfNamesIndex++
+                    }
+                }
+            }
+//
+            return listOfWordsToReturn as ArrayList<String>
+        }
     }
 }

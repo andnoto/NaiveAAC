@@ -75,7 +75,7 @@ import java.util.UUID
  * and https://bignerdranch.com/blog/bluetooth-low-energy-on-android-part-2/)
  * By [Andrew Lunsford](https://www.linkedin.com/in/andrew-lunsford-403b4b6/)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/01/2024
  *
  * @see com.sampietro.simsimtest.activities.Game.Game1.Game1BleActivity
  */
@@ -257,14 +257,13 @@ class BluetoothLeService : Service() {
             val cvsSplitBy = getString(R.string.character_comma)
             val oneWord: Array<String?> =
                 messageFromGattServer.split(cvsSplitBy.toRegex()).toTypedArray()
+            //
+            if (oneWord[0] == getString(R.string.io))
+                { oneWord[0] = " " }
             // Create an explicit intent for an Activity in your app.
             val fullScreenIntent = Intent(this, Game1BleActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // You need this if starting
-            //  the activity from a service
-//            intent.setAction(Intent.ACTION_MAIN)
-//            intent.addCategory(Intent.CATEGORY_LAUNCHER)
             val fullScreenPendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             //
             val builder = Notification.Builder(ctext,NOTIFICATION_CHANNEL_ID)
@@ -281,10 +280,21 @@ class BluetoothLeService : Service() {
                 notify(1, builder.build())
             }
             //
+            var messageLeftColumnContentToSpeak = oneWord[0]
+            var messageMiddleColumnContentToSpeak = oneWord[4]
+            var messageRightColumnContentToSpeak = oneWord[8]
+            if (oneWord[0] == getString(R.string.nessuno))
+            { messageLeftColumnContentToSpeak = " "}
+            if (oneWord[4] == getString(R.string.nessuno))
+            { messageMiddleColumnContentToSpeak = " "}
+            if (oneWord[8] == getString(R.string.nessuno))
+            { messageRightColumnContentToSpeak = " "}
             tTS1 = TextToSpeech(ctext) { status ->
                 if (status != TextToSpeech.ERROR) {
                     tTS1!!.speak(
-                        oneWord[0] + " " + oneWord[4] + " " + oneWord[8],
+                        messageLeftColumnContentToSpeak + " "
+                           + messageMiddleColumnContentToSpeak + " "
+                           + messageRightColumnContentToSpeak,
                         TextToSpeech.QUEUE_FLUSH,
                         null,
                         getString(R.string.prova_tts)
@@ -514,8 +524,6 @@ class BluetoothLeService : Service() {
              */
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 // successfully connected to the GATT Server
-//                connectionState = STATE_CONNECTED
-//                broadcastUpdate(ACTION_GATT_CONNECTED)
                 /*
                 Game1BleActivity -> step 19
                 The first thing to do once you connect to the GATT Server on the BLE device is
@@ -529,7 +537,6 @@ class BluetoothLeService : Service() {
                 This function is called when the device reports on its available services.
                  */
                 // Attempts to discover services after successful connection.
-//                mConnected = true
                 gatt!!.discoverServices()
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 // disconnected from the GATT Server
@@ -799,8 +806,6 @@ class BluetoothLeService : Service() {
             "com.example.androiddocumentationbluetoothble.ACTION_GATT_CONNECTED"
         const val ACTION_GATT_DISCONNECTED =
             "com.example.androiddocumentationbluetoothble.ACTION_GATT_DISCONNECTED"
-//        const val ACTION_GATT_SERVICES_DISCOVERED =
-//            "com.example.androiddocumentationbluetoothble.ACTION_GATT_SERVICES_DISCOVERED"
         const val MESSAGE_FROM_GATT_SERVER = "com.example.androiddocumentationbluetoothble.MESSAGE_FROM_GATT_SERVER"
 
 

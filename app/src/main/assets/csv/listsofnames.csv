@@ -1,87 +1,155 @@
-keyword,word,uriType,uri,fromAssets
-numeri-1-5,uno,A,https://api.arasaac.org/api/pictograms/35677?download=false,Y
-numeri-1-5,due,A,https://api.arasaac.org/api/pictograms/35679?download=false,Y
-numeri-1-5,tre,A,https://api.arasaac.org/api/pictograms/35681?download=false,Y
-numeri-1-5,quattro,A,https://api.arasaac.org/api/pictograms/35665?download=false,Y
-numeri-1-5,cinque,A,https://api.arasaac.org/api/pictograms/35631?download=false,Y
-numeri-1-10,uno,A,https://api.arasaac.org/api/pictograms/35677?download=false,Y
-numeri-1-10,due,A,https://api.arasaac.org/api/pictograms/35679?download=false,Y
-numeri-1-10,tre,A,https://api.arasaac.org/api/pictograms/35681?download=false,Y
-numeri-1-10,quattro,A,https://api.arasaac.org/api/pictograms/35665?download=false,Y
-numeri-1-10,cinque,A,https://api.arasaac.org/api/pictograms/35631?download=false,Y
-numeri-1-10,sei,A,https://api.arasaac.org/api/pictograms/35683?download=false,Y
-numeri-1-10,sette,A,https://api.arasaac.org/api/pictograms/35685?download=false,Y
-numeri-1-10,otto,A,https://api.arasaac.org/api/pictograms/35687?download=false,Y
-numeri-1-10,nove,A,https://api.arasaac.org/api/pictograms/35689?download=false,Y
-numeri-1-10,dieci,A,https://api.arasaac.org/api/pictograms/35691?download=false,Y
-particorpo,testa, , ,Y
-particorpo,capelli, , ,Y
-particorpo,occhio, , ,Y
-particorpo,orecchio, , ,Y
-particorpo,naso, , ,Y
-particorpo,bocca, , ,Y
-particorpo,collo, , ,Y
-particorpo,braccio, , ,Y
-particorpo,mano, , ,Y
-particorpo,gamba, , ,Y
-particorpo,piede, , ,Y
-particorpo,dito, , ,Y
-animali,topo, , ,Y
-animali,gatto, , ,Y
-animali,cane, , ,Y
-animali,giraffa, , ,Y
-animali,elefante, , ,Y
-animali,leone, , ,Y
-animali,uccello, , ,Y
-animali,anatra, , ,Y
-animali,gallina, , ,Y
-animali,tacchino, , ,Y
-animali,cigno, , ,Y
-animali,anatra, , ,Y
-animali,piccione, , ,Y
-animali,pesce, , ,Y
-animali,tartaruga, , ,Y
-animali,scoiattolo, , ,Y
-animali,asino, , ,Y
-animali,pecora, , ,Y
-animali,cavallo, , ,Y
-animali,capra, , ,Y
-animali,ape, , ,Y
-animali,formica, , ,Y
-animali,rana, , ,Y
-cibo,frittata, , ,Y
-cibo,pane, , ,Y
-cibo,grissini, , ,Y
-cibo,biscotto, , ,Y
-cibo,brioche, , ,Y
-cibo,succo, , ,Y
-cibo,spaghetti, , ,Y
-cibo,risotto, , ,Y
-cibo,minestra, , ,Y
-cibo,formaggio, , ,Y
-cibo,carne, , ,Y
-cibo,polpetta, , ,Y
-cibo,bresaola, , ,Y
-cibo,bistecca, , ,Y
-cibo,wurstel, , ,Y
-cibo,pomodoro, , ,Y
-cibo,piselli, , ,Y
-cibo,carota, , ,Y
-cobo,oliva, , ,Y
-cibo,zucchina, , ,Y
-cibo,banana, , ,Y
-cibo,fragola, , ,Y
-cibo,mela, , ,Y
-cibo,gelato, , ,Y
-cibo,cioccolato, , ,Y
-vestiti,pigiama, , ,Y
-vestiti,cappello, , ,Y
-vestiti,sciarpa, , ,Y
-vestiti,maglietta, , ,Y
-vestiti,maglione, , ,Y
-vestiti,giubbotto, , ,Y
-vestiti,guanti, , ,Y
-vestiti,pantaloni, , ,Y
-vestiti,mutande, , ,Y
-vestiti,calze, , ,Y
-vestiti,scarpe, , ,Y
+keyword,word,elementActive,isMenuItem,fromAssets
+desideri,desideri,A,F,Y
+emozioni,emozioni,A,F,Y
+famiglia,famiglia,A,F,Y
+giochi,giochi,A,F,Y
+cibo,cibo,A,F,Y
+animali,animali,A,F,Y
+desideri,volere,A,S,Y
+emozioni,essere,A,S,Y
+numeri-1-5,uno,A,N,Y
+numeri-1-5,due,A,N,Y
+numeri-1-5,tre,A,N,Y
+numeri-1-5,quattro,A,N,Y
+numeri-1-5,cinque,A,N,Y
+numeri-1-10,uno,A,N,Y
+numeri-1-10,due,A,N,Y
+numeri-1-10,tre,A,N,Y
+numeri-1-10,quattro,A,N,Y
+numeri-1-10,cinque,A,N,Y
+numeri-1-10,sei,A,N,Y
+numeri-1-10,sette,A,N,Y
+numeri-1-10,otto,A,N,Y
+numeri-1-10,nove,A,N,Y
+numeri-1-10,dieci,A,N,Y
+particorpo,testa,A,N,Y
+particorpo,capelli,A,N,Y
+particorpo,occhio,A,N,Y
+particorpo,orecchio,A,N,Y
+particorpo,naso,A,N,Y
+particorpo,bocca,A,N,Y
+particorpo,collo,A,N,Y
+particorpo,braccio,A,N,Y
+particorpo,mano,A,N,Y
+particorpo,gamba,A,N,Y
+particorpo,piede,A,N,Y
+particorpo,dito,A,N,Y
+animali,topo,A,S,Y
+animali,gatto,A,S,Y
+animali,cane,A,S,Y
+animali,giraffa,A,S,Y
+animali,elefante,A,S,Y
+animali,leone,A,S,Y
+animali,uccello,A,S,Y
+animali,anatra,A,S,Y
+animali,gallina,A,S,Y
+animali,tacchino,A,S,Y
+animali,cigno,A,S,Y
+animali,piccione,A,S,Y
+animali,pesce,A,S,Y
+animali,tartaruga,A,S,Y
+animali,asino,A,S,Y
+animali,pecora,A,S,Y
+animali,cavallo,A,S,Y
+animali,capra,A,S,Y
+animali,ape,A,S,Y
+animali,formica,A,S,Y
+animali,rana,A,S,Y
+cibo,frittata,A,S,Y
+cibo,pane,A,S,Y
+cibo,grissini,A,S,Y
+cibo,biscotto,A,S,Y
+cibo,succo,A,S,Y
+cibo,spaghetti,A,S,Y
+cibo,minestra,A,S,Y
+cibo,formaggio,A,S,Y
+cibo,carne,A,S,Y
+cibo,polpetta,A,S,Y
+cibo,bistecca,A,S,Y
+cibo,pomodoro,A,S,Y
+cibo,piselli,A,S,Y
+cibo,carota,A,S,Y
+cibo,zucchina,A,S,Y
+cibo,banana,A,S,Y
+cibo,fragola,A,S,Y
+cibo,mela,A,S,Y
+cibo,gelato,A,S,Y
+cibo,cioccolato,A,S,Y
+vestiti,pigiama,A,N,Y
+vestiti,cappello,A,N,Y
+vestiti,sciarpa,A,N,Y
+vestiti,maglietta,A,N,Y
+vestiti,maglione,A,N,Y
+vestiti,giubbotto,A,N,Y
+vestiti,guanti,A,N,Y
+vestiti,pantaloni,A,N,Y
+vestiti,mutande,A,N,Y
+vestiti,calze,A,N,Y
+vestiti,scarpe,A,N,Y
+giochi,palla,A,S,Y
+giochi,tablet,A,S,Y
+giochi,macchine,A,S,Y
+giochi,puzzle,A,S,Y
+giochi,correre,A,S,Y
+giochi,saltare,A,S,Y
+giochi,parco,A,S,Y
+famiglia,io,A,S,Y
+famiglia,papà,A,S,Y
+famiglia,mamma,A,S,Y
+famiglia,nonno,A,S,Y
+famiglia,nonna,A,S,Y
+famiglia,zio,A,S,Y
+animali,topo,A,N,Y
+animali,gatto,A,N,Y
+animali,cane,A,N,Y
+animali,giraffa,A,N,Y
+animali,elefante,A,N,Y
+animali,leone,A,N,Y
+animali,uccello,A,N,Y
+animali,anatra,A,N,Y
+animali,gallina,A,N,Y
+animali,tacchino,A,N,Y
+animali,cigno,A,N,Y
+animali,piccione,A,N,Y
+animali,pesce,A,N,Y
+animali,tartaruga,A,N,Y
+animali,asino,A,N,Y
+animali,pecora,A,N,Y
+animali,cavallo,A,N,Y
+animali,capra,A,N,Y
+animali,ape,A,N,Y
+animali,formica,A,N,Y
+animali,rana,A,N,Y
+cibo,frittata,A,N,Y
+cibo,pane,A,N,Y
+cibo,grissini,A,N,Y
+cibo,biscotto,A,N,Y
+cibo,succo,A,N,Y
+cibo,spaghetti,A,N,Y
+cibo,minestra,A,N,Y
+cibo,formaggio,A,N,Y
+cibo,carne,A,N,Y
+cibo,polpetta,A,N,Y
+cibo,bistecca,A,N,Y
+cibo,pomodoro,A,N,Y
+cibo,piselli,A,N,Y
+cibo,carota,A,N,Y
+cibo,zucchina,A,N,Y
+cibo,banana,A,N,Y
+cibo,fragola,A,N,Y
+cibo,mela,A,N,Y
+cibo,gelato,A,N,Y
+cibo,cioccolato,A,N,Y
+giochi,palla,A,N,Y
+giochi,tablet,A,N,Y
+giochi,macchine,A,N,Y
+giochi,puzzle,A,N,Y
+giochi,correre,A,N,Y
+giochi,saltare,A,N,Y
+giochi,parco,A,N,Y
+famiglia,io,A,N,Y
+famiglia,papà,A,N,Y
+famiglia,mamma,A,N,Y
+famiglia,nonno,A,N,Y
+famiglia,nonna,A,N,Y
+famiglia,zio,A,N,Y

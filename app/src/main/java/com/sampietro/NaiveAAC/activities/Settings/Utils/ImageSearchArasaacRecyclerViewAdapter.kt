@@ -1,4 +1,4 @@
-package com.sampietro.NaiveAAC.activities.Settings
+package com.sampietro.NaiveAAC.activities.Settings.Utils
 
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.addImageUsingPicasso
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.addFileImageUsingPicasso
@@ -27,11 +27,11 @@ import java.util.ArrayList
  * @version     4.0, 09/09/2023
  * @see RecyclerView.Adapter<RecyclerView.ViewHolder>
 </RecyclerView.ViewHolder> */
-class StoriesImageSearchArasaacRecyclerViewAdapter(
+class ImageSearchArasaacRecyclerViewAdapter(
     private val context: Context, //
     private val galleryList: ArrayList<Game1ArrayList>
-) : RecyclerView.Adapter<StoriesImageSearchArasaacRecyclerViewAdapter.ViewHolder>() {
-    var listener: StoriesImageSearchArasaacRecyclerViewAdapterInterface? = null
+) : RecyclerView.Adapter<ImageSearchArasaacRecyclerViewAdapter.ViewHolder>() {
+    var listener: ImageSearchArasaacRecyclerViewAdapterInterface? = null
 
     /**
      * Game1RecyclerViewAdapter1 constructor.
@@ -41,7 +41,7 @@ class StoriesImageSearchArasaacRecyclerViewAdapter(
     init {
         //
         val activity = context as Activity
-        listener = activity as StoriesImageSearchArasaacRecyclerViewAdapterInterface
+        listener = activity as ImageSearchArasaacRecyclerViewAdapterInterface
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.sampietro.NaiveAAC.activities.Settings
+package com.sampietro.NaiveAAC.activities.Settings.Utils
 
 import android.view.View
 
@@ -12,9 +12,9 @@ import android.view.View
  *
  * @see SettingsActivity
  *
- * @see StoriesImageSearchArasaacRecyclerViewAdapter
+ * @see ImageSearchArasaacRecyclerViewAdapter
  */
-interface StoriesImageSearchArasaacRecyclerViewAdapterInterface {
+interface ImageSearchArasaacRecyclerViewAdapterInterface {
     /**
      * called when a word list item is clicked.
      *

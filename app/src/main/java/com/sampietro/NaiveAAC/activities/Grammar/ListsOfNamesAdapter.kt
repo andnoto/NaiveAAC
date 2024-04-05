@@ -15,12 +15,12 @@ import io.realm.Realm
 /**
  * this adapter is the View "supplier" for the listview in the UI for lists of names settings.
  *
- * @version     4.0, 09/09/2023
- * @see com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
+ * @version     5.0, 01/04/2024
+ * @see com.sampietro.simsimtest.activities.Grammar.ListsOfNames
  *
- * @see com.sampietro.NaiveAAC.activities.Settings.ListsOfNamesFragment
+ * @see com.sampietro.simsimtest.activities.Settings.ListsOfNamesFragment
  *
- * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
+ * @see com.sampietro.simsimtest.activities.Settings.SettingsActivity
  */
 class ListsOfNamesAdapter(private val context: Context, private val listsOfNames: List<ListsOfNames>?, listview: ListView) :
     BaseAdapter() {
@@ -36,15 +36,12 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      * @see ListsOfNamesAdapter
      */
     interface ListsOfNamesAdapterInterface {
-        fun reloadListOfNamesFragment()
+        fun reloadListOfNamesFragmentForDeletion(position: Int)
+        fun reloadListOfNamesFragmentForInsertion(position: Int)
+        fun reloadListOfNamesFragmentForEditing(position: Int)
     }
 
     lateinit var listener: ListsOfNamesAdapterInterface
-
-    //
-//    private val listsOfNames: List<ListsOfNames>? = null
-//    private val context: Context? = null
-//    private val listview: ListView? = null
 
     // Realm
     lateinit private var realm: Realm
@@ -53,7 +50,7 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      * return size of list<ListsOfNames>
      *
      * @return int with size of list<ListsOfNames>
-    </ListsOfNames></ListsOfNames> */
+     */
     override fun getCount(): Int {
         return listsOfNames!!.size
     }
@@ -63,7 +60,7 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      *
      * @param position int index within the list<ListsOfNames>
      * @return object with the element within the list<ListsOfNames>
-    </ListsOfNames></ListsOfNames></ListsOfNames> */
+    */
     override fun getItem(position: Int): Any {
         return listsOfNames!![position]
     }
@@ -88,7 +85,7 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      * @see .getItem
      *
      * @see .clickListenerDeleteListsOfNames
-    </ListsOfNames></ListsOfNames></ListsOfNames></GameParameters> */
+     */
     override fun getView(position: Int, v: View?, vg: ViewGroup): View {
         // 1) it is checked if the View passed in input is null and only in this
         // case is initialized with the LayoutInflater.
@@ -98,21 +95,63 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
         // the list <ListsOfNames> of position position retrieved using getItem.
         // 3) the listener for the delete button of the element within
         // the list <ListsOfNames> of position position is set
-//        var v = v
         val v1: View
         if (v == null) {
-            v1 = LayoutInflater.from(context).inflate(R.layout.activity_settings_row, null)
-            }
-            else
-            { v1 = v}
+            v1 = LayoutInflater.from(context).inflate(R.layout.activity_settings_row_crud, null)
+        }
+        else
+        { v1 = v}
         val l = getItem(position) as ListsOfNames
         val txt = v1.findViewById<View>(R.id.imageDescriptionRow) as TextView
+        //
         txt.text = l.keyword + " " + l.word
         //
         val imgbtn = v1.findViewById<View>(R.id.btn_delete_image) as ImageButton
-        imgbtn.setOnClickListener(clickListenerDeleteListsOfNames)
+        imgbtn.setOnClickListener(clickListenerDeleteListOfNames)
+        //
+        val imgbtnedit = v1.findViewById<View>(R.id.btn_edit_image) as ImageButton
+        imgbtnedit.setOnClickListener(clickListenerEditListOfNames)
+        //
+        val imgbtninsert = v1.findViewById<View>(R.id.btn_insert_image) as ImageButton
+        imgbtninsert.setOnClickListener(clickListenerInsertListOfNames)
         //
         return v1
+    }
+
+    /**
+     * listener for the insert button.
+     *
+     *
+     * enables inserting before the selected item and
+     * makes the callback to the activity to load the fragment for insertion
+     *
+     * @see View.OnClickListener
+     *
+     * @see ListOfNamesAdapterInterface.reloadListOfNamesFragmentForInsertion
+     */
+    private val clickListenerInsertListOfNames = View.OnClickListener { v ->
+        val position = listview.getPositionForView(v)
+        //
+        listener.reloadListOfNamesFragmentForInsertion(position)
+        //
+    }
+
+    /**
+     * listener for the edit button.
+     *
+     *
+     * enable editing of the selected item and
+     * makes the callback to the activity to reload the fragment for editing
+     *
+     * @see View.OnClickListener
+     *
+     * @see ListOfNamesAdapterInterface.reloadListOfNamesFragmentForEditing
+     */
+    private val clickListenerEditListOfNames = View.OnClickListener { v ->
+        val position = listview.getPositionForView(v)
+        //
+        listener.reloadListOfNamesFragmentForEditing(position)
+        //
     }
 
     /**
@@ -124,19 +163,12 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      *
      * @see View.OnClickListener
      *
-     * @see ListsOfNamesAdapterInterface.reloadListOfNamesFragment
+     * @see ListsOfNamesAdapterInterface.reloadListsOfNamesFragmentDeleteStories
      */
-    private val clickListenerDeleteListsOfNames = View.OnClickListener { v ->
+    private val clickListenerDeleteListOfNames = View.OnClickListener { v ->
         val position = listview.getPositionForView(v)
-        // delete image
-        realm = Realm.getDefaultInstance()
-        val results = realm.where(ListsOfNames::class.java).findAll()
-        realm.beginTransaction()
-        val daCancellare = results[position]
-        daCancellare!!.deleteFromRealm()
-        realm.commitTransaction()
         //
-        listener.reloadListOfNamesFragment()
+        listener.reloadListOfNamesFragmentForDeletion(position)
         //
     }
 
@@ -146,10 +178,6 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      *
     */
     init {
-//        this.listsOfNames = listsOfNames
-//        this.context = context
-//        this.listview = listview
-        //
         val activity = context as Activity
         listener = activity as ListsOfNamesAdapterInterface
         //

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import io.realm.Realm
 
@@ -15,7 +16,7 @@ import io.realm.Realm
  * Refer to [raywenderlich.com](https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started)
  * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see FragmentStateAdapter
  */
 class Game1ViewPagerAdapter
@@ -51,15 +52,26 @@ class Game1ViewPagerAdapter
         var fragment: Game1FirstLevelFragment? = null
         val wordToSearchSecondLevelMenu: String?
         //
-        val resultsWordPairs = realm.where(WordPairs::class.java)
+        val resultsListsOfNames = realm.where(ListsOfNames::class.java)
             .beginGroup()
-            .equalTo("isMenuItem", "TLM")
+            .equalTo("isMenuItem", "F")
+            .equalTo("elementActive", "A")
             .endGroup()
             .findAll()
-        val resultsWordPairsSize = resultsWordPairs.size
-        if (resultsWordPairsSize != 0) {
-            val result = resultsWordPairs[position]!!
-            wordToSearchSecondLevelMenu = result.word1
+        val resultsListsOfNamesSize = resultsListsOfNames.size
+        if (resultsListsOfNamesSize != 0) {
+            val result = resultsListsOfNames[position]!!
+            wordToSearchSecondLevelMenu = result.keyword
+            //
+//        val resultsWordPairs = realm.where(WordPairs::class.java)
+//            .beginGroup()
+//            .equalTo("isMenuItem", "TLM")
+//            .endGroup()
+//            .findAll()
+//        val resultsWordPairsSize = resultsWordPairs.size
+//        if (resultsWordPairsSize != 0) {
+//            val result = resultsWordPairs[position]!!
+//            wordToSearchSecondLevelMenu = result.word1
             //
             bundle.putString("WORD TO SEARCH SECOND LEVEL MENU", wordToSearchSecondLevelMenu)
             //
@@ -68,7 +80,8 @@ class Game1ViewPagerAdapter
             } else {
                 bundle.putString("LEFT ARROW", "N")
             }
-            if (resultsWordPairsSize > position + 1) {
+//            if (resultsWordPairsSize > position + 1) {
+            if (resultsListsOfNamesSize > position + 1) {
                 bundle.putString("RIGHT ARROW", "Y")
             } else {
                 bundle.putString("RIGHT ARROW", "N")
@@ -85,14 +98,15 @@ class Game1ViewPagerAdapter
      * returns the number of top-level menu items in the wordpairs table
      *
      * @return int with the number of top-level menu items in the wordpairs table
-     * @see WordPairs
+     * @see ListsOfNames
      */
     override fun getItemCount(): Int {
-        val resultsWordPairs = realm.where(WordPairs::class.java)
+        val resultsListsOfNames = realm.where(ListsOfNames::class.java)
             .beginGroup()
-            .equalTo("isMenuItem", "TLM")
+            .equalTo("isMenuItem", "F")
+            .equalTo("elementActive", "A")
             .endGroup()
             .findAll()
-        return resultsWordPairs.size
+        return resultsListsOfNames.size
     }
 }

@@ -21,9 +21,9 @@ import java.util.ArrayList
  * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
  * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see RecyclerView.Adapter<RecyclerView.ViewHolder>
-</RecyclerView.ViewHolder> */
+ */
 class Game1RecyclerViewAdapter3(
     private val context: Context, //
     private val galleryList: ArrayList<Game1ArrayList>
@@ -35,9 +35,8 @@ class Game1RecyclerViewAdapter3(
      * Game1RecyclerViewAdapter3 constructor.
      * set game1 list, listener setting for settings activity callbacks and context annotation
      *
-     *
      * @see Game1RecyclerViewAdapterInterface
-    </Game1ArrayList> */
+    */
     init {
         //
         val activity = context as Activity
@@ -76,6 +75,15 @@ class Game1RecyclerViewAdapter3(
         viewHolder.title.text = galleryList[i].image_title
         viewHolder.img.scaleType = ImageView.ScaleType.CENTER_CROP
         viewHolder.img.contentDescription = galleryList[i].image_title
+        //
+        if (galleryList[i].theTitleRepresentsAClass!!)
+        {
+            addImage(
+                galleryList[i].urlType,
+                galleryList[i].url, viewHolder.img2
+            )
+            viewHolder.img2.setVisibility(View.VISIBLE)
+        }
         //
         addImage(
             galleryList[i].urlType,
@@ -123,11 +131,13 @@ class Game1RecyclerViewAdapter3(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         internal val title: TextView
         internal val img: ImageView
+        internal val img2: ImageView
 
         init {
             //
             title = view.findViewById<View>(R.id.title) as TextView
             img = view.findViewById<View>(R.id.img3) as ImageView
+            img2 = view.findViewById<View>(R.id.img3_2) as ImageView
         }
     }
 }

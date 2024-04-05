@@ -15,12 +15,12 @@ import io.realm.Realm
 /**
  * this adapter is the View "supplier" for the listview in the UI for word pairs list settings.
  *
- * @version     4.0, 09/09/2023
- * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
+ * @version     5.0, 01/04/2024
+ * @see com.sampietro.simsimtest.activities.WordPairs.WordPairs
  *
- * @see com.sampietro.NaiveAAC.activities.Settings.WordPairsFragment
+ * @see com.sampietro.simsimtest.activities.Settings.WordPairsFragment
  *
- * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
+ * @see com.sampietro.simsimtest.activities.Settings.SettingsActivity
  */
 class WordPairsAdapter(private val context: Context, private val wordPairs: List<WordPairs>?, listview: ListView) :
     BaseAdapter() {
@@ -36,16 +36,12 @@ class WordPairsAdapter(private val context: Context, private val wordPairs: List
      * @see WordPairsAdapter
      */
     interface WordPairsAdapterInterface {
-        fun reloadWordPairsFragment()
+        fun reloadWordPairsFragmentForDeletion(position: Int)
+        fun reloadWordPairsFragmentForInsertion(position: Int)
+        fun reloadWordPairsFragmentForEditing(position: Int)
     }
 
     lateinit var listener: WordPairsAdapterInterface
-
-    //
-//    private val wordPairs: List<WordPairs>? = null
-//    private val context: Context? = null
-//    private val listview: ListView? = null
-
     // Realm
     lateinit private var realm: Realm
 
@@ -100,7 +96,7 @@ class WordPairsAdapter(private val context: Context, private val wordPairs: List
      * @see getItem
      *
      * @see clickListenerDeleteWordPairs
-    </WordPairs></WordPairs></WordPairs></WordPairs> */
+    */
     override fun getView(position: Int, v: View?, vg: ViewGroup): View {
         // 1) it is checked if the View passed in input is null and only in this
         // case is initialized with the LayoutInflater.
@@ -110,7 +106,6 @@ class WordPairsAdapter(private val context: Context, private val wordPairs: List
         // the list <WordPairs> of position position retrieved using getItem.
         // 3) the listener for the delete button of the element within
         // the list <WordPairs> of position position is set
-//        var v = v
 
         // 1) it is checked if the View passed in input is null and only in this
         // case is initialized with the LayoutInflater.
@@ -122,7 +117,7 @@ class WordPairsAdapter(private val context: Context, private val wordPairs: List
         // the list <WordPairs> of position position is set
         val v1: View
         if (v == null) {
-            v1 = LayoutInflater.from(context).inflate(R.layout.activity_settings_row, null)
+            v1 = LayoutInflater.from(context).inflate(R.layout.activity_settings_row_crud, null)
             }
             else
             { v1 = v}
@@ -133,9 +128,49 @@ class WordPairsAdapter(private val context: Context, private val wordPairs: List
         val imgbtn = v1.findViewById<View>(R.id.btn_delete_image) as ImageButton
         imgbtn.setOnClickListener(clickListenerDeleteWordPairs)
         //
+        val imgbtnedit = v1.findViewById<View>(R.id.btn_edit_image) as ImageButton
+        imgbtnedit.setOnClickListener(clickListenerEditWordPairs)
+        //
+        val imgbtninsert = v1.findViewById<View>(R.id.btn_insert_image) as ImageButton
+        imgbtninsert.setOnClickListener(clickListenerInsertWordPairs)
+        //
         return v1
     }
+    /**
+     * listener for the insert button.
+     *
+     *
+     * enables inserting before the selected item and
+     * makes the callback to the activity to load the fragment for insertion
+     *
+     * @see View.OnClickListener
+     *
+     * @see WordPairsAdapterInterface.reloadWordPairsFragmentForInsertion
+     */
+    private val clickListenerInsertWordPairs = View.OnClickListener { v ->
+        val position = listview.getPositionForView(v)
+        //
+        listener.reloadWordPairsFragmentForInsertion(position)
+        //
+    }
 
+    /**
+     * listener for the edit button.
+     *
+     *
+     * enable editing of the selected item and
+     * makes the callback to the activity to reload the fragment for editing
+     *
+     * @see View.OnClickListener
+     *
+     * @see WordPairsAdapterInterface.reloadWordPairsFragmentForEditing
+     */
+    private val clickListenerEditWordPairs = View.OnClickListener { v ->
+        val position = listview.getPositionForView(v)
+        //
+        listener.reloadWordPairsFragmentForEditing(position)
+        //
+    }
     /**
      * listener for the delete button.
      *
@@ -149,19 +184,8 @@ class WordPairsAdapter(private val context: Context, private val wordPairs: List
      */
     private val clickListenerDeleteWordPairs = View.OnClickListener { v ->
         val position = listview.getPositionForView(v)
-        // delete
-        realm = Realm.getDefaultInstance()
-        var results = realm.where(WordPairs::class.java).findAll()
         //
-        results = results.sort("word1")
-        //
-        realm.beginTransaction()
-        val daCancellare = results[position]
-        daCancellare!!.deleteFromRealm()
-        realm.commitTransaction()
-        //
-        listener.reloadWordPairsFragment()
-        //
+        listener.reloadWordPairsFragmentForDeletion(position)
     }
 
     /**
@@ -169,10 +193,6 @@ class WordPairsAdapter(private val context: Context, private val wordPairs: List
      * listener setting for settings activity callbacks ,  context annotation and other
     */
     init {
-//        this.wordPairs = wordPairs
-//        this.context = context
-//        this.listview = listview
-        //
         val activity = context as Activity
         listener = activity as WordPairsAdapterInterface
     }

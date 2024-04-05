@@ -27,6 +27,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentManager
 import io.realm.RealmResults
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import com.sampietro.NaiveAAC.activities.Settings.Utils.ImageSearchArasaacFragment
+import com.sampietro.NaiveAAC.activities.Settings.Utils.ImageSearchArasaacRecyclerViewAdapterInterface
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Stories.StoriesComparator
 import io.realm.Realm
@@ -42,17 +44,17 @@ import java.util.*
  * **SettingsStoriesActivity** app settings.
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/communicate)
  *
- * @version     4.0, 09/09/2023
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @version     5.0, 01/04/2024
+ * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
  *
- * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
+ * @see com.sampietro.simsimtest.activities.WordPairs.WordPairsAdapter
  *
- * @see com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter
+ * @see com.sampietro.simsimtest.activities.Grammar.ListsOfNamesAdapter
  *
- * @see com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter
+ * @see com.sampietro.simsimtest.activities.Stories.StoriesAdapter
  */
 class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventListenerSettings,
-    StoriesAdapterInterface, StoriesImageSearchArasaacRecyclerViewAdapterInterface,
+    StoriesAdapterInterface, ImageSearchArasaacRecyclerViewAdapterInterface,
     StoriesVideosSearchAdapterInterface, StoriesSoundsSearchAdapterInterface {
     var message = "messaggio non formato"
     var textView: TextView? = null
@@ -292,10 +294,14 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
      * receives calls from fragment listeners.
      *
      * @param v view of calling fragment
-     * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+     * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
      */
     override fun receiveResultSettings(v: View?) {
-        rootViewFragment = v
+        when (v!!.id) {
+            R.id.btn_search_arasaac -> {
+                arasaacSearch(v)
+            }
+        }
     }
 
     /**
@@ -322,7 +328,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
             textWord3.text.toString().toInt()
         voiceToBeRecordedInStories!!.word = textWord4.text.toString()
         //
-        val frag = StoriesImageSearchArasaacFragment()
+        val frag = ImageSearchArasaacFragment()
         //
         val bundle = Bundle()
         bundle.putString("keywordToSearchArasaac", textWord4.text.toString())
@@ -343,7 +349,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         val textWord1 = findViewById<View>(R.id.keywordarasaactosearch) as EditText
         // view the image search Arasaac  initializing ImageSearchArasaacFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = StoriesImageSearchArasaacFragment()
+        val frag = ImageSearchArasaacFragment()
         //
         val bundle = Bundle()
         bundle.putString("keywordToSearchArasaac", textWord1.text.toString())
@@ -774,7 +780,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
      * after deleting a piece of story the activity is notified to view the word pairs settings
      *
      *
-     * @see com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter
+     * @see com.sampietro.simsimtest.activities.Stories.StoriesAdapter
      *
      * @see StoriesFragment
      */
@@ -837,7 +843,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
      * for editing a piece of story the activity is notified to view the word pairs settings
      *
      *
-     * @see com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter
+     * @see com.sampietro.simsimtest.activities.Stories.StoriesAdapter
      *
      * @see StoriesFragment
      */
@@ -914,7 +920,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
      * for insertion a piece of story the activity is notified to view the word pairs settings
      *
      *
-     * @see com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter
+     * @see com.sampietro.simsimtest.activities.Stories.StoriesAdapter
      *
      * @see StoriesFragment
      */

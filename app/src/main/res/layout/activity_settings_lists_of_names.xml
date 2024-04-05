@@ -18,27 +18,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/newlistofnamesrow"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="vertical"
-        android:padding="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listofnamessettings"
-        app:layout_constraintVertical_bias="0.069">
-
-    <LinearLayout
+        android:id="@+id/listofnameskeyword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/listofnamessettings">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -56,12 +42,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/listofnamesname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/listofnameskeyword">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -79,51 +66,53 @@
     </LinearLayout>
 
     <LinearLayout
+            android:id="@+id/listofnameselementactive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/listofnamesname">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
-                android:text="@string/tipo_uri_a_s_opzionale" />
+                android:text="elemento attivo (A/N)" />
 
             <EditText
-                android:id="@+id/uritypenametoadd"
+                android:id="@+id/elementactive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:inputType="text"
-                android:autofillHints="@string/tipo_uri_a_s_opzionale" />
+                android:autofillHints="A" />
     </LinearLayout>
 
     <LinearLayout
-            android:layout_width="match_parent"
+        android:id="@+id/listofnamesismenuitem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listofnameselementactive">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginRight="5dp"
+            android:text="voce di menu (F/S/N)" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="@string/uri_opzionale" />
-
-            <EditText
-                android:id="@+id/urinametoadd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:inputType="text"
-                android:autofillHints="@string/uri_opzionale" />
-    </LinearLayout>
-
+        <EditText
+            android:id="@+id/ismenuitem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:inputType="text"
+            android:autofillHints="N" />
     </LinearLayout>
 
     <Button
@@ -132,7 +121,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newlistofnamesrow"
+        app:layout_constraintTop_toBottomOf="@+id/listofnamesismenuitem"
         android:onClick="nameAddToList"
         android:text="@string/aggiungi" />
 

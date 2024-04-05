@@ -6,10 +6,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.ListView
+import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
+import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNames
+import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNamesViewModel
 import io.realm.Realm
+import io.realm.RealmResults
+import io.realm.Sort
 
 /**
  * <h1>ListsOfNamesFragment</h1>
@@ -17,12 +23,19 @@ import io.realm.Realm
  * **ListsOfNamesFragment** UI for list of names settings
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see SettingsFragmentAbstractClass
  *
  * @see SettingsActivity
  */
 class ListsOfNamesFragment : SettingsFragmentAbstractClass() {
+    /*
+    used for viewmodel
+    */
+    private lateinit var viewModel: VoiceToBeRecordedInListsOfNamesViewModel
+    /*
+
+     */
     //
     private lateinit var realm: Realm
 
@@ -46,6 +59,27 @@ class ListsOfNamesFragment : SettingsFragmentAbstractClass() {
     ): View {
         rootView = inflater.inflate(R.layout.activity_settings_lists_of_names, container, false)
         // logic of fragment
+        val keywordtoadd = rootView.findViewById<View>(R.id.keywordtoadd) as EditText
+        val nametoadd = rootView.findViewById<View>(R.id.nametoadd) as EditText
+        val elementactivetoadd = rootView.findViewById<View>(R.id.elementactive) as EditText
+        val ismenuitemtoadd = rootView.findViewById<View>(R.id.ismenuitem) as EditText
+        /*
+        Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
+         constructor.
+        The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
+         */
+        viewModel = ViewModelProvider(requireActivity()).get(
+            VoiceToBeRecordedInListsOfNamesViewModel::class.java
+        )
+        viewModel.getSelectedItem()
+            .observe(viewLifecycleOwner) { voiceToBeRecordedInListsOfNames: VoiceToBeRecordedInListsOfNames ->
+                // Perform an action with the latest item data
+                keywordtoadd.setText(voiceToBeRecordedInListsOfNames.keyword)
+                nametoadd.setText(voiceToBeRecordedInListsOfNames.word)
+                elementactivetoadd.setText(voiceToBeRecordedInListsOfNames.elementActive)
+                ismenuitemtoadd.setText(voiceToBeRecordedInListsOfNames.isMenuItem)
+            }
+        //
         realm = Realm.getDefaultInstance()
         // ListView
         // 1) we get a reference to the data structure through the RealmResults class which constitutes
@@ -60,7 +94,12 @@ class ListsOfNamesFragment : SettingsFragmentAbstractClass() {
         // each single row
         // 3) we retrieve the ListView prepared in the layout and assign it the reference to the adapter
         // which will be your View "supplier".
-        val results = realm.where(ListsOfNames::class.java).findAll()
+        var results: RealmResults<ListsOfNames>
+        results = realm.where(ListsOfNames::class.java).findAll()
+        //
+        val mStrings1 = arrayOf(getString(R.string.keyword), "word")
+        val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
+        results = results.sort(mStrings1, mStrings2)
         //
         listView = rootView.findViewById<View>(R.id.listview) as ListView
         //

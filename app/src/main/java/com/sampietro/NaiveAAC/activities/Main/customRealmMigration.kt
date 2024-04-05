@@ -147,6 +147,24 @@ class customRealmMigration : RealmMigration {
             oldVersion++
         }
         //
+        if (oldVersion == 6L) {
+            // Migrate from v6 to v7
+            val listsOfNamesSchema = schema["ListsOfNames"]!!
+            listsOfNamesSchema
+                .removeField("uriType")
+                .removeField("uri")
+                .addField("elementActive", String::class.java)
+                .addField("isMenuItem", String::class.java)
+                .transform { obj ->
+                    obj["elementActive"] = "A"
+                    obj["isMenuItem"] = "N"
+                }
+            val wordPairsSchema = schema["WordPairs"]!!
+            wordPairsSchema
+                .removeField("isMenuItem")
+            oldVersion++
+        }
+        //
         check(oldVersion >= newVersion) {
             String.format(
                 Locale.US,

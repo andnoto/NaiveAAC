@@ -28,4 +28,8 @@ class Game1ArrayList {
      * represent the path of image displayed in the recycler view for game1.
      */
     var url: String? = null
+    /**
+     * true if the title represents a class.
+     */
+    var theTitleRepresentsAClass: Boolean? = null
 }
