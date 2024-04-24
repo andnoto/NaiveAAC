@@ -73,6 +73,7 @@ object ImageSearchHelper {
      * @return string with file path
      * @see Images
      */
+    @JvmStatic
     fun searchUri(context: Context,
                   realm: Realm,
                   k: String?): String {
@@ -100,6 +101,7 @@ object ImageSearchHelper {
      * @return string with id url of arasaac
      * @see PictogramsAll
      */
+    @JvmStatic
     fun searchId(context: Context,
                  realm: Realm,
                  k: String?): String {
@@ -115,4 +117,4 @@ object ImageSearchHelper {
         }
         return idToSearchRealm
     }
-}
+    }

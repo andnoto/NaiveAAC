@@ -43,7 +43,7 @@ import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1BleActivity
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.squareup.picasso.Picasso
@@ -77,7 +77,7 @@ import java.util.UUID
  *
  * @version     5.0, 01/01/2024
  *
- * @see com.sampietro.simsimtest.activities.Game.Game1.Game1BleActivity
+ * @see com.sampietro.NaiveAAC.activities.Game.Game1.Game1BleActivity
  */
 
 class BluetoothLeService : Service() {
@@ -787,14 +787,14 @@ class BluetoothLeService : Service() {
      *
      * @param urlType if string equal to "A" the image is loaded from a url otherwise it is loaded from a file
      * @param url string with url or file path of origin
-     * @see GraphicsHelper.getTargetBitmapFromUrlUsingPicasso
+     * @see GraphicsAndPrintingHelper.getTargetBitmapFromUrlUsingPicasso
      */
     fun addImage(urlType: String, url: String?) {
         if (urlType == getString(R.string.character_a)) {
-            GraphicsHelper.getTargetBitmapFromUrlUsingPicasso(url, target1)
+            GraphicsAndPrintingHelper.getTargetBitmapFromUrlUsingPicasso(url, target1,200,200)
         } else {
             val f = File(url!!)
-            GraphicsHelper.getTargetBitmapFromFileUsingPicasso(f, target1)
+            GraphicsAndPrintingHelper.getTargetBitmapFromFileUsingPicasso(f, target1,200,200)
         }
     }
 

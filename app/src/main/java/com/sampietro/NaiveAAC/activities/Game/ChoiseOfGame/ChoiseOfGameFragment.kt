@@ -1,12 +1,11 @@
 package com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import java.util.*
@@ -17,12 +16,12 @@ import java.util.*
  * **ChoiseOfGameFragment** UI for game choice
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameFragmentAbstractClass
  *
  * @see ChoiseOfGameActivity
  */
-class ChoiseOfGameFragment : GameFragmentAbstractClass() {
+class ChoiseOfGameFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
     private var row1debugGameName = arrayOfNulls<String>(48)
     private var row1debugGameIconType = arrayOfNulls<String>(48)
     private var row1debugGameIconPath = arrayOfNulls<String>(48)
@@ -34,32 +33,31 @@ class ChoiseOfGameFragment : GameFragmentAbstractClass() {
     private var recyclerView: ChoiseOfGameRecyclerView? = null
 
     /**
-     * prepares the ui and makes the callback to the activity
+     * prepares the ui
      *
      *
      * REFER to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
      * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see ChoiseOfGameRecyclerView
      *
      * @see initRecyclerView
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView =
-            inflater.inflate(R.layout.activity_game_choise_of_game_mediaplayer, container, false)
+    ) {
+//        rootView =
+//            inflater.inflate(R.layout.activity_game_choise_of_game_mediaplayer, container, false)
         //
-        recyclerView = rootView.findViewById<View>(R.id.recycler_view) as ChoiseOfGameRecyclerView
+        recyclerView = view.findViewById<View>(R.id.recycler_view) as ChoiseOfGameRecyclerView
         recyclerView!!.setHasFixedSize(true)
         initRecyclerView()
         //
-        listener.receiveResultGameFragment(rootView)
-        return rootView
+//        listener.receiveResultGameFragment(rootView)
+//        return rootView
     }
 
     /**

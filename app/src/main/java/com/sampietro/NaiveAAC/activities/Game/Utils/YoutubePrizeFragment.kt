@@ -56,7 +56,7 @@ class YoutubePrizeFragment : Fragment() {
      *
      *
      *
-     * @see .onAttach
+     * @see onAttach
      */
     interface onFragmentEventListenerYoutubePrize {
         // insert here any references to the Activity

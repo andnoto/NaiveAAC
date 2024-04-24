@@ -1,8 +1,8 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import android.speech.tts.TextToSpeech
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
@@ -20,10 +20,10 @@ import java.util.*
  * Refer to [raywenderlich.com](https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started)
  * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameActivityAbstractClass
  */
-abstract class Game2ActivityAbstractClass : GameActivityAbstractClass() {
+abstract class Game2ActivityAbstractClass : GameActivityAbstractClassWithRecognizerCallback() {
     // lines inserted to remedy the incorrect double onresults that occurs with android 11
     var previouseText = ""
 

@@ -1,13 +1,11 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import io.realm.Realm
 import io.realm.Sort
@@ -23,7 +21,7 @@ import io.realm.Sort
  *
  * @see SettingsActivity
  */
-class WordPairsListFragment : SettingsFragmentAbstractClass() {
+class WordPairsListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     private lateinit var realm: Realm
 
     //
@@ -31,20 +29,18 @@ class WordPairsListFragment : SettingsFragmentAbstractClass() {
     private var adapter: WordPairsAdapter? = null
 
     /**
-     * prepares the ui also using a listview and makes the callback to the activity
+     * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see WordPairs
      *
      * @see WordPairsAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_wordpairs_list, container, false)
+    ) {
         // logic of fragment
         realm = Realm.getDefaultInstance()
         // ListView
@@ -66,14 +62,10 @@ class WordPairsListFragment : SettingsFragmentAbstractClass() {
         val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
         results = results.sort(mStrings1, mStrings2)
         //
-        listView = rootView.findViewById<View>(R.id.listview) as ListView
+        listView = view.findViewById<View>(R.id.listview) as ListView
         //
         adapter = WordPairsAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
-        //
-        listener.receiveResultSettings(rootView)
-        //
-        return rootView
     }
 }

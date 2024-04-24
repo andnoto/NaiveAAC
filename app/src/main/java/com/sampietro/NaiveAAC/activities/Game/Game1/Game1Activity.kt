@@ -1,14 +1,10 @@
 package com.sampietro.NaiveAAC.activities.Game.Game1
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment.onFragmentEventListenerPrize
 import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment.onFragmentEventListenerYoutubePrize
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
-import android.graphics.Bitmap
-import com.squareup.picasso.Picasso.LoadedFrom
-import android.graphics.drawable.Drawable
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.sampietro.NaiveAAC.R
@@ -20,30 +16,28 @@ import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
 import android.os.Handler
 import android.os.Looper
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
 import android.view.View
+import android.view.Window
 import android.widget.Toast
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.print.PrintHelper
-import com.sampietro.NaiveAAC.activities.Phrases.Phrases
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
 import com.sampietro.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyRegistration
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.welcomeSpeech
 import com.sampietro.NaiveAAC.activities.Grammar.ComposesASentenceResults
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.composesASentence
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.thereIsACorrespondenceWithAnAllowedMarginOfError
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromFileUsingPicasso
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromUrlUsingPicasso
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
+import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.destroyRecognizer
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.prepareSpeechRecognizer
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs.Companion.searchAwardType
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs.Companion.searchUriPremiumVideo
-import com.squareup.picasso.Target
 import io.realm.Realm
-import java.io.File
-import java.lang.Exception
 import java.util.*
 
 /**
@@ -68,10 +62,11 @@ import java.util.*
  *
  * @see YoutubePrizeFragment.onFragmentEventListenerYoutubePrize
  */
-class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInterface,
+class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1RecyclerViewAdapterInterface,
     onFragmentEventListenerPrize, onFragmentEventListenerYoutubePrize {
     var onCreateSavedInstanceState: Bundle? = null
-
+    // USED FOR FULL SCREEN
+    lateinit var mywindow: Window
     // TTS
     var tTS1: TextToSpeech? = null
     var toSpeak: String? = null
@@ -87,14 +82,8 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
     // and three numbers which, if applicable, indicate the choice menus for each column
     // identified by PhraseNumber on History
     var leftColumnContent: String? = null
-    var leftColumnContentUrlType: String? = null
-    var leftColumnContentUrl: String? = null
     var middleColumnContent: String? = null
-    var middleColumnContentUrlType: String? = null
-    var middleColumnContentUrl: String? = null
     var rightColumnContent: String? = null
-    var rightColumnContentUrlType: String? = null
-    var rightColumnContentUrl: String? = null
 
     //
     var leftColumnMenuPhraseNumber: Int? = null
@@ -120,23 +109,6 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
     //
     var preference_PrintPermissions: String? = null
     var preference_AllowedMarginOfError = 0
-
-    /**
-     * used for printing
-     */
-    var bitmap1: Bitmap? = null
-
-    /**
-     * used for printing
-     */
-    var target1: Target = object : Target {
-        override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
-            bitmap1 = bitmap
-        }
-
-        override fun onBitmapFailed(e: Exception, errorDrawable: Drawable) {}
-        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-    }
 
     //  ViewPager2
     // - 1) Create the views (activity_game_1_viewpager_content.xml)
@@ -257,7 +229,8 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         /*
         USED FOR FULL SCREEN
         */
-        setToFullScreen()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         /*
 
         */
@@ -281,7 +254,16 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         preference_AllowedMarginOfError =
             sharedPref.getInt(getString(R.string.preference_allowed_margin_of_error), 20)
         // TTS
-        if (savedInstanceState == null) welcomeSpeech()
+        if (savedInstanceState == null)
+        {
+            tTS1 = TextToSpeech(context) { status ->
+                if (status != TextToSpeech.ERROR) {
+                    welcomeSpeech(context, realm, sharedLastPlayer!!, tTS1!!)
+                } else {
+                    Toast.makeText(context.applicationContext, status, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
         // viewpager
         // Wire Adapter with ViewPager2
         mViewPager = findViewById<View>(R.id.pager) as ViewPager2
@@ -298,7 +280,8 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
      */
     override fun onResume() {
         super.onResume()
-        setToFullScreen()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
     }
     //
     /**
@@ -350,20 +333,6 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState)
     }
-
-    /**
-     * This method is responsible to transfer MainActivity into fullscreen mode.
-     */
-    private fun setToFullScreen() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        insetsController.hide(WindowInsetsCompat.Type.statusBars())
-        insetsController.hide(WindowInsetsCompat.Type.navigationBars())
-    }
-    //
     /**
      * Called when the user taps the home button.
      *
@@ -569,7 +538,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
             listOfWordsCenter.add(resultsListsOfNames[resultsListsOfNamesIndex]!!.word!!)
             resultsListsOfNamesIndex++
         }
-        val composesASentenceResults: ComposesASentenceResults = GrammarHelper.composesASentence(
+        val composesASentenceResults: ComposesASentenceResults = composesASentence(
             context,
             realm,
             numberOfWordsChosen,
@@ -623,7 +592,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         //
         if (listOfWordsLeft.size != 0) {
             // History registration
-            GameHelper.historyRegistration(
+            historyRegistration(
                 context, realm,
                 leftColumnContent!!,
                 listOfWordsLeft, listOfWordsLeft.size
@@ -634,7 +603,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         } else { leftColumnMenuPhraseNumber = 0 }
         if (listOfWordsCenter.size != 0) {
             // record History and initiate Fragment transaction
-            GameHelper.historyRegistration(
+            historyRegistration(
                 context, realm,
                 middleColumnContent!!,
                 listOfWordsCenter, listOfWordsCenter.size
@@ -645,7 +614,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         } else { middleColumnMenuPhraseNumber = 0 }
         if (listOfWordsRight.size != 0) {
             // History registration
-            GameHelper.historyRegistration(
+            historyRegistration(
                 context, realm,
                 rightColumnContent!!,
                 listOfWordsRight, listOfWordsRight.size
@@ -664,23 +633,11 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
      * @see Game1SecondLevelFragment
      */
     fun fragmentTransactionStart() {
-        val frag = Game1SecondLevelFragment()
+        val frag = Game1SecondLevelFragment(R.layout.activity_game_1)
         val bundle = Bundle()
         bundle.putString(getString(R.string.left_column_content), leftColumnContent)
-        bundle.putString(getString(R.string.left_column_content_url_type), leftColumnContentUrlType)
-        bundle.putString(getString(R.string.left_column_content_url), leftColumnContentUrl)
         bundle.putString(getString(R.string.middle_column_content), middleColumnContent)
-        bundle.putString(
-            getString(R.string.middle_column_content_url_type),
-            middleColumnContentUrlType
-        )
-        bundle.putString(getString(R.string.middle_column_content_url), middleColumnContentUrl)
         bundle.putString(getString(R.string.right_column_content), rightColumnContent)
-        bundle.putString(
-            getString(R.string.right_column_content_url_type),
-            rightColumnContentUrlType
-        )
-        bundle.putString(getString(R.string.right_column_content_url), rightColumnContentUrl)
         bundle.putInt(
             getString(R.string.left_column_menu_phrase_number),
             leftColumnMenuPhraseNumber!!
@@ -730,7 +687,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
      *
      * @param view view of clicked item
      * @param i int the position of the item within the adapter's data set
-     * @see GrammarHelper.ComposesASentenceResults
+     * @see ComposesASentenceResults
      * @see sentenceReadingOfTheTextAndStartSpeech
      * @see sendMessage
      * @see prepareTheFragmentTransaction
@@ -743,7 +700,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                 listOfWordsCenter.clear()
                 listOfWordsCenter.add(chosenWordCenter)
                 val composesASentenceResults: ComposesASentenceResults =
-                    GrammarHelper.composesASentence(
+                    composesASentence(
                         context,
                         realm,
                         numberOfWordsChosen,
@@ -820,7 +777,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                         listOfWordsLeft.clear()
                         listOfWordsLeft.add(chosenWordLeft)
                         val composesASentenceResults: ComposesASentenceResults =
-                            GrammarHelper.composesASentence(
+                            composesASentence(
                                 context,
                                 realm,
                                 numberOfWordsChosen,
@@ -850,7 +807,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                         listOfWordsCenter.clear()
                         listOfWordsCenter.add(chosenWordCenter)
                         val composesASentenceResults: ComposesASentenceResults =
-                            GrammarHelper.composesASentence(
+                            composesASentence(
                                 context,
                                 realm,
                                 numberOfWordsChosen,
@@ -880,7 +837,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                         listOfWordsRight.clear()
                         listOfWordsRight.add(chosenWordRight)
                         val composesASentenceResults: ComposesASentenceResults =
-                            GrammarHelper.composesASentence(
+                            composesASentence(
                                 context,
                                 realm,
                                 numberOfWordsChosen,
@@ -941,7 +898,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                         listOfWordsLeft.clear()
                         listOfWordsLeft.add(chosenWordLeft)
                         val composesASentenceResults: ComposesASentenceResults =
-                            GrammarHelper.composesASentence(
+                            composesASentence(
                                 context,
                                 realm,
                                 numberOfWordsChosen,
@@ -973,7 +930,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                         listOfWordsRight.clear()
                         listOfWordsRight.add(chosenWordRight)
                         val composesASentenceResults: ComposesASentenceResults =
-                            GrammarHelper.composesASentence(
+                            composesASentence(
                                 context,
                                 realm,
                                 numberOfWordsChosen,
@@ -1036,15 +993,16 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                     }
                     //
                     if (preference_PrintPermissions == getString(R.string.character_y)) {
-                        if (leftColumnContentUrlType == getString(R.string.character_a)) {
-                            getTargetBitmapFromUrlUsingPicasso(leftColumnContentUrl, target1)
-                        } else {
-                            val f = File(leftColumnContentUrl!!)
-                            getTargetBitmapFromFileUsingPicasso(f, target1)
-                        }
-                        val photoPrinter = PrintHelper(context)
-                        photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
-                        photoPrinter.printBitmap(getString(R.string.stampa_immagine1), bitmap1!!)
+                        // image search
+                        var image: ResponseImageSearch? = null
+                        image = ImageSearchHelper.imageSearch(context, realm, listOfWordsLeft[0])
+                        printImage(
+                            context,
+                            image!!.uriType,
+                            image.uriToSearch,
+                            200,
+                            200
+                        )
                     }
                 }
                 R.id.img2 -> {
@@ -1063,15 +1021,16 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                     }
                     //
                     if (preference_PrintPermissions == getString(R.string.character_y)) {
-                        if (middleColumnContentUrlType == getString(R.string.character_a)) {
-                            getTargetBitmapFromUrlUsingPicasso(middleColumnContentUrl, target1)
-                        } else {
-                            val f = File(middleColumnContentUrl!!)
-                            getTargetBitmapFromFileUsingPicasso(f, target1)
-                        }
-                        val photoPrinter = PrintHelper(context)
-                        photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
-                        photoPrinter.printBitmap(getString(R.string.stampa_immagine1), bitmap1!!)
+                        // image search
+                        var image: ResponseImageSearch? = null
+                        image = ImageSearchHelper.imageSearch(context, realm, listOfWordsCenter[0])
+                        printImage(
+                            context,
+                            image!!.uriType,
+                            image.uriToSearch,
+                            200,
+                            200
+                        )
                     }
                 }
                 R.id.img3 -> {
@@ -1090,15 +1049,16 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
                     }
                     //
                     if (preference_PrintPermissions == "Y") {
-                        if (rightColumnContentUrlType == "A") {
-                            getTargetBitmapFromUrlUsingPicasso(rightColumnContentUrl, target1)
-                        } else {
-                            val f = File(rightColumnContentUrl!!)
-                            getTargetBitmapFromFileUsingPicasso(f, target1)
-                        }
-                        val photoPrinter = PrintHelper(context)
-                        photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
-                        photoPrinter.printBitmap(getString(R.string.stampa_immagine1), bitmap1!!)
+                        // image search
+                        var image: ResponseImageSearch? = null
+                        image = ImageSearchHelper.imageSearch(context, realm, listOfWordsRight[0])
+                        printImage(
+                            context,
+                            image!!.uriType,
+                            image.uriToSearch,
+                            200,
+                            200
+                        )
                     }
                 }
             }
@@ -1146,36 +1106,6 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
             Handler(Looper.getMainLooper()).postDelayed({ startSpeechGame1(rootViewImageFragment) }, TIME_OUT.toLong())
     }
 
-     /**
-     * welcome speech
-     *
-     *
-     *
-     * @see Phrases
-     */
-    fun welcomeSpeech() {
-        // TTS
-        val phraseToSearch1 = realm.where(Phrases::class.java)
-            .equalTo(getString(R.string.tipo), getString(R.string.welcome_phrase_first_part))
-            .findFirst()
-        sharedLastPlayer =
-            sharedPref.getString(getString(R.string.preference_LastPlayer), "DEFAULT")
-        val phraseToSearch2 = realm.where(Phrases::class.java)
-            .equalTo(getString(R.string.tipo), getString(R.string.welcome_phrase_second_part))
-            .findFirst()
-        if (phraseToSearch1 != null && phraseToSearch2 != null) {
-            toSpeak = (phraseToSearch1.descrizione + " " + sharedLastPlayer
-                    + " " + phraseToSearch2.descrizione)
-            tTS1 = TextToSpeech(this) { status ->
-                if (status != TextToSpeech.ERROR) {
-                    tTS1!!.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, "prova tts")
-                } else {
-                    Toast.makeText(applicationContext, status, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
     /**
      * check the results of speech.
      * with an allowed margin of error, if there is a correspondence
@@ -1206,7 +1136,7 @@ class Game1Activity : GameActivityAbstractClass(), Game1RecyclerViewAdapterInter
         val rightColumnContentToCompare: String
         if (rightColumnContent == getString(R.string.nessuno)) { rightColumnContentToCompare = "" }
             else { rightColumnContentToCompare = rightColumnContent!! }
-        if (GrammarHelper.thereIsACorrespondenceWithAnAllowedMarginOfError(
+        if (thereIsACorrespondenceWithAnAllowedMarginOfError(
                 eText, leftColumnContentToCompare + " " + middleColumnContentToCompare
                         + " " + rightColumnContentToCompare, preference_AllowedMarginOfError
             )

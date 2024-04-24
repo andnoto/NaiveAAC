@@ -6,8 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
-import java.io.File
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 
 /**
  * <h1>ChoiseOfGameRecyclerViewViewHolder</h1>
@@ -17,7 +16,7 @@ import java.io.File
  * Refer to [codingwithmitch](https://codingwithmitch.com/blog/playing-video-recyclerview-exoplayer-android/)
  * by [Mitch Tabian](https://codingwithmitch.com/)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see RecyclerView.ViewHolder
  */
 class ChoiseOfGameRecyclerViewViewHolder(  // public ProgressBar progressBar;
@@ -55,32 +54,6 @@ class ChoiseOfGameRecyclerViewViewHolder(  // public ProgressBar progressBar;
         info.setText(R.string.info)
         copyright.text = gameArrayList.videoCopyright
         imageView.contentDescription = gameArrayList.image_title
-        addImage(gameArrayList.urlType, gameArrayList.url, imageView)
-    }
-
-    /**
-     * add an image to a view as indicated in the parameters
-     *
-     * @param urlType string representing the type of icon displayed in the view for game choice.
-     * @param url string representing the path of icon displayed in the view for game choice.
-     * @param img imageview where the image will be added
-     * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
-     *
-     * @see GraphicsHelper.addImageUsingPicasso
-     *
-     * @see GraphicsHelper.addFileImageUsingPicasso
-     */
-    fun addImage(urlType: String?, url: String?, img: ImageView?) {
-        if (urlType == "AS") {
-            val assetsUrl = "file:///android_asset/$url"
-            GraphicsHelper.addImageUsingPicasso(assetsUrl, img, 200, 200)
-        } else {
-            if (urlType == "A") {
-                GraphicsHelper.addImageUsingPicasso(url, img, 200, 200)
-            } else {
-                val f = File(url!!)
-                GraphicsHelper.addFileImageUsingPicasso(f, img, 200, 200)
-            }
-        }
+        addImage(gameArrayList.urlType, gameArrayList.url, imageView, 200, 200)
     }
 }

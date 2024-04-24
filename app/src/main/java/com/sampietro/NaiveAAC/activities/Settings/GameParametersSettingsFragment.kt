@@ -1,10 +1,7 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.addFileImageUsingPicasso
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addFileImageUsingPicasso
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import com.sampietro.NaiveAAC.R
@@ -13,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.RadioButton
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import io.realm.Realm
 import java.io.File
 
@@ -22,12 +20,12 @@ import java.io.File
  * **GameParametersSettingsFragment** UI for game parameters settings
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  *
  * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  */
-class GameParametersSettingsFragment : SettingsFragmentAbstractClass() {
+class GameParametersSettingsFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     private lateinit var realm: Realm
 
     //
@@ -35,20 +33,14 @@ class GameParametersSettingsFragment : SettingsFragmentAbstractClass() {
     private var adapter: GameParametersAdapter? = null
 
     /**
-     * prepares the ui also using a listview and makes the callback to the activity
+     * prepares the ui
      *
      * @see androidx.fragment.app.Fragment.onCreateView
-     *
-     * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
-     *
-     * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_game_parameters, container, false)
+    ) {
         // logic of fragment
         realm = Realm.getDefaultInstance()
         // ListView
@@ -68,7 +60,7 @@ class GameParametersSettingsFragment : SettingsFragmentAbstractClass() {
         //
         results = results.sort("gameName")
         //
-        listView = rootView.findViewById<View>(R.id.listview) as ListView
+        listView = view.findViewById<View>(R.id.listview) as ListView
         //
         adapter = GameParametersAdapter(ctext, results, listView)
         //
@@ -77,16 +69,16 @@ class GameParametersSettingsFragment : SettingsFragmentAbstractClass() {
         val bundle = this.arguments
         //
         if (bundle != null) {
-            val gameDescription = rootView.findViewById<View>(R.id.gameDescription) as EditText
-            val radio_active = rootView.findViewById<View>(R.id.radio_active) as RadioButton
-            val radio_not_active = rootView.findViewById<View>(R.id.radio_not_active) as RadioButton
-            val gamejavaclass = rootView.findViewById<View>(R.id.gamejavaclass) as EditText
-            val gameparameter = rootView.findViewById<View>(R.id.gameparameter) as EditText
-            val radioUseVideoAndSound = rootView.findViewById<View>(R.id.radio_yes) as RadioButton
+            val gameDescription = view.findViewById<View>(R.id.gameDescription) as EditText
+            val radio_active = view.findViewById<View>(R.id.radio_active) as RadioButton
+            val radio_not_active = view.findViewById<View>(R.id.radio_not_active) as RadioButton
+            val gamejavaclass = view.findViewById<View>(R.id.gamejavaclass) as EditText
+            val gameparameter = view.findViewById<View>(R.id.gameparameter) as EditText
+            val radioUseVideoAndSound = view.findViewById<View>(R.id.radio_yes) as RadioButton
             val radioDoesNotUseVideoAndSound =
-                rootView.findViewById<View>(R.id.radio_no) as RadioButton
-            val gameinfo = rootView.findViewById<View>(R.id.gameinfo) as EditText
-            val imageviewgameicon = rootView.findViewById<View>(R.id.imageviewgameicon) as ImageView
+                view.findViewById<View>(R.id.radio_no) as RadioButton
+            val gameinfo = view.findViewById<View>(R.id.gameinfo) as EditText
+            val imageviewgameicon = view.findViewById<View>(R.id.imageviewgameicon) as ImageView
             //
             gameDescription.setText(bundle.getString(getString(R.string.gamename)))
             if (bundle.getString(getString(R.string.gameactive)) == "A") {
@@ -102,7 +94,6 @@ class GameParametersSettingsFragment : SettingsFragmentAbstractClass() {
             radioUseVideoAndSound.isChecked = false
             radioDoesNotUseVideoAndSound.isChecked = true // default
             if (bundle.getString(getString(R.string.gameusevideoandsound)) == "Y") {
-//            if (bundle.getString("GameUseVideoAndSound").equals("Y")) {
                 radioUseVideoAndSound.isChecked = true
                 radioDoesNotUseVideoAndSound.isChecked = false
             }
@@ -114,9 +105,5 @@ class GameParametersSettingsFragment : SettingsFragmentAbstractClass() {
             addFileImageUsingPicasso(f, imageviewgameicon, 200, 200)
             //
         }
-        //
-        listener.receiveResultSettings(rootView)
-        //
-        return rootView
     }
 }

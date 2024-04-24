@@ -1,9 +1,10 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass
 import android.widget.ImageButton
 import android.widget.EditText
+import androidx.annotation.LayoutRes
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import com.sampietro.NaiveAAC.activities.history.History
 import java.util.*
@@ -14,12 +15,12 @@ import java.util.*
  * **GameFragment** UI for game2
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameFragmentAbstractClass
  *
  * @see Game2Activity
  */
-abstract class Game2FragmentAbstractClass : GameFragmentAbstractClass() {
+abstract class Game2FragmentAbstractClass(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId)  {
     lateinit var hearingImageButton: ImageButton
     lateinit var sentenceToAdd: EditText
     //

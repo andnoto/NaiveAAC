@@ -54,7 +54,7 @@
         android:id="@+id/printbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="printPhrase"
+        android:onClick="printSentenceOfAStory"
         android:text="@string/inizia"
         app:layout_constraintEnd_toStartOf="@+id/settingsbutton"
         app:layout_constraintTop_toTopOf="parent"

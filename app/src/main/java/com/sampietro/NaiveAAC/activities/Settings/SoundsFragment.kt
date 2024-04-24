@@ -1,14 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Graphics.SoundsAdapter
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import io.realm.Realm
 
 /**
@@ -17,12 +15,12 @@ import io.realm.Realm
  * **SoundsFragment** UI for sounds settings
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see SettingsFragmentAbstractClass
  *
  * @see SettingsMediaActivity
  */
-class SoundsFragment : SettingsFragmentAbstractClass() {
+class SoundsFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     //
     private lateinit var realm: Realm
 
@@ -31,20 +29,18 @@ class SoundsFragment : SettingsFragmentAbstractClass() {
     private var adapter: SoundsAdapter? = null
 
     /**
-     * prepares the ui also using a listview and makes the callback to the activity
+     * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see Sounds
      *
      * @see SoundsAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_sounds, container, false)
+    ) {
         // logic of fragment
         realm = Realm.getDefaultInstance()
         // ListView
@@ -62,14 +58,10 @@ class SoundsFragment : SettingsFragmentAbstractClass() {
         // which will be your View "supplier".
         val results = realm.where(Sounds::class.java).findAll()
         //
-        listView = rootView.findViewById<View>(R.id.listview) as ListView
+        listView = view.findViewById<View>(R.id.listview) as ListView
         //
         adapter = SoundsAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
-        //
-        listener.receiveResultSettings(rootView)
-        //
-        return rootView
     }
 }

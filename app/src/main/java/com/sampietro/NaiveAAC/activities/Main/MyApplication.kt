@@ -6,6 +6,7 @@ import io.realm.RealmConfiguration
 import com.sampietro.NaiveAAC.BuildConfig
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromAssetsToInternalStorage
 import kotlin.Throws
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
@@ -140,67 +141,25 @@ class MyApplication : Application() {
         }
         //
         if (oldVersionCode == 6) {
-            // rename video
-//            Realm realm= Realm.getDefaultInstance();
-//            RealmResults<Videos> results =
-//                    realm.where(Videos.class).equalTo(getString(R.string.descrizione), "pensieri e parole").findAll();
-//            int resultsSize = results.size();
-//            if (resultsSize != 0) {
-//                realm.beginTransaction();
-            // crash
-//                Videos daRinominare=results.get(0);
-//                assert daRinominare != null;
-//                daRinominare.setDescrizione("AUTISMO");
-//                realm.commitTransaction();
-//            }
-            // rename game parameters
-//            RealmResults<GameParameters> resultsgp1 =
-//                    realm.where(GameParameters.class).equalTo("gameName", "pensieri e parole").findAll();
-//            int resultsgp1Size = resultsgp1.size();
-//            if (resultsgp1Size != 0) {
-//                realm.beginTransaction();
-//                GameParameters daRinominaregp1=resultsgp1.get(0);
-//                assert daRinominaregp1 != null;
-//                daRinominaregp1.setGameName("NAVIGATORE");
-//                daRinominaregp1.setGameJavaClass("NAVIGATORE");
-//                realm.commitTransaction();
-//            }
-//            RealmResults<GameParameters> resultsgp2 =
-//                    realm.where(GameParameters.class).equalTo("gameName", "parole in libertà").findAll();
-//            int resultsgp2Size = resultsgp2.size();
-//            if (resultsgp2Size != 0) {
-//                realm.beginTransaction();
-//                GameParameters daRinominaregp2=resultsgp2.get(0);
-//                assert daRinominaregp2 != null;
-//                daRinominaregp2.setGameName("COMUNICATORE");
-//                daRinominaregp2.setGameJavaClass("COMUNICATORE");
-//                realm.commitTransaction();
-//            }
-            //
             oldVersionCode++
         }
         //
         if (oldVersionCode == 7) {
             try {
-                copyFileFromAssetsToInternalStorage(getString(R.string.images), "racconto.png", "racconto.png")
-                copyFileFromAssetsToInternalStorage(getString(R.string.images), "non.png", "non.png")
+                copyFileFromAssetsToInternalStorage(context, getString(R.string.images), "racconto.png", "racconto.png")
+                copyFileFromAssetsToInternalStorage(context, getString(R.string.images), "non.png", "non.png")
                 //
-//                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-images.csv", "images.csv");
-//                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-grammaticalexceptions.csv", "grammaticalexceptions.csv");
                 copyFileFromAssetsToInternalStorage(
+                     context,
                     "csv",
                     "toaddversion8-stories.csv",
                     "stories.csv"
                 )
-                //                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-gameparameters.csv", "gameparameters.csv");
             } catch (e: IOException) {
                 e.printStackTrace()
             }
             val realm = Realm.getDefaultInstance()
-            //            Images.importFromCsvFromInternalStorage(context, realm, "Append");
-//            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Append");
             Stories.importFromCsvFromInternalStorage(context, realm, getString(R.string.append))
-            //            GameParameters.importFromCsvFromInternalStorage(context, realm, "Append");
             //
             oldVersionCode++
         }
@@ -210,47 +169,23 @@ class MyApplication : Application() {
             //
             // delete image
             val realm = Realm.getDefaultInstance()
-            //            RealmResults<Images> results =
-//                    realm.where(Images.class).equalTo("descrizione", "negazione").findAll();
-//            realm.beginTransaction();
-//            results.deleteAllFromRealm();
-//            realm.commitTransaction();
             //
             try {
-//                copyFileFromAssetsToInternalStorage("csv", "toaddversion8-images.csv", "images.csv");
                 copyFileFromAssetsToInternalStorage(
+                     context,
                     "csv",
                     "grammaticalexceptions.csv",
                     "grammaticalexceptions.csv"
                 )
-                //                copyFileFromAssetsToInternalStorage("csv", "stories.csv", "stories.csv");
-//                copyFileFromAssetsToInternalStorage("csv", "gameparameters.csv", "gameparameters.csv");
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-            //            Images.importFromCsvFromInternalStorage(context, realm, "Append");
             GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Replace")
-            //            Stories.importFromCsvFromInternalStorage(context, realm, "Replace");
-//            GameParameters.importFromCsvFromInternalStorage(context, realm, "Replace");
             //
             oldVersionCode++
         }
         //
         if (oldVersionCode == 9) {
-            // delete story
-//            Realm realm= Realm.getDefaultInstance();
-//            RealmResults<Stories> results =
-//                    realm.where(Stories.class).equalTo("story", "il gatto con gli stivali").findAll();
-//            realm.beginTransaction();
-//            results.deleteAllFromRealm();
-//            realm.commitTransaction();
-//            // replace story from csv in assets
-//            try {
-//                copyFileFromAssetsToInternalStorage("csv", "toaddversion10-stories.csv", "stories.csv");
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            Stories.importFromCsvFromInternalStorage(context, realm, "Append");
             //
             oldVersionCode++
         }
@@ -268,73 +203,89 @@ class MyApplication : Application() {
             // replace story from csv in assets
             try {
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.sounds),
                     "cat-meow-14536.mp3",
                     "cat-meow-14536.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.sounds),
                     "fiaker-73119.mp3",
                     "fiaker-73119.mp3"
                 )
-                copyFileFromAssetsToInternalStorage(getString(R.string.sounds), "Hallelujah.mp3", "Hallelujah.mp3")
+                copyFileFromAssetsToInternalStorage(context,
+                    getString(R.string.sounds),
+                    "Hallelujah.mp3",
+                    "Hallelujah.mp3")
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.sounds),
                     "jumento-101690.mp3",
                     "jumento-101690.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.sounds),
                     "lion-roar-6011.mp3",
                     "lion-roar-6011.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.sounds),
                     "river-stream-moderate-flow-2-24370.mp3",
                     "river-stream-moderate-flow-2-24370.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.sounds),
                     "scary-laugh-123862.mp3",
                     "scary-laugh-123862.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.sounds),
                     "Wedding March.mp3",
                     "Wedding March.mp3"
                 )
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.images),
                     "puntointerrogativo.png",
                     "puntointerrogativo.png"
                 )
-                copyFileFromAssetsToInternalStorage(getString(R.string.videos), "cat-4916.mp4", "cat-4916.mp4")
-                copyFileFromAssetsToInternalStorage(getString(R.string.videos), "cat-92641.mp4", "cat-92641.mp4")
-                copyFileFromAssetsToInternalStorage(getString(R.string.videos), "man-131605.mp4", "man-131605.mp4")
+                copyFileFromAssetsToInternalStorage(context,getString(R.string.videos), "cat-4916.mp4", "cat-4916.mp4")
+                copyFileFromAssetsToInternalStorage(context,getString(R.string.videos), "cat-92641.mp4", "cat-92641.mp4")
+                copyFileFromAssetsToInternalStorage(context,getString(R.string.videos), "man-131605.mp4", "man-131605.mp4")
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.videos),
                     "mouse-117573.mp4",
                     "mouse-117573.mp4"
                 )
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.videos),
                     "rabbit-141719.mp4",
                     "rabbit-141719.mp4"
                 )
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.videos),
                     "tags-bird-9267.mp4",
                     "tags-bird-9267.mp4"
                 )
-                copyFileFromAssetsToInternalStorage("csv", "sounds.csv", "sounds.csv")
-                copyFileFromAssetsToInternalStorage("csv", "images.csv", "images.csv")
-                copyFileFromAssetsToInternalStorage("csv", "videos.csv", "videos.csv")
+                copyFileFromAssetsToInternalStorage(context,"csv", "sounds.csv", "sounds.csv")
+                copyFileFromAssetsToInternalStorage(context,"csv", "images.csv", "images.csv")
+                copyFileFromAssetsToInternalStorage(context,"csv", "videos.csv", "videos.csv")
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     "csv",
                     "toaddversion10-stories.csv",
                     "stories.csv"
                 )
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     "csv",
                     "gameparameters.csv",
                     "gameparameters.csv"
@@ -423,19 +374,20 @@ class MyApplication : Application() {
             val realm = Realm.getDefaultInstance()
             try {
                 copyFileFromAssetsToInternalStorage(
+                    context,
                     getString(R.string.images),
                     "pecs.png",
                     "pecs.png"
                 )
-                copyFileFromAssetsToInternalStorage("csv", "toaddversion17-images.csv", "images.csv")
-                copyFileFromAssetsToInternalStorage("csv", "toaddversion17-gameparameters.csv", "gameparameters.csv")
-                copyFileFromAssetsToInternalStorage("csv", "bluetoothdevices.csv", "bluetoothdevices.csv")
+                copyFileFromAssetsToInternalStorage(context,"csv", "toaddversion17-images.csv", "images.csv")
+                copyFileFromAssetsToInternalStorage(context,"csv", "toaddversion17-gameparameters.csv", "gameparameters.csv")
+                copyFileFromAssetsToInternalStorage(context,"csv", "bluetoothdevices.csv", "bluetoothdevices.csv")
             } catch (e: IOException) {
                 e.printStackTrace()
             }
             //
-            Images.importFromCsvFromInternalStorage(context, realm, "Append");
-            GameParameters.importFromCsvFromInternalStorage(context, realm, "Append");
+            Images.importFromCsvFromInternalStorage(context, realm, "Append")
+            GameParameters.importFromCsvFromInternalStorage(context, realm, "Append")
             BluetoothDevices.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             //
             oldVersionCode++
@@ -454,28 +406,5 @@ class MyApplication : Application() {
         // register current VersionCode on sharedpref
         editor.putInt(getString(R.string.preference_versioncode), currentVersionCode)
         editor.apply()
-    }
-    //
-    /**
-     * copy the single file from assets
-     * @param dirName string with the name of the directory of the file to be copied
-     * @param fileName string with the name of the file to be copied
-     * @param destFileName string with the name of the destination file
-     */
-    @Throws(IOException::class)
-    fun copyFileFromAssetsToInternalStorage(
-        dirName: String,
-        fileName: String,
-        destFileName: String?
-    ) {
-        val sourceStream = assets.open(dirName + getString(R.string.character_slash) + fileName)
-        val destStream = openFileOutput(destFileName, MODE_PRIVATE)
-        val buffer = ByteArray(100)
-        var bytesRead = 0
-        while (sourceStream.read(buffer).also { bytesRead = it } != -1) {
-            destStream.write(buffer, 0, bytesRead)
-        }
-        destStream.close()
-        sourceStream.close()
     }
 }

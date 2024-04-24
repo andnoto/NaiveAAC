@@ -13,6 +13,7 @@ import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sampietro.NaiveAAC.activities.Account.AccountActivity
 import com.sampietro.NaiveAAC.activities.Info.RequestConsentToTheProcessingOfPersonalDataActivity
@@ -24,7 +25,7 @@ import java.util.*
  *
  * **AskIfAdultActivity** ask if the user is an adult
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  */
 class AskIfAdultActivity : AppCompatActivity() {
     //
@@ -39,7 +40,6 @@ class AskIfAdultActivity : AppCompatActivity() {
      * configurations of account start screen.
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see AskIfAdultFragment
      *
      * @see android.app.Activity.onCreate
      */
@@ -58,7 +58,7 @@ class AskIfAdultActivity : AppCompatActivity() {
             fragmentManager!!.beginTransaction()
                 .add(
                     R.id.game_container,
-                    AskIfAdultFragment(),
+                    Fragment(R.layout.activity_checkifadult),
                     "AskIfAdultFragment"
                 )
                 .commit()
@@ -72,7 +72,7 @@ class AskIfAdultActivity : AppCompatActivity() {
      * @param view view of tapped text
      */
     fun onClickIAmAChild(view: View?) {
-        val frag = AskAParentFragment()
+        val frag = AskAParentFragment(R.layout.activity_askaparent)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.game_container, frag, "AskAParentFragment")
         ft.addToBackStack(null)
@@ -85,7 +85,7 @@ class AskIfAdultActivity : AppCompatActivity() {
      * @param view view of tapped text
      */
     fun onClickIAmAParent(view: View?) {
-        val frag = AskIfAdultVerifyDateOfBirthFragment()
+        val frag = Fragment(R.layout.activity_checkifadult_verifydateofbirth)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.game_container, frag, "VerifyDateOfBirthFragment")
         ft.addToBackStack(null)
@@ -98,7 +98,7 @@ class AskIfAdultActivity : AppCompatActivity() {
      * @param view view of tapped text
      */
     fun onClickAskAParent(view: View?) {
-        val frag = AskIfAdultFragment()
+        val frag = Fragment(R.layout.activity_checkifadult)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.game_container, frag, "AskIfAdultFragment")
         ft.addToBackStack(null)
@@ -200,6 +200,5 @@ class AskIfAdultActivity : AppCompatActivity() {
     }
 
     companion object {
-//        const val EXTRA_MESSAGE = "helloworldandroidMessage"
     }
 }

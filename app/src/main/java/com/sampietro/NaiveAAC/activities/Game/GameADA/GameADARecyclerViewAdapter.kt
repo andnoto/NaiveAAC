@@ -9,12 +9,10 @@ import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.getString
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchNegationAdverb
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
 import io.realm.Realm
-import java.io.File
 import java.util.*
 
 /**
@@ -25,7 +23,7 @@ import java.util.*
  * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
  * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see RecyclerView.Adapter<RecyclerView.ViewHolder>
     */
 class GameADARecyclerViewAdapter(
@@ -39,7 +37,6 @@ class GameADARecyclerViewAdapter(
      * used for TTS
      */
     var tTS1: TextToSpeech? = null
-//    var toSpeak: String? = null
 
     /**
      * GameRecyclerViewAdapter constructor.
@@ -92,19 +89,21 @@ class GameADARecyclerViewAdapter(
         //
         addImage(
             galleryList[i].urlType,
-            galleryList[i].url, viewHolder.img
+            galleryList[i].url, viewHolder.img,
+            200,200
         )
         // search for negation adverbs
         viewHolder.img2.visibility = View.INVISIBLE
-        val negationAdverbImageToSearchFor = GrammarHelper.searchNegationAdverb(
+        val negationAdverbImageToSearchFor = searchNegationAdverb(
             context,
             galleryList[i].image_title!!.lowercase(Locale.getDefault()), realm
         )
         if (negationAdverbImageToSearchFor != context.getString(R.string.non_trovato)) {
             // INTERNAL MEMORY IMAGE SEARCH
-            val uriToSearch = ImageSearchHelper.searchUri(context, realm, negationAdverbImageToSearchFor)
+            val uriToSearch = searchUri(context, realm, negationAdverbImageToSearchFor)
             viewHolder.img2.scaleType = ImageView.ScaleType.CENTER_CROP
-            addImage("S", uriToSearch, viewHolder.img2)
+            addImage("S", uriToSearch, viewHolder.img2,
+                200,200)
             viewHolder.img2.visibility = View.VISIBLE
         }
         //
@@ -114,25 +113,6 @@ class GameADARecyclerViewAdapter(
                 i,
                 galleryList
             )
-        }
-    }
-
-    /**
-     * add an image to a view as indicated in the parameters
-     *
-     * @param urlType string representing the type of icon displayed in the left view.
-     * @param url string representing the path of icon displayed in the left view.
-     * @param img imageview where the image will be added
-     * @see GraphicsHelper.addImageUsingPicasso
-     *
-     * @see GraphicsHelper.addFileImageUsingPicasso
-     */
-    fun addImage(urlType: String?, url: String?, img: ImageView?) {
-        if (urlType == "A") {
-            GraphicsHelper.addImageUsingPicasso(url, img, 200, 200)
-        } else {
-            val f = File(url!!)
-            GraphicsHelper.addFileImageUsingPicasso(f, img, 200, 200)
         }
     }
 

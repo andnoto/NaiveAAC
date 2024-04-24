@@ -1,18 +1,9 @@
-package com.sampietro.NaiveAAC.activities.Game.Utils
+package com.sampietro.NaiveAAC.activities.BaseAndAbstractClass
 
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import android.widget.ImageButton
-import android.widget.TextView
-import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
-import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
-import android.content.SharedPreferences
 import android.view.View
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
-import io.realm.Realm
 import java.util.*
-import kotlin.properties.Delegates
 
 /**
  * <h1>GameActivityAbstractClass</h1>
@@ -29,7 +20,7 @@ import kotlin.properties.Delegates
  * and [github.com](https://github.com/andnoto/MyApplicationLibrary)
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
  *
  * @see com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity
@@ -40,44 +31,8 @@ import kotlin.properties.Delegates
  *
  * @see OnFragmentEventListenerGame
  */
-abstract class GameActivityAbstractClass : AppCompatActivity(), RecognizerCallback,
-    OnFragmentEventListenerGame {
-    //
-    @JvmField
-    var hearingImageButton: ImageButton? = null
-
-    //
-//    @JvmField
-    lateinit var realm: Realm
-
-    //
-    var message = "messaggio non formato"
-    var textView: TextView? = null
-
-    //
-    // var fragmentManager: FragmentManager? = null
-
-    //
-    @JvmField
-    var rootViewImageFragment: View? = null
-    @JvmField
-    var rootViewPrizeFragment: View? = null
-
-    //
-    @JvmField
-    var toBeRecordedInHistory: ToBeRecordedInHistory<VoiceToBeRecordedInHistory>? = null
-//    @JvmField
-    lateinit var context: Context
-//    @JvmField
-    lateinit var sharedPref: SharedPreferences
-//    @JvmField
-    var sharedLastSession by Delegates.notNull<Int>()
-//    @JvmField
-    var sharedLastPhraseNumber by Delegates.notNull<Int>()
-    @JvmField
-    var currentTime: Date? = null
-    @JvmField
-    var voiceToBeRecordedInHistory: VoiceToBeRecordedInHistory? = null
+abstract class GameActivityAbstractClassWithRecognizerCallback : GameActivityAbstractClass(), RecognizerCallback
+    {
     //
     /**
      * Called when the user taps the start speech button.
@@ -168,12 +123,6 @@ abstract class GameActivityAbstractClass : AppCompatActivity(), RecognizerCallba
         val errore = errorCode
     }
 
-    /**
-     * on callback from GameFragment to this Activity
-     *
-     * @param v view root fragment view
-     */
-    override fun receiveResultGameFragment(v: View?) {
-        rootViewImageFragment = v
-    } //
+    override fun onResult(editText: String?) {}
+
 }

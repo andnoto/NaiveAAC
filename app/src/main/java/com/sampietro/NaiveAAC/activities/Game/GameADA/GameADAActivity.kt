@@ -3,31 +3,19 @@ package com.sampietro.NaiveAAC.activities.Game.GameADA
 import android.app.Activity
 import android.app.Dialog
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment.onFragmentEventListenerPrize
 import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment.onFragmentEventListenerYoutubePrize
 import io.realm.RealmResults
 import com.sampietro.NaiveAAC.activities.Stories.Stories
-import android.graphics.Bitmap
-import com.squareup.picasso.Picasso.LoadedFrom
-import android.graphics.drawable.Drawable
 import android.speech.tts.TextToSpeech
 import android.os.Bundle
 import com.sampietro.NaiveAAC.R
 import android.content.Intent
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
-import androidx.print.PrintHelper
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import android.widget.ImageButton
 import android.widget.EditText
-import android.os.Handler
-import android.os.Looper
 import android.text.InputType
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -35,24 +23,24 @@ import android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
 import android.widget.Toast
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
 import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment
 import com.sampietro.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromFileUsingPicasso
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromUrlUsingPicasso
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.splitString
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.thereIsACorrespondenceWithAnAllowedMarginOfError
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printPhrase
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import com.sampietro.NaiveAAC.activities.history.History
-import com.squareup.picasso.Target
 import io.realm.Realm
-import java.io.File
-import java.lang.Exception
 import java.util.*
 
 /**
@@ -62,12 +50,14 @@ import java.util.*
  * phrases of a story
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameActivityAbstractClass
  */
-class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterInterface,
+class GameADAActivity : GameActivityAbstractClassWithRecognizerCallback(), GameADARecyclerViewAdapterInterface,
     onFragmentEventListenerPrize, GameADAOnFragmentEventListener,
     onFragmentEventListenerYoutubePrize {
+    // USED FOR FULL SCREEN
+    lateinit var mywindow: Window
     //
     var sharedStory: String? = null
     var resultsStories: RealmResults<Stories>? = null
@@ -87,45 +77,10 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
 
     //
     lateinit var galleryList: ArrayList<GameADAArrayList>
-    //
-    /**
-     * used for printing
-     */
-    var bitmap1: Bitmap? = null
-    var bitmap2: Bitmap? = null
-    var mergedImages: Bitmap? = null
-
-    /**
-     * used for printing
-     */
-    var target1: Target = object : Target {
-        override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
-            bitmap1 = bitmap
-        }
-
-        override fun onBitmapFailed(e: Exception, errorDrawable: Drawable) {}
-        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-    }
-
-    /**
-     * used for printing
-     */
-    var target2: Target = object : Target {
-        override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
-            bitmap2 = bitmap
-        }
-
-        override fun onBitmapFailed(e: Exception, errorDrawable: Drawable) {}
-        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-    }
-
     /**
      * used for TTS
      */
     var tTS1: TextToSpeech? = null
-
-    //
-//    private var mContentView: ViewGroup? = null
 
     //
     private var gameUseVideoAndSound: String? = null
@@ -139,7 +94,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      * @see SpeechRecognizerManagement.prepareSpeechRecognizer
      *
      * @see android.app.Activity.onCreate
-     * @see .fragmentTransactionStart
+     * @see fragmentTransactionStart
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -152,17 +107,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         /*
         USED FOR FULL SCREEN
          */
-//        val mContentView:ViewGroup = findViewById(R.id.activity_game_ada_id)
-        setToFullScreen()
-//        val viewTreeObserver = mContentView.getViewTreeObserver()
-//        if (viewTreeObserver.isAlive) {
-//            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-//                override fun onGlobalLayout() {
-//                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-//                }
-//            })
-//        }
-//        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         /*
 
          */
@@ -254,8 +200,6 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                 // REALM SESSION REGISTRATION
                 val voicesToBeRecordedInHistory: MutableList<VoiceToBeRecordedInHistory?> =
                     toBeRecordedInHistory.getListVoicesToBeRecordedInHistory()
-//                val voicesToBeRecordedInHistory: List<VoiceToBeRecordedInHistory?> =
-//                    toBeRecordedInHistory.getVoicesToBeRecordedInHistory()
                 //
                 val debugUrlNumber =
                     toBeRecordedInHistory.getNumberOfVoicesToBeRecordedInHistory()
@@ -277,7 +221,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         USED FOR FULL SCREEN
          */
         super.onResume()
-        setToFullScreen()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         /*
         USED FOR FULL SCREEN
          */
@@ -312,21 +257,6 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
     }
 
     /**
-     * This method is responsible to transfer MainActivity into fullscreen mode.
-     */
-    private fun setToFullScreen() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        insetsController.hide(WindowInsetsCompat.Type.statusBars())
-        insetsController.hide(WindowInsetsCompat.Type.navigationBars())
-//        findViewById<View>(R.id.activity_game_ada_id).systemUiVisibility =
-//            View.SYSTEM_UI_FLAG_LOW_PROFILE or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-    }
-    //
-    /**
      * Called when the user taps the home button.
      *
      *
@@ -334,7 +264,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      * @see ChoiseOfGameActivity
      */
     fun returnHome(v: View?) {
-        /*
+    /*
                 navigate to home screen (ChoiseOfGameActivity)
     */
         val intent = Intent(this, ChoiseOfGameActivity::class.java)
@@ -350,237 +280,9 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      *
      * @see .printPhraseCreateMergedImages
      */
-    fun printPhrase(v: View?) {
-        printPhraseCacheImages()
-        val TIME_OUT = 2500
-        Handler(Looper.getMainLooper()).postDelayed({
-            printPhraseCreateMergedImages()
-            //
-            val photoPrinter = PrintHelper(context)
-            photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
-            photoPrinter.printBitmap(context.getString(R.string.stampa_immagine1), mergedImages!!)
-        }, TIME_OUT.toLong())
-//        Handler().postDelayed({
-//            printPhraseCreateMergedImages()
-            //
-//            val photoPrinter = PrintHelper(context)
-//            photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
-//            photoPrinter.printBitmap(context.getString(R.string.stampa_immagine1), mergedImages!!)
-//        }, TIME_OUT.toLong())
-        //
+    fun printSentenceOfAStory(v: View?) {
+        printPhrase(context, realm, galleryList)
     }
-    //
-    /**
-     * Cache images for printing
-     *
-     *
-     * @see .getTargetBitmapFromUrlUsingPicasso
-     *
-     * @see .getTargetBitmapFromFileUsingPicasso
-     *
-     * @see GrammarHelper.searchNegationAdverb
-     */
-    fun printPhraseCacheImages() {
-        val count = galleryList.size
-        if (count != 0) {
-            mergedImages = null
-            var irrh = 0
-            while (irrh < count) {
-                if (galleryList[irrh].urlType == "A") {
-                    getTargetBitmapFromUrlUsingPicasso(galleryList[irrh].url, target1)
-                } else {
-                    val f = File(galleryList[irrh].url!!)
-                    getTargetBitmapFromFileUsingPicasso(f, target1)
-                }
-                // search for negation adverbs
-                val negationAdverbImageToSearchFor = GrammarHelper.searchNegationAdverb(
-                    context,
-                    galleryList[irrh].image_title!!.lowercase(Locale.getDefault()), realm
-                )
-                if (negationAdverbImageToSearchFor != getString(R.string.non_trovato)) {
-                    // INTERNAL MEMORY IMAGE SEARCH
-                    val uriToSearch =
-                        ImageSearchHelper.searchUri(context, realm, negationAdverbImageToSearchFor)
-                    val f = File(uriToSearch)
-                    getTargetBitmapFromFileUsingPicasso(f, target2)
-                }
-                irrh++
-            }
-        }
-        //
-    }
-
-    /**
-     * it merge images for printing
-     *
-     *
-     * @see .getTargetBitmapFromUrlUsingPicasso
-     *
-     * @see .getTargetBitmapFromFileUsingPicasso
-     *
-     * @see GrammarHelper.searchNegationAdverb
-     * @see ImageSearchHelper.searchUri
-     * @see .createSingleImageSuperimposedFromMultipleImages
-     *
-     * @see .createSingleImageFromImageAndTitlePlacingThemVertically
-     *
-     * @see .createSingleImageFromMultipleImages
-     */
-    fun printPhraseCreateMergedImages() {
-        val count = galleryList.size
-        if (count != 0) {
-            mergedImages = null
-            //
-            var imagesContainedInARow = 0
-            var nrows = 1
-            var ncolumns = 1
-            //
-            var irrh = 0
-            while (irrh < count) {
-                if (galleryList[irrh].urlType == "A") {
-                    getTargetBitmapFromUrlUsingPicasso(galleryList[irrh].url, target1)
-                } else {
-                    val f = File(galleryList[irrh].url!!)
-                    getTargetBitmapFromFileUsingPicasso(f, target1)
-                }
-                // search for negation adverbs
-                val negationAdverbImageToSearchFor = GrammarHelper.searchNegationAdverb(
-                    context,
-                    galleryList[irrh].image_title!!.lowercase(Locale.getDefault()), realm
-                )
-                if (negationAdverbImageToSearchFor != getString(R.string.non_trovato)) {
-                    // INTERNAL MEMORY IMAGE SEARCH
-                    val uriToSearch =
-                        ImageSearchHelper.searchUri(context, realm, negationAdverbImageToSearchFor)
-                    val f = File(uriToSearch)
-                    getTargetBitmapFromFileUsingPicasso(f, target2)
-                    // addImage("S", uriToSearch, viewHolder.img2);
-                    bitmap1 = createSingleImageSuperimposedFromMultipleImages(bitmap1, bitmap2)
-                }
-                // adding title
-                bitmap1 = createSingleImageFromImageAndTitlePlacingThemVertically(
-                    bitmap1,
-                    galleryList[irrh].image_title!!
-                )
-                //
-                if (irrh == 0) {
-                    if (count > 24) {
-                        imagesContainedInARow = 7
-                        mergedImages = Bitmap.createBitmap(
-                            bitmap1!!.width * 7,
-                            bitmap1!!.height * 5,
-                            bitmap1!!.config
-                        )
-                    } else if (count > 15) {
-                        imagesContainedInARow = 6
-                        mergedImages = Bitmap.createBitmap(
-                            bitmap1!!.width * 6,
-                            bitmap1!!.height * 4,
-                            bitmap1!!.config
-                        )
-                    } else if (count > 12) {
-                        imagesContainedInARow = 5
-                        mergedImages = Bitmap.createBitmap(
-                            bitmap1!!.width * 5,
-                            bitmap1!!.height * 3,
-                            bitmap1!!.config
-                        )
-                    } else {
-                        imagesContainedInARow = 4
-                        mergedImages = Bitmap.createBitmap(
-                            bitmap1!!.width * 4,
-                            bitmap1!!.height * 3,
-                            bitmap1!!.config
-                        )
-                    }
-                } else {
-                    ncolumns++
-                    if (ncolumns > imagesContainedInARow) {
-                        nrows++
-                        ncolumns = 1
-                    }
-                }
-                val firstImage = mergedImages
-                mergedImages =
-                    createSingleImageFromMultipleImages(firstImage, bitmap1, nrows, ncolumns)
-                irrh++
-            }
-        }
-        //
-    }
-    //
-    /**
-     * used for printing create single bitmap image from multiple bitmap images
-     *
-     * @param firstImage bitmap of first image
-     * @param secondImage bitmap of second image
-     * @param nrows int number of rows on the page
-     * @param ncolumns int number of columns on the page
-     * @return bitmap single image created from multiple images
-     */
-    private fun createSingleImageFromMultipleImages(
-        firstImage: Bitmap?,
-        secondImage: Bitmap?,
-        nrows: Int,
-        ncolumns: Int
-    ): Bitmap {
-        val result = Bitmap.createBitmap(firstImage!!.width, firstImage.height, firstImage.config)
-        val canvas = Canvas(result)
-        canvas.drawBitmap(firstImage, 0f, 0f, null)
-        canvas.drawBitmap(
-            secondImage!!,
-            (secondImage.width * (ncolumns - 1)).toFloat(),
-            (secondImage.height * (nrows - 1)).toFloat(),
-            null
-        )
-        return result
-    }
-    //
-    /**
-     * used for printing create single bitmap image from image and title
-     * Refer to [stackoverflow](https://stackoverflow.com/questions/2655402/android-canvas-drawtext)
-     * answer of [gaz](https://stackoverflow.com/users/119396/gaz)
-     *
-     * @param firstImage bitmap of image
-     * @param title string image title
-     * @return bitmap single image created from image and title
-     */
-    private fun createSingleImageFromImageAndTitlePlacingThemVertically(
-        firstImage: Bitmap?,
-        title: String
-    ): Bitmap {
-        val result =
-            Bitmap.createBitmap(firstImage!!.width, firstImage.height + 30, firstImage.config)
-        val canvas = Canvas(result)
-        canvas.drawBitmap(firstImage, 0f, 0f, null)
-        //
-        val paint = Paint()
-        paint.color = Color.BLACK
-        paint.style = Paint.Style.FILL
-        paint.textSize = 20f
-        canvas.drawText(title, 0f, (firstImage.height + 10).toFloat(), paint)
-        //
-        return result
-    }
-    //
-    /**
-     * used for printing create single bitmap image superimposed from multiple bitmap images
-     *
-     * @param firstImage bitmap of first image
-     * @param secondImage bitmap of second image
-     * @return bitmap single image created from multiple images
-     */
-    private fun createSingleImageSuperimposedFromMultipleImages(
-        firstImage: Bitmap?,
-        secondImage: Bitmap?
-    ): Bitmap {
-        val result = Bitmap.createBitmap(firstImage!!.width, firstImage.height, firstImage.config)
-        val canvas = Canvas(result)
-        canvas.drawBitmap(firstImage, 0f, 0f, null)
-        canvas.drawBitmap(secondImage!!, 0f, 0f, null)
-        return result
-    }
-
     /**
      * Called when the user taps the settings button.
      * replace with hear fragment
@@ -590,7 +292,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      * @see ChoiseOfGameActivity
      */
     fun returnSettings(v: View?) {
-        /*
+    /*
                 navigate to settings screen
     */
         val intent = Intent(this, VerifyActivity::class.java)
@@ -607,7 +309,6 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      *
      * @param v view of tapped button
      */
-//    @RequiresApi(Build.VERSION_CODES.N)
     fun startWriteGameADA(v: View?) {
         val correspondingWord = searchAnswer()
         val correspondingWordIsNumeric = isNumeric(correspondingWord)
@@ -639,30 +340,27 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(d.findViewById<View>(R.id.responseOrRequest),SHOW_IMPLICIT)
         imm.hideSoftInputFromWindow(d.findViewById<View>(R.id.responseOrRequest).getWindowToken(),HIDE_IMPLICIT_ONLY)
-//        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         //
         submitResponseOrRequestButton.setOnClickListener { //
             var eText = responseOrRequest.text.toString()
             eText = eText.lowercase(Locale.getDefault())
             //
-//            val responseOrRequest = d.findViewById<View>(R.id.responseOrRequest) as EditText
-//            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(responseOrRequest.windowToken, 0)
             //
             d.cancel()
             //
-            setToFullScreen()
+            mywindow = getWindow()
+            setToFullScreen(mywindow)
             //
             checkAnswer(eText)
         }
         cancelTheAnswerOrRequestButton.setOnClickListener { //
-//            val responseOrRequest = d.findViewById<View>(R.id.responseOrRequest) as EditText
-//            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(responseOrRequest.windowToken, 0)
             //
             d.cancel()
             //
-            setToFullScreen()
+            mywindow = getWindow()
+            setToFullScreen(mywindow)
         }
         //
         d.show()
@@ -702,7 +400,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             if (result != null) {
                 val resultHistoryCorrespondingWord = result.word
                 val arrResultHistoryCorrespondingWords =
-                    GrammarHelper.splitString(resultHistoryCorrespondingWord!!)
+                    splitString(resultHistoryCorrespondingWord!!)
                 val arrCorrespondingWordsLength = arrResultHistoryCorrespondingWords.size
                 correspondingWord = if (arrCorrespondingWordsLength == 2) {
                     arrResultHistoryCorrespondingWords[1]
@@ -924,8 +622,6 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             //
             val toBeRecordedInHistory = gettoBeRecordedInHistory()
             // REALM SESSION REGISTRATION
-//            val voicesToBeRecordedInHistory: List<VoiceToBeRecordedInHistory?> =
-//                toBeRecordedInHistory.getVoicesToBeRecordedInHistory()
             val voicesToBeRecordedInHistory: MutableList<VoiceToBeRecordedInHistory?> =
                 toBeRecordedInHistory.getListVoicesToBeRecordedInHistory()
             //
@@ -945,8 +641,10 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      * @see GameADAFragment
      */
     fun fragmentTransactionStart() {
-        setToFullScreen()
-        val frag = GameADAFragment()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
+        //
+        val frag = GameADAFragment(R.layout.activity_game_ada_recycler_view)
         val bundle = Bundle()
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         bundle.putInt(getString(R.string.word_to_display_index), wordToDisplayIndex)
@@ -985,19 +683,16 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      * @see .getTargetBitmapFromFileUsingPicasso
      *
      * @see GameADAViewPagerActivity
-    </GameADAArrayList> */
+    */
     override fun onItemClick(view: View?, i: Int, galleryList: ArrayList<GameADAArrayList>) {
         if (preference_PrintPermissions == "Y") {
-            if (galleryList[i].urlType == "A") {
-                getTargetBitmapFromUrlUsingPicasso(galleryList[i].url, target1)
-            } else {
-                val f = File(galleryList[i].url!!)
-                getTargetBitmapFromFileUsingPicasso(f, target1)
-            }
-            //
-            val photoPrinter = PrintHelper(context)
-            photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
-            photoPrinter.printBitmap(context.getString(R.string.stampa_immagine1), bitmap1!!)
+            printImage(
+                context,
+                galleryList[i].urlType,
+                galleryList[i].url,
+                200,
+                200
+            )
         } else {
             val intent: Intent?
             intent = Intent(
@@ -1021,7 +716,6 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      *
      * @see .checkAnswer
      */
-//    @RequiresApi(api = Build.VERSION_CODES.N)
     override fun onResult(editText: String?) {
         checkAnswer(editText!!)
     }
@@ -1112,21 +806,20 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      * @param editText string result from SpeechRecognizerManagement
      * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
      *
-     * @see GrammarHelper.splitString
+     * @see splitString
      *
-     * @see GrammarHelper.searchVerb
+     * @see searchVerb
      *
      * @see .extemporaneousInteractionWithVoice
      *
      * @see .continueGameAda
      */
-//    @RequiresApi(api = Build.VERSION_CODES.N)
     fun checkAnswer(editText: String) {
         // convert uppercase letter to lowercase
         var eText = editText
         eText = eText.lowercase(Locale.getDefault())
         // break down EditText
-        val arrWords = GrammarHelper.splitString(eText)
+        val arrWords = splitString(eText)
         val arrWordsLength = arrWords.size
         //
         context = this
@@ -1155,7 +848,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
             if (result != null) {
                 val resultHistoryCorrespondingWord = result.word
                 val arrResultHistoryCorrespondingWords =
-                    GrammarHelper.splitString(resultHistoryCorrespondingWord!!)
+                    splitString(resultHistoryCorrespondingWord!!)
                 val arrCorrespondingWordsLength = arrResultHistoryCorrespondingWords.size
                 correspondingWord = if (arrCorrespondingWordsLength == 2) {
                     arrResultHistoryCorrespondingWords[1]
@@ -1169,18 +862,18 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
         //
         var i = 0
         while (i < arrWordsLength) {
-            if (GrammarHelper.thereIsACorrespondenceWithAnAllowedMarginOfError(
+            if (thereIsACorrespondenceWithAnAllowedMarginOfError(
                     arrWords[i],
                     correspondingWord,
                     preference_AllowedMarginOfError
                 )
-            ) //            if (arrWords[i].equals(correspondingWord))
+            )
             {
                 theWordMatches = true
                 break
             }
             // check if the word in eText is a conjugation of the corresponding word
-            val verbToSearch = GrammarHelper.searchVerb(context, arrWords[i], realm)
+            val verbToSearch = searchVerb(context, arrWords[i], realm)
             if (verbToSearch == correspondingWord) {
                 theWordMatches = true
                 break
@@ -1268,7 +961,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      * @see PrizeFragment
      */
     fun uploadAVideoAsAReward(uriPremiumVideo: String?) {
-        setToFullScreen()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         // upload the award video
         val frag = PrizeFragment()
         val bundle = Bundle()
@@ -1295,7 +989,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      * @see YoutubePrizeFragment
      */
     fun uploadAYoutubeVideoAsAReward(uriPremiumVideo: String?) {
-        setToFullScreen()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         // upload a Youtube video as a reward
         val yfrag = YoutubePrizeFragment()
         val ybundle = Bundle()
@@ -1322,11 +1017,11 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      * @param eText string result from SpeechRecognizerManagement
      * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
      *
-     * @see GrammarHelper.splitString
+     * @see splitString
      */
     fun extemporaneousInteractionWithVoice(eText: String) {
         // break down EditText
-        val arrWords = GrammarHelper.splitString(eText)
+        val arrWords = splitString(eText)
         val arrWordsLength = arrWords.size
         // search for the presence in eText of the words forward (to the next sentence),
         // backwards (to the previous sentence), (go to) topic
@@ -1398,8 +1093,8 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
      *
      * @see ToBeRecordedInHistory
      *
-     * @see ImageSearchHelper.imageSearch
-    </VoiceToBeRecordedInHistory> */
+     * @see imageSearch
+    */
     fun gettoBeRecordedInHistory(): ToBeRecordedInHistoryImpl {
         // initializes the list of items to be registered on History
         val toBeRecordedInHistory: ToBeRecordedInHistoryImpl
@@ -1475,7 +1170,7 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
                     val phraseToDisplayUriType = phraseToDisplay!!.uriType
                     if (phraseToDisplayUriType != null) {
                         if (phraseToDisplayUriType == " " || phraseToDisplayUriType == "") {
-                            image = ImageSearchHelper.imageSearch(context, realm, phraseToDisplayWord)
+                            image = imageSearch(context, realm, phraseToDisplayWord)
                             if (image != null) {
                                 voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
                                     sharedLastSession,
@@ -1541,7 +1236,6 @@ class GameADAActivity : GameActivityAbstractClass(), GameADARecyclerViewAdapterI
          * @return boolean true if the string is numeric
          */
         fun isNumeric(str: String): Boolean {
-//            return str.matches("-?\\d+(\\.\\d+)?") //match a number with optional '-' and decimal.
             return Regex("-?\\d+(\\.\\d+)?").matches(str)
         }
     }

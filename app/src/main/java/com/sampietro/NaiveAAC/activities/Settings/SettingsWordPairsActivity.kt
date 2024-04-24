@@ -1,19 +1,25 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
-import com.sampietro.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter.WordPairsAdapterInterface
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass.onFragmentEventListenerSettings
 import android.os.Bundle
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import android.content.Intent
+import android.net.Uri
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
@@ -22,6 +28,8 @@ import com.sampietro.NaiveAAC.activities.WordPairs.VoiceToBeRecordedInWordPairsV
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
+import java.net.URISyntaxException
+import java.util.Objects
 
 /**
  * <h1>SettingsWordPairsActivity</h1>
@@ -30,14 +38,14 @@ import io.realm.Sort
  * Called when the user taps the word pairs button from the contents settings menu
  *
  * @version     5.0, 01/04/2024
- * @see AccountActivityAbstractClass
+ * @see AccountBaseActivity
  *
- * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  *
- * @see com.sampietro.simsimtest.activities.WordPairs.WordPairsAdapter
+ * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
  */
-class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapterInterface,
-    onFragmentEventListenerSettings {
+class SettingsWordPairsActivity : ActivityAbstractClass(), WordPairsAdapterInterface
+    {
     /*
     used for viewmodel
      */
@@ -84,7 +92,7 @@ class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapt
             fragmentManager = supportFragmentManager
             fragmentManager!!.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
-                .add(R.id.settings_container, WordPairsFragment(), "WordPairsFragment")
+                .add(R.id.settings_container, Fragment(R.layout.activity_settings_wordpairs), "WordPairsFragment")
                 .commit()
         }
         // The MainActivity class provides an instance of Realm wherever needed in the application.
@@ -92,17 +100,6 @@ class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapt
         // The Realm object must be closed in the onDestroy method.
         realm = Realm.getDefaultInstance()
     }
-
-    /**
-     * receives calls from fragment listeners.
-     *
-     * @param v view of calling fragment
-     * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
-     */
-    override fun receiveResultSettings(v: View?) {
-        rootViewFragment = v
-    }
-
     /**
      * Called when the user taps the search video button from the word pairs settings.
      *
@@ -142,7 +139,7 @@ class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapt
     fun wordsToMatchShowList(view: View?) {
         // view the word pairs list fragment initializing WordPairsListFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = WordPairsListFragment()
+        val frag = WordPairsListFragment(R.layout.activity_settings_wordpairs_list)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -312,7 +309,7 @@ class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapt
      * after deleting a word pairs the activity is notified to view the word pairs settings
      *
      *
-     * @see com.sampietro.simsimtest.activities.WordPairs.WordPairsAdapter
+     * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
      *
      * @see WordPairsFragment
      */
@@ -320,10 +317,83 @@ class SettingsWordPairsActivity : AccountActivityAbstractClass(), WordPairsAdapt
         // view the word pairs settings fragment initializing WordPairsFragment (FragmentTransaction
         // switch between Fragments).
         val ft: FragmentTransaction
-        val wordPairsFragment = WordPairsFragment()
+        val wordPairsFragment = WordPairsFragment(R.layout.activity_settings_wordpairs)
         ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, wordPairsFragment)
         ft.addToBackStack(null)
         ft.commit()
-    } //
+    }
+    // ActivityResultLauncher
+        @JvmField
+        var videoSearchWordPairsActivityResultLauncher: ActivityResultLauncher<Intent>? = null
+        @JvmField
+        var uri: Uri? = null
+        @JvmField
+        var stringUri: String? = null
+        @JvmField
+        var filePath: String? = null
+        var fileName: String? = null
+        /**
+         * setting callbacks to search for images and videos via ACTION_OPEN_DOCUMENT which is
+         * the intent to choose a file via the system's file browser
+         *
+         *
+         * Refer to [stackoverflow](https://stackoverflow.com/questions/62671106/onactivityresult-method-is-deprecated-what-is-the-alternative)
+         * answer of [Muntashir Akon](https://stackoverflow.com/users/4147849/muntashir-akon)
+         * and
+         * Refer to [stackoverflow](https://stackoverflow.com/questions/56651444/deprecated-getbitmap-with-api-29-any-alternative-codes)
+         * answer of [Ally](https://stackoverflow.com/users/6258197/ally)
+         *
+         * @see getFilePath
+         *
+         * @see showImage
+         */
+        fun setActivityResultLauncher() {
+            // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+            videoSearchWordPairsActivityResultLauncher = registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult(),
+                object : ActivityResultCallback<ActivityResult?> {
+                    override fun onActivityResult(result: ActivityResult?) {
+                        if (result!!.resultCode == RESULT_OK) {
+                            // There are no request codes
+                            val resultData = result.data
+                            // doSomeOperations();
+                            uri = null
+                            stringUri = null
+                            //
+                            if (resultData != null) {
+                                uri = Objects.requireNonNull(resultData).data
+                                //
+                                //
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                val takeFlags =
+                                    resultData.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                context.contentResolver.takePersistableUriPermission(
+                                    uri!!,
+                                    takeFlags
+                                )
+//                            }
+                                //
+                                stringUri = uri.toString()
+                                //
+                                val awardType = findViewById<EditText>(R.id.awardtype)
+                                val uriPremiumVideo = findViewById<TextView>(R.id.uripremiumvideo)
+                                try {
+                                    filePath = DataStorageHelper.getFilePath(context, uri)
+                                    assert(filePath != null)
+                                    val cut = filePath!!.lastIndexOf('/')
+                                    if (cut != -1) {
+                                        fileName = filePath!!.substring(cut + 1)
+                                    }
+                                    //
+                                } catch (e: URISyntaxException) {
+                                    e.printStackTrace()
+                                }
+                                awardType.setText(getString(R.string.character_v))
+                                uriPremiumVideo.text = fileName
+                            }
+                        }
+                    }
+                })
+        }
 }

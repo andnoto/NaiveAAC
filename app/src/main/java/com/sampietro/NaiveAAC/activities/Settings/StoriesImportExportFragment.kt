@@ -1,16 +1,14 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Stories.StoriesImportExportAdapter
 import android.widget.EditText
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
 import androidx.lifecycle.ViewModelProvider
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
 import io.realm.RealmResults
 import com.sampietro.NaiveAAC.activities.Stories.Stories
@@ -25,12 +23,12 @@ import java.util.*
  *
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/communicate)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see SettingsFragmentAbstractClass
  *
  * @see SettingsStoriesImportExportActivity
  */
-class StoriesImportExportFragment : SettingsFragmentAbstractClass() {
+class StoriesImportExportFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     private lateinit var realm: Realm
 
     //
@@ -39,27 +37,22 @@ class StoriesImportExportFragment : SettingsFragmentAbstractClass() {
 
     //
     var storyToSearch: EditText? = null
-//    var phraseNumberToSearch: EditText? = null
-
     //
     private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
 
     /**
-     * prepares the ui also using a listview and makes the callback to the activity
+     * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see Stories
      *
      * @see StoriesImportExportAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView =
-            inflater.inflate(R.layout.activity_settings_stories_import_export, container, false)
+    ) {
         // logic of fragment
         // ListView
         // 1) we get a reference to the data structure through the RealmResults class which constitutes
@@ -75,7 +68,7 @@ class StoriesImportExportFragment : SettingsFragmentAbstractClass() {
         // 3) we retrieve the ListView prepared in the layout and assign it the reference to the adapter
         // which will be your View "supplier".
         //
-        storyToSearch = rootView.findViewById<View>(R.id.storytosearch) as EditText
+        storyToSearch = view.findViewById<View>(R.id.storytosearch) as EditText
         /*
         Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
         constructor.
@@ -107,15 +100,11 @@ class StoriesImportExportFragment : SettingsFragmentAbstractClass() {
                 results = results.sort(mStrings1, mStrings2)
                 //
                 listView =
-                    rootView.findViewById<View>(R.id.import_export_stories_listview) as ListView
+                    view.findViewById<View>(R.id.import_export_stories_listview) as ListView
                 //
                 adapter = StoriesImportExportAdapter(ctext, results, listView)
                 //
                 listView!!.adapter = adapter
             }
-        //
-        listener.receiveResultSettings(rootView)
-        //
-        return rootView
     }
 }

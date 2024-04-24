@@ -1,12 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass
 import android.widget.ImageButton
 import android.widget.EditText
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
@@ -17,37 +17,36 @@ import com.sampietro.NaiveAAC.R
  * **GameFragment** UI for game2
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameFragmentAbstractClass
  * @see Game2FragmentAbstractClass
  *
  * @see Game2Activity
  */
-class Game2Fragment : Game2FragmentAbstractClass() {
+class Game2Fragment(@LayoutRes contentLayoutId : Int = 0) : Game2FragmentAbstractClass(contentLayoutId)  {
     /**
-     * prepares the ui and makes the callback to the activity
+     * prepares the ui
      *
      *
      * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
      * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see prepareData
      *
      * @see Game2RecyclerViewAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_game_2, container, false)
+    ) {
+//        rootView = inflater.inflate(R.layout.activity_game_2, container, false)
         //
-        hearingImageButton = rootView.findViewById<View>(R.id.btn_start) as ImageButton
+        hearingImageButton = view.findViewById<View>(R.id.btn_start) as ImageButton
         hearingImageButton.setImageResource(R.drawable.ic_baseline_hearing_36_red) //set the image programmatically
         //
-        sentenceToAdd = rootView.findViewById<View>(R.id.sentencetoadd) as EditText
+        sentenceToAdd = view.findViewById<View>(R.id.sentencetoadd) as EditText
         //
         val bundle = this.arguments
         sharedLastPhraseNumber = 0
@@ -56,7 +55,7 @@ class Game2Fragment : Game2FragmentAbstractClass() {
             sentenceToAdd.setText(bundle.getString(getString(R.string.etext)))
         }
         //
-        val recyclerView1 = rootView.findViewById<View>(R.id.imagegallery1) as RecyclerView
+        val recyclerView1 = view.findViewById<View>(R.id.imagegallery1) as RecyclerView
         recyclerView1.setHasFixedSize(true)
         val layoutManager1: RecyclerView.LayoutManager =
             LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false)
@@ -65,7 +64,7 @@ class Game2Fragment : Game2FragmentAbstractClass() {
         val adapter1 = Game2RecyclerViewAdapter(ctext, createLists1)
         recyclerView1.adapter = adapter1
         //
-        val recyclerView2 = rootView.findViewById<View>(R.id.imagegallery2) as RecyclerView
+        val recyclerView2 = view.findViewById<View>(R.id.imagegallery2) as RecyclerView
         recyclerView2.setHasFixedSize(true)
         val layoutManager2: RecyclerView.LayoutManager =
             LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false)
@@ -74,7 +73,7 @@ class Game2Fragment : Game2FragmentAbstractClass() {
         val adapter2 = Game2RecyclerViewAdapter(ctext, createLists2)
         recyclerView2.adapter = adapter2
         //
-        listener.receiveResultGameFragment(rootView)
-        return rootView
+//        listener.receiveResultGameFragment(rootView)
+//        return rootView
     }
 }

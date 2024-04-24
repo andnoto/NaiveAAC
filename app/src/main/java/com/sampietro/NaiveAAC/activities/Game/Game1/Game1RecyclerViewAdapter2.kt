@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.io.File
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 import java.util.ArrayList
 
 /**
@@ -80,38 +79,20 @@ class Game1RecyclerViewAdapter2(
         {
             addImage(
                 galleryList[i].urlType,
-                galleryList[i].url, viewHolder.img2
+                galleryList[i].url, viewHolder.img2,
+                200,200
             )
             viewHolder.img2.setVisibility(View.VISIBLE)
         }
         //
         addImage(
             galleryList[i].urlType,
-            galleryList[i].url, viewHolder.img
+            galleryList[i].url, viewHolder.img,
+            200,200
         )
         //
         viewHolder.img.setOnClickListener { view -> listener!!.onItemClick(view, i) }
     }
-
-    /**
-     * add an image to center view as indicated in the parameters
-     *
-     * @param urlType string representing the type of icon displayed in the center view.
-     * @param url string representing the path of icon displayed in the center view.
-     * @param img imageview where the image will be added
-     * @see GraphicsHelper.addImageUsingPicasso
-     *
-     * @see GraphicsHelper.addFileImageUsingPicasso
-     */
-    fun addImage(urlType: String?, url: String?, img: ImageView?) {
-        if (urlType == "A") {
-            GraphicsHelper.addImageUsingPicasso(url, img, 200, 200)
-        } else {
-            val f = File(url!!)
-            GraphicsHelper.addFileImageUsingPicasso(f, img, 200, 200)
-        }
-    }
-
     /**
      * returns number of item within the adapter's data set.
      *

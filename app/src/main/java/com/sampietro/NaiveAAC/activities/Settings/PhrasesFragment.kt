@@ -1,13 +1,11 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
 import android.widget.TextView
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import io.realm.Realm
 
 /**
@@ -16,12 +14,12 @@ import io.realm.Realm
  * **PhrasesFragment** UI for phrases settings
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see SettingsFragmentAbstractClass
  *
  * @see SettingsActivity
  */
-class PhrasesFragment : SettingsFragmentAbstractClass() {
+class PhrasesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     // Realm
     lateinit var realm: Realm
 
@@ -32,23 +30,21 @@ class PhrasesFragment : SettingsFragmentAbstractClass() {
     lateinit var textView4: TextView
 
     /**
-     * prepares the ui and makes the callback to the activity
+     * prepares the ui
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see Phrases
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_phrases, container, false)
+    ) {
         // logic of fragment
-        textView1 = rootView.findViewById(R.id.edittextwelcomephrasefirstpart)
-        textView2 = rootView.findViewById(R.id.edittextwelcomephrasesecondpart)
-        textView3 = rootView.findViewById(R.id.edittextreminderphrase)
-        textView4 = rootView.findViewById(R.id.edittextreminderphraseplural)
+        textView1 = view.findViewById(R.id.edittextwelcomephrasefirstpart)
+        textView2 = view.findViewById(R.id.edittextwelcomephrasesecondpart)
+        textView3 = view.findViewById(R.id.edittextreminderphrase)
+        textView4 = view.findViewById(R.id.edittextreminderphraseplural)
         // REALM
         realm = Realm.getDefaultInstance()
         //
@@ -76,9 +72,5 @@ class PhrasesFragment : SettingsFragmentAbstractClass() {
         if (phraseToSearch4 != null) {
             textView4.setText(phraseToSearch4.descrizione)
         }
-        //
-        listener.receiveResultSettings(rootView)
-        //
-        return rootView
     }
 }

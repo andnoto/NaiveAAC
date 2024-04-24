@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.sampietro.NaiveAAC.R
 
 /**
@@ -12,10 +13,10 @@ import com.sampietro.NaiveAAC.R
  * **GameFragmentHear** displays the ui called on beginning of speech
  *
  *
- * @version     4.0, 09/09/2023
- * @see GameFragmentAbstractClass
+ * @version     5.0, 01/04/2024
  */
-class GameFragmentHear : GameFragmentAbstractClass() {
+class GameFragmentHear : Fragment() {
+    lateinit var rootView: View
     /**
      * prepares the ui
      *

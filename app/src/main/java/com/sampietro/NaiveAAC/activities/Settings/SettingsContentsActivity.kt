@@ -1,8 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter.ListsOfNamesAdapterInterface
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass.onFragmentEventListenerSettings
 import android.os.Bundle
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
@@ -10,8 +8,10 @@ import android.widget.EditText
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import android.content.Intent
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesQuickRegistrationActivity
 import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNames
 import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNamesViewModel
@@ -25,16 +25,16 @@ import io.realm.Sort
  * **SettingsContentsActivity** app settings.
  *
  * @version     5.0, 01/04/2024
- * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @see SettingsFragmentAbstractClass
  *
- * @see com.sampietro.simsimtest.activities.WordPairs.WordPairsAdapter
+ * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
  *
- * @see com.sampietro.simsimtest.activities.Grammar.ListsOfNamesAdapter
+ * @see com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter
  *
- * @see com.sampietro.simsimtest.activities.Stories.StoriesAdapter
+ * @see com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter
  */
-class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAdapterInterface,
-    onFragmentEventListenerSettings {
+class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInterface
+    {
     /*
     used for viewmodel
      */
@@ -48,11 +48,9 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
      * configurations of settings start screen.
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see .setActivityResultLauncher
+     * @see setActivityResultLauncher
      *
      * @see ActionbarFragment
-     *
-     * @see ContentsFragment
      *
      * @see androidx.appcompat.app.AppCompatActivity.onCreate
      */
@@ -74,13 +72,13 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
         viewModel.setItem(voiceToBeRecordedInListsOfNames!!)
         clearFieldsOfViewmodelDataClass()
         //
-        setActivityResultLauncher()
+//        setActivityResultLauncher()
         //
         if (savedInstanceState == null) {
             fragmentManager = supportFragmentManager
             fragmentManager.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
-                .add(R.id.settings_container, ContentsFragment(), "ContentsFragment")
+                .add(R.id.settings_container, Fragment(R.layout.activity_settings_contents_menu), "ContentsFragment")
                 .commit()
         }
         // The MainActivity class provides an instance of Realm wherever needed in the application.
@@ -89,30 +87,18 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
         realm = Realm.getDefaultInstance()
     }
     /**
-     * receives calls from fragment listeners.
-     *
-     * @param v view of calling fragment
-     * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
-     */
-    override fun receiveResultSettings(v: View?) {
-//        rootViewFragment = v
-    }
-    //
-    /**
      * Called when the user taps the lists of names button from the contents settings menu.
      *
      * the activity is notified to view the lists of names settings.
      *
      *
      * @param view view of tapped button
-     * @see ContentsFragment
-     *
      * @see ListsOfNamesFragment
      */
     fun submitListsOfNames(view: View?) {
         // view the lists of names settings fragment initializing ListsOfNamesFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = ListsOfNamesFragment()
+        val frag = ListsOfNamesFragment(R.layout.activity_settings_lists_of_names)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -141,8 +127,6 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
                 val textWord2 = findViewById<View>(R.id.nametoadd) as EditText
                 val textWord3 = findViewById<View>(R.id.elementactive) as EditText
                 val textWord4 = findViewById<View>(R.id.ismenuitem) as EditText
-//                val textWord4 = findViewById<View>(R.id.uritypenametoadd) as EditText
-//                val textWord5 = findViewById<View>(R.id.urinametoadd) as EditText
                 // cancello il vecchio item
                 val resultsListsOfNames = realm.where(ListsOfNames::class.java)
                     .equalTo(
@@ -168,15 +152,13 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
                 listsOfNames.word = textWord2.text.toString()
                 listsOfNames.elementActive = textWord3.text.toString()
                 listsOfNames.isMenuItem = textWord4.text.toString()
-//                listsOfNames.uriType = voiceToBeRecordedInListsOfNames.uriType
-//                listsOfNames.uri = voiceToBeRecordedInListsOfNames.uri
                 listsOfNames.fromAssets = voiceToBeRecordedInListsOfNames.fromAssets
                 realm.commitTransaction()
                 //
                 clearFieldsOfViewmodelDataClass()
                 // view the lists of names settings initializing ListsOfNamesFragment (FragmentTransaction
                 // switch between Fragments).
-                val frag = ListsOfNamesFragment()
+                val frag = ListsOfNamesFragment(R.layout.activity_settings_lists_of_names)
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
                 ft.addToBackStack(null)
@@ -194,8 +176,6 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
         voiceToBeRecordedInListsOfNames!!.word = ""
         voiceToBeRecordedInListsOfNames!!.elementActive = ""
         voiceToBeRecordedInListsOfNames!!.isMenuItem = ""
-//        voiceToBeRecordedInListsOfNames!!.uriType = ""
-//        voiceToBeRecordedInListsOfNames!!.uri = ""
         voiceToBeRecordedInListsOfNames!!.fromAssets = ""
     }
     override fun reloadListOfNamesFragmentForDeletion(position: Int) {
@@ -205,7 +185,6 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
         val mStrings1 = arrayOf(getString(R.string.keyword), "word")
         val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
         results = results.sort(mStrings1, mStrings2)
-//        val results = realm.where(ListsOfNames::class.java).findAll()
         realm.beginTransaction()
         val daCancellare = results[position]
         daCancellare!!.deleteFromRealm()
@@ -246,14 +225,11 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
                 val mStrings1 = arrayOf(getString(R.string.keyword), "word")
                 val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
-//                val results = realm.where(ListsOfNames::class.java).findAll()
                 val daModificare = results[position]!!
                 voiceToBeRecordedInListsOfNames.keyword = daModificare.keyword
                 voiceToBeRecordedInListsOfNames.word = daModificare.word
                 voiceToBeRecordedInListsOfNames.elementActive = daModificare.elementActive
                 voiceToBeRecordedInListsOfNames.isMenuItem = daModificare.isMenuItem
-//                voiceToBeRecordedInListsOfNames.uriType = daModificare.uriType
-//                voiceToBeRecordedInListsOfNames.uri = daModificare.uri
                 voiceToBeRecordedInListsOfNames.fromAssets = daModificare.fromAssets
                 //
                 reloadListOfNamesFragment()
@@ -265,14 +241,14 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
      * after deleting a name the activity is notified to view the updated lists of names settings
      *
      *
-     * @see com.sampietro.simsimtest.activities.Grammar.ListsOfNamesAdapter
+     * @see com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter
      *
      * @see ListsOfNamesFragment
      */
     fun reloadListOfNamesFragment() {
         // view the lists of names settings initializing ListsOfNamesFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = ListsOfNamesFragment()
+        val frag = ListsOfNamesFragment(R.layout.activity_settings_lists_of_names)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -284,8 +260,6 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
      *
      *
      * @param view view of tapped button
-     * @see ContentsFragment
-     *
      * @see SettingsWordPairsActivity
      */
     fun submitWordPairs(view: View?) {
@@ -303,8 +277,6 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
      *
      *
      * @param view view of tapped button
-     * @see ContentsFragment
-     *
      * @see SettingsStoriesActivity
      */
     fun submitStories(view: View?) {
@@ -320,8 +292,6 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
      *
      *
      * @param view view of tapped button
-     * @see ContentsFragment
-     *
      * @see SettingsStoriesQuickRegistrationActivity
      */
     fun submitStoriesQuickRegistration(view: View?) {
@@ -337,8 +307,6 @@ class SettingsContentsActivity : AccountActivityAbstractClass(), ListsOfNamesAda
      *
      *
      * @param view view of tapped button
-     * @see ContentsFragment
-     *
      * @see SettingsStoriesImportExportActivity
      */
     fun submitStoriesImportExport(view: View?) {

@@ -11,6 +11,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Account.AccountActivity
@@ -20,11 +21,11 @@ import com.sampietro.NaiveAAC.activities.Account.AccountActivity
  *
  * **RequestConsentFirebaseActivity** requires consent Firebase Analytics and Crashlytics
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  */
 class RequestConsentFirebaseActivity : AppCompatActivity() {
     //
-    var rootViewFragment: View? = null
+//    var rootViewFragment: View? = null
     lateinit var context: Context
     lateinit var sharedPref: SharedPreferences
 
@@ -53,7 +54,7 @@ class RequestConsentFirebaseActivity : AppCompatActivity() {
             fragmentManager.beginTransaction()
                 .add(
                     R.id.game_container,
-                    RequestConsentFirebaseFragment(),
+                    Fragment(R.layout.activity_requestconsentfirebase),
                     "RequestConsentFirebaseFragment"
                 )
                 .commit()
@@ -78,7 +79,6 @@ class RequestConsentFirebaseActivity : AppCompatActivity() {
             // I move on to the activity of choice
             // Time to launch the another activity
             val TIME_OUT = 4000
-//            Handler().postDelayed({
             Handler(Looper.getMainLooper()).postDelayed({
                 val i = Intent(
                     context,
@@ -106,7 +106,6 @@ class RequestConsentFirebaseActivity : AppCompatActivity() {
             // I move on to the activity of choice
             // Time to launch the another activity
             val TIME_OUT = 4000
-//            Handler().postDelayed({
             Handler(Looper.getMainLooper()).postDelayed({
                 val i = Intent(
                     context,

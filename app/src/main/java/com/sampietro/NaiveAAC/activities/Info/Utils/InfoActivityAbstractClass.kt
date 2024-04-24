@@ -3,7 +3,6 @@ package com.sampietro.NaiveAAC.activities.Info.Utils
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.content.SharedPreferences
-import android.view.View
 import androidx.fragment.app.FragmentManager
 
 /**
@@ -20,7 +19,7 @@ import androidx.fragment.app.FragmentManager
  * and [github.com](https://github.com/andnoto/MyApplicationLibrary)
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
  *
  * @see com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity
@@ -29,24 +28,11 @@ import androidx.fragment.app.FragmentManager
  *
  * @see com.sampietro.NaiveAAC.activities.Game.Utils.OnFragmentEventListenerGame
  */
-abstract class InfoActivityAbstractClass : AppCompatActivity(), OnFragmentEventListenerInfo {
+abstract class InfoActivityAbstractClass : AppCompatActivity() {
 //    @JvmField
     lateinit var fragmentManager: FragmentManager
 
-    //
-    var rootViewImageFragment: View? = null
-
-    //
 //    @JvmField
     lateinit var context: Context
     lateinit var sharedPref: SharedPreferences
-    //
-    /**
-     * on callback from InfoFragment to this Activity
-     *
-     * @param v view root fragment view
-     */
-    override fun receiveResultInfoFragment(v: View?) {
-        rootViewImageFragment = v
-    } //
 }

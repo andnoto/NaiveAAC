@@ -1,14 +1,13 @@
 package com.sampietro.NaiveAAC.activities.Game.Game1
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.history.History
 import java.util.*
@@ -29,7 +28,7 @@ import java.util.*
  *
  * @see Game1Activity
  */
-class Game1SecondLevelFragment : GameFragmentAbstractClass() {
+class Game1SecondLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
     lateinit var hearingImageButton: ImageButton
 
     //
@@ -41,14 +40,8 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
     var middleColumnMenuPhraseNumber = 0
     var rightColumnMenuPhraseNumber = 0
     var leftColumnContent: String? = null
-    var leftColumnContentUrlType: String? = null
-    var leftColumnContentUrl: String? = null
     var middleColumnContent: String? = null
-    var middleColumnContentUrlType: String? = null
-    var middleColumnContentUrl: String? = null
     var rightColumnContent: String? = null
-    var rightColumnContentUrlType: String? = null
-    var rightColumnContentUrl: String? = null
     var theSentenceIsCompleted: Boolean = false
 
     //
@@ -58,13 +51,13 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
 
     //
     /**
-     * prepares the ui and makes the callback to the activity
+     * prepares the ui
      *
      *
      * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
      * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see Game1ArrayList
      *
@@ -76,17 +69,16 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
      *
      * @see Game1RecyclerViewAdapter3
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_game_1, container, false)
+    ) {
+//        rootView = inflater.inflate(R.layout.activity_game_1, container, false)
         //
-        hearingImageButton = rootView.findViewById<View>(R.id.btn_start) as ImageButton
+        hearingImageButton = view.findViewById<View>(R.id.btn_start) as ImageButton
         //
-        listenAgainButton = rootView.findViewById<View>(R.id.listenagainbutton) as ImageButton
-        continueGameButton = rootView.findViewById<View>(R.id.continuegamebutton) as ImageButton
+        listenAgainButton = view.findViewById<View>(R.id.listenagainbutton) as ImageButton
+        continueGameButton = view.findViewById<View>(R.id.continuegamebutton) as ImageButton
         hearingImageButton.setImageResource(R.drawable.ic_baseline_hearing_36_red)
         //
         val bundle = this.arguments
@@ -99,26 +91,13 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
             rightColumnMenuPhraseNumber =
                 bundle.getInt(getString(R.string.right_column_menu_phrase_number))
             leftColumnContent = bundle.getString(getString(R.string.left_column_content))
-            leftColumnContentUrlType =
-                bundle.getString(getString(R.string.left_column_content_url_type))
-            leftColumnContentUrl = bundle.getString(getString(R.string.left_column_content_url))
             middleColumnContent = bundle.getString(getString(R.string.middle_column_content))
-            middleColumnContentUrlType =
-                bundle.getString(getString(R.string.middle_column_content_url_type))
-            middleColumnContentUrl = bundle.getString(getString(R.string.middle_column_content_url))
             rightColumnContent = bundle.getString(getString(R.string.right_column_content))
-            rightColumnContentUrlType =
-                bundle.getString(getString(R.string.right_column_content_url_type))
-            rightColumnContentUrl = bundle.getString(getString(R.string.right_column_content_url))
             //
             theSentenceIsCompleted = bundle.getBoolean("THE SENTENCE IS COMPLETED")
         }
         //
         if (theSentenceIsCompleted) {
-//        if (leftColumnContent != getString(R.string.nessuno)
-//            && middleColumnContent != getString(R.string.nessuno)
-//            && rightColumnContent != getString(R.string.nessuno)
-//        ) {
             hearingImageButton.visibility = View.VISIBLE
             listenAgainButton.visibility = View.VISIBLE
             continueGameButton.visibility = View.VISIBLE
@@ -128,7 +107,7 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
             continueGameButton.visibility = View.INVISIBLE
         }
         //
-        val recyclerView1 = rootView.findViewById<View>(R.id.imagegallery1) as RecyclerView
+        val recyclerView1 = view.findViewById<View>(R.id.imagegallery1) as RecyclerView
         recyclerView1.setHasFixedSize(true)
         val layoutManager1: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView1.layoutManager = layoutManager1
@@ -136,7 +115,7 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
         val adapter1 = Game1RecyclerViewAdapter1(ctext, createLists1)
         recyclerView1.adapter = adapter1
         //
-        val recyclerView2 = rootView.findViewById<View>(R.id.imagegallery2) as RecyclerView
+        val recyclerView2 = view.findViewById<View>(R.id.imagegallery2) as RecyclerView
         recyclerView2.setHasFixedSize(true)
         val layoutManager2: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView2.layoutManager = layoutManager2
@@ -144,7 +123,7 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
         val adapter2 = Game1RecyclerViewAdapter2(ctext, createLists2)
         recyclerView2.adapter = adapter2
         //
-        val recyclerView3 = rootView.findViewById<View>(R.id.imagegallery3) as RecyclerView
+        val recyclerView3 = view.findViewById<View>(R.id.imagegallery3) as RecyclerView
         recyclerView3.setHasFixedSize(true)
         val layoutManager3: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView3.layoutManager = layoutManager3
@@ -152,8 +131,8 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
         val adapter3 = Game1RecyclerViewAdapter3(ctext, createLists3)
         recyclerView3.adapter = adapter3
         //
-        listener.receiveResultGameFragment(rootView)
-        return rootView
+//        listener.receiveResultGameFragment(rootView)
+//        return rootView
     }
 
     /**
@@ -165,24 +144,10 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
      * @see History
     </GameFragmentChoiseOfGameArrayList> */
     private fun prepareData(
-//        columnContent: String?,
-//        columnContentUrlType: String?,
-//        columnContentUrl: String?,
         columnMenuPhraseNumber: Int
     ): ArrayList<Game1ArrayList> {
         var column1debugUrlNumber = 0
         //
-//        if (columnContent != getString(R.string.nessuno) && columnContent != " ") {
-//           column1debugUrlNumber = 1
-//            if (preference_TitleWritingType == getString(R.string.uppercase)) column1debugWord[0] =
-//                columnContent!!.uppercase(
-//                    Locale.getDefault()
-//                ) else column1debugWord[0] = columnContent!!.lowercase(Locale.getDefault())
-            //
-//            column1debugUrlType[0] = columnContentUrlType
-//            column1debugUrl[0] = columnContentUrl
-//        } else {
-            //
             if (columnMenuPhraseNumber != 0) {
                 val results = realm.where(
                     History::class.java
@@ -214,7 +179,6 @@ class Game1SecondLevelFragment : GameFragmentAbstractClass() {
                     }
                 }
             }
-//        }
         //
         val theimage = ArrayList<Game1ArrayList>()
         for (i in 0 until column1debugUrlNumber) {

@@ -3,8 +3,7 @@ package com.sampietro.NaiveAAC.activities.Account
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
-import com.sampietro.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass.onFragmentEventListenerSettings
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
 import android.os.Bundle
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Settings.AccountFragment
@@ -19,23 +18,40 @@ import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import android.widget.EditText
 import android.content.Intent
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
-import kotlin.Throws
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageButton
+import android.widget.ImageView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.snackbar.Snackbar
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
+//import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyAssets
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromAssetsToInternalStorage
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.showImage
+//import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper
 import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
+import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
+import java.lang.Exception
+import java.net.URISyntaxException
+import java.util.Objects
 
 /**
  * <h1>AccountActivity</h1>
@@ -51,15 +67,11 @@ import java.io.OutputStream
  * @version     5.0, 01/04/2024
  * @see AccountActivityAbstractClass
  *
- * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  */
-class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerSettings {
+class AccountActivity : AccountActivityAbstractClass() {
     //
     var fragmentManager: FragmentManager? = null
-
-    //
-//    private val FOLDER_SIMSIM = "simsim"
-
     //
     var textPersonName: String? = null
     var textPassword: String? = null
@@ -94,7 +106,7 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
                 .add(AccountActionbarFragment(), "AccountActionbarFragment")
                 .add(
                     R.id.settings_container,
-                    AccountFragment(),
+                    AccountFragment(R.layout.activity_settings_account),
                     getString(R.string.account_fragment)
                 )
                 .commit()
@@ -227,18 +239,8 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
      * @see WordPairs
      */
     fun saveAccount(view: View?) {
-//        if (isStoragePermissionGranted) {
-            //
             // naiveaac dir registration and csv copy from assets to dir naiveaac
             prepareTheSimsimDirectory()
-            //
-            // try {
-            //     copyManualFromAssetsToInternalStorage();
-            // } catch (IOException e) {
-            //     e.printStackTrace();
-            // }
-            //
-//            realm = Realm.getDefaultInstance()
             //
             val daCancellare = realm.where(
                 History::class.java
@@ -259,8 +261,6 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
             Stories.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             WordPairs.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             //
-//        }
-        //
         // record default preferences
         sharedPref = getSharedPreferences(
             getString(R.string.preference_file_key), MODE_PRIVATE
@@ -279,12 +279,8 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
         editor.apply()
         // register the user in the shared preferences
         // and move on to the welcome activity
-        val editText = rootViewFragment!!.findViewById<View>(R.id.editTextTextAccount) as EditText
+        val editText = findViewById<View>(R.id.editTextTextAccount) as EditText
         textPersonName = editText.text.toString()
-        //
-//        val editTextPassword =
-//            rootViewFragment!!.findViewById<View>(R.id.editTextPasswordAccount) as EditText
-//        textPassword = editTextPassword.text.toString()
         // default
         if (textPersonName!!.length <= 0) textPersonName = "utente"
         if (filePath == getString(R.string.non_trovato) || filePath == "da download") {
@@ -341,129 +337,153 @@ class AccountActivity : AccountActivityAbstractClass(), onFragmentEventListenerS
     /**
      * copy the csv files with initial settings and content such as images, videos and others from assets.
      *
-     * @see .copyFileCsvFromAssetsToInternalStorage
+     * @see copyFileFromAssetsToInternalStorage
      *
-     * @see .copyAssets
+     * @see copyAssets
      */
     fun prepareTheSimsimDirectory() {
         try {
-            copyFileCsvFromAssetsToInternalStorage("bluetoothdevices.csv")
-            copyFileCsvFromAssetsToInternalStorage("gameparameters.csv")
-            copyFileCsvFromAssetsToInternalStorage("grammaticalexceptions.csv")
-            copyFileCsvFromAssetsToInternalStorage("images.csv")
-            copyFileCsvFromAssetsToInternalStorage("listsofnames.csv")
-            copyFileCsvFromAssetsToInternalStorage("phrases.csv")
-            copyFileCsvFromAssetsToInternalStorage("pictogramsalltomodify.csv")
-            copyFileCsvFromAssetsToInternalStorage("sounds.csv")
-            copyFileCsvFromAssetsToInternalStorage("stories.csv")
-            copyFileCsvFromAssetsToInternalStorage("videos.csv")
-            copyFileCsvFromAssetsToInternalStorage("wordpairs.csv")
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"bluetoothdevices.csv","bluetoothdevices.csv" )
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"gameparameters.csv","gameparameters.csv")
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"grammaticalexceptions.csv","grammaticalexceptions.csv")
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"images.csv","images.csv")
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"listsofnames.csv","listsofnames.csv")
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"phrases.csv","phrases.csv")
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"pictogramsalltomodify.csv","pictogramsalltomodify.csv")
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"sounds.csv","sounds.csv")
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"stories.csv","stories.csv")
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"videos.csv","videos.csv")
+            copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"wordpairs.csv","wordpairs.csv")
         } catch (e: IOException) {
             e.printStackTrace()
         }
         //
-        copyAssets("images")
-        copyAssets("sounds")
-        copyAssets("videos")
-        copyAssets("pdf")
+        copyAssets(context,"images")
+        copyAssets(context,"sounds")
+        copyAssets(context,"videos")
+        copyAssets(context,"pdf")
         //
     }
+    // ActivityResultLauncher
+    var imageSearchAccountActivityResultLauncher: ActivityResultLauncher<Intent>? = null
+    //
+    @JvmField
+    var uri: Uri? = null
+    //
+    @JvmField
+    var filePath: String? = null
+    lateinit var byteArray: ByteArray
     //
     /**
-     * copy the single csv file with initial settings and content from assets
+     * setting callbacks to search for images and videos via ACTION_OPEN_DOCUMENT which is
+     * the intent to choose a file via the system's file browser
      *
-     * @param fileName string with the name of the file to be copied
+     *
+     * Refer to [stackoverflow](https://stackoverflow.com/questions/62671106/onactivityresult-method-is-deprecated-what-is-the-alternative)
+     * answer of [Muntashir Akon](https://stackoverflow.com/users/4147849/muntashir-akon)
+     * and
+     * Refer to [stackoverflow](https://stackoverflow.com/questions/56651444/deprecated-getbitmap-with-api-29-any-alternative-codes)
+     * answer of [Ally](https://stackoverflow.com/users/6258197/ally)
+     *
+     * @see .getFilePath
+     *
+     * @see .showImage
      */
-    @Throws(IOException::class)
-    fun copyFileCsvFromAssetsToInternalStorage(fileName: String) {
-        val sourceStream =
-            assets.open(getString(R.string.csv) + getString(R.string.character_slash) + fileName)
-        val destStream = openFileOutput(fileName, MODE_PRIVATE)
-        val buffer = ByteArray(100)
-        var bytesRead: Int
-        while (sourceStream.read(buffer).also { bytesRead = it } != -1) {
-            destStream.write(buffer, 0, bytesRead)
-        }
-        destStream.close()
-        sourceStream.close()
-    }
-    /**
-     * on callback from SettingsFragment to this Activity
-     *
-     * @param v view root fragment view
-     */
-    override fun receiveResultSettings(v: View?) {
-        rootViewFragment = v
-    }
-    //
-    /**
-     * copy assets images and videos to storage.
-     *
-     *
-     * Refer to [stackoverflow](https://stackoverflow.com/questions/4447477/how-to-copy-files-from-assets-folder-to-sdcard)
-     * answer of [Rohith Nandakumar](https://stackoverflow.com/users/481239/rohith-nandakumar)
-     *
-     * @param path string assets folder to copy
-     * @see .copyFile
-     */
-    private fun copyAssets(path: String) {
-        val assetManager = assets
-        var files: Array<String>? = null
-        try {
-            files = assetManager.list(path)
-        } catch (e: IOException) {
-            // Log.e("tag", "Failed to get asset file list.", e);
-        }
-        if (files != null) {
-            for (filename in files) {
-                var `in`: InputStream? = null
-                var out: OutputStream? = null
-                try {
-                    `in` = assetManager.open("$path/$filename")
-                    //
-                    out = context.openFileOutput(filename, MODE_PRIVATE)
-                    copyFile(`in`, out)
-                } catch (e: IOException) {
-                    // Log.e("tag", "Failed to copy asset file: " + filename, e);
-                } finally {
-                    if (`in` != null) {
-                        try {
-                            `in`.close()
-                        } catch (e: IOException) {
-                            // NOOP
-                        }
-                    }
-                    if (out != null) {
-                        try {
-                            out.close()
-                        } catch (e: IOException) {
-                            // NOOP
+    fun setActivityResultLauncher() {
+        imageSearchAccountActivityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            object : ActivityResultCallback<ActivityResult?> {
+                //                @RequiresApi(Build.VERSION_CODES.P)
+                override fun onActivityResult(result: ActivityResult?) {
+                    if (result!!.resultCode == RESULT_OK) {
+                        // There are no request codes
+                        val resultData = result.data
+                        // doSomeOperations();
+                        uri = null
+                        filePath = getString(R.string.non_trovato)
+                        //
+                        if (resultData != null) {
+                            uri = Objects.requireNonNull(resultData).data
+                            //
+                            try {
+                                filePath = getFilePath(context, uri)
+                            } catch (e: URISyntaxException) {
+                                e.printStackTrace()
+                            }
+                            //
+                            if (filePath != getString(R.string.non_trovato))
+                            {
+                                if (filePath == "da download") {
+                                    val ctw = ContextThemeWrapper(context, R.style.CustomSnackbarTheme)
+                                    val snackbar = Snackbar.make(
+                                        ctw,
+                                        findViewById(R.id.imageviewaccounticon),
+                                        "al momento l'app non è in grado di accedere ad immagini nella cartella download",
+                                        10000
+                                    )
+                                    snackbar.setTextMaxLines(5)
+                                    snackbar.setTextColor(Color.BLACK)
+                                    snackbar.show()
+                                }
+                                else {
+                                    val takeFlags =
+                                        resultData.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                    context.contentResolver.takePersistableUriPermission(
+                                        uri!!,
+                                        takeFlags
+                                    )
+                                    //
+                                    var bitmap: Bitmap? = null
+                                    //
+                                    try {
+                                        val source = ImageDecoder.createSource(
+                                            context.contentResolver,
+                                            uri!!
+                                        )
+                                        bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                                            decoder.setTargetSampleSize(1) // shrinking by
+                                            decoder.isMutableRequired = true // this resolve the hardware type of bitmap problem
+                                        }
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+                                    //
+                                    //
+                                    val stream = ByteArrayOutputStream()
+                                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                                    byteArray = stream.toByteArray()
+                                    //
+                                    val myImage: ImageView
+                                    myImage = findViewById<View>(R.id.imageviewaccounticon) as ImageView
+                                    showImage(context, uri, myImage)
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
+            })
+        //
     }
-
     /**
-     * copy file.
+     * Called when the user taps the image search button.
      *
-     *
-     * Refer to [stackoverflow](https://stackoverflow.com/questions/4447477/how-to-copy-files-from-assets-folder-to-sdcard)
-     * answer of [Rohith Nandakumar](https://stackoverflow.com/users/481239/rohith-nandakumar)
-     *
-     * @param in inputstream
-     * @param out outputstream
+     * @param v view of tapped button
      */
-    @Throws(IOException::class)
-    private fun copyFile(`in`: InputStream, out: OutputStream?) {
-        val buffer = ByteArray(1024)
-        var read: Int
-        while (`in`.read(buffer).also { read = it } != -1) {
-            out!!.write(buffer, 0, read)
-        }
+    fun imageSearch(v: View) {
+        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
+        // browser.
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        // Filter to only show results that can be "opened", such as a
+        // file (as opposed to a list of contacts or timezones)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        // Filter to show only images, using the image MIME data type.
+        // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
+        // To search for all documents available via installed storage providers,
+        // it would be "*/*".
+        intent.type = "image/*"
+        /*  the instructions of the button */
+        imageSearchAccountActivityResultLauncher!!.launch(intent)
     }
-
     companion object {
         //
         const val EXTRA_MESSAGE = "helloworldandroidMessage"

@@ -2,7 +2,6 @@ package com.sampietro.NaiveAAC.activities.Game.Game2
 
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
 import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import android.speech.tts.TextToSpeech
 import android.os.Bundle
 import com.sampietro.NaiveAAC.R
@@ -166,7 +165,7 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
      * @see SettingsStoriesQuickRegistrationFragment
      */
     fun fragmentTransactionStart(eText: String?) {
-        val frag = SettingsStoriesQuickRegistrationFragment()
+        val frag = SettingsStoriesQuickRegistrationFragment(R.layout.activity_settings_stories_quick_registration_recycler_view)
         val bundle = Bundle()
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         bundle.putString(getString(R.string.etext), eText)

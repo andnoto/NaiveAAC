@@ -2,23 +2,21 @@ package com.sampietro.NaiveAAC.activities.Game.Game2
 
 import android.content.Intent
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import android.speech.tts.TextToSpeech
 import android.os.Bundle
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
-import com.sampietro.NaiveAAC.activities.Phrases.Phrases
 import android.widget.Toast
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
 import android.widget.EditText
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import android.speech.SpeechRecognizer
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
 import android.view.View
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import android.view.Window
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.welcomeSpeech
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.lookForTheAnswerToLastPieceOfTheSentence
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
@@ -35,11 +33,15 @@ import java.util.*
  * Refer to [raywenderlich.com](https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started)
  * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameActivityAbstractClass
  * @see Game2ActivityAbstractClass
  */
 class Game2Activity : Game2ActivityAbstractClass() {
+    // USED FOR FULL SCREEN
+    lateinit var mywindow: Window
+    //
+    var sharedLastPlayer: String? = null
     /**
      * configurations of game2 start screen.
      *
@@ -49,8 +51,6 @@ class Game2Activity : Game2ActivityAbstractClass() {
      * @see SpeechRecognizerManagement.prepareSpeechRecognizer
      *
      * @see ActionbarFragment
-     *
-     * @see Phrases
      *
      * @see android.app.Activity.onCreate
      * @see fragmentTransactionStart
@@ -63,22 +63,10 @@ class Game2Activity : Game2ActivityAbstractClass() {
             supportActionBar!!.hide()
         }
         /*
-USED FOR FULL SCREEN
-*/
-//        val mContentView: ViewGroup = findViewById(R.id.activity_game_2_id)
-        setToFullScreen()
-//        val viewTreeObserver = mContentView.getViewTreeObserver()
-        //
-//        if (viewTreeObserver.isAlive) {
-//            viewTreeObserver.addOnGlobalLayoutListener(object :
-//                ViewTreeObserver.OnGlobalLayoutListener {
-//                override fun onGlobalLayout() {
-//                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-//                }
-//            })
-//        }
-        //
-//        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
+        USED FOR FULL SCREEN
+        */
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         /*
 
         */
@@ -94,6 +82,8 @@ USED FOR FULL SCREEN
             getString(R.string.preference_file_key), MODE_PRIVATE
         )
         //
+        sharedLastPlayer = sharedPref.getString(getString(R.string.preference_LastPlayer), "DEFAULT")
+        //
         context = this
         //
         sharedLastSession = sharedPref.getInt(getString(R.string.preference_LastSession), 1)
@@ -108,7 +98,16 @@ USED FOR FULL SCREEN
             sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
         }
         // TTS
-        if (savedInstanceState == null) welcomeSpeech()
+        if (savedInstanceState == null)
+        {
+            tTS1 = TextToSpeech(context) { status ->
+                if (status != TextToSpeech.ERROR) {
+                    welcomeSpeech(context, realm, sharedLastPlayer!!, tTS1!!)
+                } else {
+                    Toast.makeText(context.applicationContext, status, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
         //
         fragmentTransactionStart("")
     }
@@ -119,24 +118,9 @@ USED FOR FULL SCREEN
      */
     override fun onResume() {
         super.onResume()
-        setToFullScreen()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
     }
-    /**
-     * This method is responsible to transfer MainActivity into fullscreen mode.
-     */
-    private fun setToFullScreen() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        insetsController.hide(WindowInsetsCompat.Type.statusBars())
-        insetsController.hide(WindowInsetsCompat.Type.navigationBars())
-//        findViewById<View>(R.id.activity_game_1_viewpager_id).systemUiVisibility =
-//            View.SYSTEM_UI_FLAG_LOW_PROFILE or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-    }
-    //
-    //
     /**
      * Called when the user taps the home button.
      *
@@ -239,7 +223,7 @@ USED FOR FULL SCREEN
      * @see Game2Fragment
      */
     fun fragmentTransactionStart(eText: String?) {
-        val frag = Game2Fragment()
+        val frag = Game2Fragment(R.layout.activity_game_2)
         val bundle = Bundle()
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         bundle.putString(getString(R.string.etext), eText)
@@ -295,7 +279,7 @@ USED FOR FULL SCREEN
      * @param errorCode int error code from SpeechRecognizerManagement
      * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
      *
-     * @see GrammarHelper.lookForTheAnswerToLastPieceOfTheSentence
+     * @see lookForTheAnswerToLastPieceOfTheSentence
      * @see fragmentTransactionStart
      */
     override fun onError(errorCode: Int) {
@@ -319,7 +303,7 @@ USED FOR FULL SCREEN
                     sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
                 }
                 val answerToLastPieceOfTheSentence =
-                    GrammarHelper.lookForTheAnswerToLastPieceOfTheSentence(
+                    lookForTheAnswerToLastPieceOfTheSentence(
                         context, sharedLastPhraseNumber, realm
                     )
                 //
@@ -341,34 +325,5 @@ USED FOR FULL SCREEN
         }
         //
         fragmentTransactionStart("")
-    }
-    /**
-     * welcome speech
-     *
-     *
-     *
-     * @see Phrases
-     */
-    fun welcomeSpeech() {
-        // TTS
-        val phraseToSearch1 = realm.where(Phrases::class.java)
-            .equalTo(getString(R.string.tipo), getString(R.string.welcome_phrase_first_part))
-            .findFirst()
-        val sharedLastPlayer =
-            sharedPref.getString(getString(R.string.preference_LastPlayer), "DEFAULT")
-        val phraseToSearch2 = realm.where(Phrases::class.java)
-            .equalTo(getString(R.string.tipo), getString(R.string.welcome_phrase_second_part))
-            .findFirst()
-        if (phraseToSearch1 != null && phraseToSearch2 != null) {
-            toSpeak = (phraseToSearch1.descrizione + " " + sharedLastPlayer
-                    + " " + phraseToSearch2.descrizione)
-            tTS1 = TextToSpeech(this) { status ->
-                if (status != TextToSpeech.ERROR) {
-                    tTS1!!.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, "prova tts")
-                } else {
-                    Toast.makeText(applicationContext, status, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
     }
 }

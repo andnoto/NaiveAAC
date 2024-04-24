@@ -9,7 +9,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.getString
 import io.realm.Realm
 
 /**
@@ -62,7 +61,7 @@ class GameADAViewPagerAdapter
         bundle.putInt(context.getString(R.string.word_to_display_index), position)
         bundle.putString(context.getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
         //
-        fragment = GameADAViewPagerFragment()
+        fragment = GameADAViewPagerFragment(R.layout.activity_game_ada_viewpager_content)
         fragment.arguments = bundle
         //
         return fragment
@@ -75,15 +74,6 @@ class GameADAViewPagerAdapter
      * @see Stories
      */
     override fun getItemCount(): Int {
-//        resultsStories =
-//                realm.where(Stories.class)
-//                        .beginGroup()
-//                        .equalTo("story", sharedStory)
-//                      .equalTo("phraseNumberInt", phraseToDisplayIndex)
-//                        .notEqualTo("wordNumberInt", 0)
-//                        .lessThan("wordNumberInt", 99)
-//                        .endGroup()
-//                        .findAll();
         return resultsStories.size
     }
 }

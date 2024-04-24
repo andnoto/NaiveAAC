@@ -1,6 +1,5 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
 import android.app.Activity
 import com.sampietro.NaiveAAC.activities.Graphics.VideosAdapter
 import android.media.MediaPlayer
@@ -13,6 +12,7 @@ import com.sampietro.NaiveAAC.R
 import android.widget.EditText
 import android.widget.ListView
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import io.realm.Realm
 
 /**
@@ -21,14 +21,16 @@ import io.realm.Realm
  * **VideosFragment** UI for videos settings
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see SettingsFragmentAbstractClass
  *
  * @see SurfaceHolder
  *
  * @see SettingsActivity
  */
-class VideosFragment : SettingsFragmentAbstractClass(), SurfaceHolder.Callback {
+class VideosFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId),
+    SurfaceHolder.Callback
+    {
     var activity: Activity? = null
 
     //
@@ -85,22 +87,19 @@ class VideosFragment : SettingsFragmentAbstractClass(), SurfaceHolder.Callback {
      * @see SurfaceHolder.Callback
      */
     override fun surfaceDestroyed(surfaceHolder: SurfaceHolder) {}
-
     /**
-     * prepares the ui also using a listview and a surfaceview and makes the callback to the activity
+     * prepares the ui also using a listview and a surfaceview
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see com.sampietro.NaiveAAC.activities.Graphics.Videos
      *
      * @see com.sampietro.NaiveAAC.activities.Graphics.VideosAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_videos, container, false)
+    ) {
         // logic of fragment
         val bundle = this.arguments
         val stringUri: String?
@@ -110,14 +109,14 @@ class VideosFragment : SettingsFragmentAbstractClass(), SurfaceHolder.Callback {
         if (bundle != null) {
             //
             descrizione = bundle.getString("descrizione")
-            val vidD = rootView.findViewById<View>(R.id.videoDescription) as EditText
+            val vidD = view.findViewById<View>(R.id.videoDescription) as EditText
             vidD.setText(descrizione)
             //
             stringUri = bundle.getString("URI")
             if (stringUri != "none") {
                 uri = Uri.parse(stringUri)
                 //
-                surface = rootView.findViewById<View>(R.id.surfView) as SurfaceView
+                surface = view.findViewById<View>(R.id.surfView) as SurfaceView
                 holder = surface!!.holder
                 holder.addCallback(this)
             }
@@ -139,14 +138,10 @@ class VideosFragment : SettingsFragmentAbstractClass(), SurfaceHolder.Callback {
         // which will be your View "supplier".
         val results = realm.where(Videos::class.java).findAll()
         //
-        listView = rootView.findViewById<View>(R.id.listview) as ListView
+        listView = view.findViewById<View>(R.id.listview) as ListView
         //
         adapter = VideosAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
-        //
-        listener.receiveResultSettings(rootView)
-        //
-        return rootView
     }
 }

@@ -1,18 +1,17 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass
 import android.widget.ImageButton
 import android.media.MediaPlayer
 import android.app.Activity
 import android.content.Context
 import com.sampietro.NaiveAAC.R
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
 import com.sampietro.NaiveAAC.activities.history.History
@@ -20,9 +19,7 @@ import io.realm.Realm
 import java.io.IOException
 import java.util.*
 
-class GameADAFragment : GameFragmentAbstractClass() {
-//    var hearingImageButton: ImageButton? = null
-
+class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
     //
     var sharedLastPhraseNumber = 0
 
@@ -89,20 +86,19 @@ class GameADAFragment : GameFragmentAbstractClass() {
      * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
      * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see com.sampietro.NaiveAAC.activities.Game.Game2.Game2ArrayList
      *
-     * @see .prepareData1
+     * @see prepareData1
      *
      * @see GameADARecyclerViewAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_game_ada_recycler_view, container, false)
+    ) {
+//        rootView = inflater.inflate(R.layout.activity_game_ada_recycler_view, container, false)
         //
         val bundle = this.arguments
         sharedLastPhraseNumber = 0
@@ -117,7 +113,7 @@ class GameADAFragment : GameFragmentAbstractClass() {
         ADAPTED FOR VIDEO AND SOUND
          */
         recyclerView =
-            rootView.findViewById<View>(R.id.game_ada_recycler_view) as GameADARecyclerView
+            view.findViewById<View>(R.id.game_ada_recycler_view) as GameADARecyclerView
         recyclerView!!.setHasFixedSize(true)
         val layoutManager = LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false)
         recyclerView!!.layoutManager = layoutManager
@@ -152,9 +148,9 @@ class GameADAFragment : GameFragmentAbstractClass() {
         //
         // listener.receiveResultGameFragment(rootView);
         //
-        listenerADA!!.receiveResultGameFragment(rootView, tTS1, createLists)
+        listenerADA!!.receiveResultGameFragment(view, tTS1, createLists)
         //
-        return rootView
+//        return rootView
     }
     //
     /**

@@ -4,13 +4,12 @@ import android.widget.TextView
 import android.widget.ArrayAdapter
 import android.app.Activity
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import com.sampietro.NaiveAAC.R
 import android.widget.Spinner
 import android.widget.AdapterView
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 
 /**
@@ -19,13 +18,10 @@ import androidx.fragment.app.Fragment
  * **ChoiseOfGameToSetFragment** UI for choise of game to set
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see SettingsActivity
  */
-class ChoiseOfGameToSetFragment : Fragment() {
-    lateinit var rootView: View
-//    var textView: TextView? = null
-
+class ChoiseOfGameToSetFragment(@LayoutRes contentLayoutId : Int = 0) : Fragment(contentLayoutId) {
     //
     var textGameToSet: String? = null
     private lateinit var spinnerAdapter: ArrayAdapter<String>
@@ -43,7 +39,6 @@ class ChoiseOfGameToSetFragment : Fragment() {
      */
     internal interface onFragmentEventListenerChoiseOfGameToSet {
         //  insert here any references to the Settings Activity
-        fun receiveResultChoiseOfGameToSet(v: View?)
         fun receiveResultGameToSet(g: String?)
     }
 
@@ -64,16 +59,14 @@ class ChoiseOfGameToSetFragment : Fragment() {
     }
 
     /**
-     * prepares the ui and makes the callback to the activity
+     * prepares the ui
      *
-     * @see Fragment.onCreateView
+     * @see Fragment.onViewCreated
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_games_menu, container, false)
+    ) {
         // logic of fragment
         // SPINNER
         // an Adapter has been prepared that has been connected to spinner with the setAdapter method
@@ -85,7 +78,7 @@ class ChoiseOfGameToSetFragment : Fragment() {
             ctext,
             R.layout.activity_settings_choiseofgametoset_row, arraySpinner
         )
-        val sp = rootView.findViewById<Spinner>(R.id.gametoset)
+        val sp = view.findViewById<Spinner>(R.id.gametoset)
         sp.adapter = spinnerAdapter
         //
         sp.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -100,9 +93,5 @@ class ChoiseOfGameToSetFragment : Fragment() {
 
             override fun onNothingSelected(arg0: AdapterView<*>?) {}
         }
-        //
-        listener!!.receiveResultChoiseOfGameToSet(rootView)
-        //
-        return rootView
     }
 }

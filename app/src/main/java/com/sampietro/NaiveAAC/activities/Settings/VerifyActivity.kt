@@ -4,18 +4,16 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.sampietro.NaiveAAC.activities.Settings.VerifyFragment.onFragmentEventListenerVerify
 import android.content.SharedPreferences
-import android.view.ViewGroup
 import android.os.Bundle
 import com.sampietro.NaiveAAC.R
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.content.Intent
 import android.view.View
+import android.view.Window
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import android.widget.EditText
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
 import java.lang.NumberFormatException
 
 /**
@@ -28,7 +26,7 @@ import java.lang.NumberFormatException
  * 2) AccountActivityRealmCreation
  * 3) SettingsActivity
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see com.sampietro.NaiveAAC.activities.Account.AccountActivity
  *
  * @see com.sampietro.NaiveAAC.activities.Account.AccountActivityRealmCreation
@@ -36,6 +34,8 @@ import java.lang.NumberFormatException
  * @see SettingsActivity
  */
 class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
+    // USED FOR FULL SCREEN
+    lateinit var mywindow: Window
     //
     var rootViewVerifyFragment: View? = null
     var resultToVerify = 0
@@ -47,10 +47,6 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
 
     //
     var fragmentManager: FragmentManager? = null
-
-    //
-//    private var mContentView: ViewGroup? = null
-
     /**
      * configurations of settings start screen.
      *
@@ -70,19 +66,8 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
         /*
         USED FOR FULL SCREEN
         */
-//        val mContentView:ViewGroup = findViewById(R.id.activity_settings_id)
-        setToFullScreen()
-//        val viewTreeObserver = mContentView.getViewTreeObserver()
-        //
-//        if (viewTreeObserver.isAlive) {
-//            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-//                override fun onGlobalLayout() {
-//                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-//                }
-//            })
-//        }
-        //
-//        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         /*
 
          */
@@ -103,7 +88,7 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
                 fragmentManager!!.beginTransaction()
                     .add(
                         R.id.settings_container,
-                        VerifyPasswordFragment(),
+                        Fragment(R.layout.activity_settings_verify_password),
                         "VerifyPasswordFragment"
                     )
                     .commit()
@@ -118,24 +103,9 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
      */
     override fun onResume() {
         super.onResume()
-        setToFullScreen()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
     }
-
-    /**
-     * This method is responsible to transfer MainActivity into fullscreen mode.
-     */
-    private fun setToFullScreen() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        insetsController.hide(WindowInsetsCompat.Type.statusBars())
-        insetsController.hide(WindowInsetsCompat.Type.navigationBars())
-//        findViewById<View>(R.id.activity_settings_id).systemUiVisibility =
-//            View.SYSTEM_UI_FLAG_LOW_PROFILE or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-    }
-    //
     /**
      * Called when the user taps the home button.
      *
@@ -144,7 +114,7 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
      * @see ChoiseOfGameActivity
      */
     fun returnHome(v: View?) {
-        /*
+    /*
                 navigate to home screen (ChoiseOfGameActivity)
     */
         val intent = Intent(this, ChoiseOfGameActivity::class.java)

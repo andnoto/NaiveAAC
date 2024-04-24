@@ -1,9 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Game.Utils
 
 import android.content.Context
+import android.speech.tts.TextToSpeech
+import android.widget.Toast
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
+import com.sampietro.NaiveAAC.activities.Phrases.Phrases
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.history.History
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
@@ -37,6 +40,7 @@ object GameHelper {
      *
      * @see historyAdd
     */
+    @JvmStatic
     fun historyRegistration(
         context: Context,
         realm: Realm,
@@ -73,6 +77,7 @@ object GameHelper {
      * @see historyAdd
      *
      */
+    @JvmStatic
     fun historyRegistration(
         context: Context,
         realm: Realm,
@@ -118,6 +123,7 @@ object GameHelper {
      *
      * @see ImageSearchHelper.imageSearch
     */
+    @JvmStatic
     fun gettoBeRecordedInHistory(
         context: Context,
         realm: Realm?,
@@ -206,6 +212,7 @@ object GameHelper {
      * @see ImageSearchHelper.imageSearch
      *
     */
+    @JvmStatic
     fun gettoBeRecordedInHistory(
         context: Context,
         realm: Realm?,
@@ -318,6 +325,32 @@ object GameHelper {
             realm.commitTransaction()
             //
             irm++
+        }
+    }
+    /**
+     * welcome speech
+     *
+     * @param context context
+     * @param realm realm
+     * @param sharedLastPlayer string
+     * @see Phrases
+     */
+    fun welcomeSpeech(context: Context,
+                      realm: Realm,
+                      sharedLastPlayer: String,
+                      tTS1: TextToSpeech,
+                      ) {
+        // TTS
+        val phraseToSearch1 = realm.where(Phrases::class.java)
+            .equalTo(context.getString(R.string.tipo), context.getString(R.string.welcome_phrase_first_part))
+            .findFirst()
+        val phraseToSearch2 = realm.where(Phrases::class.java)
+            .equalTo(context.getString(R.string.tipo), context.getString(R.string.welcome_phrase_second_part))
+            .findFirst()
+        if (phraseToSearch1 != null && phraseToSearch2 != null) {
+            val toSpeak = (phraseToSearch1.descrizione + " " + sharedLastPlayer
+                    + " " + phraseToSearch2.descrizione)
+            tTS1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null, "prova tts")
         }
     }
 }

@@ -27,6 +27,7 @@ object GrammarHelper {
      *
      * @param eText string containing the sentence to split
      */
+    @JvmStatic
     fun splitString(eText: String): Array<String> {
         return eText.split(" ".toRegex()).toTypedArray()
     }
@@ -55,6 +56,7 @@ object GrammarHelper {
      * @return string article
      */
     @Deprecated("replaced by {@link #searchArticle(String,String,String,String,Realm)}")
+    @JvmStatic
     fun searchArticle(kKeyword: String, gender: String, plural: String): String {
         var articleToSearch = ""
         val keywordFirstChar = kKeyword.substring(0, 1)
@@ -119,6 +121,7 @@ object GrammarHelper {
      * @return string the article or the complement of motion
      * @see GrammaticalExceptions
      */
+    @JvmStatic
     fun searchArticle(
         context: Context,
         kKeyword: String, gender: String, plural: String,
@@ -253,6 +256,7 @@ object GrammarHelper {
      * @return string the gender
      * @see PictogramsAll
      */
+    @JvmStatic
     fun searchGender(   context: Context,
                         kKeyword: String,
                         realm: Realm): String {
@@ -292,6 +296,7 @@ object GrammarHelper {
      * @return string plural
      * @see PictogramsAll
      */
+    @JvmStatic
     fun searchPlural(   context: Context,
                         kKeyword: String?,
                         realm: Realm): String {
@@ -323,6 +328,7 @@ object GrammarHelper {
      * @return string plural
      * @see PictogramsAll
      */
+    @JvmStatic
     fun searchPlural(   context: Context,
                         k_Id: String?,
                         kKeyword: String?,
@@ -357,6 +363,7 @@ object GrammarHelper {
      * @return string corresponding plural
      * @see PictogramsAll
      */
+    @JvmStatic
     fun searchKeywordPlural(context: Context,
                             k_Id: String?,
                             kKeyword: String?,
@@ -399,6 +406,7 @@ object GrammarHelper {
      * @return string with the type of word Arasaac
      * @see PictogramsAll
      */
+    @JvmStatic
     fun searchType(context: Context,
                    k: String?,
                    realm: Realm): String {
@@ -425,6 +433,7 @@ object GrammarHelper {
      * @return string with the infinitive
      * @see Verbs
      */
+    @JvmStatic
     fun searchVerb(context: Context,
                    k: String?,
                    realm: Realm): String {
@@ -505,6 +514,7 @@ object GrammarHelper {
      * @return string with if it is a verb of movement
      * @see GrammaticalExceptions
      */
+    @JvmStatic
     fun searchVerbsOfMovement(context: Context,
                               k: String?,
                               realm: Realm): String {
@@ -542,6 +552,7 @@ object GrammarHelper {
      * @return string with if it is an auxiliary verb
      * @see GrammaticalExceptions
      */
+    @JvmStatic
     fun searchAuxiliaryVerbs(context: Context,
                              k: String?,
                              realm: Realm): String {
@@ -574,6 +585,7 @@ object GrammarHelper {
      * @return string with if it is a servile verb
      * @see GrammaticalExceptions
      */
+    @JvmStatic
     fun searchServileVerbs(context: Context,
                            k: String?,
                            realm: Realm): String {
@@ -607,6 +619,7 @@ object GrammarHelper {
      * @return string with if it contains a negation adverb
      * @see GrammaticalExceptions
      */
+    @JvmStatic
     fun searchNegationAdverb(context: Context,
                              k: String,
                              realm: Realm): String {
@@ -649,6 +662,7 @@ object GrammarHelper {
      * @return string with if it is a complement to the noun
      * @see ComplementsOfTheName
      */
+    @JvmStatic
     fun searchComplement(context: Context,
                          k: String?,
                          realm: Realm): String {
@@ -680,6 +694,7 @@ object GrammarHelper {
      *
      * @see Phrases
      */
+    @JvmStatic
     fun lookForTheAnswerToLastPieceOfTheSentence(
         context: Context,
         sharedLastPhraseNumber: Int,
@@ -727,6 +742,7 @@ object GrammarHelper {
      *
      * @see searchComplement
      */
+    @JvmStatic
     fun lookForTheLastPieceOfTheSentence(context: Context,
                                          sharedLastPhraseNumber: Int,
                                          realm: Realm): String {
@@ -784,6 +800,7 @@ object GrammarHelper {
      *
      * @see History
      */
+    @JvmStatic
     fun verifyIfLastWordOfTheSentenceIsPlural(context: Context,
                                               sharedLastPhraseNumber: Int,
                                               realm: Realm): String {
@@ -821,6 +838,7 @@ object GrammarHelper {
      *
      * @see History
      */
+    @JvmStatic
     fun SearchLastWordOfTheSentence(context: Context,
                                     sharedLastPhraseNumber: Int,
                                     realm: Realm): String {
@@ -853,7 +871,7 @@ object GrammarHelper {
      * @param percentualeErroriAmmessa  int containing the percentage of errors allowed
      * @return boolean true if the two sentences match
      */
-//    @RequiresApi(api = Build.VERSION_CODES.N)
+    @JvmStatic
     fun thereIsACorrespondenceWithAnAllowedMarginOfError(
         phrase1: String,
         phrase2: String,
@@ -921,6 +939,7 @@ object GrammarHelper {
      * @see GetResultsWordPairsList.getResultsWordPairsList
      * @see refineSearchWordPairs
      */
+    @JvmStatic
     fun composesASentence(
         context: Context,
         realm: Realm,
@@ -1401,6 +1420,7 @@ object GrammarHelper {
      * @see checksWhetherWordRepresentsAClass
      * @see listOfMembers
      */
+    @JvmStatic
     fun theFirstWordOfTheSentenceWasChosen(
         context: Context,
         realm: Realm,
@@ -1734,6 +1754,7 @@ object GrammarHelper {
      * @see searchAuxiliaryVerbs
      * @see searchServileVerbs
      */
+    @JvmStatic
     fun refineSearchWordPairs(context:Context, realm:Realm, resultsWordPairsList: MutableList<WordPairs>?): MutableList<WordPairs> {
         // does not consider wordpairs with pairs of nouns or pairs of verbs
         // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
@@ -1786,6 +1807,7 @@ object GrammarHelper {
      * @see WordPairs
      * @see searchVerbsOfMovement
      */
+    @JvmStatic
     fun grammaticalArrangement(
         context: Context,
         realm: Realm,

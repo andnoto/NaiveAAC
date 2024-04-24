@@ -1,14 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import com.sampietro.NaiveAAC.R
 import android.widget.EditText
 import androidx.lifecycle.ViewModelProvider
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
 import java.util.*
 
@@ -19,35 +17,33 @@ import java.util.*
  *
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/communicate)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  *
  * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  */
-class StoriesFragment : SettingsFragmentAbstractClass() {
+class StoriesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     //
     private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
 
     /**
-     * prepares the ui and makes the callback to the activity
+     * prepares the ui
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see com.sampietro.NaiveAAC.activities.Stories.Stories
      *
      * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_stories, container, false)
+    ) {
         // logic of fragment
-        val keywordstorytoadd = rootView.findViewById<View>(R.id.keywordstorytoadd) as EditText
-        val phrasenumbertoadd = rootView.findViewById<View>(R.id.phrasenumbertoadd) as EditText
-        val wordnumbertoadd = rootView.findViewById<View>(R.id.wordnumbertoadd) as EditText
-        val wordtoadd = rootView.findViewById<View>(R.id.wordtoadd) as EditText
+        val keywordstorytoadd = view.findViewById<View>(R.id.keywordstorytoadd) as EditText
+        val phrasenumbertoadd = view.findViewById<View>(R.id.phrasenumbertoadd) as EditText
+        val wordnumbertoadd = view.findViewById<View>(R.id.wordnumbertoadd) as EditText
+        val wordtoadd = view.findViewById<View>(R.id.wordtoadd) as EditText
         /*
         Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
         constructor.
@@ -60,15 +56,9 @@ class StoriesFragment : SettingsFragmentAbstractClass() {
             .observe(viewLifecycleOwner) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 keywordstorytoadd.setText(voiceToBeRecordedInStories.story)
-//                phrasenumbertoadd.setText(Integer.toString(voiceToBeRecordedInStories.phraseNumberInt))
-//                wordnumbertoadd.setText(Integer.toString(voiceToBeRecordedInStories.wordNumberInt))
                 phrasenumbertoadd.setText(String.format(Locale.getDefault(), "%d",voiceToBeRecordedInStories.phraseNumberInt))
                 wordnumbertoadd.setText(String.format(Locale.getDefault(), "%d",voiceToBeRecordedInStories.wordNumberInt))
                 wordtoadd.setText(voiceToBeRecordedInStories.word)
             }
-        //
-        listener.receiveResultSettings(rootView)
-        //
-        return rootView
     }
 }

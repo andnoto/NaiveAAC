@@ -2,8 +2,6 @@ package com.sampietro.NaiveAAC.activities.Settings
 
 import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAPhraseOfAStory
 import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
-import com.sampietro.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass.onFragmentEventListenerSettings
 import com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter.StoriesAdapterInterface
 import com.sampietro.NaiveAAC.activities.Settings.StoriesVideosSearchAdapter.StoriesVideosSearchAdapterInterface
 import com.sampietro.NaiveAAC.activities.Settings.StoriesSoundsSearchAdapter.StoriesSoundsSearchAdapterInterface
@@ -19,16 +17,22 @@ import androidx.activity.result.ActivityResultCallback
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.net.Uri
 import android.view.View
 import android.widget.EditText
 import android.widget.RadioButton
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
 import io.realm.RealmResults
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
 import com.sampietro.NaiveAAC.activities.Settings.Utils.ImageSearchArasaacFragment
 import com.sampietro.NaiveAAC.activities.Settings.Utils.ImageSearchArasaacRecyclerViewAdapterInterface
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListener
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Stories.StoriesComparator
 import io.realm.Realm
@@ -53,7 +57,8 @@ import java.util.*
  *
  * @see com.sampietro.simsimtest.activities.Stories.StoriesAdapter
  */
-class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventListenerSettings,
+class SettingsStoriesActivity : ActivityAbstractClass(),
+    FragmentAbstractClassWithListener.onBaseFragmentEventListenerSettings,
     StoriesAdapterInterface, ImageSearchArasaacRecyclerViewAdapterInterface,
     StoriesVideosSearchAdapterInterface, StoriesSoundsSearchAdapterInterface {
     var message = "messaggio non formato"
@@ -104,7 +109,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
             fragmentManager = supportFragmentManager
             fragmentManager!!.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
-                .add(R.id.settings_container, StoriesFragment(), "StoriesFragment")
+                .add(R.id.settings_container, Fragment(R.layout.activity_settings_stories), "StoriesFragment")
                 .commit()
         }
         // The MainActivity class provides an instance of Realm wherever needed in the application.
@@ -113,6 +118,13 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         realm = Realm.getDefaultInstance()
     }
     //
+    @JvmField
+    var imageSearchStoriesActivityResultLauncher: ActivityResultLauncher<Intent>? = null
+    @JvmField
+    var uri: Uri? = null
+    @JvmField
+    var filePath: String? = null
+    lateinit var byteArray: ByteArray
     /**
      * setting callbacks to search for images and videos via ACTION_OPEN_DOCUMENT which is
      * the intent to choose a file via the system's file browser
@@ -125,9 +137,9 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
      * and to [stackoverflow](https://stackoverflow.com/questions/7620401/how-to-convert-image-file-data-in-a-byte-array-to-a-bitmap)
      * answer of [Uttam](https://stackoverflow.com/users/840861/uttam)
      *
-     * @see AccountActivityAbstractClass.getFilePath
+     * @see AccountBaseActivity.getFilePath
      */
-    override fun setActivityResultLauncher() {
+    fun setActivityResultLauncher() {
         //
         imageSearchStoriesActivityResultLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
@@ -170,12 +182,6 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
-//                            try {
-//                                bitmap =
-//                                    MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-//                            } catch (e: IOException) {
-//                                e.printStackTrace()
-//                            }
                             //
                             val stream = ByteArrayOutputStream()
                             bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
@@ -197,7 +203,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
      *
      * @param v view of tapped button
      */
-    override fun imageSearch(v: View) {
+    fun imageSearch(v: View) {
         // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
         // browser.
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
@@ -253,7 +259,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
             textWord3.text.toString().toInt()
         voiceToBeRecordedInStories!!.word = textWord4.text.toString()
         //
-        val frag = StoriesVideosSearchFragment()
+        val frag = StoriesVideosSearchFragment(R.layout.activity_settings_stories_videos)
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
@@ -282,7 +288,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
             textWord3.text.toString().toInt()
         voiceToBeRecordedInStories!!.word = textWord4.text.toString()
         //
-        val frag = StoriesSoundsSearchFragment()
+        val frag = StoriesSoundsSearchFragment(R.layout.activity_settings_stories_sounds)
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
@@ -328,7 +334,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
             textWord3.text.toString().toInt()
         voiceToBeRecordedInStories!!.word = textWord4.text.toString()
         //
-        val frag = ImageSearchArasaacFragment()
+        val frag = ImageSearchArasaacFragment(R.layout.activity_settings_stories_arasaac)
         //
         val bundle = Bundle()
         bundle.putString("keywordToSearchArasaac", textWord4.text.toString())
@@ -349,7 +355,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         val textWord1 = findViewById<View>(R.id.keywordarasaactosearch) as EditText
         // view the image search Arasaac  initializing ImageSearchArasaacFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = ImageSearchArasaacFragment()
+        val frag = ImageSearchArasaacFragment(R.layout.activity_settings_stories_arasaac)
         //
         val bundle = Bundle()
         bundle.putString("keywordToSearchArasaac", textWord1.text.toString())
@@ -378,7 +384,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                 voiceToBeRecordedInStories.uriType = "A"
                 voiceToBeRecordedInStories.uri = url
                 //
-                val frag = StoriesFragment()
+                val frag = StoriesFragment(R.layout.activity_settings_stories)
                 //
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
@@ -400,7 +406,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 voiceToBeRecordedInStories.video = videoKey
                 //
-                val frag = StoriesFragment()
+                val frag = StoriesFragment(R.layout.activity_settings_stories)
                 //
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
@@ -442,7 +448,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         val selectedSound = results[position]!!
         voiceToBeRecordedInStories!!.sound = selectedSound.descrizione
         //
-        val frag = StoriesFragment()
+        val frag = StoriesFragment(R.layout.activity_settings_stories)
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
@@ -471,7 +477,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
             textWord3.text.toString().toInt()
         voiceToBeRecordedInStories!!.word = textWord4.text.toString()
         //
-        val frag = StoriesActionAfterResponseFragment()
+        val frag = StoriesActionAfterResponseFragment(R.layout.activity_settings_stories_action_after_response)
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
@@ -493,7 +499,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                 voiceToBeRecordedInStories.answerActionType = "V"
                 voiceToBeRecordedInStories.answerAction = videoKey
                 //
-                val frag = StoriesFragment()
+                val frag = StoriesFragment(R.layout.activity_settings_stories)
                 //
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
@@ -518,7 +524,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                     voiceToBeRecordedInStories.answerActionType = "Y"
                     voiceToBeRecordedInStories.answerAction = textWord1.text.toString()
                     //
-                    val frag = StoriesFragment()
+                    val frag = StoriesFragment(R.layout.activity_settings_stories)
                     //
                     val ft = supportFragmentManager.beginTransaction()
                     ft.replace(R.id.settings_container, frag)
@@ -694,7 +700,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                     // switch between Fragments).
                     val ft = supportFragmentManager.beginTransaction()
                     //
-                    val frag = StoriesListFragment()
+                    val frag = StoriesListFragment(R.layout.activity_settings_stories_list)
                     //
                     ft.replace(R.id.settings_container, frag)
                     ft.addToBackStack(null)
@@ -740,7 +746,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
         voiceToBeRecordedInStories!!.phraseNumberInt = 0
         // view the stories list  initializing StoriesListFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = StoriesListFragment()
+        val frag = StoriesListFragment(R.layout.activity_settings_stories_list)
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
@@ -758,8 +764,8 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
      * @see StoriesListFragment
      */
     fun storiesSearch(view: View?) {
-        val textWord1 = rootViewFragment!!.findViewById<View>(R.id.keywordstorytosearch) as EditText
-        val textWord2 = rootViewFragment!!.findViewById<View>(R.id.phrasenumbertosearch) as EditText
+        val textWord1 = findViewById<View>(R.id.keywordstorytosearch) as EditText
+        val textWord2 = findViewById<View>(R.id.phrasenumbertosearch) as EditText
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
@@ -767,7 +773,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
             textWord1.text.toString().lowercase(Locale.getDefault())
         voiceToBeRecordedInStories!!.phraseNumberInt = textWord2.text.toString().toInt()
         //
-        val frag = StoriesListFragment()
+        val frag = StoriesListFragment(R.layout.activity_settings_stories_list)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -817,7 +823,6 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                 val daCancellare = results[position]!!
                 val daCancellareStory = daCancellare.story
                 val daCancellarePhraseNumber = daCancellare.phraseNumberInt
-//                val daCancellareWordNumber = daCancellare.wordNumberInt
                 //
                 voiceToBeRecordedInStories.story = daCancellareStory
                 voiceToBeRecordedInStories.phraseNumberInt = daCancellarePhraseNumber
@@ -829,7 +834,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                 renumberAPhraseOfAStory(realm, daCancellareStory, daCancellarePhraseNumber)
                 renumberAStory(realm, daCancellareStory)
                 //
-                val frag = StoriesListFragment()
+                val frag = StoriesListFragment(R.layout.activity_settings_stories_list)
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
                 ft.addToBackStack(null)
@@ -879,13 +884,12 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                 val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
                 //
-                val frag = StoriesFragment()
+                val frag = StoriesFragment(R.layout.activity_settings_stories)
                 //
                 val daModificare = results[position]!!
                 //
                 val daModificareStory = daModificare.story
                 val daModificarePhraseNumber = daModificare.phraseNumberInt
-//                val daModificareWordNumber = daModificare.wordNumberInt
                 //
                 voiceToBeRecordedInStories.story = daModificare.story
                 voiceToBeRecordedInStories.phraseNumberInt = daModificare.phraseNumberInt
@@ -956,7 +960,7 @@ class SettingsStoriesActivity : AccountActivityAbstractClass(), onFragmentEventL
                 val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
                 //
-                val frag = StoriesFragment()
+                val frag = StoriesFragment(R.layout.activity_settings_stories)
                 //
                 val daInserirePrimaDi = results[position]!!
                 //

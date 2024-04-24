@@ -1,9 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
 import android.content.Context
-import android.graphics.Bitmap
-import com.squareup.picasso.Picasso.LoadedFrom
-import android.graphics.drawable.Drawable
 import android.content.SharedPreferences
 import android.speech.tts.TextToSpeech
 import com.sampietro.NaiveAAC.R
@@ -12,15 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.print.PrintHelper
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
-import java.io.File
-import java.lang.Exception
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
 import java.util.ArrayList
 
 /**
@@ -31,33 +24,13 @@ import java.util.ArrayList
  * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
  * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see RecyclerView.Adapter<RecyclerView.ViewHolder>
-</RecyclerView.ViewHolder> */
+ */
 class Game2RecyclerViewAdapter(
     private val context: Context,
     private val galleryList: ArrayList<Game1ArrayList>
 ) : RecyclerView.Adapter<Game2RecyclerViewAdapter.ViewHolder>() {
-    /**
-     * used for printing
-     */
-    var bitmap1: Bitmap? = null
-
-    /**
-     * used for printing
-     */
-    var target1: Target = object : Target {
-        override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
-            bitmap1 = bitmap
-        }
-
-        override fun onBitmapFailed(e: Exception, errorDrawable: Drawable) {}
-        override fun onPrepareLoad(placeHolderDrawable: Drawable) {}
-    }
-
-    /**
-     * used for printing
-     */
     var sharedPref: SharedPreferences
     var preference_PrintPermissions: String?
 
@@ -65,7 +38,6 @@ class Game2RecyclerViewAdapter(
      * used for TTS
      */
     var tTS1: TextToSpeech? = null
-//    var toSpeak: String? = null
 
     /**
      * Game2RecyclerViewAdapter1 constructor.
@@ -111,9 +83,6 @@ class Game2RecyclerViewAdapter(
      *
      * @see addImage
      *
-     * @see getTargetBitmapFromUrlUsingPicasso
-     *
-     * @see getTargetBitmapFromFileUsingPicasso
      */
     override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
         viewHolder.title.text = galleryList[i].image_title
@@ -122,7 +91,8 @@ class Game2RecyclerViewAdapter(
         //
         addImage(
             galleryList[i].urlType,
-            galleryList[i].url, viewHolder.img
+            galleryList[i].url, viewHolder.img,
+            200,200
         )
         //
         viewHolder.img.setOnClickListener {
@@ -141,36 +111,8 @@ class Game2RecyclerViewAdapter(
             }
             //
             if (preference_PrintPermissions == "Y") {
-                if (galleryList[i].urlType == "A") {
-                    getTargetBitmapFromUrlUsingPicasso(galleryList[i].url, target1)
-                } else {
-                    val f = File(galleryList[i].url!!)
-                    getTargetBitmapFromFileUsingPicasso(f, target1)
-                }
-                //
-                val photoPrinter = PrintHelper(context)
-                photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
-                photoPrinter.printBitmap(context.getString(R.string.stampa_immagine1), bitmap1!!)
+                printImage(context, galleryList[i].urlType, galleryList[i].url, 200, 200 )
             }
-        }
-    }
-
-    /**
-     * add an image to a view as indicated in the parameters
-     *
-     * @param urlType string representing the type of icon displayed in the left view.
-     * @param url string representing the path of icon displayed in the left view.
-     * @param img imageview where the image will be added
-     * @see GraphicsHelper.addImageUsingPicasso
-     *
-     * @see GraphicsHelper.addFileImageUsingPicasso
-     */
-    fun addImage(urlType: String?, url: String?, img: ImageView?) {
-        if (urlType == "A") {
-            GraphicsHelper.addImageUsingPicasso(url, img, 200, 200)
-        } else {
-            val f = File(url!!)
-            GraphicsHelper.addFileImageUsingPicasso(f, img, 200, 200)
         }
     }
 
@@ -201,31 +143,4 @@ class Game2RecyclerViewAdapter(
         }
     }
 
-    /**
-     * used for printing load an image in a target bitmap from a file
-     *
-     * @param file file of origin
-     * @param target target bitmap
-     * @see Picasso
-     */
-    fun getTargetBitmapFromFileUsingPicasso(file: File?, target: Target?) {
-        Picasso.get()
-            .load(file!!)
-            .resize(200, 200)
-            .into(target!!)
-    }
-
-    /**
-     * used for printing load an image in a target bitmap from a url
-     *
-     * @param url string with url of origin
-     * @param target target bitmap
-     * @see Picasso
-     */
-    fun getTargetBitmapFromUrlUsingPicasso(url: String?, target: Target?) {
-        Picasso.get()
-            .load(url)
-            .resize(200, 200)
-            .into(target!!)
-    }
 }

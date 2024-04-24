@@ -1,12 +1,10 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass
 import android.widget.ImageButton
 import android.widget.EditText
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
@@ -17,43 +15,42 @@ import com.sampietro.NaiveAAC.R
  * **SettingsStoriesQuickRegistrationFragment** UI for game2
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameFragmentAbstractClass
  * @see Game2FragmentAbstractClass
  *
  * @see Game2Activity
  */
-class SettingsStoriesQuickRegistrationFragment : Game2FragmentAbstractClass() {
+class SettingsStoriesQuickRegistrationFragment(@LayoutRes contentLayoutId : Int = 0) : Game2FragmentAbstractClass(contentLayoutId) {
     var keywordStoryToAdd: String? = ""
     var phraseNumberToAdd: String? = ""
     /**
-     * prepares the ui and makes the callback to the activity
+     * prepares the ui
      *
      *
      * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
      * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see prepareData
      *
      * @see Game2RecyclerViewAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(
-            R.layout.activity_settings_stories_quick_registration_recycler_view,
-            container,
-            false
-        )
+    ) {
+//        rootView = inflater.inflate(
+//            R.layout.activity_settings_stories_quick_registration_recycler_view,
+//            container,
+//            false
+//        )
         //
-        hearingImageButton = rootView.findViewById<View>(R.id.btn_start) as ImageButton
+        hearingImageButton = view.findViewById<View>(R.id.btn_start) as ImageButton
         hearingImageButton.setImageResource(R.drawable.ic_baseline_hearing_36_red) //set the image programmatically
         //
-        sentenceToAdd = rootView.findViewById<View>(R.id.sentencetoadd) as EditText
+        sentenceToAdd = view.findViewById<View>(R.id.sentencetoadd) as EditText
         //
         val bundle = this.arguments
         sharedLastPhraseNumber = 0
@@ -63,15 +60,15 @@ class SettingsStoriesQuickRegistrationFragment : Game2FragmentAbstractClass() {
             phraseNumberToAdd = bundle.getString(getString(R.string.phrasenumbertoadd))
             sentenceToAdd.setText(bundle.getString(getString(R.string.etext)))
             //
-            val keywordstorytoadd = rootView.findViewById<View>(R.id.keywordstorytoadd) as EditText
-            val phrasenumbertoadd = rootView.findViewById<View>(R.id.phrasenumbertoadd) as EditText
+            val keywordstorytoadd = view.findViewById<View>(R.id.keywordstorytoadd) as EditText
+            val phrasenumbertoadd = view.findViewById<View>(R.id.phrasenumbertoadd) as EditText
             keywordstorytoadd.setText(keywordStoryToAdd)
             phrasenumbertoadd.setText(phraseNumberToAdd)
             //
         }
         //
         if (sentenceToAdd.text.toString() != "") {
-            val recyclerView1 = rootView.findViewById<View>(R.id.imagegallery1) as RecyclerView
+            val recyclerView1 = view.findViewById<View>(R.id.imagegallery1) as RecyclerView
             recyclerView1.setHasFixedSize(true)
             val layoutManager1: RecyclerView.LayoutManager =
                 LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false)
@@ -82,7 +79,7 @@ class SettingsStoriesQuickRegistrationFragment : Game2FragmentAbstractClass() {
             //
         }
         //
-        listener.receiveResultGameFragment(rootView)
-        return rootView
+//        listener.receiveResultGameFragment(rootView)
+//        return rootView
     }
 }

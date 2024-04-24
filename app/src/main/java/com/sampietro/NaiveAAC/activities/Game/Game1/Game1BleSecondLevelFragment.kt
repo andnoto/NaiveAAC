@@ -3,18 +3,18 @@ package com.sampietro.NaiveAAC.activities.Game.Game1
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImageUsingPicasso
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
@@ -36,25 +36,18 @@ import java.util.*
  *
  * @see Game1BleActivity
  */
-class Game1BleSecondLevelFragment : GameFragmentAbstractClass() {
+class Game1BleSecondLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
     lateinit var listenAgainButton: ImageButton
     lateinit var continueGameButton: ImageButton
 //
     lateinit var sendToBlueToothImage: ImageView
-
     //
     var leftColumnMenuPhraseNumber = 0
     var middleColumnMenuPhraseNumber = 0
     var rightColumnMenuPhraseNumber = 0
     var leftColumnContent: String? = null
-    var leftColumnContentUrlType: String? = null
-    var leftColumnContentUrl: String? = null
     var middleColumnContent: String? = null
-    var middleColumnContentUrlType: String? = null
-    var middleColumnContentUrl: String? = null
     var rightColumnContent: String? = null
-    var rightColumnContentUrlType: String? = null
-    var rightColumnContentUrl: String? = null
     var theSentenceIsCompleted: Boolean = false
     //
     var deviceEnabledUserName = "non trovato"
@@ -96,13 +89,13 @@ class Game1BleSecondLevelFragment : GameFragmentAbstractClass() {
     }
     //
     /**
-     * prepares the ui and makes the callback to the activity
+     * prepares the ui
      *
      *
      * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
      * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see Game1ArrayList
      *
@@ -114,17 +107,16 @@ class Game1BleSecondLevelFragment : GameFragmentAbstractClass() {
      *
      * @see Game1RecyclerViewAdapter3
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_game_1_ble, container, false)
+    ) {
+//        rootView = inflater.inflate(R.layout.activity_game_1_ble, container, false)
         //
-        listenAgainButton = rootView.findViewById<View>(R.id.listenagainbutton) as ImageButton
-        continueGameButton = rootView.findViewById<View>(R.id.continuegamebutton) as ImageButton
+        listenAgainButton = view.findViewById<View>(R.id.listenagainbutton) as ImageButton
+        continueGameButton = view.findViewById<View>(R.id.continuegamebutton) as ImageButton
         //
-        sendToBlueToothImage = rootView.findViewById<View>(R.id.sendtobluetoothimage) as ImageView
+        sendToBlueToothImage = view.findViewById<View>(R.id.sendtobluetoothimage) as ImageView
         //
         val bundle = this.arguments
         //
@@ -136,17 +128,8 @@ class Game1BleSecondLevelFragment : GameFragmentAbstractClass() {
             rightColumnMenuPhraseNumber =
                 bundle.getInt(getString(R.string.right_column_menu_phrase_number))
             leftColumnContent = bundle.getString(getString(R.string.left_column_content))
-            leftColumnContentUrlType =
-                bundle.getString(getString(R.string.left_column_content_url_type))
-            leftColumnContentUrl = bundle.getString(getString(R.string.left_column_content_url))
             middleColumnContent = bundle.getString(getString(R.string.middle_column_content))
-            middleColumnContentUrlType =
-                bundle.getString(getString(R.string.middle_column_content_url_type))
-            middleColumnContentUrl = bundle.getString(getString(R.string.middle_column_content_url))
             rightColumnContent = bundle.getString(getString(R.string.right_column_content))
-            rightColumnContentUrlType =
-                bundle.getString(getString(R.string.right_column_content_url_type))
-            rightColumnContentUrl = bundle.getString(getString(R.string.right_column_content_url))
             //
             theSentenceIsCompleted = bundle.getBoolean("THE SENTENCE IS COMPLETED")
             //
@@ -175,19 +158,19 @@ class Game1BleSecondLevelFragment : GameFragmentAbstractClass() {
             if (deviceEnabledUserName != "non trovato")
             {
                 val image: ResponseImageSearch?
-                image = ImageSearchHelper.imageSearch(ctext, realm, deviceEnabledUserName)
+                image = imageSearch(ctext, realm, deviceEnabledUserName)
                 addImage(image!!.uriType, image.uriToSearch, sendToBlueToothImage, 150, 150)
             }
             else {
                 val assetsUrl = "file:///android_asset/" + "images/puntointerrogativo.png"
-                GraphicsHelper.addImageUsingPicasso(assetsUrl, sendToBlueToothImage, 150, 150)
+                addImageUsingPicasso(assetsUrl, sendToBlueToothImage, 150, 150)
             }
         }
          else {
             sendToBlueToothImage.visibility = View.INVISIBLE
         }
         //
-        val recyclerView1 = rootView.findViewById<View>(R.id.imagegallery1) as RecyclerView
+        val recyclerView1 = view.findViewById<View>(R.id.imagegallery1) as RecyclerView
         recyclerView1.setHasFixedSize(true)
         val layoutManager1: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView1.layoutManager = layoutManager1
@@ -195,7 +178,7 @@ class Game1BleSecondLevelFragment : GameFragmentAbstractClass() {
         val adapter1 = Game1RecyclerViewAdapter1(ctext, createLists1)
         recyclerView1.adapter = adapter1
         //
-        val recyclerView2 = rootView.findViewById<View>(R.id.imagegallery2) as RecyclerView
+        val recyclerView2 = view.findViewById<View>(R.id.imagegallery2) as RecyclerView
         recyclerView2.setHasFixedSize(true)
         val layoutManager2: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView2.layoutManager = layoutManager2
@@ -203,7 +186,7 @@ class Game1BleSecondLevelFragment : GameFragmentAbstractClass() {
         val adapter2 = Game1RecyclerViewAdapter2(ctext, createLists2)
         recyclerView2.adapter = adapter2
         //
-        val recyclerView3 = rootView.findViewById<View>(R.id.imagegallery3) as RecyclerView
+        val recyclerView3 = view.findViewById<View>(R.id.imagegallery3) as RecyclerView
         recyclerView3.setHasFixedSize(true)
         val layoutManager3: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView3.layoutManager = layoutManager3
@@ -211,8 +194,8 @@ class Game1BleSecondLevelFragment : GameFragmentAbstractClass() {
         val adapter3 = Game1RecyclerViewAdapter3(ctext, createLists3)
         recyclerView3.adapter = adapter3
         //
-        listener.receiveResultGameFragment(rootView)
-        return rootView
+//        listener.receiveResultGameFragment(rootView)
+//        return rootView
     }
 
     /**

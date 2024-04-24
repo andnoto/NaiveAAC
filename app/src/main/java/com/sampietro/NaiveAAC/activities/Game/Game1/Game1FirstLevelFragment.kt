@@ -1,15 +1,15 @@
 package com.sampietro.NaiveAAC.activities.Game.Game1
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import com.sampietro.NaiveAAC.R
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import java.util.*
 
 /**
@@ -23,35 +23,33 @@ import java.util.*
  * for the game class subclasses ball, tablet, running, etc.
  *
  *
- * @version     4.0, 09/09/2023
- * @see GameFragmentAbstractClass
+ * @version     5.0, 01/04/2024
  *
  * @see Game1Activity
  */
-class Game1FirstLevelFragment : GameFragmentAbstractClass() {
+class Game1FirstLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
     var wordToSearchSecondLevelMenu: String? = null
     var leftArrow: String? = null
     var rightArrow: String? = null
 
     /**
-     * prepares the ui and makes the callback to the activity
+     * prepares the ui
      *
      *
      * Refer to [raywenderlich.com](https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started)
      * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see ImageSearchHelper.imageSearch
      *
      * @see addImage
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_game_1_viewpager_content, container, false)
+    ) {
+//        rootView = inflater.inflate(R.layout.activity_game_1_viewpager_content, container, false)
         //
         val bundle = this.arguments
         if (bundle != null) {
@@ -61,27 +59,27 @@ class Game1FirstLevelFragment : GameFragmentAbstractClass() {
             rightArrow = bundle.getString(getString(R.string.right_arrow))
             //
             val textFirstLevelMenuView =
-                rootView.findViewById<View>(R.id.titlefirstlevelmenu) as TextView
+                view.findViewById<View>(R.id.titlefirstlevelmenu) as TextView
             textFirstLevelMenuView.text =
                 wordToSearchSecondLevelMenu!!.uppercase(Locale.getDefault())
             // ricerca immagine
             val image: ResponseImageSearch?
-            image = ImageSearchHelper.imageSearch(ctext, realm, wordToSearchSecondLevelMenu)
-            val imageFirstLevelMenuView = rootView.findViewById<ImageView>(R.id.imagefirstlevelmenu)
+            image = imageSearch(ctext, realm, wordToSearchSecondLevelMenu)
+            val imageFirstLevelMenuView = view.findViewById<ImageView>(R.id.imagefirstlevelmenu)
             imageFirstLevelMenuView.contentDescription = wordToSearchSecondLevelMenu!!.uppercase(
                 Locale.getDefault()
             )
             addImage(image!!.uriType, image.uriToSearch, imageFirstLevelMenuView, 200, 200)
             // arrows
             val leftArrowFirstLevelMenu =
-                rootView.findViewById<ImageView>(R.id.leftarrowfirstlevelmenu)
+                view.findViewById<ImageView>(R.id.leftarrowfirstlevelmenu)
             val rightArrowFirstLevelMenu =
-                rootView.findViewById<ImageView>(R.id.rightarrowfirstlevelmenu)
+                view.findViewById<ImageView>(R.id.rightarrowfirstlevelmenu)
             if (leftArrow == "N") leftArrowFirstLevelMenu.visibility = View.INVISIBLE
             if (rightArrow == "N") rightArrowFirstLevelMenu.visibility = View.INVISIBLE
         }
         //
-        listener.receiveResultGameFragment(rootView)
-        return rootView
+//        listener.receiveResultGameFragment(rootView)
+//        return rootView
     } //
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import io.realm.Realm
@@ -29,10 +30,8 @@ class Game1ViewPagerAdapter
  * @param realm realm
  */(
     fragmentManager: Game1Activity,
-//    lifecycle: Lifecycle,
     private val context: Context,
     private val realm: Realm
-//) : FragmentStateAdapter(fragmentManager, lifecycle) {
     ) : FragmentStateAdapter(fragmentManager) {
     /**
      * returns a fragment instance for the given position to display the first level menu
@@ -63,16 +62,6 @@ class Game1ViewPagerAdapter
             val result = resultsListsOfNames[position]!!
             wordToSearchSecondLevelMenu = result.keyword
             //
-//        val resultsWordPairs = realm.where(WordPairs::class.java)
-//            .beginGroup()
-//            .equalTo("isMenuItem", "TLM")
-//            .endGroup()
-//            .findAll()
-//        val resultsWordPairsSize = resultsWordPairs.size
-//        if (resultsWordPairsSize != 0) {
-//            val result = resultsWordPairs[position]!!
-//            wordToSearchSecondLevelMenu = result.word1
-            //
             bundle.putString("WORD TO SEARCH SECOND LEVEL MENU", wordToSearchSecondLevelMenu)
             //
             if (position != 0) {
@@ -80,14 +69,13 @@ class Game1ViewPagerAdapter
             } else {
                 bundle.putString("LEFT ARROW", "N")
             }
-//            if (resultsWordPairsSize > position + 1) {
             if (resultsListsOfNamesSize > position + 1) {
                 bundle.putString("RIGHT ARROW", "Y")
             } else {
                 bundle.putString("RIGHT ARROW", "N")
             }
             //
-            fragment = Game1FirstLevelFragment()
+            fragment = Game1FirstLevelFragment(R.layout.activity_game_1_viewpager_content)
             fragment.arguments = bundle
         }
         assert(fragment != null)

@@ -5,8 +5,6 @@ import com.sampietro.NaiveAAC.activities.Stories.Stories.Companion.exporttoCsv
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters.Companion.exporttoCsv
 import com.sampietro.NaiveAAC.activities.Stories.Stories.Companion.importStoryFromCsvFromInternalStorage
 import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
-import com.sampietro.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass.onFragmentEventListenerSettings
 import android.widget.TextView
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
@@ -35,15 +33,16 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFile
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorage
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileZipFromInternalToSharedStorage
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFilesInFolderToRoot
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.extractFolder
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.zipFileAtPath
 import io.realm.Realm
 import java.io.*
-import java.lang.Exception
 import java.util.*
-import java.util.zip.ZipEntry
-import java.util.zip.ZipException
-import java.util.zip.ZipFile
-import java.util.zip.ZipOutputStream
-import kotlin.Throws
 
 /**
  * <h1>SettingsStoriesImportExportActivity</h1>
@@ -51,11 +50,11 @@ import kotlin.Throws
  * **SettingsStoriesImportExportActivity** app settings.
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/communicate)
  *
- * @version 4.0, 09/09/2023
- * @see AccountActivityAbstractClass
+ * @version 5.0, 01/04/2024
+ * @see AccountBaseActivity
  */
-class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
-    onFragmentEventListenerSettings {
+class SettingsStoriesImportExportActivity : ActivityAbstractClass()
+    {
     var message = "messaggio non formato"
     var textView: TextView? = null
 
@@ -78,12 +77,8 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
      * configurations of settings start screen.
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see .setActivityResultLauncher
-     *
+     * @see setActivityResultLauncher
      * @see ActionbarFragment
-     *
-     * @see ContentsFragment
-     *
      * @see Activity.onCreate
      */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,7 +107,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
                 .add(
                     R.id.settings_container,
-                    StoriesImportExportFragment(),
+                    StoriesImportExportFragment(R.layout.activity_settings_stories_import_export),
                     "StoriesImportExportFragment"
                 )
                 .commit()
@@ -122,17 +117,6 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
         // The Realm object must be closed in the onDestroy method.
         realm = Realm.getDefaultInstance()
     }
-    //
-    /**
-     * receives calls from fragment listeners.
-     *
-     * @param v view of calling fragment
-     * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
-     */
-    override fun receiveResultSettings(v: View?) {
-        rootViewFragment = v
-    }
-
     /**
      * Called when the user taps the add button from stories settings.
      *
@@ -185,14 +169,14 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
      * @see StoriesImportExportFragment
      */
     fun storiesSearch(view: View?) {
-        val textWord1 = rootViewFragment!!.findViewById<View>(R.id.storytosearch) as EditText
+        val textWord1 = findViewById<View>(R.id.storytosearch) as EditText
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
         voiceToBeRecordedInStories!!.story =
             textWord1.text.toString().lowercase(Locale.getDefault())
         //
-        val frag = StoriesImportExportFragment()
+        val frag = StoriesImportExportFragment(R.layout.activity_settings_stories_import_export)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -445,7 +429,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                             )
                                                     )
                                                     try {
-                                                        copy(finput, foutput)
+                                                        copyFile(finput, foutput)
                                                     } catch (e: IOException) {
                                                         e.printStackTrace()
                                                     }
@@ -464,7 +448,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                             )
                                                     )
                                                     try {
-                                                        copy(finput, foutput)
+                                                        copyFile(finput, foutput)
                                                     } catch (e: IOException) {
                                                         e.printStackTrace()
                                                     }
@@ -483,7 +467,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                             )
                                                     )
                                                     try {
-                                                        copy(finput, foutput)
+                                                        copyFile(finput, foutput)
                                                     } catch (e: IOException) {
                                                         e.printStackTrace()
                                                     }
@@ -497,8 +481,8 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                 assert(zipFolder != null)
                                                 // copio il file zip sulla shared storage
                                                 try {
-//                                                    copyFileZipFromInternalToSharedStorage(zipFolder,dirName + ".zip");
                                                     copyFileZipFromInternalToSharedStorage(
+                                                        context,
                                                         zipFolder,
                                                         "$dirName.zip"
                                                     )
@@ -532,6 +516,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                 val zipFileUri = documentFileNewFile.uri
                                                 try {
                                                     copyFileFromSharedToInternalStorage(
+                                                        context,
                                                         zipFileUri,
                                                         "$dirName.zip"
                                                     )
@@ -549,13 +534,13 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                                     e.printStackTrace()
                                                 }
                                                 // creo copia dei file suono
-                                                copyFilesInFolderToRoot("$rootPath/$dirName/sounds")
+                                                copyFilesInFolderToRoot(context,"$rootPath/$dirName/sounds")
                                                 // creo copia dei file video
-                                                copyFilesInFolderToRoot("$rootPath/$dirName/videos")
+                                                copyFilesInFolderToRoot(context,"$rootPath/$dirName/videos")
                                                 // creo copia dei file immagini
-                                                copyFilesInFolderToRoot("$rootPath/$dirName/images")
+                                                copyFilesInFolderToRoot(context,"$rootPath/$dirName/images")
                                                 // creo file csv
-                                                copyFilesInFolderToRoot("$rootPath/$dirName/csv")
+                                                copyFilesInFolderToRoot(context,"$rootPath/$dirName/csv")
                                                 // creo la storia
                                                 Sounds.importFromCsvFromInternalStorage(
                                                     context,
@@ -596,7 +581,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                                         // switch between Fragments).
                                         val ft = supportFragmentManager.beginTransaction()
                                         //
-                                        val frag = StoriesImportExportFragment()
+                                        val frag = StoriesImportExportFragment(R.layout.activity_settings_stories_import_export)
                                         //
                                         ft.replace(R.id.settings_container, frag)
                                         ft.addToBackStack(null)
@@ -608,9 +593,7 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                     }
                 }
             })
-    }//permission is automatically granted on sdk<23 upon installation
-    // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
-// Log.v(TAGPERMISSION,getString(R.string.permission_is_revoked));// Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
+    }
     /**
      * check permissions.
      *
@@ -633,324 +616,6 @@ class SettingsStoriesImportExportActivity : AccountActivityAbstractClass(),
                 )
                 false
             }
-
-    /**
-     * Zips a file at a location and places the resulting zip file at the toLocation
-     * Example: zipFileAtPath("downloads/myfolder", "downloads/myFolder.zip");
-     *
-     *
-     * Refer to [stackoverflow](https://stackoverflow.com/questions/6683600/zip-compress-a-folder-full-of-files-on-android)
-     * answer of [HailZeon](https://stackoverflow.com/users/2053024/hailzeon)
-     *
-     * @param sourcePath string
-     * @param toLocation string
-     * @return boolean
-     */
-    fun zipFileAtPath(sourcePath: String, toLocation: String?): Boolean {
-        val BUFFER = 2048
-        val sourceFile = File(sourcePath)
-        try {
-            val origin: BufferedInputStream?
-            val dest = FileOutputStream(toLocation)
-            val out = ZipOutputStream(
-                BufferedOutputStream(
-                    dest
-                )
-            )
-            if (sourceFile.isDirectory) {
-                zipSubFolder(out, sourceFile, sourceFile.parent!!.length)
-            } else {
-                val data = ByteArray(BUFFER)
-                val fi = FileInputStream(sourcePath)
-                origin = BufferedInputStream(fi, BUFFER)
-                val entry = ZipEntry(getLastPathComponent(sourcePath))
-                entry.time = sourceFile.lastModified() // to keep modification time after unzipping
-                out.putNextEntry(entry)
-                var count: Int
-                while (origin.read(data, 0, BUFFER).also { count = it } != -1) {
-                    out.write(data, 0, count)
-                }
-            }
-            out.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        }
-        return true
-    }
-
-    /*
-     *
-     * Zips a subfolder
-     *
-     */
-    @Throws(IOException::class)
-    private fun zipSubFolder(
-        out: ZipOutputStream, folder: File,
-        basePathLength: Int
-    ) {
-        val BUFFER = 2048
-        val fileList = folder.listFiles()
-        var origin: BufferedInputStream?
-        for (file in fileList!!) {
-            if (file.isDirectory) {
-                zipSubFolder(out, file, basePathLength)
-            } else {
-                val data = ByteArray(BUFFER)
-                val unmodifiedFilePath = file.path
-                val relativePath = unmodifiedFilePath
-                    .substring(basePathLength)
-                val fi = FileInputStream(unmodifiedFilePath)
-                origin = BufferedInputStream(fi, BUFFER)
-                val entry = ZipEntry(relativePath)
-                entry.time = file.lastModified() // to keep modification time after unzipping
-                out.putNextEntry(entry)
-                var count: Int
-                while (origin.read(data, 0, BUFFER).also { count = it } != -1) {
-                    out.write(data, 0, count)
-                }
-                origin.close()
-            }
-        }
-    }
-
-    /*
-     * gets the last path component
-     *
-     * Example: getLastPathComponent("downloads/example/fileToZip");
-     * Result: "fileToZip"
-     */
-    fun getLastPathComponent(filePath: String): String {
-        val segments = filePath.split("/".toRegex()).toTypedArray()
-        return if (segments.size == 0) "" else segments[segments.size - 1]
-    }
-
-    /**
-     * unzip file with subdirectories.
-     *
-     *
-     * REFER to [stackoverflow](https://stackoverflow.com/questions/43672241/how-to-unzip-file-with-sub-directories-in-android)
-     * answer of [A.B.](https://stackoverflow.com/users/4914757/a-b)
-     * Refer to [support.google.com](https://support.google.com/faqs/answer/9294009)
-     * Refer to [stackoverflow](https://stackoverflow.com/questions/56303842/fixing-a-zip-path-traversal-vulnerability-in-android)
-     * answer of [Indra Kumar S](https://stackoverflow.com/users/3577946/indra-kumar-s)
-     *
-     * @param destination file
-     * @param zipFile file
-     * @return boolean
-     */
-    @Throws(ZipException::class, IOException::class)
-    private fun extractFolder(destination: File, zipFile: File): Boolean {
-        val BUFFER = 8192
-        //      File file = zipFile;
-        //This can throw ZipException if file is not valid zip archive
-        val zip = ZipFile(zipFile)
-        //      String newPath = destination.getAbsolutePath() + File.separator + FilenameUtils.removeExtension(zipFile.getName());
-        val newPath = destination.absolutePath + File.separator + stripExtension(
-            zipFile.name.substring(zipFile.name.lastIndexOf("/") + 1)
-        )
-        //Create destination directory
-        File(newPath).mkdir()
-        val zipFileEntries: Enumeration<*> = zip.entries()
-
-        //Iterate overall zip file entries
-        while (zipFileEntries.hasMoreElements()) {
-            val entry = zipFileEntries.nextElement() as ZipEntry
-            val currentEntry = entry.name
-            val destFile = File(destination.absolutePath, currentEntry)
-            //
-            // String canonicalPath = destFile.getCanonicalPath();
-            try {
-                ensureZipPathSafety(destFile, destination)
-            } catch (e: Exception) {
-                // SecurityException
-                e.printStackTrace()
-                return false
-            }
-            //            if (!canonicalPath.startsWith(destination.getAbsolutePath())) {
-            // SecurityException
-//            }
-            // Finish unzipping…
-            //
-            val destinationParent = destFile.parentFile
-            //If entry is directory create sub directory on file system
-            destinationParent!!.mkdirs()
-            if (!entry.isDirectory) {
-                //Copy over data into destination file
-                val `is` = BufferedInputStream(
-                    zip
-                        .getInputStream(entry)
-                )
-                var currentByte: Int
-                val data = ByteArray(BUFFER)
-                //orthodox way of copying file data using streams
-                val fos = FileOutputStream(destFile)
-                val dest = BufferedOutputStream(fos, BUFFER)
-                while (`is`.read(data, 0, BUFFER).also { currentByte = it } != -1) {
-                    dest.write(data, 0, currentByte)
-                }
-                dest.flush()
-                dest.close()
-                `is`.close()
-            }
-        }
-        return true //some error codes etc.
-    }
-
-    /**
-     * ensure Zip Path Safety.
-     *
-     *
-     * Refer to [stackoverflow](https://stackoverflow.com/questions/56303842/fixing-a-zip-path-traversal-vulnerability-in-android)
-     * answer of [Indra Kumar S](https://stackoverflow.com/users/3577946/indra-kumar-s)
-     *
-     * @param destFile file
-     * @param destination directory
-     */
-    @Throws(Exception::class)
-    private fun ensureZipPathSafety(destFile: File, destination: File) {
-        val destDirCanonicalPath = destination.canonicalPath
-        val destFileCanonicalPath = destFile.canonicalPath
-        if (!destFileCanonicalPath.startsWith(destDirCanonicalPath)) {
-            throw Exception(
-                String.format(
-                    "Found Zip Path Traversal Vulnerability with %s",
-                    destFileCanonicalPath
-                )
-            )
-        }
-    }
-    //
-    /**
-     * copy sounds images and videos to root internal storage.
-     *
-     *
-     * Refer to [stackoverflow](https://stackoverflow.com/questions/4447477/how-to-copy-files-from-assets-folder-to-sdcard)
-     * answer of [Rohith Nandakumar](https://stackoverflow.com/users/481239/rohith-nandakumar)
-     *
-     * @param dirName string folder to copy
-     * @see .copyFile
-     */
-    private fun copyFilesInFolderToRoot(dirName: String) {
-//      AssetManager assetManager = getAssets();
-        val fDirName = File(dirName)
-        val files: Array<String>?
-        files = fDirName.list()
-        if (files != null) {
-            for (filename in files) {
-                var `in`: InputStream? = null
-                var out: OutputStream? = null
-                try {
-                    `in` = FileInputStream("$dirName/$filename")
-                    //                  in = context.openFileInput(dirName + "/" + filename);
-                    //
-                    out = context.openFileOutput(filename, MODE_PRIVATE)
-                    copyFile(`in`, out)
-                } catch (e: IOException) {
-                    // Log.e("tag", "Failed to copy asset file: " + filename, e);
-                } finally {
-                    if (`in` != null) {
-                        try {
-                            `in`.close()
-                        } catch (e: IOException) {
-                            // NOOP
-                        }
-                    }
-                    if (out != null) {
-                        try {
-                            out.close()
-                        } catch (e: IOException) {
-                            // NOOP
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * copy file.
-     *
-     *
-     * Refer to [stackoverflow](https://stackoverflow.com/questions/4447477/how-to-copy-files-from-assets-folder-to-sdcard)
-     * answer of [Rohith Nandakumar](https://stackoverflow.com/users/481239/rohith-nandakumar)
-     *
-     * @param in inputstream
-     * @param out outputstream
-     */
-    @Throws(IOException::class)
-    private fun copyFile(`in`: InputStream, out: OutputStream?) {
-        val buffer = ByteArray(1024)
-        var read: Int
-        while (`in`.read(buffer).also { read = it } != -1) {
-            out!!.write(buffer, 0, read)
-        }
-    }
-
-    /**
-     * copy file.
-     *
-     *
-     *
-     * @param outputFolder documentfile
-     * @param destFileName string
-     */
-    @Throws(IOException::class)
-    fun copyFileZipFromInternalToSharedStorage(outputFolder: DocumentFile?, destFileName: String?) {
-        val sourceStream: InputStream = context.openFileInput(destFileName)
-        val documentFileNewFile = outputFolder!!.createFile("application/zip", destFileName!!)!!
-        val destStream = context.contentResolver.openOutputStream(
-            documentFileNewFile.uri
-        )
-        val buffer = ByteArray(1024)
-        var read: Int
-        while (sourceStream.read(buffer).also { read = it } != -1) {
-            destStream!!.write(buffer, 0, read)
-        }
-        destStream?.close()
-        sourceStream.close()
-    }
-
     companion object {
-        /**
-         * copy file.
-         *
-         *
-         * Refer to [stackoverflow](https://stackoverflow.com/questions/9292954/how-to-make-a-copy-of-a-file-in-android)
-         * answer of [Rakshi](https://stackoverflow.com/users/979752/rakshi)
-         *
-         * @param src file source
-         * @param dst file destination
-         */
-        @Throws(IOException::class)
-        fun copy(src: File?, dst: File?) {
-            FileInputStream(src).use { `in` ->
-                FileOutputStream(dst).use { out ->
-                    // Transfer bytes from in to out
-                    val buf = ByteArray(1024)
-                    var len: Int
-                    while (`in`.read(buf).also { len = it } > 0) {
-                        out.write(buf, 0, len)
-                    }
-                }
-            }
-        }
-
-        /**
-         * strip file name extension.
-         *
-         *
-         * REFER to [stackoverflow](https://stackoverflow.com/questions/7541550/remove-the-extension-of-a-file)
-         * answer of [palacsint](https://stackoverflow.com/users/843804/palacsint)
-         *
-         * @param s string file name
-         * @return string file name without extension
-         */
-        fun stripExtension(s: String?): String {
-            return if (s != null && s.lastIndexOf(".") > 0) s.substring(
-                0,
-                s.lastIndexOf(".")
-            ) else s!!
-        }
     }
 }

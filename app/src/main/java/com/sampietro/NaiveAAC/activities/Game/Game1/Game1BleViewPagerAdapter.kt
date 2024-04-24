@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import io.realm.Realm
 
@@ -73,7 +74,7 @@ class Game1BleViewPagerAdapter
                 bundle.putString("RIGHT ARROW", "N")
             }
             //
-            fragment = Game1FirstLevelFragment()
+            fragment = Game1FirstLevelFragment(R.layout.activity_game_1_viewpager_content)
             fragment.arguments = bundle
         }
         assert(fragment != null)

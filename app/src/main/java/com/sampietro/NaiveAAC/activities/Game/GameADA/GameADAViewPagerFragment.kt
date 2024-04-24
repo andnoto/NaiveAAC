@@ -1,6 +1,5 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentAbstractClass
 import io.realm.RealmResults
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import android.app.Activity
@@ -9,20 +8,20 @@ import android.content.res.Configuration
 import com.sampietro.NaiveAAC.activities.Game.Utils.CenterVideoView
 import android.media.MediaPlayer
 import com.sampietro.NaiveAAC.R
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import android.speech.tts.TextToSpeech
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import android.util.Log
 import android.view.View
 import android.widget.*
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
+import androidx.annotation.LayoutRes
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchNegationAdverb
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
 import io.realm.Realm
-import java.io.File
 import java.io.IOException
 import java.lang.Exception
 import java.util.*
@@ -34,16 +33,17 @@ import java.util.*
  *
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameFragmentAbstractClass
  *
  * @see GameADAViewPagerActivity
  */
-class GameADAViewPagerFragment : GameFragmentAbstractClass() {
+class GameADAViewPagerFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
+    lateinit var rootView: View
+    //
     var sharedStory: String? = null
     lateinit var resultsStories: RealmResults<Stories>
     var wordToDisplay: Stories? = null
-//    var phraseToDisplayIndex = 0
     var wordToDisplayIndex = 0
 
     //
@@ -95,8 +95,6 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
         /*
         ADAPTED FOR VIDEO AND SOUND
          */
-//        soundMediaPlayer = new MediaPlayer();
-        //
         centerVideoView = CenterVideoView(context)
         centerVideoView.setOnInfoListener { mediaPlayer, i, i1 ->
             if (i == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
@@ -113,15 +111,13 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
      * Refer to [raywenderlich.com](https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started)
      * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_game_ada_viewpager_content, container, false)
-        return rootView
+    ) {
+        rootView = view
     }
     //
     /**
@@ -152,14 +148,9 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
                 .equalTo(
                     ctext.getString(R.string.wordnumberintinthestory),
                     wordToDisplayIndex + 1
-                ) //                            .equalTo("phraseNumberInt", phraseToDisplayIndex)
-                //                            .notEqualTo("wordNumberInt", 0)
-                //                            .lessThan("wordNumberInt", 99)
+                )
                 .endGroup()
                 .findAll()
-            //
-            //
-//            resultsStories = resultsStories.sort("wordNumberInt");
             //
             wordToDisplay = resultsStories.get(0)
             //
@@ -174,14 +165,13 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
             // search for negation adverbs
             val imageGameImage2 = rootView.findViewById<ImageView>(R.id.gameimage2)
             imageGameImage2.visibility = View.INVISIBLE
-            val negationAdverbImageToSearchFor = GrammarHelper.searchNegationAdverb(
+            val negationAdverbImageToSearchFor = searchNegationAdverb(
                 ctext,
                 wordToDisplay!!.word!!.lowercase(Locale.getDefault()), realm
             )
             if (negationAdverbImageToSearchFor != ctext.getString(R.string.non_trovato)) {
                 // INTERNAL MEMORY IMAGE SEARCH
-                val uriToSearch = ImageSearchHelper.searchUri(ctext, realm, negationAdverbImageToSearchFor)
-                // imageGameImage2.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                val uriToSearch = searchUri(ctext, realm, negationAdverbImageToSearchFor)
                 addImage("S", uriToSearch, imageGameImage2, 200, 200)
                 imageGameImage2.visibility = View.VISIBLE
             }
@@ -264,7 +254,6 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
                     mp.isLooping = true
                 }
                 //
-//                media_container = rootView.findViewById(R.id.gameimageFL)
                 media_container = frameLayout
                 media_container!!.setOnClickListener(View.OnClickListener { view ->
                     media_containerOnClickListener.receiveOnClickGameImage(
@@ -280,27 +269,7 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
             wordToDisplayIndex + 1
         )
         //
-        listener.receiveResultGameFragment(rootView)
-    }
-    //
-    /**
-     * load an image in imageview from a url or from a file
-     *
-     * @param urlType if string equal to "A" the image is loaded from a url otherwise it is loaded from a file
-     * @param url string with url or file path of origin
-     * @param img target imageview
-     * @param width int with the width of the target imageview
-     * @param height int with the height of the target imageview
-     * @see GraphicsHelper.addImageUsingPicasso
-     */
-    override fun addImage(urlType: String, url: String?, img: ImageView?, width: Int, height: Int) {
-        val imageSize = calculateImageSize()
-        if (urlType == "A") {
-            GraphicsHelper.addImageUsingPicasso(url, img, imageSize, imageSize)
-        } else {
-            val f = File(url!!)
-            GraphicsHelper.addFileImageUsingPicasso(f, img, imageSize, imageSize)
-        }
+//        listener.receiveResultGameFragment(rootView)
     }
     /*
         ADAPTED FOR VIDEO AND SOUND
@@ -316,7 +285,6 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
             configuration.screenWidthDp //The current width of the available screen space, in dp units, corresponding to screen width resource qualifier.
         val screenHeightDp = configuration.screenHeightDp
         val orientation = requireActivity().resources.configuration.orientation
-//        var imageSize = 0
         val imageSize = if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             // code for portrait mode
             screenWidthDp
@@ -387,7 +355,8 @@ class GameADAViewPagerFragment : GameFragmentAbstractClass() {
     override fun onStop() {
         releasePlayer()
         super.onStop()
-    } /*
+    }
+    /*
 
      */
 }

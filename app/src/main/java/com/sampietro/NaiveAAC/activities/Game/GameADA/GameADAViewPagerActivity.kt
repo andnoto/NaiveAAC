@@ -1,7 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA
 
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.checkPermission
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
 import android.speech.tts.TextToSpeech
 import android.media.MediaPlayer
 import androidx.viewpager2.widget.ViewPager2
@@ -14,9 +13,9 @@ import android.content.Intent
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import android.view.View
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
+import android.view.Window
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClass
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
 import io.realm.Realm
 
 /**
@@ -28,7 +27,7 @@ import io.realm.Realm
  * Refer to [raywenderlich.com](https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started)
  * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see GameActivityAbstractClass
  *
  * @see GameADAViewPagerAdapter
@@ -36,6 +35,9 @@ import io.realm.Realm
 class GameADAViewPagerActivity : GameActivityAbstractClass(),
     GameADAViewPagerOnFragmentEventListener, GameADAViewPagerOnFragmentSoundMediaPlayerListener,
     GameADAViewPagerMediaContainerOnClickListener {
+    // USED FOR FULL SCREEN
+    lateinit var mywindow: Window
+    //
     var sharedStory: String? = null
     var phraseToDisplay = 0
     var wordToDisplay = 0
@@ -81,7 +83,6 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
         override fun onPageSelected(position: Int) {
             super.onPageSelected(position)
             //  update activity variables
-//            wordToDisplayInTheStoryIndex = position;
             /*
             ADAPTED FOR VIDEO AND SOUND
             */
@@ -178,17 +179,8 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
         /*
         USED FOR FULL SCREEN
          */
-//        val mContentView:ViewGroup = findViewById(R.id.activity_game_ada_viewpager_id)
-        setToFullScreen()
-//        val viewTreeObserver = mContentView.getViewTreeObserver()
-//        if (viewTreeObserver.isAlive) {
-//            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-//                override fun onGlobalLayout() {
-//                    mContentView.getViewTreeObserver().removeOnGlobalLayoutListener(this)
-//                }
-//            })
-//        }
-//        mContentView.setOnClickListener(View.OnClickListener { view: View? -> setToFullScreen() })
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         /*
 
          */
@@ -200,7 +192,6 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
         val resultsStories: RealmResults<Stories> = realm.where(Stories::class.java)
             .beginGroup()
             .equalTo(getString(R.string.story), sharedStory)
-//            .notEqualTo("wordNumberInt", 0)
             .greaterThan(getString(R.string.wordnumberint), 0)
             .lessThan(getString(R.string.wordnumberint), 99)
             .endGroup()
@@ -210,7 +201,6 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
         // viewpager
         // Wire Adapter with ViewPager2
         mViewPager = findViewById<View>(R.id.pager) as ViewPager2
-//        val lifecycle: Lifecycle = getLifecycle()
         mAdapter = GameADAViewPagerAdapter(
             supportFragmentManager, lifecycle, context, realm,
             sharedStory!!, wordToDisplayInTheStory - 1, gameUseVideoAndSound!!, resultsStories
@@ -232,7 +222,8 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
         USED FOR FULL SCREEN
          */
         super.onResume()
-        setToFullScreen()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         /*
 
          */
@@ -273,21 +264,6 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
     }
 
     /**
-     * This method is responsible to transfer into fullscreen mode.
-     */
-    private fun setToFullScreen() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        insetsController.hide(WindowInsetsCompat.Type.statusBars())
-        insetsController.hide(WindowInsetsCompat.Type.navigationBars())
-//        findViewById<View>(R.id.activity_game_ada_viewpager_id).systemUiVisibility =
-//            View.SYSTEM_UI_FLAG_LOW_PROFILE or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-    }
-    //
-    /**
      * Called when the user taps the home button.
      *
      *
@@ -295,7 +271,7 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
      * @see ChoiseOfGameActivity
      */
     fun returnHome(v: View?) {
-        /*
+    /*
                 navigate to home screen (ChoiseOfGameActivity)
     */
         val intent = Intent(this, ChoiseOfGameActivity::class.java)
@@ -311,7 +287,7 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
      * @see VerifyActivity
      */
     fun returnSettings(v: View?) {
-        /*
+    /*
                 navigate to settings screen (ChoiseOfGameActivity)
     */
         val intent = Intent(this, VerifyActivity::class.java)
@@ -349,17 +325,6 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
         intent.putExtra(getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
         startActivity(intent)
     }
-
-    /**
-     * Called on result of speech.
-     *
-     * @param editText string result from SpeechRecognizerManagement
-     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
-     */
-//    @RequiresApi(api = Build.VERSION_CODES.N)
-    override fun onResult(editText: String?) {
-    }
-
     /**
      * on callback from GameADAViewPagerFragment to this Activity
      *

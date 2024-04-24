@@ -1,9 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -13,6 +10,7 @@ import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNames
 import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNamesViewModel
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
@@ -28,7 +26,7 @@ import io.realm.Sort
  *
  * @see SettingsActivity
  */
-class ListsOfNamesFragment : SettingsFragmentAbstractClass() {
+class ListsOfNamesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     /*
     used for viewmodel
     */
@@ -44,25 +42,23 @@ class ListsOfNamesFragment : SettingsFragmentAbstractClass() {
     private var adapter: ListsOfNamesAdapter? = null
 
     /**
-     * prepares the ui also using a listview and makes the callback to the activity
+     * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see ListsOfNames
      *
      * @see ListsOfNamesAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_lists_of_names, container, false)
+    ) {
         // logic of fragment
-        val keywordtoadd = rootView.findViewById<View>(R.id.keywordtoadd) as EditText
-        val nametoadd = rootView.findViewById<View>(R.id.nametoadd) as EditText
-        val elementactivetoadd = rootView.findViewById<View>(R.id.elementactive) as EditText
-        val ismenuitemtoadd = rootView.findViewById<View>(R.id.ismenuitem) as EditText
+        val keywordtoadd = view.findViewById<View>(R.id.keywordtoadd) as EditText
+        val nametoadd = view.findViewById<View>(R.id.nametoadd) as EditText
+        val elementactivetoadd = view.findViewById<View>(R.id.elementactive) as EditText
+        val ismenuitemtoadd = view.findViewById<View>(R.id.ismenuitem) as EditText
         /*
         Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
          constructor.
@@ -101,14 +97,10 @@ class ListsOfNamesFragment : SettingsFragmentAbstractClass() {
         val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
         results = results.sort(mStrings1, mStrings2)
         //
-        listView = rootView.findViewById<View>(R.id.listview) as ListView
+        listView = view.findViewById<View>(R.id.listview) as ListView
         //
         adapter = ListsOfNamesAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
-        //
-        listener.receiveResultSettings(rootView)
-        //
-        return rootView
     }
 }

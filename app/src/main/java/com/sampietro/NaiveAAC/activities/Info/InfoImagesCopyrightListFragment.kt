@@ -1,14 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Info
 
-import com.sampietro.NaiveAAC.activities.Info.Utils.InfoFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Graphics.ImagesCopyrightAdapter
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Graphics.Images
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
@@ -19,12 +17,12 @@ import io.realm.Sort
  * **InfoImagesCopyrightListFragment** UI for images copyright list
  *
  *
- * @version
+ * @version 5.0, 01/04/2024
  * @see InfoFragmentAbstractClass
  *
  * @see InfoActivity
  */
-class InfoImagesCopyrightListFragment : InfoFragmentAbstractClass() {
+class InfoImagesCopyrightListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     private lateinit var realm: Realm
 
     //
@@ -32,7 +30,7 @@ class InfoImagesCopyrightListFragment : InfoFragmentAbstractClass() {
     private lateinit var adapter: ImagesCopyrightAdapter
 
     /**
-     * prepares the ui also using a listview and makes the callback to the activity
+     * prepares the ui also using a listview
      *
      * @see androidx.fragment.app.Fragment.onCreateView
      *
@@ -40,12 +38,10 @@ class InfoImagesCopyrightListFragment : InfoFragmentAbstractClass() {
      *
      * @see ImagesCopyrightAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_copyright_list, container, false)
+    ) {
         // logic of fragment
         // ListView
         // 1) we get a reference to the data structure through the RealmResults class which constitutes
@@ -69,12 +65,10 @@ class InfoImagesCopyrightListFragment : InfoFragmentAbstractClass() {
         val mStrings2 = arrayOf(Sort.ASCENDING)
         results = results.sort(mStrings1, mStrings2)
         //
-        listView = rootView.findViewById<View>(R.id.listview) as ListView
+        listView = view.findViewById<View>(R.id.listview) as ListView
         //
         adapter = ImagesCopyrightAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
-        //
-        return rootView
     }
 }

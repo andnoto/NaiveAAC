@@ -9,6 +9,7 @@ import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromAssetsToInternalStorage
 import com.sampietro.NaiveAAC.activities.Info.InfoActivity
 import com.sampietro.NaiveAAC.activities.Info.EulaActivity
 import io.realm.Realm
@@ -52,10 +53,6 @@ class AccountActionbarFragment : Fragment() {
      */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.account_activity_display_message_menu_main, menu)
-        //
-//        if (menu is MenuBuilder) {
-//            menu.setOptionalIconsVisible(true)
-//        }
     }
 
     /**
@@ -75,7 +72,13 @@ class AccountActionbarFragment : Fragment() {
                 /*
                 navigate to manual
                 */try {
-                    copyPdfFromAssetsToInternalStorage("naive aac manuale istruzioni.pdf")
+                    assert(Realm.getApplicationContext() != null)
+                    copyFileFromAssetsToInternalStorage(
+                        Realm.getApplicationContext()!!,
+                        "pdf",
+                        "naive aac manuale istruzioni.pdf",
+                        "naive aac manuale istruzioni.pdf"
+                    )
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -116,7 +119,13 @@ class AccountActionbarFragment : Fragment() {
                 /*
                 navigate to privacy policy
                 */try {
-                    copyPdfFromAssetsToInternalStorage("privacy.pdf")
+                    assert(Realm.getApplicationContext() != null)
+                    copyFileFromAssetsToInternalStorage(
+                        Realm.getApplicationContext()!!,
+                        "pdf",
+                        "privacy.pdf",
+                        "privacy.pdf"
+                    )
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -141,24 +150,4 @@ class AccountActionbarFragment : Fragment() {
         }
     }
 
-    /**
-     * copy file.
-     *
-     *
-     *
-     */
-    @Throws(IOException::class)
-    private fun copyPdfFromAssetsToInternalStorage(nameOfThePdfFile: String) {
-        assert(Realm.getApplicationContext() != null)
-        val sourceStream = Realm.getApplicationContext()!!.assets.open("pdf/$nameOfThePdfFile")
-        val destStream = Realm.getApplicationContext()!!
-            .openFileOutput(nameOfThePdfFile, Context.MODE_PRIVATE)
-        val buffer = ByteArray(1024)
-        var read: Int
-        while (sourceStream.read(buffer).also { read = it } != -1) {
-            destStream.write(buffer, 0, read)
-        }
-        destStream.close()
-        sourceStream.close()
-    }
 }

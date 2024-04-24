@@ -12,11 +12,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImageUsingPicasso
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import io.realm.Realm
-import java.io.File
 import java.util.Locale
 
 class Game1BleDialogFragment: DialogFragment()  {
@@ -47,7 +47,6 @@ class Game1BleDialogFragment: DialogFragment()  {
     //
     lateinit var listenAgainButton: ImageButton
     lateinit var continueGameButton: ImageButton
-//    lateinit var messageToDisplay: TextView
     //
     lateinit var sendToBlueToothImage: ImageView
     //
@@ -92,21 +91,18 @@ class Game1BleDialogFragment: DialogFragment()  {
         if (oneWord[0] != getString(R.string.nessuno) && oneWord[0] != " " && preference_TitleWritingType == getString(R.string.uppercase))
         { leftColumnContent = oneWord[0]!!.uppercase(Locale.getDefault()) }
         else { leftColumnContent = oneWord[0]!!.lowercase(Locale.getDefault()) }
-//        leftColumnContent = oneWord[0]
         leftColumnContentUrlType = oneWord[1]
         leftColumnContentUrl = oneWord[2]
         leftColumnContentWord = oneWord[3]
         if (oneWord[4] != getString(R.string.nessuno) && oneWord[4] != " " && preference_TitleWritingType == getString(R.string.uppercase))
         { middleColumnContent = oneWord[4]!!.uppercase(Locale.getDefault()) }
         else { middleColumnContent = oneWord[4]!!.lowercase(Locale.getDefault()) }
-//        middleColumnContent = oneWord[4]
         middleColumnContentUrlType = oneWord[5]
         middleColumnContentUrl = oneWord[6]
         middleColumnContentWord = oneWord[7]
         if (oneWord[8] != getString(R.string.nessuno) && oneWord[8] != " " && preference_TitleWritingType == getString(R.string.uppercase))
         { rightColumnContent = oneWord[8]!!.uppercase(Locale.getDefault()) }
         else { rightColumnContent = oneWord[8]!!.lowercase(Locale.getDefault()) }
-//        rightColumnContent = oneWord[8]
         rightColumnContentUrlType = oneWord[9]
         rightColumnContentUrl = oneWord[10]
         rightColumnContentWord = oneWord[11]
@@ -141,7 +137,6 @@ class Game1BleDialogFragment: DialogFragment()  {
         continueGameButton = rootView.findViewById<View>(R.id.dialog_continuegamebutton) as ImageButton
         continueGameButton.setOnClickListener { view -> listenerGame1BleDialogFragment.receiveResultOnClickFromGame1DialogFragment(view) }
         //
-//        messageToDisplay = rootView.findViewById<View>(R.id.dialog_message_to_display) as TextView
         sendToBlueToothImage = rootView.findViewById<View>(R.id.dialog_sendtobluetoothimage) as ImageView
         sendToBlueToothImage.setOnClickListener { view -> listenerGame1BleDialogFragment.receiveResultOnClickFromGame1DialogFragment(view) }
         //
@@ -159,19 +154,15 @@ class Game1BleDialogFragment: DialogFragment()  {
         title3 = rootView.findViewById<View>(R.id.dialog_title3) as TextView
 
         //
-//        messageToDisplay.setText(leftColumnContent + " " + middleColumnContent + " " + rightColumnContent)
-        //
         if (deviceEnabledUserName != "non trovato")
         {
             val image: ResponseImageSearch?
-            image = ImageSearchHelper.imageSearch(ctext, realm, deviceEnabledUserName)
+            image = imageSearch(ctext, realm, deviceEnabledUserName)
             addImage(image!!.uriType, image.uriToSearch, sendToBlueToothImage, 150, 150)
         }
         else {
-//            val uri = ctext.filesDir.absolutePath + "/images/puntointerrogativo.png"
-//            addImage("S", uri, sendToBlueToothImage, 150, 150)
             val assetsUrl = "file:///android_asset/" + "images/puntointerrogativo.png"
-            GraphicsHelper.addImageUsingPicasso(assetsUrl, sendToBlueToothImage, 150, 150)
+            addImageUsingPicasso(assetsUrl, sendToBlueToothImage, 150, 150)
         }
         //
         if (leftColumnContent != getString(R.string.nessuno) && leftColumnContent != " ")
@@ -179,12 +170,12 @@ class Game1BleDialogFragment: DialogFragment()  {
             title1.text = leftColumnContent
             if (leftColumnContentUrlType == "A")
             {
-                GraphicsHelper.addImageUsingPicasso(leftColumnContentUrl, img1, 150, 150)
+                addImageUsingPicasso(leftColumnContentUrl, img1, 150, 150)
             }
             else
             {
                 val image: ResponseImageSearch?
-                image = ImageSearchHelper.imageSearch(ctext, realm, leftColumnContentWord)
+                image = imageSearch(ctext, realm, leftColumnContentWord)
                 addImage(image!!.uriType, image.uriToSearch, img1, 150, 150)
             }
         }
@@ -193,12 +184,12 @@ class Game1BleDialogFragment: DialogFragment()  {
             title2.text = middleColumnContent
             if (middleColumnContentUrlType == "A")
             {
-                GraphicsHelper.addImageUsingPicasso(middleColumnContentUrl, img2, 150, 150)
+                addImageUsingPicasso(middleColumnContentUrl, img2, 150, 150)
             }
             else
             {
                 val image: ResponseImageSearch?
-                image = ImageSearchHelper.imageSearch(ctext, realm, middleColumnContentWord)
+                image = imageSearch(ctext, realm, middleColumnContentWord)
                 addImage(image!!.uriType, image.uriToSearch, img2, 150, 150)
             }
         }
@@ -207,12 +198,12 @@ class Game1BleDialogFragment: DialogFragment()  {
             title3.text = rightColumnContent
             if (rightColumnContentUrlType == "A")
             {
-                GraphicsHelper.addImageUsingPicasso(rightColumnContentUrl, img3, 150, 150)
+                addImageUsingPicasso(rightColumnContentUrl, img3, 150, 150)
             }
             else
             {
                 val image: ResponseImageSearch?
-                image = ImageSearchHelper.imageSearch(ctext, realm, rightColumnContentWord)
+                image = imageSearch(ctext, realm, rightColumnContentWord)
                 addImage(image!!.uriType, image.uriToSearch, img3, 150, 150)
             }
 
@@ -223,24 +214,6 @@ class Game1BleDialogFragment: DialogFragment()  {
         return rootView
     }
 
-    /**
-     * load an image in imageview from a url or from a file
-     *
-     * @param urlType if string equal to "A" the image is loaded from a url otherwise it is loaded from a file
-     * @param url string with url or file path of origin
-     * @param img target imageview
-     * @param width int with the width of the target imageview
-     * @param height int with the height of the target imageview
-     * @see GraphicsHelper.addImageUsingPicasso
-     */
-    fun addImage(urlType: String, url: String?, img: ImageView?, width: Int, height: Int) {
-        if (urlType == "A") {
-            GraphicsHelper.addImageUsingPicasso(url, img, width, height)
-        } else {
-            val f = File(url!!)
-            GraphicsHelper.addFileImageUsingPicasso(f, img, width, height)
-        }
-    }
     companion object {
 
         //  apply

@@ -1,14 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.WordPairs.VoiceToBeRecordedInWordPairs
 import com.sampietro.NaiveAAC.activities.WordPairs.VoiceToBeRecordedInWordPairsViewModel
 
@@ -23,7 +21,7 @@ import com.sampietro.NaiveAAC.activities.WordPairs.VoiceToBeRecordedInWordPairsV
  *
  * @see SettingsActivity
  */
-class WordPairsFragment : SettingsFragmentAbstractClass() {
+class WordPairsFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     /*
     used for viewmodel
     */
@@ -32,27 +30,26 @@ class WordPairsFragment : SettingsFragmentAbstractClass() {
 
      */
     /**
-     * prepares the ui and makes the callback to the activity
+     * prepares the ui
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see com.sampietro.simsimtest.activities.WordPairs.WordPairs
      *
      * @see com.sampietro.simsimtest.activities.WordPairs.WordPairsAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_wordpairs, container, false)
+    ) {
+//        rootView = inflater.inflate(R.layout.activity_settings_wordpairs, container, false)
         // logic of fragment
-        val firstword = rootView.findViewById<View>(R.id.firstword) as EditText
-        val secondword = rootView.findViewById<View>(R.id.secondword) as EditText
-        val complement = rootView.findViewById<View>(R.id.complement) as EditText
-        val awardtype = rootView.findViewById<View>(R.id.awardtype) as EditText
-        val uripremiumvideo = rootView.findViewById<View>(R.id.uripremiumvideo) as TextView
-        val linkyoutube = rootView.findViewById<View>(R.id.linkyoutube) as EditText
+        val firstword = view.findViewById<View>(R.id.firstword) as EditText
+        val secondword = view.findViewById<View>(R.id.secondword) as EditText
+        val complement = view.findViewById<View>(R.id.complement) as EditText
+        val awardtype = view.findViewById<View>(R.id.awardtype) as EditText
+        val uripremiumvideo = view.findViewById<View>(R.id.uripremiumvideo) as TextView
+        val linkyoutube = view.findViewById<View>(R.id.linkyoutube) as EditText
         /*
         Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
          constructor.
@@ -74,9 +71,5 @@ class WordPairsFragment : SettingsFragmentAbstractClass() {
                     if (voiceToBeRecordedInWordPairs.awardType == "Y")
                         { linkyoutube.setText(voiceToBeRecordedInWordPairs.uriPremiumVideo) }
             }
-        //
-        listener.receiveResultSettings(rootView)
-        //
-        return rootView
     }
 }

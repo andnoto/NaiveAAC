@@ -1,9 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Info
 
-import com.sampietro.NaiveAAC.activities.Info.Utils.InfoFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Graphics.SoundsCopyrightAdapter
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
@@ -11,6 +8,7 @@ import com.sampietro.NaiveAAC.R
 import android.widget.TextView
 import io.realm.RealmResults
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import io.realm.Realm
 import io.realm.Sort
 
@@ -20,12 +18,11 @@ import io.realm.Sort
  * **InfoSoundsCopyrightListFragment** UI for Sounds copyright list
  *
  *
- * @version
- * @see InfoFragmentAbstractClass
+ * @version     5.0, 01/04/2024
  *
  * @see InfoActivity
  */
-class InfoSoundsCopyrightListFragment : InfoFragmentAbstractClass() {
+class InfoSoundsCopyrightListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     private lateinit var realm: Realm
 
     //
@@ -33,22 +30,20 @@ class InfoSoundsCopyrightListFragment : InfoFragmentAbstractClass() {
     private lateinit var adapter: SoundsCopyrightAdapter
 
     /**
-     * prepares the ui also using a listview and makes the callback to the activity
+     * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see Sounds
      *
      * @see SoundsCopyrightAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_copyright_list, container, false)
+    ) {
         // logic of fragment
-        val myTextView = rootView.findViewById<View>(R.id.textviewcopyright) as TextView
+        val myTextView = view.findViewById<View>(R.id.textviewcopyright) as TextView
         myTextView.text = "COPYRIGHT SUONI"
         // ListView
         // 1) we get a reference to the data structure through the RealmResults class which constitutes
@@ -72,12 +67,10 @@ class InfoSoundsCopyrightListFragment : InfoFragmentAbstractClass() {
         val mStrings2 = arrayOf(Sort.ASCENDING)
         results = results.sort(mStrings1, mStrings2)
         //
-        listView = rootView.findViewById<View>(R.id.listview) as ListView
+        listView = view.findViewById<View>(R.id.listview) as ListView
         //
         adapter = SoundsCopyrightAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
-        //
-        return rootView
     }
 }

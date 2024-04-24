@@ -7,6 +7,7 @@ import android.os.Bundle
 import com.sampietro.NaiveAAC.R
 import android.content.Intent
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 
 /**
@@ -14,7 +15,7 @@ import androidx.fragment.app.FragmentManager
  *
  * **RequestConsentToTheProcessingOfPersonalDataActivity** requires consent to the processing of personal data
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  */
 class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() {
     //
@@ -29,7 +30,6 @@ class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() 
      * configurations of account start screen.
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see RequestConsentToTheProcessingOfPersonalDataFragment
      *
      * @see android.app.Activity.onCreate
      */
@@ -44,7 +44,7 @@ class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() 
             fragmentManager!!.beginTransaction()
                 .add(
                     R.id.game_container,
-                    RequestConsentToTheProcessingOfPersonalDataFragment(),
+                    Fragment(R.layout.activity_requestconsenttotheprocessingofpersonaldata),
                     "RequestConsentToTheProcessingOfPersonalDataFragment"
                 )
                 .commit()
@@ -59,7 +59,7 @@ class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() 
      * @param view view of tapped text
      */
     fun onClickInformativa(view: View?) {
-        val frag = InformativaFragment()
+        val frag = Fragment(R.layout.activity_privacy_information)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.game_container, frag, "InformativaFragment")
         ft.addToBackStack(null)
@@ -73,7 +73,7 @@ class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() 
      * @param view view of tapped text
      */
     fun onClickTermini(view: View?) {
-        val frag = TerminiFragment()
+        val frag = Fragment(R.layout.activity_eula_information,)
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.game_container, frag, "TerminiFragment")
         ft.addToBackStack(null)
@@ -119,6 +119,5 @@ class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() 
     }
 
     companion object {
-//        const val EXTRA_MESSAGE = "helloworldandroidMessage"
     }
 }

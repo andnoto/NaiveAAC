@@ -10,49 +10,37 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.View
+import android.view.Window
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-import androidx.print.PrintHelper
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothLeService
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Game.Utils.AndroidNotificationPermission
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper
-import com.sampietro.NaiveAAC.activities.Game.Utils.OnFragmentEventListenerGame
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyRegistration
 import com.sampietro.NaiveAAC.activities.Grammar.ComposesASentenceResults
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.composesASentence
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromFileUsingPicasso
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.getTargetBitmapFromUrlUsingPicasso
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
+import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
-import com.squareup.picasso.Picasso.LoadedFrom
-import com.squareup.picasso.Target
 import io.realm.Realm
-import java.io.File
 import java.util.*
-import kotlin.properties.Delegates
 
 /**
  * <h1>Game1BleActivity</h1>
@@ -79,17 +67,10 @@ import kotlin.properties.Delegates
  * @see Game1RecyclerViewAdapterInterface
  * @see BluetoothLeService
  */
-class Game1BleActivity : AppCompatActivity(),
-    OnFragmentEventListenerGame,
+class Game1BleActivity : GameActivityAbstractClass(),
     Game1RecyclerViewAdapterInterface,
     Game1BleSecondLevelFragment.onFragmentEventListenerGame1BleSecondLevelFragment,
     Game1BleDialogFragment.onFragmentEventListenerGame1BleDialogFragment {
-    //
-    lateinit var realm: Realm
-    lateinit var context: Context
-    lateinit var sharedPref: SharedPreferences
-    var sharedLastPhraseNumber by Delegates.notNull<Int>()
-    //
     // Code to manage Service lifecycle.
     var bluetoothService : BluetoothLeService? = null
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
@@ -154,6 +135,8 @@ class Game1BleActivity : AppCompatActivity(),
      *
      */
     var onCreateSavedInstanceState: Bundle? = null
+    // USED FOR FULL SCREEN
+    lateinit var mywindow: Window
 
     // TTS
     var tTS1: TextToSpeech? = null
@@ -168,14 +151,14 @@ class Game1BleActivity : AppCompatActivity(),
     // and three numbers which, if applicable, indicate the choice menus for each column
     // identified by PhraseNumber on History
     var leftColumnContent: String? = null
-    var leftColumnContentUrlType: String? = null
-    var leftColumnContentUrl: String? = null
+//    var leftColumnContentUrlType: String? = null
+//    var leftColumnContentUrl: String? = null
     var middleColumnContent: String? = null
-    var middleColumnContentUrlType: String? = null
-    var middleColumnContentUrl: String? = null
+//    var middleColumnContentUrlType: String? = null
+//    var middleColumnContentUrl: String? = null
     var rightColumnContent: String? = null
-    var rightColumnContentUrlType: String? = null
-    var rightColumnContentUrl: String? = null
+//    var rightColumnContentUrlType: String? = null
+//    var rightColumnContentUrl: String? = null
 
     //
     var leftColumnMenuPhraseNumber: Int? = null
@@ -199,21 +182,6 @@ class Game1BleActivity : AppCompatActivity(),
     //
     var preference_PrintPermissions: String? = null
     var preference_AllowedMarginOfError = 0
-    /**
-     * used for printing
-     */
-    var bitmap1: Bitmap? = null
-    /**
-     * used for printing
-     */
-    var target1: Target = object : Target {
-        override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
-            bitmap1 = bitmap
-        }
-
-        override fun onBitmapFailed(e: Exception, errorDrawable: Drawable) {}
-        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-    }
     //  ViewPager2
     // - 1) Create the views (activity_game_1_viewpager_content.xml)
     // - 2) Create the fragment (Game1ViewPagerFirstLevelFragment and Game1ViewPagerSecondLevelFragment)
@@ -305,7 +273,8 @@ class Game1BleActivity : AppCompatActivity(),
         /*
         USED FOR FULL SCREEN
         */
-        setToFullScreen()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         /*
 
         */
@@ -368,7 +337,8 @@ class Game1BleActivity : AppCompatActivity(),
     @SuppressLint("MissingPermission")
     override fun onResume() {
         super.onResume()
-        setToFullScreen()
+        mywindow = getWindow()
+        setToFullScreen(mywindow)
         //
         registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
         //
@@ -665,18 +635,6 @@ class Game1BleActivity : AppCompatActivity(),
         )
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState)
-    }
-    /**
-     * This method is responsible to transfer MainActivity into fullscreen mode.
-     */
-    private fun setToFullScreen() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        insetsController.hide(WindowInsetsCompat.Type.statusBars())
-        insetsController.hide(WindowInsetsCompat.Type.navigationBars())
     }
     /**
      * Called when the user taps the home button.
@@ -1031,7 +989,7 @@ class Game1BleActivity : AppCompatActivity(),
         //
         if (listOfWordsLeft.size != 0) {
             // History registration
-            GameHelper.historyRegistration(
+            historyRegistration(
                 context, realm,
                 leftColumnContent!!,
                 listOfWordsLeft, listOfWordsLeft.size
@@ -1042,7 +1000,7 @@ class Game1BleActivity : AppCompatActivity(),
         } else { leftColumnMenuPhraseNumber = 0 }
         if (listOfWordsCenter.size != 0) {
             // record History and initiate Fragment transaction
-            GameHelper.historyRegistration(
+            historyRegistration(
                 context, realm,
                 middleColumnContent!!,
                 listOfWordsCenter, listOfWordsCenter.size
@@ -1053,7 +1011,7 @@ class Game1BleActivity : AppCompatActivity(),
         } else { middleColumnMenuPhraseNumber = 0 }
         if (listOfWordsRight.size != 0) {
             // History registration
-            GameHelper.historyRegistration(
+            historyRegistration(
                 context, realm,
                 rightColumnContent!!,
                 listOfWordsRight, listOfWordsRight.size
@@ -1071,23 +1029,23 @@ class Game1BleActivity : AppCompatActivity(),
      * @see Game1BleSecondLevelFragment
      */
     fun fragmentTransactionStart() {
-        val frag = Game1BleSecondLevelFragment()
+        val frag = Game1BleSecondLevelFragment(R.layout.activity_game_1_ble)
         val bundle = Bundle()
         bundle.putString(getString(R.string.left_column_content), leftColumnContent)
-        bundle.putString(getString(R.string.left_column_content_url_type), leftColumnContentUrlType)
-        bundle.putString(getString(R.string.left_column_content_url), leftColumnContentUrl)
+//        bundle.putString(getString(R.string.left_column_content_url_type), leftColumnContentUrlType)
+//        bundle.putString(getString(R.string.left_column_content_url), leftColumnContentUrl)
         bundle.putString(getString(R.string.middle_column_content), middleColumnContent)
-        bundle.putString(
-            getString(R.string.middle_column_content_url_type),
-            middleColumnContentUrlType
-        )
-        bundle.putString(getString(R.string.middle_column_content_url), middleColumnContentUrl)
+//        bundle.putString(
+//            getString(R.string.middle_column_content_url_type),
+//            middleColumnContentUrlType
+//        )
+//        bundle.putString(getString(R.string.middle_column_content_url), middleColumnContentUrl)
         bundle.putString(getString(R.string.right_column_content), rightColumnContent)
-        bundle.putString(
-            getString(R.string.right_column_content_url_type),
-            rightColumnContentUrlType
-        )
-        bundle.putString(getString(R.string.right_column_content_url), rightColumnContentUrl)
+//        bundle.putString(
+//            getString(R.string.right_column_content_url_type),
+//            rightColumnContentUrlType
+//        )
+//        bundle.putString(getString(R.string.right_column_content_url), rightColumnContentUrl)
         bundle.putInt(
             getString(R.string.left_column_menu_phrase_number),
             leftColumnMenuPhraseNumber!!
@@ -1416,15 +1374,16 @@ class Game1BleActivity : AppCompatActivity(),
                     }
                     //
                     if (preference_PrintPermissions == getString(R.string.character_y)) {
-                        if (leftColumnContentUrlType == getString(R.string.character_a)) {
-                            getTargetBitmapFromUrlUsingPicasso(leftColumnContentUrl, target1)
-                        } else {
-                            val f = File(leftColumnContentUrl!!)
-                            getTargetBitmapFromFileUsingPicasso(f, target1)
-                        }
-                        val photoPrinter = PrintHelper(context)
-                        photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
-                        photoPrinter.printBitmap(getString(R.string.stampa_immagine1), bitmap1!!)
+                        // image search
+                        var image: ResponseImageSearch? = null
+                        image = imageSearch(context, realm, listOfWordsLeft[0])
+                        printImage(
+                            context,
+                            image!!.uriType,
+                            image.uriToSearch,
+                            200,
+                            200
+                        )
                     }
                 }
                 R.id.img2 -> {
@@ -1443,15 +1402,16 @@ class Game1BleActivity : AppCompatActivity(),
                     }
                     //
                     if (preference_PrintPermissions == getString(R.string.character_y)) {
-                        if (middleColumnContentUrlType == getString(R.string.character_a)) {
-                            getTargetBitmapFromUrlUsingPicasso(middleColumnContentUrl, target1)
-                        } else {
-                            val f = File(middleColumnContentUrl!!)
-                            getTargetBitmapFromFileUsingPicasso(f, target1)
-                        }
-                        val photoPrinter = PrintHelper(context)
-                        photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
-                        photoPrinter.printBitmap(getString(R.string.stampa_immagine1), bitmap1!!)
+                        // image search
+                        var image: ResponseImageSearch? = null
+                        image = imageSearch(context, realm, listOfWordsCenter[0])
+                        printImage(
+                            context,
+                            image!!.uriType,
+                            image.uriToSearch,
+                            200,
+                            200
+                        )
                     }
                 }
                 R.id.img3 -> {
@@ -1470,15 +1430,16 @@ class Game1BleActivity : AppCompatActivity(),
                     }
                     //
                     if (preference_PrintPermissions == "Y") {
-                        if (rightColumnContentUrlType == "A") {
-                            getTargetBitmapFromUrlUsingPicasso(rightColumnContentUrl, target1)
-                        } else {
-                            val f = File(rightColumnContentUrl!!)
-                            getTargetBitmapFromFileUsingPicasso(f, target1)
-                        }
-                        val photoPrinter = PrintHelper(context)
-                        photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
-                        photoPrinter.printBitmap(getString(R.string.stampa_immagine1), bitmap1!!)
+                        // image search
+                        var image: ResponseImageSearch? = null
+                        image = imageSearch(context, realm, listOfWordsRight[0])
+                        printImage(
+                            context,
+                            image!!.uriType,
+                            image.uriToSearch,
+                            200,
+                            200
+                        )
                     }
                 }
             }
@@ -1537,12 +1498,4 @@ class Game1BleActivity : AppCompatActivity(),
         //
         private const val TAG = "Game1BleActivity"
     }
-
-    /**
-     * on callback from GameFragment to this Activity
-     *
-     * @param v view root fragment view
-     */
-    override fun receiveResultGameFragment(v: View?) {}
-    //
 }

@@ -1,7 +1,5 @@
 package com.sampietro.NaiveAAC.activities.Settings.Utils
 
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.addImageUsingPicasso
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper.addFileImageUsingPicasso
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import androidx.recyclerview.widget.RecyclerView
 import android.app.Activity
@@ -11,9 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsHelper
 import android.widget.TextView
-import java.io.File
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 import java.util.ArrayList
 
 /**
@@ -24,9 +21,9 @@ import java.util.ArrayList
  * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
  * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see RecyclerView.Adapter<RecyclerView.ViewHolder>
-</RecyclerView.ViewHolder> */
+ */
 class ImageSearchArasaacRecyclerViewAdapter(
     private val context: Context, //
     private val galleryList: ArrayList<Game1ArrayList>
@@ -78,7 +75,8 @@ class ImageSearchArasaacRecyclerViewAdapter(
         //
         addImage(
             galleryList[i].urlType,
-            galleryList[i].url, viewHolder.img
+            galleryList[i].url, viewHolder.img,
+            200,200
         )
         //
         viewHolder.img.setOnClickListener { view ->
@@ -87,25 +85,6 @@ class ImageSearchArasaacRecyclerViewAdapter(
                 galleryList[i].image_title,
                 galleryList[i].url
             )
-        }
-    }
-
-    /**
-     * add an image as indicated in the parameters
-     *
-     * @param urlType string representing the type of icon displayed in the view.
-     * @param url string representing the path of icon displayed in the view.
-     * @param img imageview where the image will be added
-     * @see GraphicsHelper.addImageUsingPicasso
-     *
-     * @see GraphicsHelper.addFileImageUsingPicasso
-     */
-    fun addImage(urlType: String?, url: String?, img: ImageView?) {
-        if (urlType == "A") {
-            addImageUsingPicasso(url, img, 200, 200)
-        } else {
-            val f = File(url!!)
-            addFileImageUsingPicasso(f, img, 200, 200)
         }
     }
 

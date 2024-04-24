@@ -1,13 +1,11 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import io.realm.Realm
 
 /**
@@ -16,12 +14,12 @@ import io.realm.Realm
  * **StoriesVideosSearchFragment** UI for videos settings
  *
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see SettingsFragmentAbstractClass
  *
  * @see SettingsStoriesActivity
  */
-class StoriesVideosSearchFragment : SettingsFragmentAbstractClass() {
+class StoriesVideosSearchFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     private lateinit var realm: Realm
 
     //
@@ -29,20 +27,18 @@ class StoriesVideosSearchFragment : SettingsFragmentAbstractClass() {
     private var adapter: StoriesVideosSearchAdapter? = null
 
     /**
-     * prepares the ui also using a listview and makes the callback to the activity
+     * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see Videos
      *
      * @see StoriesVideosSearchAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_stories_videos, container, false)
+    ) {
         // logic of fragment
         realm = Realm.getDefaultInstance()
         // ListView
@@ -60,14 +56,10 @@ class StoriesVideosSearchFragment : SettingsFragmentAbstractClass() {
         // which will be your View "supplier".
         val results = realm.where(Videos::class.java).findAll()
         //
-        listView = rootView.findViewById<View>(R.id.listview) as ListView
+        listView = view.findViewById<View>(R.id.listview) as ListView
         //
         adapter = StoriesVideosSearchAdapter(ctext, results, listView, "VideoSearch")
         //
         listView.adapter = adapter
-        //
-        listener.receiveResultSettings(rootView)
-        //
-        return rootView
     }
 }

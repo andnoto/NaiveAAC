@@ -1,6 +1,5 @@
 package com.sampietro.NaiveAAC.activities.VoiceRecognition
 
-import android.app.Activity
 import android.content.Context
 import android.speech.SpeechRecognizer
 import android.content.Intent
@@ -10,7 +9,7 @@ import android.os.Bundle
 import java.lang.RuntimeException
 import java.util.*
 
-object SpeechRecognizerManagement : Activity() {
+object SpeechRecognizerManagement {
     private lateinit var recognizer: SpeechRecognizer
     private lateinit var recognizerIntent: Intent
     private lateinit var editText: String
@@ -19,7 +18,7 @@ object SpeechRecognizerManagement : Activity() {
     private lateinit var callback: RecognizerCallback
 
     //
-    //
+    @JvmStatic
     fun prepareSpeechRecognizer(context: Context) {
         recognizer = SpeechRecognizer.createSpeechRecognizer(context)
         recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
@@ -92,17 +91,19 @@ object SpeechRecognizerManagement : Activity() {
             )
         }
     }
-
+    @JvmStatic
     fun startSpeech() {
         recognizer.startListening(recognizerIntent)
     }
 
     //
+    @JvmStatic
     fun stopSpeech() {
         recognizer.stopListening()
     }
 
     //
+    @JvmStatic
     fun destroyRecognizer() {
         recognizer.destroy()
     } //

@@ -3,8 +3,6 @@ package com.sampietro.NaiveAAC.activities.Settings.Utils
 import com.android.volley.RequestQueue
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import android.widget.EditText
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -15,6 +13,7 @@ import org.json.JSONException
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.Request
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListener
 import java.util.ArrayList
 
 /**
@@ -28,7 +27,7 @@ import java.util.ArrayList
  *
  * @see SettingsActivity
  */
-class ImageSearchArasaacFragment : SettingsFragmentAbstractClass() {
+class ImageSearchArasaacFragment(contentLayoutId: Int) : FragmentAbstractClassWithListener(contentLayoutId) {
     //
     var keywordToSearchArasaac: String? = null
     private var mRequestQueue: RequestQueue? = null
@@ -46,23 +45,21 @@ class ImageSearchArasaacFragment : SettingsFragmentAbstractClass() {
      * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
      * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
      *
-     * @see androidx.fragment.app.Fragment.onCreateView
+     * @see androidx.fragment.app.Fragment.onViewCreated
      *
      * @see Game1ArrayList
      *
      * @see ImageSearchArasaacRecyclerViewAdapter
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+    override fun onViewCreated(
+        view: View,
         savedInstanceState: Bundle?
-    ): View {
-        rootView = inflater.inflate(R.layout.activity_settings_stories_arasaac, container, false)
+    ) {
         //
         val request: JsonArrayRequest
         //
         keywordArasaacToSearch =
-            rootView.findViewById<View>(R.id.keywordarasaactosearch) as EditText
+            view.findViewById<View>(R.id.keywordarasaactosearch) as EditText
         //
         val bundle = this.arguments
         //
@@ -113,7 +110,7 @@ class ImageSearchArasaacFragment : SettingsFragmentAbstractClass() {
                     }
                     //
                     val recyclerView =
-                        rootView.findViewById<View>(R.id.imagegallery) as RecyclerView
+                        view.findViewById<View>(R.id.imagegallery) as RecyclerView
                     recyclerView.setHasFixedSize(true)
                     val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
                     recyclerView.layoutManager = layoutManager
@@ -130,12 +127,10 @@ class ImageSearchArasaacFragment : SettingsFragmentAbstractClass() {
         }
         //
         val buttonSearchArasaac =
-            rootView.findViewById<View>(R.id.btn_search_arasaac) as ImageButton
+            view.findViewById<View>(R.id.btn_search_arasaac) as ImageButton
         buttonSearchArasaac.setOnClickListener {
             listener.receiveResultSettings(buttonSearchArasaac)
         }
-        //
-        return rootView
     }
 
     companion object {

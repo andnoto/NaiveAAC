@@ -3,12 +3,22 @@ package com.sampietro.NaiveAAC.activities.Account
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.ImageDecoder
+import android.net.Uri
 import android.os.Bundle
+import android.view.ContextThemeWrapper
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.snackbar.Snackbar
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAll
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModify
@@ -22,19 +32,24 @@ import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases
 import com.sampietro.NaiveAAC.activities.Settings.AccountFragment
-import com.sampietro.NaiveAAC.activities.Settings.Utils.AccountActivityAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.showImage
 import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.findExternalStorageRoot
-import com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass.onFragmentEventListenerSettings
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
 import org.json.JSONArray
 import org.json.JSONException
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.lang.Exception
+import java.net.URISyntaxException
+import java.util.Objects
 
 /**
  * <h1>AccountActivity</h1>
@@ -52,8 +67,7 @@ import java.io.OutputStream
  *
  * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  */
-class AccountActivityRealmCreation : AccountActivityAbstractClass(),
-    onFragmentEventListenerSettings {
+class AccountActivityRealmCreation : AccountActivityAbstractClass() {
     //
     var fragmentManager: FragmentManager? = null
 
@@ -94,7 +108,7 @@ class AccountActivityRealmCreation : AccountActivityAbstractClass(),
                 .add(AccountActionbarFragment(), "AccountActionbarFragment")
                 .add(
                     R.id.settings_container,
-                    AccountFragment(),
+                    AccountFragment(R.layout.activity_settings_account),
                     getString(R.string.account_fragment)
                 )
                 .commit()
@@ -343,7 +357,7 @@ class AccountActivityRealmCreation : AccountActivityAbstractClass(),
         editor.apply()
         // register the user in the shared preferences
         // and move on to the welcome activity
-        val editText = rootViewFragment!!.findViewById<View>(R.id.editTextTextAccount) as EditText
+        val editText = findViewById<View>(R.id.editTextTextAccount) as EditText
         textPersonName = editText.text.toString()
         // default
         if (textPersonName!!.length <= 0) textPersonName = "utente"
@@ -493,15 +507,6 @@ class AccountActivityRealmCreation : AccountActivityAbstractClass(),
             }
 
     /**
-     * on callback from SettingsFragment to this Activity
-     *
-     * @param v view root fragment view
-     */
-    override fun receiveResultSettings(v: View?) {
-        rootViewFragment = v
-    }
-    //
-    /**
      * open the copy realm file
      *
      * @param fileName string name of the output file
@@ -586,21 +591,124 @@ class AccountActivityRealmCreation : AccountActivityAbstractClass(),
         }
     } //    /**
 
-    //     * copy file.
-    //     * <p>
-    //     *
-    //     */
-    //    private void copyManualFromAssetsToInternalStorage() throws IOException {
-    //        InputStream sourceStream = getAssets().open("pdf" + "/" + "naive aac manuale istruzioni.pdf");
-    //        FileOutputStream destStream = openFileOutput("naive aac manuale istruzioni.pdf", Context.MODE_PRIVATE);
-    //        byte[] buffer = new byte[1024];
-    //        int read;
-    //        while((read = sourceStream.read(buffer)) != -1) {
-    //            destStream.write(buffer, 0, read);
-    //        }
-    //        destStream.close();
-    //        sourceStream.close();
-    //    }
+    // ActivityResultLauncher
+    var imageSearchAccountActivityResultLauncher: ActivityResultLauncher<Intent>? = null
+    @JvmField
+    var uri: Uri? = null
+    @JvmField
+    var filePath: String? = null
+    lateinit var byteArray: ByteArray
+    //
+    /**
+     * setting callbacks to search for images and videos via ACTION_OPEN_DOCUMENT which is
+     * the intent to choose a file via the system's file browser
+     *
+     *
+     * Refer to [stackoverflow](https://stackoverflow.com/questions/62671106/onactivityresult-method-is-deprecated-what-is-the-alternative)
+     * answer of [Muntashir Akon](https://stackoverflow.com/users/4147849/muntashir-akon)
+     * and
+     * Refer to [stackoverflow](https://stackoverflow.com/questions/56651444/deprecated-getbitmap-with-api-29-any-alternative-codes)
+     * answer of [Ally](https://stackoverflow.com/users/6258197/ally)
+     *
+     * @see getFilePath
+     *
+     * @see showImage
+     */
+    fun setActivityResultLauncher() {
+        // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+        imageSearchAccountActivityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            object : ActivityResultCallback<ActivityResult?> {
+                //                @RequiresApi(Build.VERSION_CODES.P)
+                override fun onActivityResult(result: ActivityResult?) {
+                    if (result!!.resultCode == RESULT_OK) {
+                        // There are no request codes
+                        val resultData = result.data
+                        // doSomeOperations();
+                        uri = null
+                        filePath = getString(R.string.non_trovato)
+                        //
+                        if (resultData != null) {
+                            uri = Objects.requireNonNull(resultData).data
+                            //
+                            try {
+                                filePath = getFilePath(context, uri)
+                            } catch (e: URISyntaxException) {
+                                e.printStackTrace()
+                            }
+                            //
+                            if (filePath != getString(R.string.non_trovato))
+                            {
+                                if (filePath == "da download") {
+                                    val ctw = ContextThemeWrapper(context, R.style.CustomSnackbarTheme)
+                                    val snackbar = Snackbar.make(
+                                        ctw,
+                                        findViewById(R.id.imageviewaccounticon),
+                                        "al momento l'app non è in grado di accedere ad immagini nella cartella download",
+                                        10000
+                                    )
+                                    snackbar.setTextMaxLines(5)
+                                    snackbar.setTextColor(Color.BLACK)
+                                    snackbar.show()
+                                }
+                                else {
+                                    val takeFlags =
+                                        resultData.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                    context.contentResolver.takePersistableUriPermission(
+                                        uri!!,
+                                        takeFlags
+                                    )
+                                    //
+                                    var bitmap: Bitmap? = null
+                                    //
+                                    try {
+                                        val source = ImageDecoder.createSource(
+                                            context.contentResolver,
+                                            uri!!
+                                        )
+                                        bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                                            decoder.setTargetSampleSize(1) // shrinking by
+                                            decoder.isMutableRequired = true // this resolve the hardware type of bitmap problem
+                                        }
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+                                    //
+                                    //
+                                    val stream = ByteArrayOutputStream()
+                                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                                    byteArray = stream.toByteArray()
+                                    //
+                                    val myImage: ImageView
+                                    myImage = findViewById<View>(R.id.imageviewaccounticon) as ImageView
+                                    showImage(context, uri, myImage)
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+    }
+    /**
+     * Called when the user taps the image search button.
+     *
+     * @param v view of tapped button
+     */
+    fun imageSearch(v: View) {
+        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
+        // browser.
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        // Filter to only show results that can be "opened", such as a
+        // file (as opposed to a list of contacts or timezones)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        // Filter to show only images, using the image MIME data type.
+        // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
+        // To search for all documents available via installed storage providers,
+        // it would be "*/*".
+        intent.type = "image/*"
+        /*  the instructions of the button */
+        imageSearchAccountActivityResultLauncher!!.launch(intent)
+    }
     companion object {
         //
         private const val TAG = "VERBO"
