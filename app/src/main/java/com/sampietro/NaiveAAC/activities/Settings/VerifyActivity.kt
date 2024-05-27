@@ -1,20 +1,19 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import com.sampietro.NaiveAAC.activities.Settings.VerifyFragment.onFragmentEventListenerVerify
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import android.content.Intent
 import android.view.View
 import android.view.Window
-import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
-import java.lang.NumberFormatException
+import com.sampietro.NaiveAAC.activities.Settings.VerifyFragment.onFragmentEventListenerVerify
 
 /**
  * <h1>AccountActivityAbstractClass</h1>
@@ -142,9 +141,7 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
      * @param view view of tapped button
      * @see VerifyFragment
      *
-     * @see .receiveResultToVerify
-     *
-     * @see MenuSettingsFragment
+     * @see receiveResultToVerify
      */
     fun submitVerification(view: View?) {
         val editText =
@@ -172,9 +169,6 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
      *
      *
      * @param view view of tapped button
-     * @see VerifyPasswordFragment
-     *
-     * @see MenuSettingsFragment
      */
     fun submitVerificationPassword(view: View?) {
         val passwordToBeVerifiedET = findViewById<View>(R.id.passwordToBeVerified) as EditText

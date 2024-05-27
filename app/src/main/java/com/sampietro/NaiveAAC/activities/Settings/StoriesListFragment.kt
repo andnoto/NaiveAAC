@@ -1,18 +1,18 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter
-import android.widget.EditText
-import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
-import com.sampietro.NaiveAAC.R
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
-import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
-import io.realm.RealmResults
 import com.sampietro.NaiveAAC.activities.Stories.Stories
+import com.sampietro.NaiveAAC.activities.Stories.StoriesListAdapter
+import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
+import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
 import io.realm.Realm
+import io.realm.RealmResults
 import io.realm.Sort
 import java.util.*
 
@@ -24,21 +24,19 @@ import java.util.*
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/communicate)
  *
  * @version     5.0, 01/04/2024
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @see FragmentAbstractClass
  *
- * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
+ * @see SettingsStoriesActivity
  */
 class StoriesListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     private lateinit var realm: Realm
 
     //
     private var listView: ListView? = null
-    private var adapter: StoriesAdapter? = null
+    private var adapter: StoriesListAdapter? = null
 
     //
-    var storyToSearch: EditText? = null
-    var phraseNumberToSearch: EditText? = null
-
+    var storyToSearch: TextView? = null
     //
     private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
 
@@ -47,9 +45,9 @@ class StoriesListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentL
      *
      * @see androidx.fragment.app.Fragment.onViewCreated
      *
-     * @see com.sampietro.NaiveAAC.activities.Stories.Stories
+     * @see Stories
      *
-     * @see com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter
+     * @see StoriesListAdapter
      */
     override fun onViewCreated(
         view: View,
@@ -70,13 +68,13 @@ class StoriesListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentL
         // 3) we retrieve the ListView prepared in the layout and assign it the reference to the adapter
         // which will be your View "supplier".
         //
-        storyToSearch = view.findViewById<View>(R.id.keywordstorytosearch) as EditText
-        phraseNumberToSearch = view.findViewById<View>(R.id.phrasenumbertosearch) as EditText
+        storyToSearch = view.findViewById<View>(R.id.keywordstorytosearch) as TextView
         /*
         Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
         constructor.
         The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
-         */viewModel = ViewModelProvider(requireActivity()).get(
+         */
+        viewModel = ViewModelProvider(requireActivity()).get(
             VoiceToBeRecordedInStoriesViewModel::class.java
         )
         viewModel.getSelectedItem()
@@ -85,36 +83,32 @@ class StoriesListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentL
                 realm = Realm.getDefaultInstance()
                 var results: RealmResults<Stories>
                 storyToSearch!!.setText(voiceToBeRecordedInStories.story)
-                phraseNumberToSearch!!.setText(String.format(Locale.getDefault(), "%d",voiceToBeRecordedInStories.phraseNumberInt))
+                val phraseNumberToSearch = 1
+                val wordNumberToSearch = 0
                 //
                 results = if (voiceToBeRecordedInStories.story == getString(R.string.nome_storia)) {
-                    realm.where(Stories::class.java).findAll()
+                    realm.where(Stories::class.java)
+                        .equalTo(getString(R.string.phrasenumberint), phraseNumberToSearch)
+                        .equalTo(getString(R.string.wordnumberint), wordNumberToSearch)
+                        .findAll()
                 } else {
-                    if (voiceToBeRecordedInStories.phraseNumberInt == 0) {
                         realm.where(Stories::class.java)
                             .equalTo(
                                 getString(R.string.story),
                                 voiceToBeRecordedInStories.story!!.lowercase(Locale.getDefault())
                             )
+                            .equalTo(getString(R.string.phrasenumberint), phraseNumberToSearch)
+                            .equalTo(getString(R.string.wordnumberint), wordNumberToSearch)
                             .findAll()
-                    } else {
-                        realm.where(Stories::class.java)
-                            .equalTo(
-                                getString(R.string.story),
-                                voiceToBeRecordedInStories.story!!.lowercase(Locale.getDefault())
-                            )
-                            .equalTo(getString(R.string.phrasenumberint), voiceToBeRecordedInStories.phraseNumberInt)
-                            .findAll()
-                    }
                 }
                 //
-                val mStrings1 = arrayOf(getString(R.string.story), getString(R.string.phrasenumberint), getString(R.string.wordnumberint))
-                val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
+                val mStrings1 = arrayOf(getString(R.string.story))
+                val mStrings2 = arrayOf(Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
                 //
                 listView = view.findViewById<View>(R.id.listview) as ListView
                 //
-                adapter = StoriesAdapter(ctext, results, listView!!)
+                adapter = StoriesListAdapter(ctext, results, listView!!)
                 //
                 listView!!.adapter = adapter
             }

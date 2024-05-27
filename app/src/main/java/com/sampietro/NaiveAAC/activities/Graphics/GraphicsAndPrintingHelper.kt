@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ImageDecoder
@@ -14,6 +15,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
+import android.util.Base64
 import android.view.View
 import android.view.Window
 import android.widget.ImageView
@@ -25,17 +27,13 @@ import androidx.print.PrintHelper
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAArrayList
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.getApplicationContext
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import io.realm.Realm
 import java.io.File
 import java.io.IOException
-import java.lang.Exception
-import java.lang.NullPointerException
-import java.util.ArrayList
+import java.net.URL
 import java.util.Locale
-import java.util.NoSuchElementException
 
 /**
  * <h1>GraphicsAndPrintingHelper</h1>
@@ -755,5 +753,165 @@ object GraphicsAndPrintingHelper {
     private fun dpToPx(context: Context, dp: Int): Int {
         val density = context.getApplicationContext().resources.displayMetrics.density
         return Math.round(dp.toFloat() * density)
+    }
+    /**
+     * print phrase.
+     *
+     *
+     * @param context Context
+     * @param realm Realm
+     * @param galleryList ArrayList<GameADAArrayList> with images to print
+     * @see printPhraseCacheImages
+     *
+     * @see printPhraseCreateMergedImages
+     */
+    @JvmStatic
+    fun printPhraseUsingReadBytes(context: Context, realm: Realm, galleryList: ArrayList<GameADAArrayList>) {
+        /**
+         * used for printing
+         */
+        var mergedImages: Bitmap? = null
+        mergedImages = printPhraseCreateMergedImagesUsingReadBytes(context, realm,  galleryList)
+        //
+//        printPhraseCacheImages(context, realm, galleryList)
+        val TIME_OUT = 2500
+        Handler(Looper.getMainLooper()).postDelayed({
+//            mergedImages = printPhraseCreateMergedImages(context, realm,  galleryList)
+            //
+            val photoPrinter = PrintHelper(context)
+            photoPrinter.scaleMode = PrintHelper.SCALE_MODE_FIT
+            photoPrinter.printBitmap(context.getString(R.string.stampa_immagine1), mergedImages!!)
+        }, TIME_OUT.toLong())
+    }
+    /**
+     * it merge images for printing
+     *
+     * @param context Context
+     * @param realm Realm
+     * @param galleryList ArrayList<GameADAArrayList> with images to print
+     * @return bitmap single image created from multiple images
+     *
+     * @see getTargetBitmapFromUrlUsingPicasso
+     * @see getTargetBitmapFromFileUsingPicasso
+     * @see GrammarHelper.searchNegationAdverb
+     * @see ImageSearchHelper.searchUri
+     * @see createSingleImageSuperimposedFromMultipleImages
+     * @see createSingleImageFromImageAndTitlePlacingThemVertically
+     * @see createSingleImageFromMultipleImages
+     */
+    @JvmStatic
+    fun printPhraseCreateMergedImagesUsingReadBytes(context: Context,realm: Realm, galleryList: ArrayList<GameADAArrayList>): Bitmap? {
+        var mergedImages: Bitmap? = null
+        var bitmap1: Bitmap? = null
+        var bitmap2: Bitmap? = null
+        /**
+         * used for printing
+         */
+        var target1: Target = object : Target {
+            override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+                bitmap1 = bitmap
+            }
+
+            override fun onBitmapFailed(e: Exception, errorDrawable: Drawable) {}
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+        }
+
+        /**
+         * used for printing
+         */
+        var target2: Target = object : Target {
+            override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom) {
+                bitmap2 = bitmap
+            }
+
+            override fun onBitmapFailed(e: Exception, errorDrawable: Drawable) {}
+            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
+        }
+        //
+        val count = galleryList.size
+        if (count != 0) {
+            //
+            var imagesContainedInARow = 0
+            var nrows = 1
+            var ncolumns = 1
+            //
+            var irrh = 0
+            while (irrh < count) {
+                if (galleryList[irrh].urlType == "A") {
+                    val url = URL(galleryList[irrh].url)
+                    val imageData = url.readBytes()
+                    val decodedBytes = Base64.decode(imageData, Base64.DEFAULT)
+                    bitmap1 = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+//                    getTargetBitmapFromUrlUsingPicasso(galleryList[irrh].url, target1, 200,200)
+                } else {
+                    bitmap1 = BitmapFactory.decodeFile(galleryList[irrh].url!!)
+//                    val f = File(galleryList[irrh].url!!)
+//                    getTargetBitmapFromFileUsingPicasso(f, target1, 200, 200)
+                }
+                // search for negation adverbs
+                val negationAdverbImageToSearchFor = GrammarHelper.searchNegationAdverb(
+                    context,
+                    galleryList[irrh].image_title!!.lowercase(Locale.getDefault()), realm
+                )
+                if (negationAdverbImageToSearchFor != context.getString(R.string.non_trovato)) {
+                    // INTERNAL MEMORY IMAGE SEARCH
+                    val uriToSearch =
+                        ImageSearchHelper.searchUri(context, realm, negationAdverbImageToSearchFor)
+                    val f = File(uriToSearch)
+                    getTargetBitmapFromFileUsingPicasso(f, target2, 200, 200)
+                    // addImage("S", uriToSearch, viewHolder.img2);
+                    bitmap1 = createSingleImageSuperimposedFromMultipleImages(bitmap1, bitmap2)
+                }
+                // adding title
+                bitmap1 = createSingleImageFromImageAndTitlePlacingThemVertically(
+                    bitmap1,
+                    galleryList[irrh].image_title!!
+                )
+                //
+                if (irrh == 0) {
+                    if (count > 24) {
+                        imagesContainedInARow = 7
+                        mergedImages = Bitmap.createBitmap(
+                            bitmap1!!.width * 7,
+                            bitmap1!!.height * 5,
+                            bitmap1!!.config
+                        )
+                    } else if (count > 15) {
+                        imagesContainedInARow = 6
+                        mergedImages = Bitmap.createBitmap(
+                            bitmap1!!.width * 6,
+                            bitmap1!!.height * 4,
+                            bitmap1!!.config
+                        )
+                    } else if (count > 12) {
+                        imagesContainedInARow = 5
+                        mergedImages = Bitmap.createBitmap(
+                            bitmap1!!.width * 5,
+                            bitmap1!!.height * 3,
+                            bitmap1!!.config
+                        )
+                    } else {
+                        imagesContainedInARow = 4
+                        mergedImages = Bitmap.createBitmap(
+                            bitmap1!!.width * 4,
+                            bitmap1!!.height * 3,
+                            bitmap1!!.config
+                        )
+                    }
+                } else {
+                    ncolumns++
+                    if (ncolumns > imagesContainedInARow) {
+                        nrows++
+                        ncolumns = 1
+                    }
+                }
+                val firstImage = mergedImages
+                mergedImages =
+                    createSingleImageFromMultipleImages(firstImage, bitmap1, nrows, ncolumns)
+                irrh++
+            }
+        }
+        //
+        return mergedImages
     }
 }

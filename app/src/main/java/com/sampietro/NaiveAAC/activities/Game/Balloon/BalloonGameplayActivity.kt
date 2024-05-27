@@ -144,8 +144,6 @@ class BalloonGameplayActivity : AppCompatActivity(), BalloonListener {
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         insetsController.hide(WindowInsetsCompat.Type.statusBars())
         insetsController.hide(WindowInsetsCompat.Type.navigationBars())
-//        findViewById<View>(R.id.activity_game_balloon_gameplay_id).systemUiVisibility =
-//            View.SYSTEM_UI_FLAG_LOW_PROFILE or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
     }
 
     /**

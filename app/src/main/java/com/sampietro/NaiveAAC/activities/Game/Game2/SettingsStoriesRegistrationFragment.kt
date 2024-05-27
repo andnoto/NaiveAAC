@@ -1,9 +1,10 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
-import android.widget.ImageButton
-import android.widget.EditText
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,12 +17,11 @@ import com.sampietro.NaiveAAC.R
  *
  *
  * @version     5.0, 01/04/2024
- * @see GameFragmentAbstractClass
  * @see Game2FragmentAbstractClass
  *
  * @see Game2Activity
  */
-class SettingsStoriesQuickRegistrationFragment(@LayoutRes contentLayoutId : Int = 0) : Game2FragmentAbstractClass(contentLayoutId) {
+class SettingsStoriesRegistrationFragment(@LayoutRes contentLayoutId : Int = 0) : Game2FragmentAbstractClass(contentLayoutId) {
     var keywordStoryToAdd: String? = ""
     var phraseNumberToAdd: String? = ""
     /**
@@ -41,12 +41,6 @@ class SettingsStoriesQuickRegistrationFragment(@LayoutRes contentLayoutId : Int 
         view: View,
         savedInstanceState: Bundle?
     ) {
-//        rootView = inflater.inflate(
-//            R.layout.activity_settings_stories_quick_registration_recycler_view,
-//            container,
-//            false
-//        )
-        //
         hearingImageButton = view.findViewById<View>(R.id.btn_start) as ImageButton
         hearingImageButton.setImageResource(R.drawable.ic_baseline_hearing_36_red) //set the image programmatically
         //
@@ -60,8 +54,8 @@ class SettingsStoriesQuickRegistrationFragment(@LayoutRes contentLayoutId : Int 
             phraseNumberToAdd = bundle.getString(getString(R.string.phrasenumbertoadd))
             sentenceToAdd.setText(bundle.getString(getString(R.string.etext)))
             //
-            val keywordstorytoadd = view.findViewById<View>(R.id.keywordstorytoadd) as EditText
-            val phrasenumbertoadd = view.findViewById<View>(R.id.phrasenumbertoadd) as EditText
+            val keywordstorytoadd = view.findViewById<View>(R.id.keywordstorytoadd) as TextView
+            val phrasenumbertoadd = view.findViewById<View>(R.id.phrasenumbertoadd) as TextView
             keywordstorytoadd.setText(keywordStoryToAdd)
             phrasenumbertoadd.setText(phraseNumberToAdd)
             //
@@ -78,8 +72,5 @@ class SettingsStoriesQuickRegistrationFragment(@LayoutRes contentLayoutId : Int 
             recyclerView1.adapter = adapter1
             //
         }
-        //
-//        listener.receiveResultGameFragment(rootView)
-//        return rootView
     }
 }

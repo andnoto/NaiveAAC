@@ -10,7 +10,7 @@ import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.history.History
-import java.util.*
+import java.util.Locale
 
 /**
  * <h1>Game1SecondLevelFragment</h1>

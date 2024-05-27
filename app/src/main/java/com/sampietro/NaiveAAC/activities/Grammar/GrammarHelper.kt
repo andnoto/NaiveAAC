@@ -6,12 +6,12 @@ import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAll
 import com.sampietro.NaiveAAC.activities.Game.Game1.GetResultsWordPairsList
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames.Companion.checksWhetherWordRepresentsAClass
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames.Companion.listOfMembers
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames.Companion.searchesForThePossibleClassToWhichAWordBelongs
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * <h1>GrammarHelper</h1>
@@ -1897,39 +1897,41 @@ object GrammarHelper {
             && rightColumnContentToReturn != context.getString(R.string.nessuno)
         ) {
             // ricerca complementi
-            val resultsWordPairs = realm.where(WordPairs::class.java)
-                .beginGroup()
-                .equalTo(context.getString(R.string.word1), middleColumnContentVerbInTheInfinitiveForm)
-                .equalTo(context.getString(R.string.word2), rightColumnContentToReturn)
-                .endGroup()
-                .findAll()
-            val resultsWordPairsSize = resultsWordPairs.size
-            if (resultsWordPairsSize != 0) {
-                val resultWordPairs = resultsWordPairs[0]!!
-                val rightColumnComplement = resultWordPairs.complement
-                if (rightColumnComplement != " " && rightColumnComplement != "") {
-                    rightColumnContentToReturn = "$rightColumnComplement $rightColumnContentToReturn"
-                } else {
-                    //
-                    // adds the corresponding article
-                    // search if plural
-                    // if gender male / female
-                    verbOfMovement = searchVerbsOfMovement(
-                        context,
-                        middleColumnContentVerbInTheInfinitiveForm,
-                        realm
-                    )
-                    pluralToSearchRealm = searchPlural(context, rightColumnContentToReturn, realm)
-                    genderToSearchRealm = searchGender(context,
-                        rightColumnContentToReturn, realm)
-                    val articleToSearch = searchArticle(
-                        context,
-                        rightColumnContentToReturn,
-                        genderToSearchRealm, pluralToSearchRealm, verbOfMovement, realm
-                    )
-                    rightColumnContentToReturn = articleToSearch + rightColumnContentToReturn
+            val complement = searchComplement(context, realm,
+                middleColumnContentVerbInTheInfinitiveForm!!, rightColumnContentToReturn)
+//            val resultsWordPairs = realm.where(WordPairs::class.java)
+//                .beginGroup()
+//                .equalTo(context.getString(R.string.word1), middleColumnContentVerbInTheInfinitiveForm)
+//                .equalTo(context.getString(R.string.word2), rightColumnContentToReturn)
+//                .endGroup()
+//                .findAll()
+//            val resultsWordPairsSize = resultsWordPairs.size
+//            if (resultsWordPairsSize != 0) {
+//                val resultWordPairs = resultsWordPairs[0]!!
+//                val rightColumnComplement = resultWordPairs.complement
+//                if (rightColumnComplement != " " && rightColumnComplement != "") {
+            if (complement != "non trovato") {
+                middleColumnContentToReturn = "$middleColumnContentToReturn $complement"
                 }
-            }
+            //
+            // adds the corresponding article
+            // search if plural
+            // if gender male / female
+            verbOfMovement = searchVerbsOfMovement(
+                context,
+                middleColumnContentVerbInTheInfinitiveForm,
+                realm
+            )
+            pluralToSearchRealm = searchPlural(context, rightColumnContentToReturn, realm)
+            genderToSearchRealm = searchGender(context,
+                rightColumnContentToReturn, realm)
+            val articleToSearch = searchArticle(
+                context,
+                rightColumnContentToReturn,
+                genderToSearchRealm, pluralToSearchRealm, verbOfMovement, realm
+            )
+            rightColumnContentToReturn = articleToSearch + rightColumnContentToReturn
+//            }
         }
         return ComposesASentenceResults(numberOfWordsChosenToReturn,
             leftColumnContentToReturn,
@@ -1939,5 +1941,39 @@ object GrammarHelper {
             listOfWordsCenterToReturn as ArrayList<String>,
             listOfWordsRightToReturn as ArrayList<String>
         )
+    }
+    @JvmStatic
+    fun searchComplement(
+        context: Context,
+        realm: Realm,
+        verbInTheInfinitiveForm: String,
+        word: String
+    ): String {
+        var resultsWordPairs = realm.where(WordPairs::class.java)
+            .beginGroup()
+            .equalTo(context.getString(R.string.word1), verbInTheInfinitiveForm)
+            .equalTo(context.getString(R.string.word2), word)
+            .endGroup()
+            .findAll()
+        var resultsWordPairsSize = resultsWordPairs.size
+        if (resultsWordPairsSize != 0) {
+            val resultWordPairs = resultsWordPairs[0]!!
+            return resultWordPairs.complement!!
+        }
+        else {
+            val classToWhichAWordBelongs = searchesForThePossibleClassToWhichAWordBelongs(context, word, realm)
+            resultsWordPairs = realm.where(WordPairs::class.java)
+                .beginGroup()
+                .equalTo(context.getString(R.string.word1), verbInTheInfinitiveForm)
+                .equalTo(context.getString(R.string.word2), classToWhichAWordBelongs)
+                .endGroup()
+                .findAll()
+            resultsWordPairsSize = resultsWordPairs.size
+            if (resultsWordPairsSize != 0) {
+                val resultWordPairs = resultsWordPairs[0]!!
+                return resultWordPairs.complement!!
+            }
+        }
+        return "non trovato"
     }
 }

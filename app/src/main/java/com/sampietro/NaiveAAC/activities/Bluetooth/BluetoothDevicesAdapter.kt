@@ -1,24 +1,24 @@
 package com.sampietro.NaiveAAC.activities.Bluetooth
 
-import android.widget.BaseAdapter
-import android.view.ViewGroup
-import android.view.LayoutInflater
-import com.sampietro.NaiveAAC.R
-import android.widget.TextView
-import android.widget.ImageButton
 import android.app.Activity
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.ListView
+import android.widget.TextView
+import com.sampietro.NaiveAAC.R
 import io.realm.Realm
 
 /**
  * this adapter is the View "supplier" for the listview in the UI for Bluetooth Devices settings.
  *
  * @version     4.0, 09/09/2023
- * @see com.sampietro.simsimtest.activities.Settings.BluetoothDevicesFragment
+ * @see BluetoothDevicesFragment
  *
- * @see com.sampietro.simsimtest.activities.Settings.SettingsActivity
+ * @see SettingsActivity
  */
 class BluetoothDevicesAdapter(
     private val context: Context,

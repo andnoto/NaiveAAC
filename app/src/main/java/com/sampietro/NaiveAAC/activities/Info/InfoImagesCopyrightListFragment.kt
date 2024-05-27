@@ -1,12 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Info
 
-import com.sampietro.NaiveAAC.activities.Graphics.ImagesCopyrightAdapter
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.Graphics.Images
+import com.sampietro.NaiveAAC.activities.Graphics.ImagesCopyrightAdapter
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
@@ -18,7 +18,6 @@ import io.realm.Sort
  *
  *
  * @version 5.0, 01/04/2024
- * @see InfoFragmentAbstractClass
  *
  * @see InfoActivity
  */

@@ -1,11 +1,11 @@
 package com.sampietro.NaiveAAC.activities.BaseAndAbstractClass
 
-import android.widget.TextView
-import android.content.SharedPreferences
-import android.speech.tts.TextToSpeech
-import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
 import android.content.Context
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.sampietro.NaiveAAC.R
@@ -51,9 +51,6 @@ abstract class GameFragmentAbstractClass(@LayoutRes contentLayoutId : Int = 0) :
     var tTS1: TextToSpeech? = null
     var toSpeak: String? = null
 
-    //
-//    lateinit var listener: OnFragmentEventListenerGame
-    //
     /**
      * override the default Back button behavior
      *
@@ -82,8 +79,6 @@ abstract class GameFragmentAbstractClass(@LayoutRes contentLayoutId : Int = 0) :
      */
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        val activity = context as Activity
-//        listener = activity as OnFragmentEventListenerGame
         //
         ctext = context
         // REALM

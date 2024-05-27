@@ -107,7 +107,28 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
         </activity>
-        <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesQuickRegistrationActivity"
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesRegistrationActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
+        </activity>
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
+        </activity>
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementViewPagerActivity"
+            android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity" />
+        </activity>
+        <activity android:name="com.sampietro.NaiveAAC.activities.Settings.SettingsStoriesWordActivity"
             android:parentActivityName="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data

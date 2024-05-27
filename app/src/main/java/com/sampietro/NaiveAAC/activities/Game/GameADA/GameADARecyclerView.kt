@@ -1,15 +1,15 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.CenterVideoView
-import android.media.MediaPlayer
-import com.sampietro.NaiveAAC.R
 import android.content.Context
+import android.media.MediaPlayer
 import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameRecyclerView
+import com.sampietro.NaiveAAC.activities.Game.Utils.CenterVideoView
 import java.io.IOException
-import java.util.*
+import java.util.Objects
 
 /**
  * <h1>GameADARecyclerView</h1>
@@ -32,7 +32,7 @@ class GameADARecyclerView : ChoiseOfGameRecyclerView {
     //
     private var gameArrayList = ArrayList<GameADAArrayList>()
     private var videoSurfaceDefaultWidth = 0
-    //    private var context: Context? = null
+    //
     private var playPosition = -1
     private var isVideoViewAdded = false
     //
@@ -58,11 +58,11 @@ class GameADARecyclerView : ChoiseOfGameRecyclerView {
      * init RecyclerView , set listeners
      *
      * @param isEndOfList boolean true when position is at end of list
-     * @see .getVisibleVideoSurfaceWidth
+     * @see getVisibleVideoSurfaceWidth
      *
-     * @see .removeVideoView
+     * @see removeVideoView
      *
-     * @see .addVideoView
+     * @see addVideoView
      */
     override fun playVideo(isEndOfList: Boolean) {
         val targetPosition: Int
@@ -187,7 +187,7 @@ class GameADARecyclerView : ChoiseOfGameRecyclerView {
      *
      * @param gameArrayList arraylist<GameADAArrayList> to set
      * @see GameADAArrayList
-    </GameADAArrayList> */
+    */
     fun setMediaObjectsGameADA(gameArrayList: ArrayList<GameADAArrayList>) {
         this.gameArrayList = gameArrayList
     }

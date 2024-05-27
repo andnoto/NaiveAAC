@@ -1,45 +1,50 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
-import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
-import android.speech.tts.TextToSpeech
+import android.content.Intent
 import android.os.Bundle
+import android.speech.SpeechRecognizer
+import android.speech.tts.TextToSpeech
+import android.view.View
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
+import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
+import com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementActivity
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
-import android.widget.EditText
-import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
-import android.speech.SpeechRecognizer
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
-import android.widget.Toast
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.lookForTheAnswerToLastPieceOfTheSentence
 import com.sampietro.NaiveAAC.activities.Stories.Stories
-import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Stories.StoriesComparator
-import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
-import android.view.View
-import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
+import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import com.sampietro.NaiveAAC.activities.history.History
+import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
+import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import io.realm.Realm
 import java.util.*
 
 /**
- * <h1>SettingsStoriesQuickRegistrationActivity</h1>
+ * <h1>SettingsStoriesRegistrationActivity</h1>
  *
- * **SettingsStoriesQuickRegistrationActivity** displays images (uploaded by the user or Arasaac pictograms) of the words
+ * **SettingsStoriesRegistrationActivity** displays images (uploaded by the user or Arasaac pictograms) of the words
  * spoken after pressing the listen button
  *
  *
- * @version     4.0, 09/09/2023
- * @see GameActivityAbstractClass
+ * @version     5.0, 01/04/2024
+ * @see GameActivityAbstractClassWithRecognizerCallback
  * @see Game2ActivityAbstractClass
  */
-class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
+class SettingsStoriesRegistrationActivity : Game2ActivityAbstractClass() {
     //
     var keywordStoryToAdd = ""
     var phraseNumberToAdd = ""
     var wordToAdd = ""
+    //
+    var phraseNumberToPutInTheBundle = 0
 
     /**
      * configurations of game start screen.
@@ -66,6 +71,12 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
             supportFragmentManager.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment)).commit()
         }
+        // SEARCH STORY TO RECORD
+        val intent = intent
+        if (intent.hasExtra(getString(R.string.story))) {
+            keywordStoryToAdd = intent.getStringExtra(getString(R.string.story))!!
+        }
+        phraseNumberToAdd = intent.getIntExtra(getString(R.string.phrase_number), 1).toString()
         //
         realm = Realm.getDefaultInstance()
         //
@@ -100,7 +111,7 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
         val frag = GameFragmentHear()
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
-            supportFragmentManager.findFragmentByTag(getString(R.string.game2_fragment)) as SettingsStoriesQuickRegistrationFragment?
+            supportFragmentManager.findFragmentByTag(getString(R.string.game2_fragment)) as SettingsStoriesRegistrationFragment?
         val hearfragmentgotinstance =
             supportFragmentManager.findFragmentByTag(getString(R.string.game_fragment_hear)) as GameFragmentHear?
         if (fragmentgotinstance != null || hearfragmentgotinstance != null) {
@@ -120,18 +131,11 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
      *
      * @see VoiceToBeRecordedInHistory
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
+     * @see historyAdd
      *
      * @see fragmentTransactionStart
      */
     fun startPreview(v: View?) {
-        //
-        val textWord1 =
-            rootViewImageFragment!!.findViewById<View>(R.id.keywordstorytoadd) as EditText
-        val textWord2 =
-            rootViewImageFragment!!.findViewById<View>(R.id.phrasenumbertoadd) as EditText
-        keywordStoryToAdd = textWord1.text.toString()
-        phraseNumberToAdd = textWord2.text.toString()
         //
         val sentenceToAdd = findViewById<View>(R.id.sentencetoadd) as EditText
         var eText = sentenceToAdd.text.toString()
@@ -162,20 +166,20 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
      *
      *
      *
-     * @see SettingsStoriesQuickRegistrationFragment
+     * @see SettingsStoriesRegistrationFragment
      */
     fun fragmentTransactionStart(eText: String?) {
-        val frag = SettingsStoriesQuickRegistrationFragment(R.layout.activity_settings_stories_quick_registration_recycler_view)
+        val frag = SettingsStoriesRegistrationFragment(R.layout.activity_settings_stories_registration_recycler_view)
         val bundle = Bundle()
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         bundle.putString(getString(R.string.etext), eText)
         bundle.putString(getString(R.string.keywordstorytoadd), keywordStoryToAdd)
         bundle.putString(getString(R.string.phrasenumbertoadd), phraseNumberToAdd)
-        bundle.putString("wordToAdd", wordToAdd)
+        bundle.putString(getString(R.string.wordtoadd), wordToAdd)
         frag.arguments = bundle
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
-            supportFragmentManager.findFragmentByTag(getString(R.string.game2_fragment)) as SettingsStoriesQuickRegistrationFragment?
+            supportFragmentManager.findFragmentByTag(getString(R.string.game2_fragment)) as SettingsStoriesRegistrationFragment?
         val hearfragmentgotinstance =
             supportFragmentManager.findFragmentByTag(getString(R.string.game_fragment_hear)) as GameFragmentHear?
         if (fragmentgotinstance != null || hearfragmentgotinstance != null) {
@@ -196,7 +200,7 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
      *
      * @see VoiceToBeRecordedInHistory
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
+     * @see historyAdd
      *
      * @see fragmentTransactionStart
      */
@@ -209,13 +213,6 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
             // convert uppercase letter to lowercase
             eText = eText.lowercase(Locale.getDefault())
             //
-            val textWord1 =
-                rootViewImageFragment!!.findViewById<View>(R.id.keywordstorytoadd) as EditText
-            val textWord2 =
-                rootViewImageFragment!!.findViewById<View>(R.id.phrasenumbertoadd) as EditText
-            keywordStoryToAdd = textWord1.text.toString()
-            phraseNumberToAdd = textWord2.text.toString()
-            //
             fragmentTransactionStart(eText)
             //
             reminderPhraseCounter = 0
@@ -227,7 +224,7 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
      * @param errorCode int error code from SpeechRecognizerManagement
      * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
      *
-     * @see GrammarHelper.lookForTheAnswerToLastPieceOfTheSentence
+     * @see lookForTheAnswerToLastPieceOfTheSentence
      * @see fragmentTransactionStart
      */
     override fun onError(errorCode: Int) {
@@ -251,7 +248,7 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
                     sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
                 }
                 val answerToLastPieceOfTheSentence =
-                    GrammarHelper.lookForTheAnswerToLastPieceOfTheSentence(
+                    lookForTheAnswerToLastPieceOfTheSentence(
                         context, sharedLastPhraseNumber, realm
                     )
                 //
@@ -272,13 +269,6 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
             }
         }
         //
-        val textWord1 =
-            rootViewImageFragment!!.findViewById<View>(R.id.keywordstorytoadd) as EditText
-        val textWord2 =
-            rootViewImageFragment!!.findViewById<View>(R.id.phrasenumbertoadd) as EditText
-        keywordStoryToAdd = textWord1.text.toString()
-        phraseNumberToAdd = textWord2.text.toString()
-        //
         fragmentTransactionStart("")
     }
     /**
@@ -289,34 +279,27 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
      *
      * @see VoiceToBeRecordedInHistory
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
+     * @see historyAdd
      *
      * @see fragmentTransactionStart
      */
-//    @RequiresApi(api = Build.VERSION_CODES.N)
     fun saveStories(v: View?) {
         //
-        val textWord1 = findViewById<View>(R.id.keywordstorytoadd) as EditText
-        val textWord2 = findViewById<View>(R.id.phrasenumbertoadd) as EditText
+        val textWord1 = findViewById<View>(R.id.keywordstorytoadd) as TextView
+        val textWord2 = findViewById<View>(R.id.phrasenumbertoadd) as TextView
         val textWord3 = findViewById<View>(R.id.sentencetoadd) as EditText
-//        if (textWord3 != null) {
-            // convert uppercase letter to lowercase
-            val keywordstorytoadd = textWord3.text.toString().lowercase(Locale.getDefault())
-            //
-            val toBeRecordedInHistory = gettoBeRecordedInHistory(realm, keywordstorytoadd)
-            // REALM SESSION REGISTRATION
-            val voicesToBeRecordedInHistory: MutableList<VoiceToBeRecordedInHistory?> =
-                toBeRecordedInHistory.getListVoicesToBeRecordedInHistory()
-            //
-            val debugUrlNumber = toBeRecordedInHistory.getNumberOfVoicesToBeRecordedInHistory()
-            //
-            historyAdd(realm, debugUrlNumber, voicesToBeRecordedInHistory)
-            //
-//        }
-        // registrazione stories vedi 805-840 settingsactivity
-//        if (textWord1 != null && textWord2 != null
-//            && textWord3 != null
-//        ) {
+        // convert uppercase letter to lowercase
+        val keywordstorytoadd = textWord3.text.toString().lowercase(Locale.getDefault())
+        //
+        val toBeRecordedInHistory = gettoBeRecordedInHistory(realm, keywordstorytoadd)
+        // REALM SESSION REGISTRATION
+        val voicesToBeRecordedInHistory: MutableList<VoiceToBeRecordedInHistory?> =
+            toBeRecordedInHistory.getListVoicesToBeRecordedInHistory()
+        //
+        val debugUrlNumber = toBeRecordedInHistory.getNumberOfVoicesToBeRecordedInHistory()
+        //
+        historyAdd(realm, debugUrlNumber, voicesToBeRecordedInHistory)
+        //
             // se textword2 = "" allora inserisco alla fine
             // se textword2 = numero inserisco prima della frase numero aumentando il numero della frase per quelle successive
             val resultsStories = realm.where(Stories::class.java)
@@ -329,18 +312,6 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
                 // Note that the realm object was generated with the createObject method
                 // and not with the new operator.
                 // The modification operations will be performed within a Transaction.
-                realm.beginTransaction()
-                val gp = realm.createObject(GameParameters::class.java)
-                gp.gameName = textWord1.text.toString().lowercase(Locale.getDefault())
-                gp.gameActive = "A"
-                gp.gameInfo = textWord1.text.toString().lowercase(Locale.getDefault())
-                gp.gameJavaClass = getString(R.string.a_da)
-                gp.gameParameter = textWord1.text.toString().lowercase(Locale.getDefault())
-                gp.gameIconType = "AS"
-                gp.gameIconPath = "images/racconto.png"
-                gp.gameUseVideoAndSound = "N"
-                gp.fromAssets = "N"
-                realm.commitTransaction()
                 // registro nuova riga per nuova storia
                 val createLists1 = prepareData1()
                 // Note that the realm object was generated with the createObject method
@@ -412,6 +383,7 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
                 // inserisco la nuova frase
                 // registro nuova riga
                 phraseNumber++
+                phraseNumberToPutInTheBundle = phraseNumber
                 val createLists1 = prepareData1()
                 // Note that the realm object was generated with the createObject method
                 // and not with the new operator.
@@ -453,13 +425,13 @@ class SettingsStoriesQuickRegistrationActivity : Game2ActivityAbstractClass() {
                 }
             }
             renumberAStory(realm, textWord1.text.toString().lowercase(Locale.getDefault()))
-//        }
-        //
-        phraseNumberToAdd = ""
-        //
-        fragmentTransactionStart("")
-        //
-        reminderPhraseCounter = 0
+        /*
+        navigate to settings stories improvement activity
+        */
+        val intent = Intent(context, SettingsStoriesImprovementActivity::class.java)
+        intent.putExtra(getString(R.string.story), textWord1.text.toString().lowercase(Locale.getDefault()))
+        intent.putExtra(getString(R.string.phrase_number), phraseNumberToPutInTheBundle)
+        startActivity(intent)
     }
     /**
      * prepare data using data from the history table

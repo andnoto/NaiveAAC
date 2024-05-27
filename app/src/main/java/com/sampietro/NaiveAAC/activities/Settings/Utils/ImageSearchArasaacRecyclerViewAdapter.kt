@@ -1,17 +1,16 @@
 package com.sampietro.NaiveAAC.activities.Settings.Utils
 
-import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
-import androidx.recyclerview.widget.RecyclerView
 import android.app.Activity
 import android.content.Context
-import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
-import com.sampietro.NaiveAAC.R
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
-import java.util.ArrayList
 
 /**
  * <h1>StoriesImageSearchArasaacRecyclerViewAdapter</h1>

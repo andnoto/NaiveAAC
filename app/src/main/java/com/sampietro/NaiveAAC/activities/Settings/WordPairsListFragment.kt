@@ -1,12 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
 import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
+import com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
 import io.realm.Realm
 import io.realm.Sort
 
@@ -17,7 +17,7 @@ import io.realm.Sort
  *
  *
  * @version     5.0, 01/04/2024
- * @see SettingsFragmentAbstractClass
+ * @see FragmentAbstractClass
  *
  * @see SettingsActivity
  */

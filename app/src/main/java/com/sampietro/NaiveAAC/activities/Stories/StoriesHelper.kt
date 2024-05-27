@@ -1,7 +1,7 @@
 package com.sampietro.NaiveAAC.activities.Stories
 
 import io.realm.Realm
-import java.util.*
+import java.util.Collections
 
 /**
  * <h1>StoriesHelper</h1>
@@ -131,6 +131,47 @@ object StoriesHelper {
             realm.commitTransaction()
             //
             irrh++
+        }
+    }
+    /**
+     * renumber the sentences of a story
+     *
+     * @param realm realm
+     * @param story string
+     */
+    @JvmStatic
+    fun renumberThePhrasesOfAStory(realm: Realm, story: String?) {
+        val resultsStories = realm.where(Stories::class.java)
+            .equalTo("story", story)
+            .findAll()
+        val storiesSize = resultsStories.size
+        //
+        val resultsStoriesList = realm.copyFromRealm(resultsStories)
+        //
+        Collections.sort(resultsStoriesList, StoriesComparator())
+        //
+        realm.beginTransaction()
+        resultsStories.deleteAllFromRealm()
+        realm.commitTransaction()
+        //
+        var irrh = 0
+        var phraseNumberNew = 1
+        var resultStories = resultsStoriesList[irrh]!!
+        while (irrh < storiesSize)
+        {
+            val phraseNumberDep = resultStories.phraseNumberInt
+            while (phraseNumberDep == resultStories.phraseNumberInt)
+            {
+                resultStories.phraseNumberInt = phraseNumberNew
+                realm.beginTransaction()
+                realm.copyToRealm(resultStories)
+                realm.commitTransaction()
+                //
+                irrh++
+                if (irrh >= storiesSize) {break}
+                resultStories = resultsStoriesList[irrh]!!
+            }
+            phraseNumberNew++
         }
     }
 }

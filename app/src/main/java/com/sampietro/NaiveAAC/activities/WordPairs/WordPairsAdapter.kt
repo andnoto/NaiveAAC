@@ -16,11 +16,7 @@ import io.realm.Realm
  * this adapter is the View "supplier" for the listview in the UI for word pairs list settings.
  *
  * @version     5.0, 01/04/2024
- * @see com.sampietro.simsimtest.activities.WordPairs.WordPairs
- *
- * @see com.sampietro.simsimtest.activities.Settings.WordPairsFragment
- *
- * @see com.sampietro.simsimtest.activities.Settings.SettingsActivity
+ * @see WordPairs
  */
 class WordPairsAdapter(private val context: Context, private val wordPairs: List<WordPairs>?, listview: ListView) :
     BaseAdapter() {
@@ -179,8 +175,6 @@ class WordPairsAdapter(private val context: Context, private val wordPairs: List
      * makes the callback to the activity to reload the fragment with the updated data
      *
      * @see View.OnClickListener
-     *
-     * @see WordPairsAdapterInterface.reloadWordPairsFragment
      */
     private val clickListenerDeleteWordPairs = View.OnClickListener { v ->
         val position = listview.getPositionForView(v)

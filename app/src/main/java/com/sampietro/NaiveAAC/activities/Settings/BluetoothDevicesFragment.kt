@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevicesAdapter
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import io.realm.Realm
 
 /**
@@ -16,7 +16,6 @@ import io.realm.Realm
  *
  *
  * @version     5.0, 01/04/2024
- * @see SettingsFragmentAbstractClass
  *
  * @see SettingsActivity
  */

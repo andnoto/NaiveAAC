@@ -1,16 +1,16 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addFileImageUsingPicasso
-import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter
 import android.os.Bundle
 import android.view.View
-import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.RadioButton
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
+import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addFileImageUsingPicasso
 import io.realm.Realm
 import java.io.File
 
@@ -21,8 +21,6 @@ import java.io.File
  *
  *
  * @version     5.0, 01/04/2024
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
- *
  * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  */
 class GameParametersSettingsFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {

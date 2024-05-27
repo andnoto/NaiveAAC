@@ -1,11 +1,14 @@
 package com.sampietro.NaiveAAC.activities.Bluetooth
 
 import android.content.Context
-import io.realm.RealmObject
-import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper
 import io.realm.Realm
-import java.io.*
+import io.realm.RealmObject
+import java.io.BufferedReader
+import java.io.FileNotFoundException
+import java.io.IOException
+import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 /**

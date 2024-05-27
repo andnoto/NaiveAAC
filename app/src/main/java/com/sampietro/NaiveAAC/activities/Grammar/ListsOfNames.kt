@@ -1,11 +1,14 @@
 package com.sampietro.NaiveAAC.activities.Grammar
 
 import android.content.Context
-import io.realm.RealmObject
-import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper
 import io.realm.Realm
-import java.io.*
+import io.realm.RealmObject
+import java.io.BufferedReader
+import java.io.FileNotFoundException
+import java.io.IOException
+import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 /**
@@ -218,6 +221,34 @@ open class ListsOfNames : RealmObject() {
             { return false }
             else
             { return true }
+        }
+        // data una parola restituisce l'eventuale classe di appartenza (classe, categoria o insieme di nomi)
+        /**
+         * given a word it returns the possible class to which it belongs
+         *
+         * @param context context
+         * @param word string containing the word
+         * @param realm realm
+         * @return string class to which word belongs
+         * @see ListsOfNames
+         */
+        fun searchesForThePossibleClassToWhichAWordBelongs(context: Context,
+                                              word: String?,
+                                              realm: Realm): String {
+            if (word == null) { return "non trovata" }
+//
+            val resultsListsOfNames = realm.where(ListsOfNames::class.java)
+                .beginGroup()
+                .equalTo("word", word)
+                .notEqualTo("isMenuItem", "F")
+                .notEqualTo("isMenuItem", "S")
+                .endGroup()
+                .findAll()
+            val resultsListsOfNamesSize = resultsListsOfNames!!.size
+            if (resultsListsOfNamesSize == 0)
+            { return "non trovata" }
+            else
+            { return resultsListsOfNames[0]!!.keyword!! }
         }
         // data una classe (classe, categoria o insieme di nomi)
         /**

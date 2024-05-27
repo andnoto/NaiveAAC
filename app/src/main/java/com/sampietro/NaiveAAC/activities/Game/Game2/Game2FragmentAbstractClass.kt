@@ -1,13 +1,13 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
-import android.widget.ImageButton
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.annotation.LayoutRes
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import com.sampietro.NaiveAAC.activities.history.History
-import java.util.*
+import java.util.Locale
 
 /**
  * <h1>Game2FragmentAbstractClass</h1>
@@ -32,8 +32,8 @@ abstract class Game2FragmentAbstractClass(@LayoutRes contentLayoutId : Int = 0) 
     /**
      * prepare data for the first recyclerview (first recyclerview from above) using data from the history table
      *
-     * @return theimage arraylist<Game2ArrayList> data for recyclerview
-     * @see Game2ArrayList
+     * @return theimage arraylist<Game1ArrayList> data for recyclerview
+     * @see Game1ArrayList
      *
      * @see History
     */

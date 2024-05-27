@@ -1,15 +1,15 @@
 package com.sampietro.NaiveAAC.activities.Graphics
 
-import android.widget.BaseAdapter
-import android.view.ViewGroup
-import android.view.LayoutInflater
-import com.sampietro.NaiveAAC.R
-import android.widget.TextView
-import android.widget.ImageButton
 import android.app.Activity
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.ListView
+import android.widget.TextView
+import com.sampietro.NaiveAAC.R
 import io.realm.Realm
 
 /**
@@ -40,11 +40,6 @@ class VideosAdapter(private val context: Context, private val videos: List<Video
 
     lateinit var listener: VideosAdapterInterface
 
-    //
-//    private val videos: List<Videos>? = null
-//    private val context: Context? = null
-//    private val listview: ListView? = null
-
     // Realm
     lateinit private var realm: Realm
 
@@ -52,7 +47,7 @@ class VideosAdapter(private val context: Context, private val videos: List<Video
      * return size of list<Videos>
      *
      * @return int with size of list<Videos>
-    </Videos></Videos> */
+    */
     override fun getCount(): Int {
         return videos!!.size
     }
@@ -62,7 +57,7 @@ class VideosAdapter(private val context: Context, private val videos: List<Video
      *
      * @param position int index within the list<Videos>
      * @return object with the element within the list<Videos>
-    </Videos></Videos></Videos> */
+    */
     override fun getItem(position: Int): Any {
         return videos!![position]
     }
@@ -72,7 +67,7 @@ class VideosAdapter(private val context: Context, private val videos: List<Video
      *
      * @param position int index within the list<Videos>
      * @return long with the the hashCode of the element within the list<Videos>
-    </Videos></Videos></Videos> */
+    */
     override fun getItemId(position: Int): Long {
         return getItem(position).hashCode().toLong()
     }
@@ -87,7 +82,7 @@ class VideosAdapter(private val context: Context, private val videos: List<Video
      * @see .getItem
      *
      * @see .clickListenerDeleteVideo
-    </Videos></Videos></Videos></Videos> */
+    */
     override fun getView(position: Int, v: View?, vg: ViewGroup): View {
         // 1) it is checked if the View passed in input is null and only in this
         // case is initialized with the LayoutInflater.
@@ -97,7 +92,6 @@ class VideosAdapter(private val context: Context, private val videos: List<Video
         // the list <Videos> of position position retrieved using getItem.
         // 3) the listener for the delete button of the element within
         // the list <Videos> of position position is set
-//        var v = v
         val v1: View
         if (v == null) {
             v1 = LayoutInflater.from(context).inflate(R.layout.activity_settings_row, null)
@@ -144,10 +138,6 @@ class VideosAdapter(private val context: Context, private val videos: List<Video
      * listener setting for settings activity callbacks ,  context annotation and other
     */
     init {
-//        this.videos = videos
-//        this.context = context
-//        this.listview = listview
-        //
         val activity = context as Activity
         listener = activity as VideosAdapterInterface
         //

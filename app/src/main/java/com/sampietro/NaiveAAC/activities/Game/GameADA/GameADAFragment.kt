@@ -1,19 +1,19 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA
 
-import android.widget.ImageButton
-import android.media.MediaPlayer
 import android.app.Activity
 import android.content.Context
-import com.sampietro.NaiveAAC.R
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
-import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
 import java.io.IOException
@@ -64,8 +64,6 @@ class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstra
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val activity = context as Activity
-        // listener=(OnFragmentEventListenerGame) activity;
-        //
         listenerADA = activity as GameADAOnFragmentEventListener
         //
         ctext = context
@@ -88,8 +86,6 @@ class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstra
      *
      * @see androidx.fragment.app.Fragment.onViewCreated
      *
-     * @see com.sampietro.NaiveAAC.activities.Game.Game2.Game2ArrayList
-     *
      * @see prepareData1
      *
      * @see GameADARecyclerViewAdapter
@@ -98,8 +94,6 @@ class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstra
         view: View,
         savedInstanceState: Bundle?
     ) {
-//        rootView = inflater.inflate(R.layout.activity_game_ada_recycler_view, container, false)
-        //
         val bundle = this.arguments
         sharedLastPhraseNumber = 0
         if (bundle != null) {
@@ -146,11 +140,7 @@ class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstra
             }
         }
         //
-        // listener.receiveResultGameFragment(rootView);
-        //
         listenerADA!!.receiveResultGameFragment(view, tTS1, createLists)
-        //
-//        return rootView
     }
     //
     /**
@@ -160,7 +150,7 @@ class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstra
      * @see GameADAArrayList
      *
      * @see History
-    </Game2ArrayList> */
+    */
     private fun prepareData1(): ArrayList<GameADAArrayList> {
         var row1debugUrlNumber = 0
         //

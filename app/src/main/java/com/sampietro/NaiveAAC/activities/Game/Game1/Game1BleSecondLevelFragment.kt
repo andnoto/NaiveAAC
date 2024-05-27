@@ -18,7 +18,7 @@ import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
-import java.util.*
+import java.util.Locale
 
 /**
  * <h1>Game1BleSecondLevelFragment</h1>

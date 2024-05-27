@@ -1,22 +1,22 @@
 package com.sampietro.NaiveAAC.activities.Game.Utils
 
-import android.widget.TextView
-import android.webkit.WebView
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import android.webkit.WebViewClient
-import android.webkit.WebResourceRequest
 import android.graphics.Bitmap
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import java.util.*
+import com.sampietro.NaiveAAC.R
+import java.util.Locale
 
 /**
  * <h1>YoutubePrizeFragment</h1>

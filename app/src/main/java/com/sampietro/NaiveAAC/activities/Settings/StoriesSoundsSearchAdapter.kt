@@ -1,15 +1,15 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Graphics.Sounds
-import android.widget.BaseAdapter
-import android.view.ViewGroup
-import com.sampietro.NaiveAAC.R
-import android.widget.TextView
 import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
 import android.widget.ListView
+import android.widget.TextView
+import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Graphics.Sounds
 
 /**
  * this adapter is the View "supplier" for the listview in the UI for sounds settings.

@@ -1,15 +1,15 @@
 package com.sampietro.NaiveAAC.activities.Stories
 
-import android.widget.BaseAdapter
-import android.view.ViewGroup
-import android.view.LayoutInflater
-import com.sampietro.NaiveAAC.R
-import android.widget.TextView
-import android.widget.ImageButton
 import android.app.Activity
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.ListView
+import android.widget.TextView
+import com.sampietro.NaiveAAC.R
 
 /**
  * this adapter is the View "supplier" for the listview in the UI for stories list settings.

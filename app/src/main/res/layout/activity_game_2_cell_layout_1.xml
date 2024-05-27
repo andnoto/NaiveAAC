@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:background="@color/verde_smeraldo"
     android:layout_width="wrap_content"
-    android:layout_height="200dp">
+    android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/img1"
         android:adjustViewBounds="true"

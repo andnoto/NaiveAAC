@@ -2,9 +2,9 @@ package com.sampietro.NaiveAAC.activities.Info
 
 import android.os.Bundle
 import android.view.View
-import com.sampietro.NaiveAAC.R
 import android.widget.TextView
 import com.sampietro.NaiveAAC.BuildConfig
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 
 /**
@@ -14,7 +14,6 @@ import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractCl
  *
  *
  * @version     5.0, 01/04/2024
- * @see InfoFragmentAbstractClass
  *
  * @see InfoActivity
  */

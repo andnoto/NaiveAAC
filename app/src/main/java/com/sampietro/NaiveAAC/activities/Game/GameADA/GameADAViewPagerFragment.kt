@@ -1,30 +1,33 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA
 
-import io.realm.RealmResults
-import com.sampietro.NaiveAAC.activities.Stories.Stories
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
-import com.sampietro.NaiveAAC.activities.Game.Utils.CenterVideoView
 import android.media.MediaPlayer
-import com.sampietro.NaiveAAC.R
-import android.view.ViewGroup
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import com.sampietro.NaiveAAC.activities.Graphics.Sounds
-import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import android.widget.VideoView
 import androidx.annotation.LayoutRes
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.Game.Utils.CenterVideoView
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchNegationAdverb
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
+import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import com.sampietro.NaiveAAC.activities.Graphics.Videos
+import com.sampietro.NaiveAAC.activities.Stories.Stories
 import io.realm.Realm
+import io.realm.RealmResults
 import java.io.IOException
-import java.lang.Exception
-import java.util.*
+import java.util.Locale
 
 /**
  * <h1>GameADAViewPagerFragment</h1>

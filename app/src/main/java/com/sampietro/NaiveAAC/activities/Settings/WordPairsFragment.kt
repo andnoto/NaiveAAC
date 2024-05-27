@@ -17,7 +17,7 @@ import com.sampietro.NaiveAAC.activities.WordPairs.VoiceToBeRecordedInWordPairsV
  *
  *
  * @version     5.0, 01/04/2024
- * @see SettingsFragmentAbstractClass
+ * @see FragmentAbstractClass
  *
  * @see SettingsActivity
  */
@@ -33,16 +33,11 @@ class WordPairsFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLay
      * prepares the ui
      *
      * @see androidx.fragment.app.Fragment.onViewCreated
-     *
-     * @see com.sampietro.simsimtest.activities.WordPairs.WordPairs
-     *
-     * @see com.sampietro.simsimtest.activities.WordPairs.WordPairsAdapter
      */
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?
     ) {
-//        rootView = inflater.inflate(R.layout.activity_settings_wordpairs, container, false)
         // logic of fragment
         val firstword = view.findViewById<View>(R.id.firstword) as EditText
         val secondword = view.findViewById<View>(R.id.secondword) as EditText

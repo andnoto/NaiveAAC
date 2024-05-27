@@ -1,18 +1,17 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter.ListsOfNamesAdapterInterface
-import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
-import android.widget.EditText
-import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesQuickRegistrationActivity
+import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter.ListsOfNamesAdapterInterface
 import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNames
 import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNamesViewModel
 import io.realm.Realm
@@ -25,13 +24,7 @@ import io.realm.Sort
  * **SettingsContentsActivity** app settings.
  *
  * @version     5.0, 01/04/2024
- * @see SettingsFragmentAbstractClass
- *
- * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
- *
- * @see com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter
- *
- * @see com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter
+ * @see ListsOfNamesAdapterInterface
  */
 class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInterface
     {
@@ -48,10 +41,8 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
      * configurations of settings start screen.
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see setActivityResultLauncher
      *
      * @see ActionbarFragment
-     *
      * @see androidx.appcompat.app.AppCompatActivity.onCreate
      */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,8 +62,6 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
         )
         viewModel.setItem(voiceToBeRecordedInListsOfNames!!)
         clearFieldsOfViewmodelDataClass()
-        //
-//        setActivityResultLauncher()
         //
         if (savedInstanceState == null) {
             fragmentManager = supportFragmentManager
@@ -134,6 +123,7 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
                         textWord1.text.toString()
                     )
                     .equalTo("word", textWord2.text.toString())
+                    .equalTo("isMenuItem", textWord4.text.toString())
                     .findAll()
                 val resultsListsOfNamesSize = resultsListsOfNames.size
                 //
@@ -241,8 +231,6 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
      * after deleting a name the activity is notified to view the updated lists of names settings
      *
      *
-     * @see com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter
-     *
      * @see ListsOfNamesFragment
      */
     fun reloadListOfNamesFragment() {
@@ -284,21 +272,6 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
                 navigate to settings stories screen
         */
         val intent = Intent(context, SettingsStoriesActivity::class.java)
-        startActivity(intent)
-    }
-
-    /**
-     * Called when the user taps the Stories - Quick Registration button from the contents settings menu.
-     *
-     *
-     * @param view view of tapped button
-     * @see SettingsStoriesQuickRegistrationActivity
-     */
-    fun submitStoriesQuickRegistration(view: View?) {
-        /*
-                navigate to settings Stories Quick Registration screen
-        */
-        val intent = Intent(context, SettingsStoriesQuickRegistrationActivity::class.java)
         startActivity(intent)
     }
 

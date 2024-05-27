@@ -1,22 +1,20 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA
 
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.checkPermission
-import android.speech.tts.TextToSpeech
-import android.media.MediaPlayer
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import android.os.Bundle
-import io.realm.RealmResults
-import com.sampietro.NaiveAAC.activities.Stories.Stories
-import com.sampietro.NaiveAAC.R
 import android.content.Intent
-import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
-import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
+import android.os.Bundle
 import android.view.View
 import android.view.Window
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClass
+import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
+import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
+import com.sampietro.NaiveAAC.activities.Stories.Stories
+import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.checkPermission
 import io.realm.Realm
+import io.realm.RealmResults
 
 /**
  * <h1>GameAdaViewPagerActivity</h1>
@@ -32,33 +30,13 @@ import io.realm.Realm
  *
  * @see GameADAViewPagerAdapter
  */
-class GameADAViewPagerActivity : GameActivityAbstractClass(),
+class GameADAViewPagerActivity : GameADAViewPagerActivityAbstractClass(),
     GameADAViewPagerOnFragmentEventListener, GameADAViewPagerOnFragmentSoundMediaPlayerListener,
     GameADAViewPagerMediaContainerOnClickListener {
     // USED FOR FULL SCREEN
     lateinit var mywindow: Window
     //
-    var sharedStory: String? = null
-    var phraseToDisplay = 0
-    var wordToDisplay = 0
-    var wordToDisplayInTheStory = 0
-
-    // TTS
-    var tTS1: TextToSpeech? = null
-//    var toSpeak: String? = null
-
-    //
-    private var soundMediaPlayer: MediaPlayer? = null
-
-    //
-//    private var mContentView: ViewGroup? = null
-
-    //
     private var gameUseVideoAndSound: String? = null
-
-    //
-    private var isTheFirstPageSelected = true
-
     //  ViewPager2
     // - 1) Create the views (activity_game_ada_viewpager_content.xml)
     // - 2) Create the fragment (GameADAViewPagerFragment)
@@ -69,51 +47,13 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
     //   - a) Sets the content view to be the layout with the ViewPager2.
     //   - b) Hooks up the FragmentStateAdapter to the ViewPager2 objects.
     //
-    private var mViewPager: ViewPager2? = null
     private var mAdapter: GameADAViewPagerAdapter? = null
-//    private override val lifecycle: Any? = null
-    var callbackViewPager2: OnPageChangeCallback = object : OnPageChangeCallback() {
-        /**
-         * Define page change callback
-         *
-         *
-         * @param position int with position index of the new selected page
-         * @see OnPageChangeCallback.onPageSelected
-         */
-        override fun onPageSelected(position: Int) {
-            super.onPageSelected(position)
-            //  update activity variables
-            /*
-            ADAPTED FOR VIDEO AND SOUND
-            */
-            // release sound mediaplayer
-            if (isTheFirstPageSelected) {
-                isTheFirstPageSelected = false
-            } else {
-                wordToDisplayInTheStory = position + 1
-                if (soundMediaPlayer != null) {
-                    if (soundMediaPlayer!!.isPlaying) {
-                        soundMediaPlayer!!.stop()
-                    }
-                    soundMediaPlayer!!.release()
-                    soundMediaPlayer = null
-                }
-            }
-            /*
-
-            */
-        }
-    }
-
     /**
      * configurations of gameadaviewpager start screen.
      *
      *
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * //     * @see prepareSpeechRecognizer
-     * @see com.sampietro.NaiveAAC.activities.Game.Game1.Game1ViewPagerAdapter
-     *
      * @see android.app.Activity.onCreate
      * @see OnPageChangeCallback.onPageSelected
      */
@@ -228,23 +168,6 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
 
          */
     }
-    //
-    /**
-     * destroy SpeechRecognizer, TTS shutdown and more
-     *
-     * @see androidx.fragment.app.Fragment.onDestroy
-     */
-    override fun onDestroy() {
-        super.onDestroy()
-        // TTS
-        if (tTS1 != null) {
-            tTS1!!.stop()
-            tTS1!!.shutdown()
-        }
-        // Unregister page change callback
-        mViewPager!!.unregisterOnPageChangeCallback(callbackViewPager2)
-    }
-
     /**
      * This method is called before an activity may be killed so that when it comes back some time in the future it can restore its state..
      *
@@ -300,7 +223,7 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
      * @param v view of tapped button
      * @see GameADAActivity
      */
-    fun onClickGameImage(v: View?) {
+    override fun onClickGameImage(v: View?) {
         //
         val resultsStories = realm.where(Stories::class.java)
             .beginGroup()
@@ -324,34 +247,5 @@ class GameADAViewPagerActivity : GameActivityAbstractClass(),
         intent.putExtra(getString(R.string.word_to_display_index), wordToDisplay - 1)
         intent.putExtra(getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
         startActivity(intent)
-    }
-    /**
-     * on callback from GameADAViewPagerFragment to this Activity
-     *
-     * @param v view root fragment view
-     * @param wordToDisplayInTheStory word to display in the story
-     */
-    override fun receiveWordToDisplayIndexGameFragment(v: View?, wordToDisplayInTheStory: Int) {
-        this.wordToDisplayInTheStory = wordToDisplayInTheStory
-    }
-
-    /**
-     * on callback from GameADAViewPagerFragment to this Activity
-     *
-     * @param v view root fragment view
-     * @param soundMediaPlayer MediaPlayer
-     */
-    override fun receiveResultGameFragment(v: View?, soundMediaPlayer: MediaPlayer?) {
-        rootViewImageFragment = v
-        this.soundMediaPlayer = soundMediaPlayer
-    }
-
-    /**
-     * on callback from GameADAViewPagerFragment to this Activity
-     *
-     * @param v view root fragment view
-     */
-    override fun receiveOnClickGameImage(v: View?) {
-        onClickGameImage(v)
     }
 }

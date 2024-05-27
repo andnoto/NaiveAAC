@@ -1,15 +1,15 @@
 package com.sampietro.NaiveAAC.activities.Game.GameParameters
 
-import android.widget.BaseAdapter
-import android.view.ViewGroup
-import android.view.LayoutInflater
-import com.sampietro.NaiveAAC.R
-import android.widget.TextView
-import android.widget.ImageButton
 import android.app.Activity
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.ListView
+import android.widget.TextView
+import com.sampietro.NaiveAAC.R
 
 /**
  * this adapter is the View "supplier" for the listview in the UI for game parameters settings.
@@ -44,19 +44,11 @@ class GameParametersAdapter(
 
     lateinit var listener: GameParametersAdapterInterface
 
-    //
-//    private val gameParameters: List<GameParameters>? = null
-//    private val context: Context? = null
-//    private val listview: ListView? = null
-
-    // Realm
-//    lateinit private var realm: Realm
-
     /**
      * return size of list<GameParameters>
      *
      * @return int with size of list<GameParameters>
-    </GameParameters></GameParameters> */
+    */
     override fun getCount(): Int {
         return gameParameters!!.size
     }
@@ -66,7 +58,7 @@ class GameParametersAdapter(
      *
      * @param position int index within the list<GameParameters>
      * @return object with the element within the list<GameParameters>
-    </GameParameters></GameParameters></GameParameters> */
+    */
     override fun getItem(position: Int): Any {
         return gameParameters!![position]
     }
@@ -76,7 +68,7 @@ class GameParametersAdapter(
      *
      * @param position int index within the list<GameParameters>
      * @return long with the the hashCode of the element within the list<GameParameters>
-    </GameParameters></GameParameters></GameParameters> */
+    */
     override fun getItemId(position: Int): Long {
         return getItem(position).hashCode().toLong()
     }
@@ -91,7 +83,7 @@ class GameParametersAdapter(
      * @see .getItem
      *
      * @see .clickListenerDeleteGameParameters
-    </GameParameters></GameParameters></GameParameters></GameParameters> */
+    */
     override fun getView(position: Int, v: View?, vg: ViewGroup): View {
         // 1) it is checked if the View passed in input is null and only in this
         // case is initialized with the LayoutInflater.
@@ -101,11 +93,10 @@ class GameParametersAdapter(
         // the list <GameParameters> of position position retrieved using getItem.
         // 3) the listener for the delete button of the element within
         // the list <GameParameters> of position position is set
-//        var v = v
         val v1: View
         if (v == null) {
             v1 = LayoutInflater.from(context)
-                .inflate(R.layout.activity_settings_row_game_patameters, null)
+                .inflate(R.layout.activity_settings_row_game_parameters, null)
             }
             else
             { v1 = v}
@@ -153,14 +144,6 @@ class GameParametersAdapter(
     private val clickListenerDeleteGameParameters = View.OnClickListener { v ->
         val position = listview.getPositionForView(v)
         // delete
-//                realm= Realm.getDefaultInstance();
-//                RealmResults<GameParameters> results = realm.where(GameParameters.class).findAll();
-//                realm.beginTransaction();
-//                GameParameters daCancellare=results.get(position);
-//                assert daCancellare != null;
-//                daCancellare.deleteFromRealm();
-//                realm.commitTransaction();
-        //
         listener.reloadGameParametersFragmentDeleteGameParameters(position)
         //
     }
@@ -171,10 +154,6 @@ class GameParametersAdapter(
      *
     */
     init {
-//        this.gameParameters = gameParameters
-//        this.context = context
-//        this.listview = listview
-        //
         val activity = context as Activity
         listener = activity as GameParametersAdapterInterface
     }

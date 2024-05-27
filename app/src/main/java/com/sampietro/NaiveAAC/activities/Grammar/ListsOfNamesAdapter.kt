@@ -1,26 +1,26 @@
 package com.sampietro.NaiveAAC.activities.Grammar
 
-import android.widget.BaseAdapter
-import android.view.ViewGroup
-import android.view.LayoutInflater
-import com.sampietro.NaiveAAC.R
-import android.widget.TextView
-import android.widget.ImageButton
 import android.app.Activity
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.ListView
+import android.widget.TextView
+import com.sampietro.NaiveAAC.R
 import io.realm.Realm
 
 /**
  * this adapter is the View "supplier" for the listview in the UI for lists of names settings.
  *
  * @version     5.0, 01/04/2024
- * @see com.sampietro.simsimtest.activities.Grammar.ListsOfNames
+ * @see com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
  *
- * @see com.sampietro.simsimtest.activities.Settings.ListsOfNamesFragment
+ * @see com.sampietro.NaiveAAC.activities.Settings.ListsOfNamesFragment
  *
- * @see com.sampietro.simsimtest.activities.Settings.SettingsActivity
+ * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  */
 class ListsOfNamesAdapter(private val context: Context, private val listsOfNames: List<ListsOfNames>?, listview: ListView) :
     BaseAdapter() {
@@ -70,7 +70,7 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      *
      * @param position int index within the list<ListsOfNames>
      * @return long with the the hashCode of the element within the list<ListsOfNames>
-    </ListsOfNames></ListsOfNames></ListsOfNames> */
+    */
     override fun getItemId(position: Int): Long {
         return getItem(position).hashCode().toLong()
     }
@@ -82,9 +82,9 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      * @param v view to inflate with the row corresponding to a specific index within the list<ListsOfNames>
      * @param vg viewgroup the parent that this view will eventually be attached to
      * @return view with the row corresponding to a specific index within the list<ListsOfNames>
-     * @see .getItem
+     * @see getItem
      *
-     * @see .clickListenerDeleteListsOfNames
+     * @see clickListenerDeleteListsOfNames
      */
     override fun getView(position: Int, v: View?, vg: ViewGroup): View {
         // 1) it is checked if the View passed in input is null and only in this
@@ -127,7 +127,7 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      *
      * @see View.OnClickListener
      *
-     * @see ListOfNamesAdapterInterface.reloadListOfNamesFragmentForInsertion
+     * @see reloadListOfNamesFragmentForInsertion
      */
     private val clickListenerInsertListOfNames = View.OnClickListener { v ->
         val position = listview.getPositionForView(v)
@@ -145,7 +145,7 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      *
      * @see View.OnClickListener
      *
-     * @see ListOfNamesAdapterInterface.reloadListOfNamesFragmentForEditing
+     * @see reloadListOfNamesFragmentForEditing
      */
     private val clickListenerEditListOfNames = View.OnClickListener { v ->
         val position = listview.getPositionForView(v)
@@ -163,7 +163,7 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
      *
      * @see View.OnClickListener
      *
-     * @see ListsOfNamesAdapterInterface.reloadListsOfNamesFragmentDeleteStories
+     * @see reloadListsOfNamesFragmentDeleteStories
      */
     private val clickListenerDeleteListOfNames = View.OnClickListener { v ->
         val position = listview.getPositionForView(v)

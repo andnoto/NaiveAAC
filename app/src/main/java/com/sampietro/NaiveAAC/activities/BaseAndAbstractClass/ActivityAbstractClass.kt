@@ -1,9 +1,9 @@
 package com.sampietro.NaiveAAC.activities.BaseAndAbstractClass
 
-import androidx.appcompat.app.AppCompatActivity
-import android.content.SharedPreferences
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatActivity
 import io.realm.Realm
 
 /**

@@ -1,18 +1,18 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
 import android.app.Activity
-import com.sampietro.NaiveAAC.activities.Graphics.VideosAdapter
 import android.media.MediaPlayer
-import android.media.MediaPlayer.OnPreparedListener
 import android.media.MediaPlayer.OnCompletionListener
+import android.media.MediaPlayer.OnPreparedListener
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import com.sampietro.NaiveAAC.R
 import android.widget.EditText
 import android.widget.ListView
-import com.sampietro.NaiveAAC.activities.Graphics.Videos
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.Graphics.Videos
+import com.sampietro.NaiveAAC.activities.Graphics.VideosAdapter
 import io.realm.Realm
 
 /**
@@ -22,7 +22,7 @@ import io.realm.Realm
  *
  *
  * @version     5.0, 01/04/2024
- * @see SettingsFragmentAbstractClass
+ * @see FragmentAbstractClass
  *
  * @see SurfaceHolder
  *

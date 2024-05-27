@@ -2,12 +2,11 @@ package com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame
 
 import android.app.Activity
 import android.content.Context
-import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
-import java.util.ArrayList
 
 /**
  * <h1>ChoiseOfGameRecyclerViewAdapter</h1>
@@ -21,7 +20,7 @@ import java.util.ArrayList
  *
  * @version     4.0, 09/09/2023
  * @see RecyclerView.Adapter<RecyclerView.ViewHolder>
-</RecyclerView.ViewHolder> */
+ */
 class ChoiseOfGameRecyclerViewAdapter(
     context: Context?, //
     private val gameArrayList: ArrayList<ChoiseOfGameArrayList>

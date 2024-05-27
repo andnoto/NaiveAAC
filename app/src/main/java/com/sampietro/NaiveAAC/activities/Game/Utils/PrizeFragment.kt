@@ -1,22 +1,21 @@
 package com.sampietro.NaiveAAC.activities.Game.Utils
 
-import android.widget.TextView
-import android.media.MediaPlayer
 import android.app.Activity
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.ViewGroup
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
-import android.media.MediaMetadataRetriever
-import android.graphics.Bitmap
-import android.net.Uri
-import android.view.View
-import androidx.fragment.app.Fragment
 import io.realm.Realm
 import java.io.IOException
-import java.lang.RuntimeException
 
 /**
  * <h1>PrizeFragment</h1>
@@ -38,9 +37,6 @@ class PrizeFragment : Fragment() {
     lateinit var rootView: View
     lateinit var textView: TextView
     lateinit var ctext: Context
-
-    //
-//    private val mediaPlayer: MediaPlayer? = null
 
     //
     var prizeVideoView: CenterVideoView? = null
@@ -128,11 +124,7 @@ class PrizeFragment : Fragment() {
         if (uriPremiumVideo == "" || uriPremiumVideo == " ") {
             uriPremiumVideo = getString(R.string.prize)
         }
-        // I create a random integer 0 or 1 to be used to dispense the prize 50% of the time
-        // Random rn = new Random();
-        // int rn01 = rn.nextInt(2);
         //
-        // if (rn01 == 1) {
         val results = realm.where(Videos::class.java)
             .equalTo(getString(R.string.descrizione), uriPremiumVideo).findAll()
         val count = results.size

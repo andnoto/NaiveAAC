@@ -1,36 +1,35 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.Graphics.ImagesAdapter.ImagesAdapterInterface
-import com.sampietro.NaiveAAC.activities.Graphics.VideosAdapter.VideosAdapterInterface
-import com.sampietro.NaiveAAC.activities.Graphics.SoundsAdapter.SoundsAdapterInterface
-import android.widget.TextView
-import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
-import android.widget.EditText
-import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
+import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.showImage
 import com.sampietro.NaiveAAC.activities.Graphics.Images
+import com.sampietro.NaiveAAC.activities.Graphics.ImagesAdapter.ImagesAdapterInterface
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import com.sampietro.NaiveAAC.activities.Graphics.SoundsAdapter.SoundsAdapterInterface
+import com.sampietro.NaiveAAC.activities.Graphics.Videos
+import com.sampietro.NaiveAAC.activities.Graphics.VideosAdapter.VideosAdapterInterface
 import io.realm.Realm
 import java.io.ByteArrayOutputStream
-import java.lang.Exception
 import java.net.URISyntaxException
 import java.util.Objects
 
@@ -41,8 +40,6 @@ import java.util.Objects
  *
  * @version     5.0, 01/04/2024
  * @see AccountActivityAbstractClass
- *
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  *
  * @see com.sampietro.NaiveAAC.activities.Graphics.ImagesAdapter
  *
@@ -101,8 +98,6 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
      *
      *
      * @param view view of tapped button
-     * @see ChoiseOfMediaToSetFragment
-     *
      * @see VideosFragment
      */
     fun submitVideo(view: View?) {
@@ -218,8 +213,6 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
      *
      *
      * @param view view of tapped button
-     * @see ChoiseOfMediaToSetFragment
-     *
      * @see ImagesFragment
      */
     fun submitImages(view: View?) {
@@ -297,8 +290,6 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
      *
      *
      * @param view view of tapped button
-     * @see ChoiseOfMediaToSetFragment
-     *
      * @see SoundsFragment
      */
     fun submitSounds(view: View?) {

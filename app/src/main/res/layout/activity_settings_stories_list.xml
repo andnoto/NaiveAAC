@@ -17,38 +17,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-    <EditText
+    <TextView
         android:id="@+id/keywordstorytosearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="5dp"
         android:text="@string/nome_storia"
-        android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/storiessettings"/>
-
-    <EditText
-        android:id="@+id/phrasenumbertosearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
-        android:text="frase numero"
-        android:inputType="number"
-        app:layout_constraintStart_toStartOf="@+id/keywordstorytosearch"
-        app:layout_constraintEnd_toStartOf="@+id/btn_search_stories"
-        app:layout_constraintTop_toBottomOf="@+id/keywordstorytosearch"/>
-
-    <ImageButton
-        android:id="@+id/btn_search_stories"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="storiesSearch"
-        android:src="@android:drawable/ic_menu_search"
-        app:layout_constraintEnd_toEndOf="@+id/listview"
-        app:layout_constraintTop_toBottomOf="@+id/keywordstorytosearch" />
-
 
     <ListView
         android:id="@+id/listview"
@@ -56,7 +33,6 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_search_stories" />
-
+        app:layout_constraintTop_toBottomOf="@id/keywordstorytosearch" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

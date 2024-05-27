@@ -3,13 +3,15 @@ package com.sampietro.NaiveAAC.activities.Game.Game2
 import android.speech.tts.TextToSpeech
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
-import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
+import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAArrayList
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
-import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchId
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.destroyRecognizer
+import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
+import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import io.realm.Realm
-import java.util.*
+import java.util.Calendar
 
 /**
  * <h1>Game2ActivityAbstractClass</h1>
@@ -21,7 +23,7 @@ import java.util.*
  * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
  *
  * @version     5.0, 01/04/2024
- * @see GameActivityAbstractClass
+ * @see GameActivityAbstractClassWithRecognizerCallback
  */
 abstract class Game2ActivityAbstractClass : GameActivityAbstractClassWithRecognizerCallback() {
     // lines inserted to remedy the incorrect double onresults that occurs with android 11
@@ -61,7 +63,7 @@ abstract class Game2ActivityAbstractClass : GameActivityAbstractClassWithRecogni
      * overrides the method on GameActivityAbstractClass
      *
      * @param editText string message from SpeechRecognizerManagement
-     * @see GameActivityAbstractClass
+     * @see GameActivityAbstractClassWithRecognizerCallback
      *
      * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
      */
@@ -110,50 +112,83 @@ abstract class Game2ActivityAbstractClass : GameActivityAbstractClassWithRecogni
         //
         voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
             sharedLastSession, sharedLastPhraseNumber, currentTime,
-            0, " ", eText!!, " ", " ", " "
+            0, " ", eText, " ", " ", " "
         )
         toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
         // SEARCH THE IMAGES OF THE WORDS
         val arrWordsLength = arrWords.size
-        var i = 0
-        while (i < arrWordsLength) {
+        val galleryList = ArrayList<GameADAArrayList>()
+        //
+        for (i in 0 until arrWordsLength) {
+            val createList = GameADAArrayList()
+            createList.image_title = arrWords[i]
+            createList.urlType = getString(R.string.non_trovato)
+            createList.url = getString(R.string.non_trovato)
+            createList.video = ""
+            createList.sound = ""
+            createList.soundReplacesTTS = ""
+            createList.soundAssociatedWithThePhraseReplacesTheOtherSounds = ""
+            //
             // INTERNAL MEMORY IMAGE SEARCH
             val uriToSearch = ImageSearchHelper.searchUri(context, realm, arrWords[i])
             if (uriToSearch != getString(R.string.non_trovata)) {
-                voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                    sharedLastSession,
-                    sharedLastPhraseNumber, currentTime,
-                    i + 1, " ", arrWords[i], " ", "S", uriToSearch
-                )
-                toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
+                createList.urlType = "S"
+                createList.url = uriToSearch
             } else {
                 // SEARCH VERBS WITH REALM
                 val verbToSearch = GrammarHelper.searchVerb(context, arrWords[i], realm)
                 var idToSearch: String
                 idToSearch = if (verbToSearch != getString(R.string.non_trovato)) {
-                    ImageSearchHelper.searchId(context, realm, verbToSearch)
+                    searchId(context, realm, verbToSearch)
                 } else {
-                    ImageSearchHelper.searchId(context, realm, arrWords[i])
+                    searchId(context, realm,arrWords[i])
                 }
                 // IMAGE SEARCH ON ARASAAC
                 if (idToSearch != getString(R.string.non_trovata)) {
-                    //  SEARCH TYPE OF WORD
-                    val typeToSearch = GrammarHelper.searchType(context, idToSearch, realm)
-                    // SEARCH IF IT IS PLURAL
-                    val pluralToSearch = GrammarHelper.searchPlural(context, idToSearch, arrWords[i], realm)
-                    //
                     val url = REMOTE_ADDR_PICTOGRAM + idToSearch + getString(R.string.download_false)
-                    voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                        sharedLastSession, sharedLastPhraseNumber,
-                        currentTime,
-                        i + 1, typeToSearch, arrWords[i], pluralToSearch, "A", url
-                    )
-                    toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
+                    createList.urlType = "A"
+                    createList.url = url
                 }
             }
             //
+            galleryList.add(createList)
+        }
+        // sentence arrangement
+        var i = 0
+        while (i < arrWordsLength) {
+            if (galleryList[i].urlType == getString(R.string.non_trovato)
+                && i+1 < arrWordsLength) {
+                galleryList[i+1].image_title = galleryList[i].image_title + " " + galleryList[i+1].image_title
+            }
+            //
             i++
-            // Log.d("TAG" + ": ", "some on result Response : " );
+        }
+        i = arrWordsLength - 1
+        while (i > 0) {
+            if (galleryList[i].urlType == getString(R.string.non_trovato)) {
+                    galleryList[i-1].image_title = galleryList[i-1].image_title + " " + galleryList[arrWordsLength - 1].image_title
+             }
+            else {
+                break
+            }
+            //
+            i--
+        }
+        //
+        i = 0
+        while (i < arrWordsLength) {
+            // history recording
+            if (galleryList[i].urlType != getString(R.string.non_trovato)) {
+                voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
+                    sharedLastSession,
+                    sharedLastPhraseNumber, currentTime,
+                    i + 1, " ",
+                    galleryList[i].image_title!!," ", galleryList[i].urlType!!, galleryList[i].url!!
+                )
+                toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
+            }
+            //
+            i++
         }
         return toBeRecordedInHistory
     }

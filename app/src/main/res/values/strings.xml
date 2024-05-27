@@ -173,6 +173,7 @@
     <string name="images" translatable="false">images</string>
     <string name="indicative_present" translatable="false">indicative/present</string>
     <string name="infinitive" translatable="false">infinitive</string>
+    <string name="insert" translatable="false">insert</string>
     <string name="io">io</string>
     <string name="is_a_negation_adverb" translatable="false">Is a negation adverb</string>
     <string name="is_a_servile_verb" translatable="false">Is a servile verb</string>
@@ -196,6 +197,7 @@
     <string name="middle_column_content_url" translatable="false">MIDDLE COLUMN CONTENT URL</string>
     <string name="middle_column_content_url_type" translatable="false">MIDDLE COLUMN CONTENT URL TYPE</string>
     <string name="middle_column_menu_phrase_number" translatable="false">MIDDLE COLUMN MENU PHRASE NUMBER</string>
+    <string name="modify" translatable="false">modify</string>
     <string name="navigatore" translatable="false">NAVIGATORE</string>
     <string name="nessun_video" translatable="false">nessun video</string>
     <string name="nessuno" translatable="false">nessuno</string>
@@ -262,6 +264,7 @@
     <string name="tlm" translatable="false">TLM</string>
     <string name="tts_enabled" translatable="false">TTS ENABLED</string>
     <string name="type" translatable="false">type</string>
+    <string name="update_mode" translatable="false">UPDATE MODE</string>
     <string name="uppercase" translatable="false">uppercase</string>
     <string name="uri" translatable="false">URI</string>
     <string name="uri_premium_video" translatable="false">URIPREMIUMVIDEO</string>
@@ -271,6 +274,7 @@
     <string name="wordnumber" translatable="false">wordNumber</string>
     <string name="wordnumberint" translatable="false">wordNumberInt</string>
     <string name="wordnumberintinthestory" translatable="false">wordNumberIntInTheStory</string>
+    <string name="wordtoadd" translatable="false">wordToAdd</string>
     <string name="word1" translatable="false">word1</string>
     <string name="word2" translatable="false">word2</string>
     <string name="word_to_display" translatable="false">WORD TO DISPLAY</string>

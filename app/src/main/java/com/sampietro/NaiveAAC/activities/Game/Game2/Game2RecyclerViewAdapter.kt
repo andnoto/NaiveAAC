@@ -3,18 +3,17 @@ package com.sampietro.NaiveAAC.activities.Game.Game2
 import android.content.Context
 import android.content.SharedPreferences
 import android.speech.tts.TextToSpeech
-import com.sampietro.NaiveAAC.R
-import android.view.ViewGroup
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
-import java.util.ArrayList
 
 /**
  * <h1>Game2RecyclerViewAdapter1</h1>

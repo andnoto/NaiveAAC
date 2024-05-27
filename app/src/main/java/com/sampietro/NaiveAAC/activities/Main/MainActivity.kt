@@ -1,19 +1,19 @@
 package com.sampietro.NaiveAAC.activities.Main
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import android.content.SharedPreferences
-import android.os.Bundle
-import com.sampietro.NaiveAAC.R
 import android.content.Intent
-import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
+import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.ImageView
-import com.sampietro.NaiveAAC.activities.Info.RequestConsentToTheProcessingOfPersonalDataActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Account.AccountActivity
+import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
+import com.sampietro.NaiveAAC.activities.Info.RequestConsentToTheProcessingOfPersonalDataActivity
 import java.io.IOException
 
 // import android.util.Log;
@@ -27,14 +27,9 @@ import java.io.IOException
  * 4) check if there is a player already registered
  */
 class MainActivity : AppCompatActivity() {
-//    var permessi = "permission not granted"
-
     //
     lateinit var context: Context
     lateinit var sharedPref: SharedPreferences
-
-    //
-//    private val TAGPERMISSION = "permission"
 
     /**
      * configurations of main start screen. Furthermore:
@@ -100,14 +95,10 @@ class MainActivity : AppCompatActivity() {
             val hasConsentToTheProcessingOfPersonalData = verifyConsentToTheProcessingOfPersonalData()
             //
             if (hasConsentToTheProcessingOfPersonalData) {
-//            val hasLastPlayer = verifyLastPlayer()
-//            if (hasLastPlayer) {
                 //
-//                if (isStoragePermissionGranted()) {
                 // I move on to the activity of choice
                 // Time to launch the another activity
                 val TIME_OUT = 4000
-//                Handler().postDelayed({
                 Handler(Looper.getMainLooper()).postDelayed({
                     val i = Intent(
                         this@MainActivity,
@@ -119,17 +110,10 @@ class MainActivity : AppCompatActivity() {
                     startActivity(i)
                     finish()
                 }, TIME_OUT.toLong())
-                //                }
-//            }
                 }
             }
         //
     }
-
-//    override fun onNewIntent(intent: Intent) {
-//        super.onNewIntent(intent)
-//        displayFileInAssets()
-//    }
 
     /**
      * start screen
@@ -206,8 +190,5 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_MESSAGE = "helloworldandroidMessage"
-
-        //
-//        const val ID_RICHIESTA_PERMISSION = 1
     }
 }

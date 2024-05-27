@@ -2,7 +2,6 @@ package com.sampietro.NaiveAAC.activities.Game.GameADA
 
 import android.speech.tts.TextToSpeech
 import android.view.View
-import java.util.ArrayList
 
 /**
  * <h1>GameADAOnFragmentEventListener</h1>

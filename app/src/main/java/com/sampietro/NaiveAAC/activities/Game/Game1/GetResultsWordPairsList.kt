@@ -1,9 +1,8 @@
 package com.sampietro.NaiveAAC.activities.Game.Game1
 
-import io.realm.RealmResults
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import io.realm.Realm
-import java.util.ArrayList
+import io.realm.RealmResults
 
 /**
  * <h1>GetResultsWordPairsList</h1>

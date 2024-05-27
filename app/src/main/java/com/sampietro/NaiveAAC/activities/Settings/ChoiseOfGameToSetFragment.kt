@@ -1,16 +1,16 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import android.widget.TextView
-import android.widget.ArrayAdapter
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import com.sampietro.NaiveAAC.R
-import android.widget.Spinner
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import com.sampietro.NaiveAAC.R
 
 /**
  * <h1>ChoiseOfGameToSetFragment</h1>

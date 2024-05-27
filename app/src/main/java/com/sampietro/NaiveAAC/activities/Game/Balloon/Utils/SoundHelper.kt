@@ -2,10 +2,10 @@ package com.sampietro.NaiveAAC.activities.Game.Balloon.Utils
 
 import android.content.Context
 import android.media.AudioAttributes
-import androidx.appcompat.app.AppCompatActivity
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.SoundPool
-import android.media.AudioManager
+import androidx.appcompat.app.AppCompatActivity
 import com.sampietro.NaiveAAC.R
 
 /**
@@ -33,16 +33,11 @@ class SoundHelper(activity: AppCompatActivity) {
             .toFloat()
         activity.volumeControlStream = AudioManager.STREAM_MUSIC
         //
-//        mSoundPool = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         val audioAttributes = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build()
         mSoundPool = SoundPool.Builder().setAudioAttributes(audioAttributes).setMaxStreams(6).build()
-//        } else {
-            //SoundPool(int maxStreams, int streamType, int srcQuality Currently has no effect )
-//            SoundPool(6, AudioManager.STREAM_MUSIC, 0)
-//        }
         //
         mSoundPool!!.setOnLoadCompleteListener { soundPool: SoundPool?, sampleId: Int, status: Int ->
             mLoaded = true

@@ -3,9 +3,9 @@ package com.sampietro.NaiveAAC.activities.Game.Utils
 import android.Manifest
 import android.app.Activity
 import android.content.Context
-import androidx.core.content.ContextCompat
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
 object AndroidNotificationPermission : Activity() {
     //

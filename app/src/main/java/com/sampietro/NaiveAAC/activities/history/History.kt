@@ -1,9 +1,9 @@
 package com.sampietro.NaiveAAC.activities.history
 
 import android.content.Context
-import io.realm.RealmObject
 import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper
 import io.realm.Realm
+import io.realm.RealmObject
 
 /**
  * <h1>History</h1>

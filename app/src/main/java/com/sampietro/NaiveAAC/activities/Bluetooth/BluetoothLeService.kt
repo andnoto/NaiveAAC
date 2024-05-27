@@ -51,7 +51,6 @@ import com.squareup.picasso.Target
 import io.realm.Realm
 import java.io.File
 import java.io.UnsupportedEncodingException
-import java.lang.Exception
 import java.util.UUID
 
 /**
@@ -75,7 +74,7 @@ import java.util.UUID
  * and https://bignerdranch.com/blog/bluetooth-low-energy-on-android-part-2/)
  * By [Andrew Lunsford](https://www.linkedin.com/in/andrew-lunsford-403b4b6/)
  *
- * @version     5.0, 01/01/2024
+ * @version     5.0, 01/04/2024
  *
  * @see com.sampietro.NaiveAAC.activities.Game.Game1.Game1BleActivity
  */

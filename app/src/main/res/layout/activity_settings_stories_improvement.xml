@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_game_ada_id"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.Game.GameADA.SettingsStoriesImprovementActivity">
+
+    <View
+        android:id="@+id/background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/azzurro_pastello"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_mode_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/btn_mode_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="startWriteGameADA"
+        android:text="scrivi"
+        app:layout_constraintEnd_toStartOf="@+id/btn_start"
+        app:layout_constraintTop_toTopOf="parent"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/ic_baseline_mode_edit_36" />
+
+    <ImageButton
+        android:id="@+id/btn_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="startSpeechGameADA"
+        android:text="@string/inizia"
+        app:layout_constraintEnd_toStartOf="@+id/printbutton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/ic_baseline_hearing_36_black" />
+
+    <ImageButton
+        android:id="@+id/printbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="printSentenceOfAStory"
+        android:text="@string/inizia"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/ic_baseline_print_36" />
+
+    <ImageButton
+        android:id="@+id/firstpagegameadabutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="firstPageGameAdaButton"
+        android:src="@drawable/ic_baseline_first_page_36"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/returngameadabutton"
+        app:layout_constraintTop_toBottomOf="@+id/btn_mode_edit" />
+
+    <ImageButton
+        android:id="@+id/returngameadabutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="returnGameAdaButton"
+        android:src="@drawable/ic_baseline_arrow_back_ios_36"
+        app:layout_constraintStart_toEndOf="@+id/firstpagegameadabutton"
+        app:layout_constraintEnd_toStartOf="@+id/continuegameadabutton"
+        app:layout_constraintTop_toBottomOf="@+id/btn_mode_edit" />
+
+    <ImageButton
+        android:id="@+id/continuegameadabutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="continueGameAdaButton"
+        android:src="@drawable/ic_baseline_arrow_forward_ios_36"
+        app:layout_constraintStart_toEndOf="@+id/returngameadabutton"
+        app:layout_constraintEnd_toStartOf="@+id/lastpagegameadabutton"
+        app:layout_constraintTop_toBottomOf="@+id/btn_mode_edit" />
+
+    <ImageButton
+        android:id="@+id/lastpagegameadabutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="lastPageGameAdaButton"
+        android:src="@drawable/ic_baseline_last_page_36"
+        app:layout_constraintStart_toEndOf="@+id/continuegameadabutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_mode_edit" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/game_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/insertsasentencebeforethisonebutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstpagegameadabutton">
+    </androidx.fragment.app.FragmentContainerView>
+
+    <ImageButton
+        android:id="@+id/insertsasentencebeforethisonebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="insertsASentenceBeforeThisOneButton"
+        android:src="@drawable/baseline_add_circle_outline_36"
+        app:layout_constraintStart_toStartOf="@+id/firstpagegameadabutton"
+        app:layout_constraintEnd_toStartOf="@+id/deletethesentencebutton"
+        app:layout_constraintTop_toBottomOf="@+id/game_container" />
+
+    <ImageButton
+        android:id="@+id/deletethesentencebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="deleteTheSentenceButton"
+        android:src="@drawable/baseline_remove_circle_outline_36"
+        app:layout_constraintStart_toEndOf="@+id/insertsasentencebeforethisonebutton"
+        app:layout_constraintEnd_toStartOf="@+id/insertsasentenceafterthisbutton"
+        app:layout_constraintTop_toBottomOf="@+id/game_container" />
+
+    <ImageButton
+        android:id="@+id/insertsasentenceafterthisbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="insertsASentenceAfterThisButton"
+        android:src="@drawable/baseline_add_circle_outline_36"
+        app:layout_constraintStart_toEndOf="@+id/deletethesentencebutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/game_container" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

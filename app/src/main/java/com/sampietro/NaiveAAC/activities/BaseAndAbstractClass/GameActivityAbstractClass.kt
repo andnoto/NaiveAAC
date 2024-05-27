@@ -1,12 +1,12 @@
 package com.sampietro.NaiveAAC.activities.BaseAndAbstractClass
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import android.widget.ImageButton
-import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
-import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import android.content.SharedPreferences
 import android.view.View
+import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
+import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
+import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import io.realm.Realm
 import java.util.*
 import kotlin.properties.Delegates
@@ -27,11 +27,11 @@ import kotlin.properties.Delegates
  *
  *
  * @version     5.0, 01/04/2024
- * @see com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
+ * @see com.sampietro.simsimtest.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
  *
- * @see com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity
+ * @see com.sampietro.simsimtest.activities.Game.Game1.Game1Activity
  *
- * @see com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity
+ * @see com.sampietro.simsimtest.activities.Game.Game2.Game2Activity
  *
  */
 abstract class GameActivityAbstractClass : AppCompatActivity()
@@ -44,11 +44,6 @@ abstract class GameActivityAbstractClass : AppCompatActivity()
     lateinit var realm: Realm
 
     //
-//    var message = "messaggio non formato"
-//    var textView: TextView? = null
-    //
-    @JvmField
-    var rootViewImageFragment: View? = null
     @JvmField
     var rootViewPrizeFragment: View? = null
 

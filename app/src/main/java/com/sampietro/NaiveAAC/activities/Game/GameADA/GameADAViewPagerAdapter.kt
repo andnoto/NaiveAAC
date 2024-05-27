@@ -1,15 +1,15 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA
 
 import android.content.Context
-import androidx.lifecycle.Lifecycle
-import io.realm.RealmResults
-import com.sampietro.NaiveAAC.activities.Stories.Stories
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Stories.Stories
 import io.realm.Realm
+import io.realm.RealmResults
 
 /**
  * <h1>GameADAViewPagerAdapter</h1>

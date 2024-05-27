@@ -1,28 +1,26 @@
 package com.sampietro.NaiveAAC.activities.Game.Game1
 
-import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment.onFragmentEventListenerPrize
-import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment.onFragmentEventListenerYoutubePrize
-import android.os.Bundle
-import android.speech.tts.TextToSpeech
-import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment
-import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment
 import android.content.Intent
-import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
-import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.speech.tts.TextToSpeech
 import android.view.View
 import android.view.Window
 import android.widget.Toast
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
 import com.sampietro.NaiveAAC.activities.Game.Balloon.BalloonGameplayActivity
+import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyRegistration
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.welcomeSpeech
+import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment
+import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment.onFragmentEventListenerPrize
+import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment
+import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment.onFragmentEventListenerYoutubePrize
 import com.sampietro.NaiveAAC.activities.Grammar.ComposesASentenceResults
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.composesASentence
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.thereIsACorrespondenceWithAnAllowedMarginOfError
@@ -31,10 +29,12 @@ import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.prin
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
+import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.destroyRecognizer
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.prepareSpeechRecognizer
+import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs.Companion.searchAwardType
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs.Companion.searchUriPremiumVideo
 import io.realm.Realm
@@ -405,7 +405,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
         readingOfTheText()
         // Time to launch the another activity
         val TIME_OUT = 4000
-        Handler(Looper.getMainLooper()).postDelayed({ startSpeechGame1(rootViewImageFragment) }, TIME_OUT.toLong())
+        Handler(Looper.getMainLooper()).postDelayed({ startSpeechGame1(null) }, TIME_OUT.toLong())
     }
 
     /**
@@ -424,7 +424,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
      * Called on result of speech.
      *
      * @param eText string result from SpeechRecognizerManagement
-     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
+     * @see com.sampietro.simsimtest.activities.VoiceRecognition.RecognizerCallback
      */
     override fun onResult(eText: String?) {
         checkAnswer(eText!!)
@@ -437,7 +437,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
      * @param editText string message from SpeechRecognizerManagement
      * @see fragmentTransactionStart
      *
-     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
+     * @see com.sampietro.simsimtest.activities.VoiceRecognition.RecognizerCallback
      */
     override fun onEndOfSpeech(editText: String?) {
         fragmentTransactionStart()
@@ -447,7 +447,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
      * Called on error from SpeechRecognizerManagement.
      *
      * @param errorCode int error code from SpeechRecognizerManagement
-     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
+     * @see com.sampietro.simsimtest.activities.VoiceRecognition.RecognizerCallback
      *
      * @see fragmentTransactionStart
      */
@@ -1103,7 +1103,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
             readingOfTheText()
             //
             val TIME_OUT = 2000
-            Handler(Looper.getMainLooper()).postDelayed({ startSpeechGame1(rootViewImageFragment) }, TIME_OUT.toLong())
+            Handler(Looper.getMainLooper()).postDelayed({ startSpeechGame1(null) }, TIME_OUT.toLong())
     }
 
     /**

@@ -1,10 +1,10 @@
 package com.sampietro.NaiveAAC.activities.Info
 
-import com.sampietro.NaiveAAC.activities.Info.Utils.InfoActivityAbstractClass
 import android.os.Bundle
 import android.view.View
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
+import com.sampietro.NaiveAAC.activities.Info.Utils.InfoActivityAbstractClass
 
 /**
  * <h1>InfoActivity</h1>
@@ -14,7 +14,7 @@ import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
  * @version     4.0, 09/09/2023
  * @see InfoActivityAbstractClass
  *
- * @see com.sampietro.NaiveAAC.activities.Info.Utils.InfoFragmentAbstractClass
+ * @see InfoActivityAbstractClass
  */
 class InfoActivity : InfoActivityAbstractClass() {
     /**

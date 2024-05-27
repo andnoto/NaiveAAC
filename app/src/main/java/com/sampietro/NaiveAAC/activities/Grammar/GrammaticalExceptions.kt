@@ -1,10 +1,10 @@
 package com.sampietro.NaiveAAC.activities.Grammar
 
 import android.content.Context
-import io.realm.RealmObject
-import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper
 import io.realm.Realm
+import io.realm.RealmObject
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.IOException

@@ -1,11 +1,11 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import android.widget.TextView
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Phrases.Phrases
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.Phrases.Phrases
 import io.realm.Realm
 
 /**
@@ -15,8 +15,6 @@ import io.realm.Realm
  *
  *
  * @version     5.0, 01/04/2024
- * @see SettingsFragmentAbstractClass
- *
  * @see SettingsActivity
  */
 class PhrasesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {

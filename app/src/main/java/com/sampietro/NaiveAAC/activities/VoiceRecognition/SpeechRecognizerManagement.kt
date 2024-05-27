@@ -1,13 +1,12 @@
 package com.sampietro.NaiveAAC.activities.VoiceRecognition
 
 import android.content.Context
-import android.speech.SpeechRecognizer
 import android.content.Intent
-import android.speech.RecognizerIntent
-import android.speech.RecognitionListener
 import android.os.Bundle
-import java.lang.RuntimeException
-import java.util.*
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import java.util.Locale
 
 object SpeechRecognizerManagement {
     private lateinit var recognizer: SpeechRecognizer

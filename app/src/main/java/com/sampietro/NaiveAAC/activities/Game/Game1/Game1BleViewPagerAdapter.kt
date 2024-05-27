@@ -1,9 +1,9 @@
 package com.sampietro.NaiveAAC.activities.Game.Game1
 
 import android.content.Context
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import io.realm.Realm

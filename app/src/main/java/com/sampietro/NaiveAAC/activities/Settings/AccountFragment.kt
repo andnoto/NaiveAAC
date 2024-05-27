@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import com.sampietro.NaiveAAC.R
 import android.widget.EditText
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 
 /**
@@ -15,8 +15,6 @@ import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractCl
  *
  *
  * @version     5.0, 01/04/2024
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
- *
  * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
  *
  * @see com.sampietro.NaiveAAC.activities.Account.AccountActivity

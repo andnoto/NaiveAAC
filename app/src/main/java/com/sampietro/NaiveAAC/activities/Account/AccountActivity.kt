@@ -3,31 +3,19 @@ package com.sampietro.NaiveAAC.activities.Account
 import android.Manifest
 import android.app.Activity
 import android.app.Dialog
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
-import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Settings.AccountFragment
-import com.sampietro.NaiveAAC.activities.Graphics.Sounds
-import com.sampietro.NaiveAAC.activities.Graphics.Videos
-import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
-import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
-import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
-import com.sampietro.NaiveAAC.activities.Phrases.Phrases
-import com.sampietro.NaiveAAC.activities.Stories.Stories
-import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
-import android.widget.EditText
 import android.content.Intent
-import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.result.ActivityResult
@@ -37,19 +25,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.snackbar.Snackbar
+import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
-//import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyAssets
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromAssetsToInternalStorage
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
+import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
+import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
+import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.showImage
-//import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper
 import com.sampietro.NaiveAAC.activities.Graphics.Images
+import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import com.sampietro.NaiveAAC.activities.Graphics.Videos
+import com.sampietro.NaiveAAC.activities.Phrases.Phrases
+import com.sampietro.NaiveAAC.activities.Settings.AccountFragment
+import com.sampietro.NaiveAAC.activities.Stories.Stories
+import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.lang.Exception
 import java.net.URISyntaxException
 import java.util.Objects
 
@@ -66,8 +63,6 @@ import java.util.Objects
  *
  * @version     5.0, 01/04/2024
  * @see AccountActivityAbstractClass
- *
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  */
 class AccountActivity : AccountActivityAbstractClass() {
     //
@@ -153,11 +148,6 @@ class AccountActivity : AccountActivityAbstractClass() {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }
-        //
-//        if (isStoragePermissionGranted) {
-            //    Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
-//        }
-        //
     }
     /**
      * Called when the user taps the enter password button.

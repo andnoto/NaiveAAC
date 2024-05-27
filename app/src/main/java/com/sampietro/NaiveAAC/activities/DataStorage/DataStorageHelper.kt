@@ -11,7 +11,6 @@ import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.Utils.AndroidNotificationPermission.openFileOutput
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -20,7 +19,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.lang.Exception
 import java.net.URISyntaxException
 import java.util.Enumeration
 import java.util.zip.ZipEntry

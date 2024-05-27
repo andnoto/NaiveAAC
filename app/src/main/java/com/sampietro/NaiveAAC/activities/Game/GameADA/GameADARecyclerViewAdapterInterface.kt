@@ -1,7 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA
 
 import android.view.View
-import java.util.ArrayList
 
 /**
  * <h1>GameAdaRecyclerViewAdapterInterface</h1>

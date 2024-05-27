@@ -1,12 +1,8 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
-import com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter.WordPairsAdapterInterface
-import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -18,13 +14,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper
+import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
-import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import com.sampietro.NaiveAAC.activities.WordPairs.VoiceToBeRecordedInWordPairs
 import com.sampietro.NaiveAAC.activities.WordPairs.VoiceToBeRecordedInWordPairsViewModel
+import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
+import com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter.WordPairsAdapterInterface
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
@@ -38,9 +38,6 @@ import java.util.Objects
  * Called when the user taps the word pairs button from the contents settings menu
  *
  * @version     5.0, 01/04/2024
- * @see AccountBaseActivity
- *
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
  *
  * @see com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
  */
@@ -343,10 +340,6 @@ class SettingsWordPairsActivity : ActivityAbstractClass(), WordPairsAdapterInter
          * and
          * Refer to [stackoverflow](https://stackoverflow.com/questions/56651444/deprecated-getbitmap-with-api-29-any-alternative-codes)
          * answer of [Ally](https://stackoverflow.com/users/6258197/ally)
-         *
-         * @see getFilePath
-         *
-         * @see showImage
          */
         fun setActivityResultLauncher() {
             // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
@@ -364,15 +357,12 @@ class SettingsWordPairsActivity : ActivityAbstractClass(), WordPairsAdapterInter
                             if (resultData != null) {
                                 uri = Objects.requireNonNull(resultData).data
                                 //
-                                //
-//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                                 val takeFlags =
                                     resultData.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION
                                 context.contentResolver.takePersistableUriPermission(
                                     uri!!,
                                     takeFlags
                                 )
-//                            }
                                 //
                                 stringUri = uri.toString()
                                 //

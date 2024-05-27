@@ -2,8 +2,8 @@ package com.sampietro.NaiveAAC.activities.Graphics
 
 import android.content.Context
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAll
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb
 import io.realm.Realm
 
 /**

@@ -1,8 +1,8 @@
 package com.sampietro.NaiveAAC.activities.WordPairs
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
 /*
 the data being stored is wrapped in a MutableLiveData class.

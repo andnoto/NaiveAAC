@@ -6,16 +6,16 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.View
 import android.view.Window
+import com.google.android.material.snackbar.Snackbar
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity
+import com.sampietro.NaiveAAC.activities.Game.Game1.Game1BleActivity
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAActivity
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
-import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
-import com.google.android.material.snackbar.Snackbar
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.Game.Game1.Game1BleActivity
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper
+import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import io.realm.Realm
 import io.realm.RealmResults
 
@@ -37,8 +37,6 @@ class ChoiseOfGameActivity : GameActivityAbstractClass(), ChoiseOfGameRecyclerVi
     //
     var resultsGameParameters: RealmResults<GameParameters>? = null
 
-    //
-//    var rootViewGameFragment: View? = null
     /**
      * configurations of game choice start screen.
      *

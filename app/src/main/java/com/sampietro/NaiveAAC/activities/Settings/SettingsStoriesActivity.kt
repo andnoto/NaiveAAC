@@ -1,44 +1,39 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAPhraseOfAStory
-import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
-import com.sampietro.NaiveAAC.activities.Stories.StoriesAdapter.StoriesAdapterInterface
-import com.sampietro.NaiveAAC.activities.Settings.StoriesVideosSearchAdapter.StoriesVideosSearchAdapterInterface
-import com.sampietro.NaiveAAC.activities.Settings.StoriesSoundsSearchAdapter.StoriesSoundsSearchAdapterInterface
-import android.widget.TextView
-import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
-import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
-import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import androidx.lifecycle.ViewModelProvider
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
-import android.content.Intent
-import androidx.activity.result.ActivityResultCallback
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Bundle
 import android.view.View
 import android.widget.EditText
-import android.widget.RadioButton
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
-import io.realm.RealmResults
-import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListener
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper
+import com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesRegistrationActivity
+import com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementActivity
+import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
+import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Settings.Utils.ImageSearchArasaacFragment
 import com.sampietro.NaiveAAC.activities.Settings.Utils.ImageSearchArasaacRecyclerViewAdapterInterface
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListener
-import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
 import com.sampietro.NaiveAAC.activities.Stories.Stories
-import com.sampietro.NaiveAAC.activities.Stories.StoriesComparator
+import com.sampietro.NaiveAAC.activities.Stories.StoriesListAdapter
+import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
+import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
 import io.realm.Realm
+import io.realm.RealmResults
 import io.realm.Sort
 import java.io.ByteArrayOutputStream
-import java.lang.Exception
 import java.net.URISyntaxException
 import java.util.*
 
@@ -49,38 +44,23 @@ import java.util.*
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/communicate)
  *
  * @version     5.0, 01/04/2024
- * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
- *
- * @see com.sampietro.simsimtest.activities.WordPairs.WordPairsAdapter
- *
- * @see com.sampietro.simsimtest.activities.Grammar.ListsOfNamesAdapter
- *
- * @see com.sampietro.simsimtest.activities.Stories.StoriesAdapter
+ * @see FragmentAbstractClassWithListener
+ * @see StoriesListAdapter
  */
 class SettingsStoriesActivity : ActivityAbstractClass(),
     FragmentAbstractClassWithListener.onBaseFragmentEventListenerSettings,
-    StoriesAdapterInterface, ImageSearchArasaacRecyclerViewAdapterInterface,
-    StoriesVideosSearchAdapterInterface, StoriesSoundsSearchAdapterInterface {
-    var message = "messaggio non formato"
-    var textView: TextView? = null
-
+    StoriesListAdapter.StoriesListAdapterInterface,
+    ImageSearchArasaacRecyclerViewAdapterInterface {
     //
     var fragmentManager: FragmentManager? = null
-
     //
     private var voiceToBeRecordedInStories: VoiceToBeRecordedInStories? = null
     private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
-
     /**
      * configurations of settings start screen.
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see .setActivityResultLauncher
-     *
      * @see ActionbarFragment
-     *
-     * @see ContentsFragment
-     *
      * @see Activity.onCreate
      */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,13 +89,26 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
             fragmentManager = supportFragmentManager
             fragmentManager!!.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
-                .add(R.id.settings_container, Fragment(R.layout.activity_settings_stories), "StoriesFragment")
+                .add(R.id.settings_container, Fragment(R.layout.activity_settings_stories_first), "StoriesFragment")
                 .commit()
         }
         // The MainActivity class provides an instance of Realm wherever needed in the application.
         // To use it in the Activity, a reference must be obtained to a Realm object in the onCreate method.
         // The Realm object must be closed in the onDestroy method.
         realm = Realm.getDefaultInstance()
+    }
+    /**
+     * Called when the user taps the record new story button.
+     *
+     * @param v view of tapped button
+     */
+    fun searchNewStoryGameImage(v: View) {
+        val frag = StoriesGameImageFragment(R.layout.activity_settings_stories_game_image)
+        //
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
     }
     //
     @JvmField
@@ -137,7 +130,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
      * and to [stackoverflow](https://stackoverflow.com/questions/7620401/how-to-convert-image-file-data-in-a-byte-array-to-a-bitmap)
      * answer of [Uttam](https://stackoverflow.com/users/840861/uttam)
      *
-     * @see AccountBaseActivity.getFilePath
+     * @see FragmentAbstractClassWithListener
      */
     fun setActivityResultLauncher() {
         //
@@ -156,7 +149,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
                             uri = Objects.requireNonNull(resultData).data
                             //
                             try {
-                                filePath = getFilePath(context, uri)
+                                filePath = DataStorageHelper.getFilePath(context, uri)
                             } catch (e: URISyntaxException) {
                                 e.printStackTrace()
                             }
@@ -192,12 +185,18 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
 //                                (maybe it is not necessary to call observe)
                             voiceToBeRecordedInStories!!.uriType = "S"
                             voiceToBeRecordedInStories!!.uri = filePath
+                            //
+                            val frag = StoriesGameImageFragment(R.layout.activity_settings_stories_game_image)
+                            //
+                            val ft = supportFragmentManager.beginTransaction()
+                            ft.replace(R.id.settings_container, frag)
+                            ft.addToBackStack(null)
+                            ft.commit()
                         }
                     }
                 }
             })
     }
-
     /**
      * Called when the user taps the image search button.
      *
@@ -216,100 +215,19 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
         // it would be "*/*".
         intent.type = "image/*"
         when (v.id) {
-            R.id.buttonimagesearchstories -> {
+            R.id.buttongameimagesearchstories -> {
                 /*  the instructions of the button */
                 val textWord1 = findViewById<View>(R.id.keywordstorytoadd) as EditText
-                val textWord2 = findViewById<View>(R.id.phrasenumbertoadd) as EditText
-                val textWord3 = findViewById<View>(R.id.wordnumbertoadd) as EditText
-                val textWord4 = findViewById<View>(R.id.wordtoadd) as EditText
                 // Viewmodel
                 // In the activity, sometimes it is called observe, other times it is limited to performing set directly
                 // (maybe it is not necessary to call observe)
                 voiceToBeRecordedInStories!!.story =
                     textWord1.text.toString().lowercase(Locale.getDefault())
-                if (textWord2.text.toString() != "") voiceToBeRecordedInStories!!.phraseNumberInt =
-                    textWord2.text.toString().toInt()
-                if (textWord3.text.toString() != "") voiceToBeRecordedInStories!!.wordNumberInt =
-                    textWord3.text.toString().toInt()
-                voiceToBeRecordedInStories!!.word = textWord4.text.toString()
                 //
                 imageSearchStoriesActivityResultLauncher!!.launch(intent)
             }
         }
     }
-    //
-    /**
-     * Called when the user taps the video search button.
-     *
-     * @param v view of tapped button
-     */
-    fun videoSearch(v: View?) {
-        val textWord1 = findViewById<View>(R.id.keywordstorytoadd) as EditText
-        val textWord2 = findViewById<View>(R.id.phrasenumbertoadd) as EditText
-        val textWord3 = findViewById<View>(R.id.wordnumbertoadd) as EditText
-        val textWord4 = findViewById<View>(R.id.wordtoadd) as EditText
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-        voiceToBeRecordedInStories!!.story =
-            textWord1.text.toString().lowercase(Locale.getDefault())
-        if (textWord2.text.toString() != "") voiceToBeRecordedInStories!!.phraseNumberInt =
-            textWord2.text.toString().toInt()
-        if (textWord3.text.toString() != "") voiceToBeRecordedInStories!!.wordNumberInt =
-            textWord3.text.toString().toInt()
-        voiceToBeRecordedInStories!!.word = textWord4.text.toString()
-        //
-        val frag = StoriesVideosSearchFragment(R.layout.activity_settings_stories_videos)
-        //
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.settings_container, frag)
-        ft.addToBackStack(null)
-        ft.commit()
-    }
-    //
-    /**
-     * Called when the user taps the sounds search button.
-     *
-     * @param v view of tapped button
-     */
-    fun soundsSearch(v: View?) {
-        val textWord1 = findViewById<View>(R.id.keywordstorytoadd) as EditText
-        val textWord2 = findViewById<View>(R.id.phrasenumbertoadd) as EditText
-        val textWord3 = findViewById<View>(R.id.wordnumbertoadd) as EditText
-        val textWord4 = findViewById<View>(R.id.wordtoadd) as EditText
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-        voiceToBeRecordedInStories!!.story =
-            textWord1.text.toString().lowercase(Locale.getDefault())
-        if (textWord2.text.toString() != "") voiceToBeRecordedInStories!!.phraseNumberInt =
-            textWord2.text.toString().toInt()
-        if (textWord3.text.toString() != "") voiceToBeRecordedInStories!!.wordNumberInt =
-            textWord3.text.toString().toInt()
-        voiceToBeRecordedInStories!!.word = textWord4.text.toString()
-        //
-        val frag = StoriesSoundsSearchFragment(R.layout.activity_settings_stories_sounds)
-        //
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.settings_container, frag)
-        ft.addToBackStack(null)
-        ft.commit()
-    }
-
-    /**
-     * receives calls from fragment listeners.
-     *
-     * @param v view of calling fragment
-     * @see com.sampietro.simsimtest.activities.Settings.Utils.SettingsFragmentAbstractClass
-     */
-    override fun receiveResultSettings(v: View?) {
-        when (v!!.id) {
-            R.id.btn_search_arasaac -> {
-                arasaacSearch(v)
-            }
-        }
-    }
-
     /**
      * Called when the user taps the image search Arasaac button from Stories Fragment.
      *
@@ -317,9 +235,6 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
      */
     fun imageSearchArasaac(v: View?) {
         val textWord1 = findViewById<View>(R.id.keywordstorytoadd) as EditText
-        val textWord2 = findViewById<View>(R.id.phrasenumbertoadd) as EditText
-        val textWord3 = findViewById<View>(R.id.wordnumbertoadd) as EditText
-        val textWord4 = findViewById<View>(R.id.wordtoadd) as EditText
         //
         // view the image search Arasaac  initializing ImageSearchArasaacFragment (FragmentTransaction
         // switch between Fragments).
@@ -328,16 +243,11 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
         // (maybe it is not necessary to call observe)
         voiceToBeRecordedInStories!!.story =
             textWord1.text.toString().lowercase(Locale.getDefault())
-        if (textWord2.text.toString() != "") voiceToBeRecordedInStories!!.phraseNumberInt =
-            textWord2.text.toString().toInt()
-        if (textWord3.text.toString() != "") voiceToBeRecordedInStories!!.wordNumberInt =
-            textWord3.text.toString().toInt()
-        voiceToBeRecordedInStories!!.word = textWord4.text.toString()
         //
         val frag = ImageSearchArasaacFragment(R.layout.activity_settings_stories_arasaac)
         //
         val bundle = Bundle()
-        bundle.putString("keywordToSearchArasaac", textWord4.text.toString())
+        bundle.putString("keywordToSearchArasaac", textWord1.text.toString())
         frag.arguments = bundle
         //
         val ft = supportFragmentManager.beginTransaction()
@@ -345,7 +255,6 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
         ft.addToBackStack(null)
         ft.commit()
     }
-
     /**
      * Called when the user taps the image search Arasaac button from StoriesImagesSearchArasaac Fragment.
      *
@@ -366,7 +275,6 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
         ft.addToBackStack(null)
         ft.commit()
     }
-
     /**
      * Called when the user taps the image Arasaac .
      *
@@ -384,7 +292,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
                 voiceToBeRecordedInStories.uriType = "A"
                 voiceToBeRecordedInStories.uri = url
                 //
-                val frag = StoriesFragment(R.layout.activity_settings_stories)
+                val frag = StoriesGameImageFragment(R.layout.activity_settings_stories_game_image)
                 //
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
@@ -392,148 +300,18 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
                 ft.commit()
             }
     }
-
     /**
-     * Called when the user taps the video .
+     * receives calls from fragment listeners.
      *
-     * @param videoKey string whit video key in the videos table
+     * @param v view of calling fragment
      */
-    override fun reloadStoriesFragmentFromVideoSearch(videoKey: String?) {
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-        viewModel.getSelectedItem()
-            .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
-                voiceToBeRecordedInStories.video = videoKey
-                //
-                val frag = StoriesFragment(R.layout.activity_settings_stories)
-                //
-                val ft = supportFragmentManager.beginTransaction()
-                ft.replace(R.id.settings_container, frag)
-                ft.addToBackStack(null)
-                ft.commit()
-            }
-    }
-
-    /**
-     * Called when the user click the radio button sound_replace_TTS.
-     *
-     * register which radio button was clicked
-     *
-     * @param view view of clicked radio button
-     * @see StoriesSoundsSearchFragment
-     */
-    fun onStoriesSoundsRadioButtonClicked(view: View) {
-        // Is the button now checked?
-        val checked = (view as RadioButton).isChecked
-        when (view.getId()) {
-            R.id.radio_sound_replace_TTS -> if (checked) {
-                //
-                voiceToBeRecordedInStories!!.soundReplacesTTS = "Y"
-            }
-            R.id.radio_sound_does_not_replace_TTS -> if (checked) {
-                //
-                voiceToBeRecordedInStories!!.soundReplacesTTS = "N" // default
+    override fun receiveResultSettings(v: View?) {
+        when (v!!.id) {
+            R.id.btn_search_arasaac -> {
+                arasaacSearch(v)
             }
         }
     }
-
-    /**
-     * Called when the user taps the sound.
-     *
-     * @param position int whit position of sound key in the sounds table
-     */
-    override fun reloadStoriesFragmentFromSoundsSearch(position: Int) {
-        val results = realm.where(Sounds::class.java).findAll()
-        val selectedSound = results[position]!!
-        voiceToBeRecordedInStories!!.sound = selectedSound.descrizione
-        //
-        val frag = StoriesFragment(R.layout.activity_settings_stories)
-        //
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.settings_container, frag)
-        ft.addToBackStack(null)
-        ft.commit()
-    }
-    //
-    /**
-     * Called when the user taps the action after response button.
-     *
-     * @param v view of tapped button
-     */
-    fun actionAfterResponse(v: View?) {
-        val textWord1 = findViewById<View>(R.id.keywordstorytoadd) as EditText
-        val textWord2 = findViewById<View>(R.id.phrasenumbertoadd) as EditText
-        val textWord3 = findViewById<View>(R.id.wordnumbertoadd) as EditText
-        val textWord4 = findViewById<View>(R.id.wordtoadd) as EditText
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-        voiceToBeRecordedInStories!!.story =
-            textWord1.text.toString().lowercase(Locale.getDefault())
-        if (textWord2.text.toString() != "") voiceToBeRecordedInStories!!.phraseNumberInt =
-            textWord2.text.toString().toInt()
-        if (textWord3.text.toString() != "") voiceToBeRecordedInStories!!.wordNumberInt =
-            textWord3.text.toString().toInt()
-        voiceToBeRecordedInStories!!.word = textWord4.text.toString()
-        //
-        val frag = StoriesActionAfterResponseFragment(R.layout.activity_settings_stories_action_after_response)
-        //
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.settings_container, frag)
-        ft.addToBackStack(null)
-        ft.commit()
-    }
-
-    /**
-     * Called when the user taps the video.
-     *
-     * @param videoKey string whit video key in the videos table
-     */
-    override fun reloadStoriesFragmentFromActionAfterResponse(videoKey: String?) {
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-        viewModel.getSelectedItem()
-            .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
-                voiceToBeRecordedInStories.answerActionType = "V"
-                voiceToBeRecordedInStories.answerAction = videoKey
-                //
-                val frag = StoriesFragment(R.layout.activity_settings_stories)
-                //
-                val ft = supportFragmentManager.beginTransaction()
-                ft.replace(R.id.settings_container, frag)
-                ft.addToBackStack(null)
-                ft.commit()
-            }
-    }
-    //
-    /**
-     * Called when the user taps the save link video youtube button.
-     *
-     * @param v view of tapped button
-     */
-    fun actionAfterResponseVideoYoutubeToAdd(v: View?) {
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-        viewModel.getSelectedItem()
-            .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
-                val textWord1 = findViewById<View>(R.id.link_video_youtube) as EditText
-                if (textWord1.text.toString() != "") {
-                    voiceToBeRecordedInStories.answerActionType = "Y"
-                    voiceToBeRecordedInStories.answerAction = textWord1.text.toString()
-                    //
-                    val frag = StoriesFragment(R.layout.activity_settings_stories)
-                    //
-                    val ft = supportFragmentManager.beginTransaction()
-                    ft.replace(R.id.settings_container, frag)
-                    ft.addToBackStack(null)
-                    ft.commit()
-                }
-            }
-    }
-
     /**
      * Called when the user taps the add button from stories settings.
      *
@@ -554,161 +332,52 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 voiceToBeRecordedInStories.story = getString(R.string.nome_storia)
-                voiceToBeRecordedInStories.phraseNumberInt = 0
-                //
-                realm = Realm.getDefaultInstance()
                 //
                 val textWord1 = findViewById<View>(R.id.keywordstorytoadd) as EditText
-                val textWord2 = findViewById<View>(R.id.phrasenumbertoadd) as EditText
-                val textWord3 = findViewById<View>(R.id.wordnumbertoadd) as EditText
-                val textWord4 = findViewById<View>(R.id.wordtoadd) as EditText
-                if (textWord1.text.toString() != "" && textWord2.text.toString() != ""
-                ) //                  && (voiceToBeRecordedInStories.getUriType() != null) && (voiceToBeRecordedInStories.getUri() != null))
+                //
+                if (textWord1.text.toString().lowercase(Locale.getDefault()) != "nome storia")
                 {
-                    if (textWord3.text.toString() == "0"
-                        || (textWord3.text.toString() != "0"
-                                && voiceToBeRecordedInStories.uriType != null && voiceToBeRecordedInStories.uri != null)
-                    ) {
-                        // cancello frase vecchia
-                        // se textWord3 non è vuoto
-                        // copio la frase vecchia fino a textWord3
-                        // inserisco la nuova parola
-                        // copio il resto della frase vecchia e riordino
-                        // se textWord3 è vuoto
-                        // copio la frase vecchia
-                        // inserisco la nuova parola alla fine e riordino
-                        //
-                        // clear the table
-                        // cancello frase vecchia dopo averne salvato copia
-                        val resultsStories = realm.where(Stories::class.java)
-                            .equalTo(
-                                getString(R.string.story),
-                                textWord1.text.toString().lowercase(Locale.getDefault())
-                            )
-                            .equalTo(getString(R.string.phrasenumberint), textWord2.text.toString().toInt())
-                            .findAll()
-                        val storiesSize = resultsStories.size
-                        //
-                        val resultsStoriesList = realm.copyFromRealm(resultsStories)
-                        //
-                        Collections.sort(resultsStoriesList, StoriesComparator())
-                        //
+                    val resultsStories = realm.where(Stories::class.java)
+                        .equalTo(getString(R.string.story), textWord1.text.toString().lowercase(Locale.getDefault()))
+                        .findAll()
+                    val storiesSize = resultsStories.size
+                    //
+                    if (storiesSize == 0) {
+                        // registro nuova storia su GameParameters
+                        // Note that the realm object was generated with the createObject method
+                        // and not with the new operator.
+                        // The modification operations will be performed within a Transaction.
                         realm.beginTransaction()
-                        resultsStories.deleteAllFromRealm()
-                        realm.commitTransaction()
-                        //
-                        var currentWordNumber = 0
-                        if (textWord3.text.toString() != "") {
-                            // copio la frase vecchia fino a textWord3
-                            var irrh = 0
-                            while (irrh < storiesSize) {
-                                val resultStories = resultsStoriesList[irrh]!!
-                                currentWordNumber = resultStories.wordNumberInt
-                                if (currentWordNumber < textWord3.text.toString().toInt()) {
-                                    realm.beginTransaction()
-                                    realm.copyToRealm(resultStories)
-                                    realm.commitTransaction()
-                                } else {
-                                    break
-                                }
-                                irrh++
+                        val gp = realm.createObject(GameParameters::class.java)
+                        gp.gameName = textWord1.text.toString().lowercase(Locale.getDefault())
+                        gp.gameActive = "A"
+                        gp.gameInfo = textWord1.text.toString().lowercase(Locale.getDefault())
+                        gp.gameJavaClass = getString(R.string.a_da)
+                        gp.gameParameter = textWord1.text.toString().lowercase(Locale.getDefault())
+                        if (voiceToBeRecordedInStories.uriType != "")
+                            {
+                            gp.gameIconType = voiceToBeRecordedInStories.uriType
+                            gp.gameIconPath = voiceToBeRecordedInStories.uri
                             }
-                            // inserisco la nuova parola
-                            // registro nuova parola
-                            // Note that the realm object was generated with the createObject method
-                            // and not with the new operator.
-                            // The modification operations will be performed within a Transaction.
-                            //
-                            realm.beginTransaction()
-                            val stories = realm.createObject(Stories::class.java)
-                            // set the fields here
-                            stories.story = textWord1.text.toString().lowercase(Locale.getDefault())
-                            stories.phraseNumberInt = textWord2.text.toString().toInt()
-                            stories.wordNumberInt = textWord3.text.toString().toInt()
-                            stories.word = textWord4.text.toString()
-                            stories.uriType = voiceToBeRecordedInStories.uriType
-                            stories.uri = voiceToBeRecordedInStories.uri
-                            stories.answerActionType = voiceToBeRecordedInStories.answerActionType
-                            stories.answerAction = voiceToBeRecordedInStories.answerAction
-                            stories.video = voiceToBeRecordedInStories.video
-                            stories.sound = voiceToBeRecordedInStories.sound
-                            stories.soundReplacesTTS = voiceToBeRecordedInStories.soundReplacesTTS
-                            stories.fromAssets = ""
-                            realm.commitTransaction()
-                            // copio la frase vecchia
-                            while (irrh < storiesSize) {
-                                val resultStories = resultsStoriesList[irrh]!!
-                                realm.beginTransaction()
-                                realm.copyToRealm(resultStories)
-                                realm.commitTransaction()
-                                irrh++
-                            }
-                        } else {
-                            // copio la frase vecchia
-                            var irrh = 0
-                            while (irrh < storiesSize) {
-                                val resultStories = resultsStoriesList[irrh]!!
-                                currentWordNumber = resultStories.wordNumberInt
-                                //
-                                realm.beginTransaction()
-                                realm.copyToRealm(resultStories)
-                                realm.commitTransaction()
-                                //
-                                irrh++
-                            }
-                            // inserisco la nuova parola
-                            // registro nuova parola
-                            // Note that the realm object was generated with the createObject method
-                            // and not with the new operator.
-                            // The modification operations will be performed within a Transaction.
-                            //
-                            realm.beginTransaction()
-                            val stories = realm.createObject(Stories::class.java)
-                            // set the fields here
-                            stories.story = textWord1.text.toString().lowercase(Locale.getDefault())
-                            stories.phraseNumberInt = textWord2.text.toString().toInt()
-                            stories.wordNumberInt = ++currentWordNumber
-                            stories.word = textWord4.text.toString()
-                            stories.uriType = voiceToBeRecordedInStories.uriType
-                            stories.uri = voiceToBeRecordedInStories.uri
-                            stories.answerActionType = voiceToBeRecordedInStories.answerActionType
-                            stories.answerAction = voiceToBeRecordedInStories.answerAction
-                            stories.video = voiceToBeRecordedInStories.video
-                            stories.sound = voiceToBeRecordedInStories.sound
-                            stories.soundReplacesTTS = voiceToBeRecordedInStories.soundReplacesTTS
-                            stories.fromAssets = ""
-                            realm.commitTransaction()
+                        else
+                        {
+                            gp.gameIconType = "AS"
+                            gp.gameIconPath = "images/racconto.png"
                         }
-                        // riordino
-                        renumberAPhraseOfAStory(
-                            realm,
-                            textWord1.text.toString().lowercase(Locale.getDefault()),
-                            textWord2.text.toString().toInt()
-                        )
-                        renumberAStory(
-                            realm,
-                            textWord1.text.toString().lowercase(Locale.getDefault())
-                        )
-                        // clear fields of viewmodel data class
-                        voiceToBeRecordedInStories.story =
-                            textWord1.text.toString().lowercase(Locale.getDefault())
-                        voiceToBeRecordedInStories.phraseNumberInt =
-                            textWord2.text.toString().toInt()
-                        clearFieldsOfViewmodelDataClass()
+                        gp.gameUseVideoAndSound = "N"
+                        gp.fromAssets = "N"
+                        realm.commitTransaction()
+
+                        /*
+                        navigate to settings stories registration activity
+                        */
+                        val intent = Intent(context, SettingsStoriesRegistrationActivity::class.java)
+                        intent.putExtra(getString(R.string.story), textWord1.text.toString().lowercase(Locale.getDefault()))
+                        startActivity(intent)
                     }
-                    // view the stories settings fragment initializing StoriesListFragment (FragmentTransaction
-                    // switch between Fragments).
-                    val ft = supportFragmentManager.beginTransaction()
-                    //
-                    val frag = StoriesListFragment(R.layout.activity_settings_stories_list)
-                    //
-                    ft.replace(R.id.settings_container, frag)
-                    ft.addToBackStack(null)
-                    ft.commit()
                 }
             }
     }
-
     /**
      * clear fields of viewmodel data class
      *
@@ -734,8 +403,6 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
      *
      *
      * @param view view of tapped button
-     * @see ContentsFragment
-     *
      * @see StoriesListFragment
      */
     fun submitStoriesShowList(view: View?) {
@@ -764,14 +431,12 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
      * @see StoriesListFragment
      */
     fun storiesSearch(view: View?) {
-        val textWord1 = findViewById<View>(R.id.keywordstorytosearch) as EditText
-        val textWord2 = findViewById<View>(R.id.phrasenumbertosearch) as EditText
+        val textWord1 = findViewById<View>(R.id.keywordstorytosearch) as TextView
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
         voiceToBeRecordedInStories!!.story =
             textWord1.text.toString().lowercase(Locale.getDefault())
-        voiceToBeRecordedInStories!!.phraseNumberInt = textWord2.text.toString().toInt()
         //
         val frag = StoriesListFragment(R.layout.activity_settings_stories_list)
         val ft = supportFragmentManager.beginTransaction()
@@ -780,198 +445,40 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
         ft.commit()
     }
 
-    /**
-     * on callback from StoriesAdapter to this Activity
-     *
-     * after deleting a piece of story the activity is notified to view the word pairs settings
-     *
-     *
-     * @see com.sampietro.simsimtest.activities.Stories.StoriesAdapter
-     *
-     * @see StoriesFragment
-     */
-    override fun reloadStoriesFragmentDeleteStories(position: Int) {
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
+    override fun loadSettingsStoriesImprovementActivityForEditing(position: Int) {
         viewModel.getSelectedItem()
             .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 realm = Realm.getDefaultInstance()
-                var results: RealmResults<Stories>?
-                results =
-                    if (voiceToBeRecordedInStories.story == null || voiceToBeRecordedInStories.story == getString(
-                            R.string.nome_storia
+                var results: RealmResults<Stories>
+                val phraseNumberToSearch = 1
+                val wordNumberToSearch = 0
+                //
+                results = if (voiceToBeRecordedInStories.story == getString(R.string.nome_storia)) {
+                    realm.where(Stories::class.java)
+                        .equalTo(getString(R.string.phrasenumberint), phraseNumberToSearch)
+                        .equalTo(getString(R.string.wordnumberint), wordNumberToSearch)
+                        .findAll()
+                } else {
+                    realm.where(Stories::class.java)
+                        .equalTo(
+                            getString(R.string.story),
+                            voiceToBeRecordedInStories.story!!.lowercase(Locale.getDefault())
                         )
-                    ) {
-                        realm.where(Stories::class.java).findAll()
-                    } else if (voiceToBeRecordedInStories.phraseNumberInt == 0) {
-                        realm.where(Stories::class.java)
-                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
-                            .findAll()
-                    } else {
-                        realm.where(Stories::class.java)
-                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
-                            .equalTo(getString(R.string.phrasenumberint), voiceToBeRecordedInStories.phraseNumberInt)
-                            .findAll()
-                    }
+                        .equalTo(getString(R.string.phrasenumberint), phraseNumberToSearch)
+                        .equalTo(getString(R.string.wordnumberint), wordNumberToSearch)
+                        .findAll()
+                }
                 //
-                val mStrings1 = arrayOf(getString(R.string.story), getString(R.string.phrasenumberint), getString(R.string.wordnumberint))
-                val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
+                val mStrings1 = arrayOf(getString(R.string.story))
+                val mStrings2 = arrayOf(Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
-                //
-                val daCancellare = results[position]!!
-                val daCancellareStory = daCancellare.story
-                val daCancellarePhraseNumber = daCancellare.phraseNumberInt
-                //
-                voiceToBeRecordedInStories.story = daCancellareStory
-                voiceToBeRecordedInStories.phraseNumberInt = daCancellarePhraseNumber
-                // delete
-                realm.beginTransaction()
-                daCancellare.deleteFromRealm()
-                realm.commitTransaction()
-                //
-                renumberAPhraseOfAStory(realm, daCancellareStory, daCancellarePhraseNumber)
-                renumberAStory(realm, daCancellareStory)
-                //
-                val frag = StoriesListFragment(R.layout.activity_settings_stories_list)
-                val ft = supportFragmentManager.beginTransaction()
-                ft.replace(R.id.settings_container, frag)
-                ft.addToBackStack(null)
-                ft.commit()
-            }
-    }
-
-    /**
-     * on callback from StoriesAdapter to this Activity
-     *
-     * for editing a piece of story the activity is notified to view the word pairs settings
-     *
-     *
-     * @see com.sampietro.simsimtest.activities.Stories.StoriesAdapter
-     *
-     * @see StoriesFragment
-     */
-    override fun reloadStoriesFragmentForEditing(position: Int) {
-        // view the stories settings fragment initializing StoriesFragment (FragmentTransaction
-        // switch between Fragments).
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-        viewModel.getSelectedItem()
-            .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
-                // Perform an action with the latest item data
-                realm = Realm.getDefaultInstance()
-                var results: RealmResults<Stories>?
-                results =
-                    if (voiceToBeRecordedInStories.story == null || voiceToBeRecordedInStories.story == getString(
-                            R.string.nome_storia
-                        )
-                    ) {
-                        realm.where(Stories::class.java).findAll()
-                    } else if (voiceToBeRecordedInStories.phraseNumberInt == 0) {
-                        realm.where(Stories::class.java)
-                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
-                            .findAll()
-                    } else {
-                        realm.where(Stories::class.java)
-                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
-                            .equalTo(getString(R.string.phrasenumberint), voiceToBeRecordedInStories.phraseNumberInt)
-                            .findAll()
-                    }
-                //
-                val mStrings1 = arrayOf(getString(R.string.story), getString(R.string.phrasenumberint), getString(R.string.wordnumberint))
-                val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
-                results = results.sort(mStrings1, mStrings2)
-                //
-                val frag = StoriesFragment(R.layout.activity_settings_stories)
-                //
-                val daModificare = results[position]!!
-                //
-                val daModificareStory = daModificare.story
-                val daModificarePhraseNumber = daModificare.phraseNumberInt
-                //
-                voiceToBeRecordedInStories.story = daModificare.story
-                voiceToBeRecordedInStories.phraseNumberInt = daModificare.phraseNumberInt
-                voiceToBeRecordedInStories.wordNumberInt = daModificare.wordNumberInt
-                voiceToBeRecordedInStories.word = daModificare.word
-                voiceToBeRecordedInStories.uriType = daModificare.uriType
-                voiceToBeRecordedInStories.uri = daModificare.uri
-                voiceToBeRecordedInStories.answerActionType = daModificare.answerActionType
-                voiceToBeRecordedInStories.answerAction = daModificare.answerAction
-                voiceToBeRecordedInStories.video = daModificare.video
-                voiceToBeRecordedInStories.sound = daModificare.sound
-                voiceToBeRecordedInStories.soundReplacesTTS = daModificare.soundReplacesTTS
-                voiceToBeRecordedInStories.fromAssets = daModificare.fromAssets
-                // delete
-                realm.beginTransaction()
-                daModificare.deleteFromRealm()
-                realm.commitTransaction()
-                //
-                renumberAPhraseOfAStory(realm, daModificareStory, daModificarePhraseNumber)
-                renumberAStory(realm, daModificareStory)
-                //
-                val ft = supportFragmentManager.beginTransaction()
-                ft.replace(R.id.settings_container, frag)
-                ft.addToBackStack(null)
-                ft.commit()
-            }
-    }
-
-    /**
-     * on callback from StoriesAdapter to this Activity
-     *
-     * for insertion a piece of story the activity is notified to view the word pairs settings
-     *
-     *
-     * @see com.sampietro.simsimtest.activities.Stories.StoriesAdapter
-     *
-     * @see StoriesFragment
-     */
-    override fun reloadStoriesFragmentForInsertion(position: Int) {
-        // view the stories settings fragment initializing StoriesFragment (FragmentTransaction
-        // switch between Fragments).
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-        viewModel.getSelectedItem()
-            .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
-                // Perform an action with the latest item data
-                realm = Realm.getDefaultInstance()
-                var results: RealmResults<Stories>?
-                results =
-                    if (voiceToBeRecordedInStories.story == null || voiceToBeRecordedInStories.story == getString(
-                            R.string.nome_storia
-                        )
-                    ) {
-                        realm.where(Stories::class.java).findAll()
-                    } else if (voiceToBeRecordedInStories.phraseNumberInt == 0) {
-                        realm.where(Stories::class.java)
-                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
-                            .findAll()
-                    } else {
-                        realm.where(Stories::class.java)
-                            .equalTo(getString(R.string.story), voiceToBeRecordedInStories.story)
-                            .equalTo(getString(R.string.phrasenumberint), voiceToBeRecordedInStories.phraseNumberInt)
-                            .findAll()
-                    }
-                //
-                val mStrings1 = arrayOf(getString(R.string.story), getString(R.string.phrasenumberint), getString(R.string.wordnumberint))
-                val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
-                results = results.sort(mStrings1, mStrings2)
-                //
-                val frag = StoriesFragment(R.layout.activity_settings_stories)
-                //
-                val daInserirePrimaDi = results[position]!!
-                //
-                voiceToBeRecordedInStories.story = daInserirePrimaDi.story
-                voiceToBeRecordedInStories.phraseNumberInt = daInserirePrimaDi.phraseNumberInt
-                voiceToBeRecordedInStories.wordNumberInt = daInserirePrimaDi.wordNumberInt
-                //
-                val ft = supportFragmentManager.beginTransaction()
-                ft.replace(R.id.settings_container, frag)
-                ft.addToBackStack(null)
-                ft.commit()
+                /*
+                navigate to settings stories registration activity
+                */
+                val intent = Intent(context, SettingsStoriesImprovementActivity::class.java)
+                intent.putExtra(getString(R.string.story), results[position]!!.story)
+                startActivity(intent)
             }
     }
 }

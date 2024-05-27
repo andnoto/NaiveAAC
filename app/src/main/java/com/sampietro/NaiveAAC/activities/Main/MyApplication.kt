@@ -2,19 +2,18 @@ package com.sampietro.NaiveAAC.activities.Main
 
 import android.app.Application
 import android.content.Context
-import io.realm.RealmConfiguration
 import com.sampietro.NaiveAAC.BuildConfig
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromAssetsToInternalStorage
-import kotlin.Throws
-import com.sampietro.NaiveAAC.activities.Stories.Stories
+import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
+import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
-import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
-import com.sampietro.NaiveAAC.activities.Graphics.Images
+import com.sampietro.NaiveAAC.activities.Stories.Stories
 import io.realm.Realm
+import io.realm.RealmConfiguration
 import java.io.File
 import java.io.IOException
 import java.util.*

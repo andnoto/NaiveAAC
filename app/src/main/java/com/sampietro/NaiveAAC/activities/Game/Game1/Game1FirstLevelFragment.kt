@@ -3,9 +3,9 @@ package com.sampietro.NaiveAAC.activities.Game.Game1
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import com.sampietro.NaiveAAC.R
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
@@ -41,7 +41,7 @@ class Game1FirstLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragme
      *
      * @see androidx.fragment.app.Fragment.onViewCreated
      *
-     * @see ImageSearchHelper.imageSearch
+     * @see imageSearch
      *
      * @see addImage
      */

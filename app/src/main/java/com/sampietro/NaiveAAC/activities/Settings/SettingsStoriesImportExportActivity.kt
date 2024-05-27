@@ -1,38 +1,27 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
 import android.Manifest
-import com.sampietro.NaiveAAC.activities.Stories.Stories.Companion.exporttoCsv
-import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters.Companion.exporttoCsv
-import com.sampietro.NaiveAAC.activities.Stories.Stories.Companion.importStoryFromCsvFromInternalStorage
-import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
-import android.widget.TextView
-import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
-import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
-import androidx.activity.result.ActivityResultLauncher
-import android.content.Intent
-import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import androidx.lifecycle.ViewModelProvider
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
-import android.provider.DocumentsContract
-import android.os.Environment
-import android.widget.RadioButton
-import android.widget.EditText
-import androidx.activity.result.ActivityResultCallback
 import android.app.Activity
-import androidx.documentfile.provider.DocumentFile
-import androidx.lifecycle.LifecycleOwner
-import com.sampietro.NaiveAAC.activities.Stories.Stories
-import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
-import com.sampietro.NaiveAAC.activities.Graphics.Videos
-import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Bundle
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.view.View
+import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFile
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorage
@@ -40,6 +29,17 @@ import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileZ
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFilesInFolderToRoot
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.extractFolder
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.zipFileAtPath
+import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
+import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters.Companion.exporttoCsv
+import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
+import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import com.sampietro.NaiveAAC.activities.Graphics.Videos
+import com.sampietro.NaiveAAC.activities.Stories.Stories
+import com.sampietro.NaiveAAC.activities.Stories.Stories.Companion.exporttoCsv
+import com.sampietro.NaiveAAC.activities.Stories.Stories.Companion.importStoryFromCsvFromInternalStorage
+import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
+import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
+import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
 import io.realm.Realm
 import java.io.*
 import java.util.*
@@ -51,7 +51,7 @@ import java.util.*
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/communicate)
  *
  * @version 5.0, 01/04/2024
- * @see AccountBaseActivity
+ * @see ActivityAbstractClass
  */
 class SettingsStoriesImportExportActivity : ActivityAbstractClass()
     {
@@ -77,7 +77,7 @@ class SettingsStoriesImportExportActivity : ActivityAbstractClass()
      * configurations of settings start screen.
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see setActivityResultLauncher
+     * @see setExportStorySearchActivityResultLauncher
      * @see ActionbarFragment
      * @see Activity.onCreate
      */
@@ -190,11 +190,9 @@ class SettingsStoriesImportExportActivity : ActivityAbstractClass()
      *
      * @see isStoragePermissionGranted
      *
-     * @see copy
+     * @see copyFile
      *
      * @see zipFileAtPath
-     *
-     * @see copyFileFromInternalToSharedStorage
      *
      * @see copyFileFromSharedToInternalStorage
      *

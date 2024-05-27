@@ -1,16 +1,16 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
-import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.ListView
 import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter
 import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNames
 import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNamesViewModel
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
@@ -22,8 +22,6 @@ import io.realm.Sort
  *
  *
  * @version     5.0, 01/04/2024
- * @see SettingsFragmentAbstractClass
- *
  * @see SettingsActivity
  */
 class ListsOfNamesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {

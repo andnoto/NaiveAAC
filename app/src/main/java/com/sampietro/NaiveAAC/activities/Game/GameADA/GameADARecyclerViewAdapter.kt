@@ -1,11 +1,11 @@
 package com.sampietro.NaiveAAC.activities.Game.GameADA
 
-import android.speech.tts.TextToSpeech
 import android.app.Activity
 import android.content.Context
-import android.view.ViewGroup
+import android.speech.tts.TextToSpeech
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
@@ -13,7 +13,7 @@ import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchNegationAdv
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
 import io.realm.Realm
-import java.util.*
+import java.util.Locale
 
 /**
  * <h1>GameADARecyclerViewAdapter</h1>

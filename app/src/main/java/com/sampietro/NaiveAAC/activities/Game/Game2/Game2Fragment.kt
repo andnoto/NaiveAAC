@@ -1,11 +1,9 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
-import android.widget.ImageButton
-import android.widget.EditText
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageButton
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +16,6 @@ import com.sampietro.NaiveAAC.R
  *
  *
  * @version     5.0, 01/04/2024
- * @see GameFragmentAbstractClass
  * @see Game2FragmentAbstractClass
  *
  * @see Game2Activity

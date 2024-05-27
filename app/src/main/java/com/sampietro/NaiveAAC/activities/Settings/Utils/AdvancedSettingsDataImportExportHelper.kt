@@ -1,19 +1,18 @@
 package com.sampietro.NaiveAAC.activities.Settings.Utils
 
 import android.content.Context
-import io.realm.RealmSchema
-import io.realm.RealmObjectSchema
-import com.sampietro.NaiveAAC.R
 import android.os.Environment
+import com.sampietro.NaiveAAC.R
 import io.realm.Realm
+import io.realm.RealmObjectSchema
+import io.realm.RealmSchema
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.StringBuilder
-import java.util.*
-import java.util.regex.Pattern
+import java.util.Objects
 import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * <h1>AdvancedSettingsDataImportExportHelper</h1>
@@ -78,7 +77,6 @@ object AdvancedSettingsDataImportExportHelper {
         // We process the data obtained and add commas and formatting:
         val dataProcessed = StringBuilder("")
         //
-//        val p = Pattern.compile(":(.*?)\\}")
         val p = Pattern.compile(":(.*?)\\}")
         val m = p.matcher(dataP!!)
         //
@@ -136,7 +134,6 @@ object AdvancedSettingsDataImportExportHelper {
         var fos: FileOutputStream? = null
         try {
             //
-//          fos = context.openFileOutput(fileName, MODE_PRIVATE);
             fos = FileOutputStream(File(dir, fileName!!))
             fos.write(data.toByteArray())
             fos.write("\n".toByteArray())
@@ -168,8 +165,6 @@ object AdvancedSettingsDataImportExportHelper {
     fun savBak(context: Context, data: String, fileName: String?, isLastRow: Boolean?) {
         var fos: FileOutputStream? = null
         try {
-            // fos = openFileOutput(FILE_NAME, MODE_PRIVATE | MODE_APPEND);
-            // fos = null
             fos = context.openFileOutput(fileName, Context.MODE_APPEND)
             fos.write(data.toByteArray())
             if (!isLastRow!!) fos.write("\n".toByteArray())
@@ -207,9 +202,6 @@ object AdvancedSettingsDataImportExportHelper {
     ) {
         var fos: FileOutputStream? = null
         try {
-            // fos = openFileOutput(FILE_NAME, MODE_PRIVATE | MODE_APPEND);
-            // fos = null
-            // fos = context.openFileOutput(fileName, MODE_APPEND);
             fos = FileOutputStream(File(dir, fileName!!), true)
             fos.write(data.toByteArray())
             if (!isLastRow!!) fos.write("\n".toByteArray())
@@ -227,8 +219,6 @@ object AdvancedSettingsDataImportExportHelper {
             }
         }
     }
-    //
-    //
     /**
      * open the output csv file
      *

@@ -1,8 +1,8 @@
 package com.sampietro.NaiveAAC.activities.Info.Utils
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 
 /**
@@ -29,10 +29,9 @@ import androidx.fragment.app.FragmentManager
  * @see com.sampietro.NaiveAAC.activities.Game.Utils.OnFragmentEventListenerGame
  */
 abstract class InfoActivityAbstractClass : AppCompatActivity() {
-//    @JvmField
     lateinit var fragmentManager: FragmentManager
 
-//    @JvmField
+//
     lateinit var context: Context
     lateinit var sharedPref: SharedPreferences
 }

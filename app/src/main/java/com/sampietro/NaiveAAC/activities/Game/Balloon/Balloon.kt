@@ -1,16 +1,16 @@
 package com.sampietro.NaiveAAC.activities.Game.Balloon
 
 import android.animation.Animator
-import android.annotation.SuppressLint
-import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.animation.ValueAnimator
+import android.animation.ValueAnimator.AnimatorUpdateListener
+import android.annotation.SuppressLint
 import android.content.Context
-import com.sampietro.NaiveAAC.R
-import android.view.ViewGroup
-import com.sampietro.NaiveAAC.activities.Game.Balloon.Utils.PixelHelper
-import android.view.animation.LinearInterpolator
 import android.view.MotionEvent
+import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import android.widget.ImageView
+import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Game.Balloon.Utils.PixelHelper
 
 /**
  * <h1>Balloon</h1>

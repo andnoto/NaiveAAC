@@ -1,20 +1,19 @@
 package com.sampietro.NaiveAAC.activities.Settings.Utils
 
-import com.android.volley.RequestQueue
-import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
-import android.widget.EditText
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
-import com.sampietro.NaiveAAC.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
-import org.json.JSONException
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.android.volley.Request
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListener
-import java.util.ArrayList
+import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
+import org.json.JSONException
 
 /**
  * <h1>ImageSearchArasaacFragment</h1>
@@ -23,9 +22,7 @@ import java.util.ArrayList
  *
  *
  * @version     5.0, 01/04/2024
- * @see SettingsFragmentAbstractClass
- *
- * @see SettingsActivity
+ * @see FragmentAbstractClassWithListener
  */
 class ImageSearchArasaacFragment(contentLayoutId: Int) : FragmentAbstractClassWithListener(contentLayoutId) {
     //

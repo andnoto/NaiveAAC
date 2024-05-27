@@ -1,10 +1,10 @@
 package com.sampietro.NaiveAAC.activities.Info
 
-import com.sampietro.NaiveAAC.activities.Info.Utils.InfoActivityAbstractClass
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
+import com.sampietro.NaiveAAC.activities.Info.Utils.InfoActivityAbstractClass
 
 /**
  * <h1>EulaActivity</h1>

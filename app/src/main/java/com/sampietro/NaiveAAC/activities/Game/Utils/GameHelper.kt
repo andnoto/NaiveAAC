@@ -2,7 +2,6 @@ package com.sampietro.NaiveAAC.activities.Game.Utils
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
-import android.widget.Toast
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
@@ -14,7 +13,7 @@ import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import io.realm.Realm
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 
 /**
  * <h1>HistoryRegistrationHelper</h1>

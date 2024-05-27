@@ -1,15 +1,15 @@
 package com.sampietro.NaiveAAC.activities.Grammar
 
-import android.widget.BaseAdapter
-import android.view.ViewGroup
-import android.view.LayoutInflater
-import com.sampietro.NaiveAAC.R
-import android.widget.TextView
-import android.widget.ImageButton
 import android.app.Activity
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageButton
 import android.widget.ListView
+import android.widget.TextView
+import com.sampietro.NaiveAAC.R
 import io.realm.Realm
 
 /**
@@ -42,11 +42,6 @@ class GrammaticalExceptionsAdapter(
 
     lateinit var listener: GrammaticalExceptionsAdapterInterface
 
-    //
-//    private val grammaticalExceptions: List<GrammaticalExceptions>? = null
-//    private val context: Context? = null
-//    private val listview: ListView? = null
-
     // Realm
     lateinit private var realm: Realm
 
@@ -54,7 +49,7 @@ class GrammaticalExceptionsAdapter(
      * return size of list<GrammaticalExceptions>
      *
      * @return int with size of list<GrammaticalExceptions>
-    </GrammaticalExceptions></GrammaticalExceptions> */
+    */
     override fun getCount(): Int {
         return grammaticalExceptions!!.size
     }
@@ -74,7 +69,7 @@ class GrammaticalExceptionsAdapter(
      *
      * @param position int index within the list<GrammaticalExceptions>
      * @return long with the the hashCode of the element within the list<GrammaticalExceptions>
-    </GrammaticalExceptions></GrammaticalExceptions></GrammaticalExceptions> */
+    */
     override fun getItemId(position: Int): Long {
         return getItem(position).hashCode().toLong()
     }
@@ -89,7 +84,7 @@ class GrammaticalExceptionsAdapter(
      * @see .getItem
      *
      * @see .clickListenerDeleteGrammaticalExceptions
-    </GrammaticalExceptions></GrammaticalExceptions></GrammaticalExceptions></GrammaticalExceptions> */
+    */
     override fun getView(position: Int, v: View?, vg: ViewGroup): View {
         // 1) it is checked if the View passed in input is null and only in this
         // case is initialized with the LayoutInflater.
@@ -99,7 +94,6 @@ class GrammaticalExceptionsAdapter(
         // the list <GrammaticalExceptions> of position position retrieved using getItem.
         // 3) the listener for the delete button of the element within
         // the list <GrammaticalExceptions> of position position is set
-//        var v = v
         val v1: View
         if (v == null) {
             v1 = LayoutInflater.from(context).inflate(R.layout.activity_settings_row, null)
@@ -149,10 +143,6 @@ class GrammaticalExceptionsAdapter(
      *
     */
     init {
-//        this.grammaticalExceptions = grammaticalExceptions
-//        this.context = context
-//        this.listview = listview
-        //
         val activity = context as Activity
         listener = activity as GrammaticalExceptionsAdapterInterface
     }

@@ -1,20 +1,20 @@
 package com.sampietro.NaiveAAC.activities.Info
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Account.AccountActivity
+import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 
 /**
  * <h1>RequestConsentFirebaseActivity</h1>
@@ -24,8 +24,6 @@ import com.sampietro.NaiveAAC.activities.Account.AccountActivity
  * @version     5.0, 01/04/2024
  */
 class RequestConsentFirebaseActivity : AppCompatActivity() {
-    //
-//    var rootViewFragment: View? = null
     lateinit var context: Context
     lateinit var sharedPref: SharedPreferences
 
@@ -36,7 +34,6 @@ class RequestConsentFirebaseActivity : AppCompatActivity() {
      * configurations of account start screen.
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see RequestConsentFirebaseFragment
      *
      * @see android.app.Activity.onCreate
      */

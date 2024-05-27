@@ -3,7 +3,6 @@ package com.sampietro.NaiveAAC.activities.BaseAndAbstractClass
 import android.view.View
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
-import java.util.*
 
 /**
  * <h1>GameActivityAbstractClass</h1>
@@ -28,8 +27,6 @@ import java.util.*
  * @see com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity
  *
  * @see RecognizerCallback
- *
- * @see OnFragmentEventListenerGame
  */
 abstract class GameActivityAbstractClassWithRecognizerCallback : GameActivityAbstractClass(), RecognizerCallback
     {

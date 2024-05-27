@@ -8,7 +8,7 @@ import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
-import java.util.*
+import java.util.Locale
 
 /**
  * <h1>ChoiseOfGameFragment</h1>
@@ -49,15 +49,10 @@ class ChoiseOfGameFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentA
         view: View,
         savedInstanceState: Bundle?
     ) {
-//        rootView =
-//            inflater.inflate(R.layout.activity_game_choise_of_game_mediaplayer, container, false)
         //
         recyclerView = view.findViewById<View>(R.id.recycler_view) as ChoiseOfGameRecyclerView
         recyclerView!!.setHasFixedSize(true)
         initRecyclerView()
-        //
-//        listener.receiveResultGameFragment(rootView)
-//        return rootView
     }
 
     /**
@@ -90,7 +85,7 @@ class ChoiseOfGameFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentA
      * @see GameParameters
      *
      * @see Videos
-    </GameFragmentChoiseOfGameArrayList> */
+    */
     private fun prepareData(): ArrayList<ChoiseOfGameArrayList> {
         var debugUrlNumber = 0
         //

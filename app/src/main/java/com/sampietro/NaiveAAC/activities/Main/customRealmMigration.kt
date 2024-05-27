@@ -1,8 +1,8 @@
 package com.sampietro.NaiveAAC.activities.Main
 
-import io.realm.RealmMigration
 import io.realm.DynamicRealm
-import java.util.*
+import io.realm.RealmMigration
+import java.util.Locale
 
 /**
  * <h1>customRealmMigration</h1>

@@ -1,6 +1,5 @@
 package com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame
 
-// import com.example.a20210823simsim.activities.Game.ChoiseOfGame.ChoiseOfGameArrayList.urlVideo
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
@@ -17,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Utils.CenterVideoView
-import java.util.*
+import java.util.Objects
 
 /**
  * <h1>ChoiseOfGameRecyclerView</h1>
@@ -44,7 +43,6 @@ open class ChoiseOfGameRecyclerView : RecyclerView {
     //
     private var gameArrayList = ArrayList<ChoiseOfGameArrayList>()
     private var videoSurfaceDefaultWidth = 0
-//    private var context: Context
     private var playPosition = -1
     private var isVideoViewAdded = false
 
@@ -78,7 +76,6 @@ open class ChoiseOfGameRecyclerView : RecyclerView {
      * @see resetVideoView
      */
     fun init(context: Context) {
-//      this.context = context.getApplicationContext();
         val contextA: Context = activity!!
         val display =
             (getContext().getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
@@ -293,7 +290,7 @@ open class ChoiseOfGameRecyclerView : RecyclerView {
      *
      * @param gameArrayList arraylist<ChoiseOfGameArrayList> to set
      * @see ChoiseOfGameArrayList
-    </ChoiseOfGameArrayList> */
+    */
     fun setMediaObjects(gameArrayList: ArrayList<ChoiseOfGameArrayList>) {
         this.gameArrayList = gameArrayList
     }

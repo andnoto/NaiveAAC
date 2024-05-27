@@ -1,19 +1,18 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
 import android.content.Intent
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
-import android.speech.tts.TextToSpeech
 import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
-import android.widget.Toast
-import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
-import android.widget.EditText
-import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import android.speech.SpeechRecognizer
+import android.speech.tts.TextToSpeech
 import android.view.View
 import android.view.Window
+import android.widget.EditText
+import android.widget.Toast
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
+import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
+import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.welcomeSpeech
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.lookForTheAnswerToLastPieceOfTheSentence
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
@@ -21,8 +20,9 @@ import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.prepareSpeechRecognizer
+import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import io.realm.Realm
-import java.util.*
+import java.util.Locale
 
 /**
  * <h1>Game2Activity</h1>
@@ -34,7 +34,6 @@ import java.util.*
  * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
  *
  * @version     5.0, 01/04/2024
- * @see GameActivityAbstractClass
  * @see Game2ActivityAbstractClass
  */
 class Game2Activity : Game2ActivityAbstractClass() {

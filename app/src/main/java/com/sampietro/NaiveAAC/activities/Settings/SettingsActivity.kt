@@ -1,73 +1,70 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
 import android.Manifest
-import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberStories
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.Settings.ChoiseOfGameToSetFragment.onFragmentEventListenerChoiseOfGameToSet
-import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter.GameParametersAdapterInterface
-import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptionsAdapter.GrammaticalExceptionsAdapterInterface
-import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModifyAdapter.PictogramsAllToModifyAdapterInterface
-import android.widget.TextView
-import android.os.Bundle
-import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
-import android.widget.EditText
-import io.realm.RealmResults
-import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
-import android.content.Intent
-import com.sampietro.NaiveAAC.activities.Phrases.Phrases
-import android.widget.RadioButton
-import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
-import android.widget.CheckBox
-import android.provider.DocumentsContract
-import android.os.Environment
-import androidx.activity.result.ActivityResultCallback
 import android.app.Activity
 import android.app.Dialog
-import androidx.documentfile.provider.DocumentFile
-import com.sampietro.NaiveAAC.activities.Graphics.Videos
-import com.sampietro.NaiveAAC.activities.Graphics.Sounds
-import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
-import com.sampietro.NaiveAAC.activities.Stories.Stories
-import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
-import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModify
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Bundle
+import android.os.Environment
+import android.provider.DocumentsContract
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.TextView
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.snackbar.Snackbar
-import com.sampietro.NaiveAAC.activities.Main.MainActivity
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModify
+import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModifyAdapter.PictogramsAllToModifyAdapterInterface
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevicesAdapter
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromInternalToSharedStorage
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorage
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
+import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
+import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter.GameParametersAdapterInterface
+import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
+import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
+import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptionsAdapter.GrammaticalExceptionsAdapterInterface
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.showImage
 import com.sampietro.NaiveAAC.activities.Graphics.Images
+import com.sampietro.NaiveAAC.activities.Graphics.Sounds
+import com.sampietro.NaiveAAC.activities.Graphics.Videos
+import com.sampietro.NaiveAAC.activities.Main.MainActivity
+import com.sampietro.NaiveAAC.activities.Phrases.Phrases
+import com.sampietro.NaiveAAC.activities.Settings.ChoiseOfGameToSetFragment.onFragmentEventListenerChoiseOfGameToSet
+import com.sampietro.NaiveAAC.activities.Stories.Stories
+import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberStories
+import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
+import io.realm.RealmResults
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.lang.Exception
-import java.lang.NumberFormatException
-import java.lang.RuntimeException
 import java.net.URISyntaxException
 import java.util.*
 
@@ -77,9 +74,7 @@ import java.util.*
  * **SettingsActivity** app settings.
  *
  * @version     5.0, 01/04/2024
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.AccountBaseActivity
- *
- * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
+ * @see AccountActivityAbstractClass
  *
  * @see VerifyFragment
  *
@@ -90,8 +85,6 @@ import java.util.*
  * @see com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter
  */
 class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListenerChoiseOfGameToSet,
-//    FragmentAbstractClassWithListener.onBaseFragmentEventListenerSettings,
-//    onFragmentEventListenerSettings,
     BluetoothDevicesAdapter.BluetoothDevicesAdapterInterface, GameParametersAdapterInterface,
     GrammaticalExceptionsAdapterInterface, PictogramsAllToModifyAdapterInterface {
     var message = "messaggio non formato"
@@ -100,7 +93,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     //
     var textPassword: String? = null
     //
-//    var rootViewChoiseOfGameToSetFragment: View? = null
     var textGameToSet: String? = null
 
     //
@@ -165,27 +157,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         // The Realm object must be closed in the onDestroy method.
         realm = Realm.getDefaultInstance()
     }
-    //
-    /**
-     * receives calls from fragment listeners.
-     *
-     * @param v view of calling fragment
-     * @see com.sampietro.NaiveAAC.activities.Settings.Utils.SettingsFragmentAbstractClass
-     */
-//    override fun receiveResultSettings(v: View?) {
-//        rootViewFragment = v
-//    }
-
-    /**
-     * receives calls from ChoiseOfGameToSet fragment listener.
-     *
-     * @param v view of calling fragment
-     * @see ChoiseOfGameToSetFragment
-     */
-//    override fun receiveResultChoiseOfGameToSet(v: View?) {
-//        rootViewChoiseOfGameToSetFragment = v
-//    }
-
     /**
      * receive game to set.
      *
@@ -274,18 +245,12 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * @param view view of tapped button
      * @see AccountFragment
      *
-     * @see .registerPersonName
+     * @see registerPersonName
      * @see Images
-     *
-     * @see MenuSettingsFragment
      */
     fun saveAccount(view: View?) {
         val editText = findViewById<View>(R.id.editTextTextAccount) as EditText
         val textPersonName = editText.text.toString()
-        //
-//        val editTextPassword =
-//            rootViewFragment!!.findViewById<View>(R.id.editTextPasswordAccount) as EditText
-//        val textPassword = editTextPassword.text.toString()
         //
         if (textPersonName.length > 0 && filePath != null &&
             filePath != getString(R.string.non_trovato)
@@ -357,8 +322,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      *
      * @param view view of tapped button
      * @see SettingsMediaActivity
-     *
-     * @see ChoiseOfMediaToSetFragment
      */
     fun submitChoiseOfMediaToSet(view: View?) {
         /*
@@ -375,8 +338,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      *
      *
      * @param view view of tapped button
-     * @see MenuSettingsFragment
-     *
      * @see ChoiseOfGameToSetFragment
      */
     fun submitChoiseOfGameToSet(view: View?) {
@@ -427,8 +388,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * @see ChoiseOfGameToSetFragment
      *
      * @see Phrases
-     *
-     * @see MenuSettingsFragment
      */
     fun savePhrases(v: View?) {
         realm = Realm.getDefaultInstance()
@@ -516,11 +475,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      *
      *
      * @param view view of tapped button
-     * @see MenuSettingsFragment
-     *
      * @see SettingsContentsActivity
-     *
-     * @see ContentsFragment
      */
     fun submitContents(view: View?) {
         val intent = Intent(context, SettingsContentsActivity::class.java)
@@ -534,7 +489,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * (activity_settings_advanced_settings)
      *
      * @param view view of tapped button
-     * @see MenuSettingsFragment
      */
     fun submitAdvancedSettings(view: View?) {
         // view the advanced settings initializing AdvancedSettingsFragment (FragmentTransaction
@@ -554,8 +508,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      *
      *
      * @param view view of tapped button
-     *
-     * @see GeneralSettingsFragment
      */
     fun generalSettings(view: View?) {
         // view the general settings initializing GeneralSettingsFragment (FragmentTransaction
@@ -573,7 +525,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * register in the shared preferences
      *
      * @param view view of clicked radiobutton
-     * @see GeneralSettingsFragment
      */
     fun PrintingRadioButtonClicked(view: View) {
         //
@@ -611,7 +562,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * register in the shared preferences
      *
      * @param view view of clicked radiobutton
-     * @see GeneralSettingsFragment
      */
     fun titleWritingTypeRadioButtonClicked(view: View) {
         //
@@ -644,7 +594,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * register order of presentation of lists of names in the shared preferences
      *
      * @param view view of clicked radiobutton
-     * @see GeneralSettingsFragment
      */
     fun listModeRadioButtonClicked(view: View) {
         // Is the button now checked?
@@ -695,7 +644,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * (activity_settings_advanced_settings)
      *
      * @param view view of tapped button
-     * @see GeneralSettingsFragment
      */
     fun generalSettingsSave(view: View?) {
         val textAllowedMarginOfError = findViewById<View>(R.id.allowedmarginoferror) as EditText
@@ -1025,7 +973,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      *
      *
      * @param view view of tapped button
-     * @see DataImportSettingsFragment
      */
     fun importTables(view: View?) {
         checkboxImagesChecked = false
@@ -1051,7 +998,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * register which radio button was clicked
      *
      * @param view view of clicked radio button
-     * @see DataImportSettingsFragment
      */
     fun onDataImportRadioButtonClicked(view: View) {
         // Is the button now checked?
@@ -1070,7 +1016,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * register which checkbox was clicked
      *
      * @param view view of clicked checkbox
-     * @see DataImportSettingsFragment
      */
     fun onCheckboxClicked(view: View) {
         // Is the view now checked?
@@ -1115,9 +1060,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * answer of [Ismail Osunlana](https://stackoverflow.com/users/11355432/ismail-osunlana)
      *
      * @param view view of tapped button
-     * @see .isStoragePermissionGranted
+     * @see isStoragePermissionGranted
      *
-     * @see DataImportSettingsFragment
      */
     fun settingsDataImportSave(view: View?) {
         // Choose a directory using the system's file picker.
@@ -1144,7 +1088,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * and to [stackoverflow](https://stackoverflow.com/questions/7620401/how-to-convert-image-file-data-in-a-byte-array-to-a-bitmap)
      * answer of [Uttam](https://stackoverflow.com/users/840861/uttam)
      *
-     * @see AccountActivityAbstractClass.copyFileFromSharedToInternalStorage
+     * @see copyFileFromSharedToInternalStorage
      *
      * @see Images
      *
@@ -1404,9 +1348,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      *
      * at the end the activity is notified to view the settings menu.
      *
-     * @see .isStoragePermissionGranted
-     *
-     * @see MenuSettingsFragment
+     * @see isStoragePermissionGranted
      *
      * @see Images
      *
@@ -1440,7 +1382,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                         val resultData = result.data
                         // doSomeOperations();
                         csvTreeUri = null
-                        //                            filePath = getString(R.string.non_trovato);
+                        //
                         if (resultData != null) {
                             csvTreeUri = Objects.requireNonNull(resultData).data
                             val outputFolder = DocumentFile.fromTreeUri(context, csvTreeUri!!)
@@ -1512,8 +1454,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                 }
             })
     }//permission is automatically granted on sdk<23 upon installation
-    // Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
-// Log.v(TAGPERMISSION,getString(R.string.permission_is_revoked));// Log.v(TAGPERMISSION,getString(R.string.permission_is_granted));
     /**
      * check permissions.
      *

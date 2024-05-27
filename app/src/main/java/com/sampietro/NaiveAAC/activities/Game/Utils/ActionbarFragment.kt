@@ -1,27 +1,26 @@
 package com.sampietro.NaiveAAC.activities.Game.Utils
 
 import android.app.AlertDialog
-import android.os.Bundle
-import android.view.MenuInflater
-import com.sampietro.NaiveAAC.R
-import androidx.appcompat.view.menu.MenuBuilder
-import android.content.Intent
-import com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
-import androidx.core.content.FileProvider
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity
-import com.sampietro.NaiveAAC.activities.Info.InfoActivity
 import com.sampietro.NaiveAAC.activities.Info.EulaActivity
+import com.sampietro.NaiveAAC.activities.Info.InfoActivity
 import com.sampietro.NaiveAAC.activities.Info.PrivacyActivity
+import com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
 import io.realm.Realm
 import java.io.File
 import java.io.IOException
-import kotlin.Throws
 
 /**
  * <h1>ActionbarFragment</h1>

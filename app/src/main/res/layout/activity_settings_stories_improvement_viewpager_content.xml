@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementViewPagerActivity">
+
+    <FrameLayout
+        android:id="@+id/gameimageFL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/titleimage">
+
+    <ImageView
+        android:id="@+id/gameimage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="TODO"
+        android:onClick="onClickGameImage"
+        android:text="@string/inizia" />
+
+    <ImageView
+        android:id="@+id/gameimage2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="TODO"
+        android:text="@string/inizia" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/titleimage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textColor="#000"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/insertsawordbeforethisonebutton"
+        app:layout_constraintEnd_toEndOf="@+id/gameimageFL"
+        app:layout_constraintStart_toStartOf="@+id/gameimageFL"
+        app:layout_constraintTop_toBottomOf="@+id/gameimageFL" />
+
+    <ImageButton
+        android:id="@+id/insertsawordbeforethisonebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="insertsAWordBeforeThisOneButton"
+        android:src="@drawable/baseline_add_circle_outline_36"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/deletethewordbutton"
+        app:layout_constraintTop_toBottomOf="@+id/titleimage" />
+
+    <ImageButton
+        android:id="@+id/deletethewordbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="deleteTheSentenceButton"
+        android:src="@drawable/baseline_remove_circle_outline_36"
+        app:layout_constraintStart_toEndOf="@+id/insertsawordbeforethisonebutton"
+        app:layout_constraintEnd_toStartOf="@+id/insertsawordafterthisbutton"
+        app:layout_constraintTop_toBottomOf="@+id/titleimage" />
+
+    <ImageButton
+        android:id="@+id/insertsawordafterthisbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="insertsAWordAfterThisButton"
+        android:src="@drawable/baseline_add_circle_outline_36"
+        app:layout_constraintStart_toEndOf="@+id/deletethewordbutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleimage" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

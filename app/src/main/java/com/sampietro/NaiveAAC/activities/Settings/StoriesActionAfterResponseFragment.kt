@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import io.realm.Realm
 
 /**
@@ -15,7 +15,7 @@ import io.realm.Realm
  *
  *
  * @version     4.0, 09/09/2023
- * @see SettingsFragmentAbstractClass
+ * @see FragmentAbstractClass
  *
  * @see SettingsStoriesActivity
  */
