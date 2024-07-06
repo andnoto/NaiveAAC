@@ -235,23 +235,35 @@ open class Images : RealmObject() {
                         val oneWord: Array<String?> =
                             line!!.split(cvsSplitBy.toRegex()).toTypedArray()
                         // checks
+                        var f: File? = null
+                        var uri: String? = null
                         if (oneWord[1] != null) {
-                            // replace with root of the external storage or data directory
-                            val uri = oneWord[1]!!
-                                .replaceFirst("rootdirectory".toRegex(), rootPath)
+                            // replace with root of data directory
+                            val fileName = oneWord[1]!!
+                                .substring(oneWord[1]!!.lastIndexOf("/") + 1)
+                            uri = "$rootPath/$fileName"
                             //
-                            val f = File(uri)
+                            f = File(uri)
+//                        if (oneWord[1] != null) {
+                            // replace with root of the external storage or data directory
+//                            val uri = oneWord[1]!!
+//                                .replaceFirst("rootdirectory".toRegex(), rootPath)
+                            //
+//                            val f = File(uri)
                             if (oneWord[0] != null && oneWord[0]!!.length > 0 && oneWord[2] != null && oneWord[3] != null && f.exists()) {
-                                realm.beginTransaction()
-                                val images = realm.createObject(
-                                    Images::class.java
-                                )
-                                // set the fields here
-                                images.descrizione = oneWord[0]
-                                images.uri = uri
-                                images.copyright = oneWord[2]
-                                images.fromAssets = oneWord[3]
-                                realm.commitTransaction()
+                                if (mode == "Replace" || ( mode == "Append" && oneWord[0] != context.getString(R.string.io) && oneWord[3] != "Y"))
+                                {
+                                    realm.beginTransaction()
+                                    val images = realm.createObject(
+                                        Images::class.java
+                                    )
+                                    // set the fields here
+                                    images.descrizione = oneWord[0]
+                                    images.uri = uri
+                                    images.copyright = oneWord[2]
+                                    images.fromAssets = oneWord[3]
+                                    realm.commitTransaction()
+                                }
                             }
                         }
                     }

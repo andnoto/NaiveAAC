@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementViewPagerActivity">
+    android:layout_height="match_parent">
 
     <FrameLayout
         android:id="@+id/gameimageFL"
@@ -63,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:onClick="deleteTheSentenceButton"
+        android:onClick="deleteTheWordButton"
         android:src="@drawable/baseline_remove_circle_outline_36"
         app:layout_constraintStart_toEndOf="@+id/insertsawordbeforethisonebutton"
         app:layout_constraintEnd_toStartOf="@+id/insertsawordafterthisbutton"

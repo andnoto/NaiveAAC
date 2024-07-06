@@ -147,6 +147,8 @@
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity">
         </activity>
+        <activity android:name="com.sampietro.NaiveAAC.activities.Game.Game2.Game2BleActivity">
+        </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAActivity">
         </activity>
         <activity android:name="com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAViewPagerActivity">

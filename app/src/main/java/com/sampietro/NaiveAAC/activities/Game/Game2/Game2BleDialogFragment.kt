@@ -1,4 +1,4 @@
-package com.sampietro.NaiveAAC.activities.Game.Game1
+package com.sampietro.NaiveAAC.activities.Game.Game2
 
 import android.app.Activity
 import android.content.Context
@@ -11,15 +11,19 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
+import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAArrayList
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImageUsingPicasso
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import io.realm.Realm
+import java.util.ArrayList
 import java.util.Locale
 
-class Game1BleDialogFragment: DialogFragment()  {
+class Game2BleDialogFragment: DialogFragment()  {
 
     lateinit var realm: Realm
     lateinit var rootView: View
@@ -30,6 +34,8 @@ class Game1BleDialogFragment: DialogFragment()  {
     //
     var deviceEnabledUserName = "non trovato"
     var messageFromGattServer = "nessun messaggio"
+    //
+    val theimage = ArrayList<GameADAArrayList>()
     //
     var leftColumnContent: String? = null
     var leftColumnContentUrlType: String? = null
@@ -61,7 +67,7 @@ class Game1BleDialogFragment: DialogFragment()  {
      * listener setting for game activities callbacks , context annotation, realm get default instance
      *
      */
-    private lateinit var listenerGame1BleDialogFragment: onFragmentEventListenerGame1BleDialogFragment
+    private lateinit var listenerGame2BleDialogFragment: onFragmentEventListenerGame2BleDialogFragment
     /**
      * <h1>onFragmentEventListenerGame1SecondLevelFragment</h1>
      *
@@ -72,10 +78,10 @@ class Game1BleDialogFragment: DialogFragment()  {
      *
      * @see .onAttach
      */
-    interface onFragmentEventListenerGame1BleDialogFragment {
+    interface onFragmentEventListenerGame2BleDialogFragment {
         // insert here any references to the Activity
-        fun receiveResultOnClickFromGame1DialogFragment(v: View?)
-        fun receiveResultFromGame1DialogFragment()
+        fun receiveResultOnClickFromGame2DialogFragment(v: View?)
+        fun receiveResultFromGame2DialogFragment()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,32 +92,35 @@ class Game1BleDialogFragment: DialogFragment()  {
         val cvsSplitBy = ctext.getString(R.string.character_comma)
         val oneWord: Array<String?> =
             messageFromGattServer.split(cvsSplitBy.toRegex()).toTypedArray()
-        if (oneWord[0] == getString(R.string.io))
-            { oneWord[0] = " " }
-        if (oneWord[0] != getString(R.string.nessuno) && oneWord[0] != " " && preference_TitleWritingType == getString(R.string.uppercase))
-        { leftColumnContent = oneWord[0]!!.uppercase(Locale.getDefault()) }
-        else { leftColumnContent = oneWord[0]!!.lowercase(Locale.getDefault()) }
-        leftColumnContentUrlType = oneWord[1]
-        leftColumnContentUrl = oneWord[2]
-        leftColumnContentWord = oneWord[3]
-        if (oneWord[4] != getString(R.string.nessuno) && oneWord[4] != " " && preference_TitleWritingType == getString(R.string.uppercase))
-        { middleColumnContent = oneWord[4]!!.uppercase(Locale.getDefault()) }
-        else { middleColumnContent = oneWord[4]!!.lowercase(Locale.getDefault()) }
-        middleColumnContentUrlType = oneWord[5]
-        middleColumnContentUrl = oneWord[6]
-        middleColumnContentWord = oneWord[7]
-        if (oneWord[8] != getString(R.string.nessuno) && oneWord[8] != " " && preference_TitleWritingType == getString(R.string.uppercase))
-        { rightColumnContent = oneWord[8]!!.uppercase(Locale.getDefault()) }
-        else { rightColumnContent = oneWord[8]!!.lowercase(Locale.getDefault()) }
-        rightColumnContentUrlType = oneWord[9]
-        rightColumnContentUrl = oneWord[10]
-        rightColumnContentWord = oneWord[11]
+        val oneWordSize = oneWord.size
+        //
+        var irrh = 0
+        while (irrh < oneWordSize) {
+            if (oneWord[irrh] == " ")
+                break
+            val createList = GameADAArrayList()
+            if (oneWord[irrh] == getString(R.string.io))
+            { oneWord[irrh] = " " }
+            if (oneWord[irrh] != getString(R.string.nessuno) && oneWord[irrh] != " " && preference_TitleWritingType == getString(R.string.uppercase))
+            { createList.image_title = oneWord[irrh]!!.uppercase(Locale.getDefault()) }
+            else { createList.image_title = oneWord[irrh]!!.lowercase(Locale.getDefault()) }
+            createList.image_title = oneWord[irrh]
+            createList.urlType = oneWord[irrh+1]
+            createList.url = oneWord[irrh+2]
+//            createList.video = row1debugVideo[i]
+//            createList.sound = row1debugSound[i]
+//            createList.soundReplacesTTS = row1debugSoundReplacesTTS[i]
+//            createList.soundAssociatedWithThePhraseReplacesTheOtherSounds =
+//                soundAssociatedWithThePhraseReplacesTheOtherSounds
+            theimage.add(createList)
+            irrh = irrh+3
+        }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val activity = context as Activity
-        listenerGame1BleDialogFragment = activity as onFragmentEventListenerGame1BleDialogFragment
+        listenerGame2BleDialogFragment = activity as onFragmentEventListenerGame2BleDialogFragment
         //
         ctext = context
         //
@@ -130,29 +139,25 @@ class Game1BleDialogFragment: DialogFragment()  {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        rootView = inflater.inflate(R.layout.activity_game_1_ble_dialog, container, false)
+        rootView = inflater.inflate(R.layout.activity_game_2_ble_dialog, container, false)
         //
         listenAgainButton = rootView.findViewById<View>(R.id.dialog_listenagainbutton) as ImageButton
-        listenAgainButton.setOnClickListener { view -> listenerGame1BleDialogFragment.receiveResultOnClickFromGame1DialogFragment(view) }
+        listenAgainButton.setOnClickListener { view -> listenerGame2BleDialogFragment.receiveResultOnClickFromGame2DialogFragment(view) }
         continueGameButton = rootView.findViewById<View>(R.id.dialog_continuegamebutton) as ImageButton
-        continueGameButton.setOnClickListener { view -> listenerGame1BleDialogFragment.receiveResultOnClickFromGame1DialogFragment(view) }
+        continueGameButton.setOnClickListener { view -> listenerGame2BleDialogFragment.receiveResultOnClickFromGame2DialogFragment(view) }
         //
         sendToBlueToothImage = rootView.findViewById<View>(R.id.dialog_sendtobluetoothimage) as ImageView
-        sendToBlueToothImage.setOnClickListener { view -> listenerGame1BleDialogFragment.receiveResultOnClickFromGame1DialogFragment(view) }
+        sendToBlueToothImage.setOnClickListener { view -> listenerGame2BleDialogFragment.receiveResultOnClickFromGame2DialogFragment(view) }
         //
-        img1 = rootView.findViewById<View>(R.id.dialog_img1) as ImageView
-        img1.scaleType = ImageView.ScaleType.CENTER_CROP
-        img1.setOnClickListener { view -> listenerGame1BleDialogFragment.receiveResultOnClickFromGame1DialogFragment(view) }
-        img2 = rootView.findViewById<View>(R.id.dialog_img2) as ImageView
-        img2.scaleType = ImageView.ScaleType.CENTER_CROP
-        img2.setOnClickListener { view -> listenerGame1BleDialogFragment.receiveResultOnClickFromGame1DialogFragment(view) }
-        img3 = rootView.findViewById<View>(R.id.dialog_img3) as ImageView
-        img3.scaleType = ImageView.ScaleType.CENTER_CROP
-        img3.setOnClickListener { view -> listenerGame1BleDialogFragment.receiveResultOnClickFromGame1DialogFragment(view) }
-        title1 = rootView.findViewById<View>(R.id.dialog_title1) as TextView
-        title2 = rootView.findViewById<View>(R.id.dialog_title2) as TextView
-        title3 = rootView.findViewById<View>(R.id.dialog_title3) as TextView
-
+        //
+        val recyclerView1 = rootView.findViewById<View>(R.id.dialog_imagegallery) as RecyclerView
+        recyclerView1.setHasFixedSize(true)
+        val layoutManager1: RecyclerView.LayoutManager =
+            LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView1.layoutManager = layoutManager1
+//        val createLists1 = prepareData(sharedLastPhraseNumber)
+        val adapter1 = Game2BleRecyclerViewAdapter(ctext, theimage)
+        recyclerView1.adapter = adapter1
         //
         if (deviceEnabledUserName != "non trovato")
         {
@@ -165,52 +170,8 @@ class Game1BleDialogFragment: DialogFragment()  {
             addImageUsingPicasso(assetsUrl, sendToBlueToothImage, 150, 150)
         }
         //
-        if (leftColumnContent != getString(R.string.nessuno) && leftColumnContent != " ")
-        {
-            title1.text = leftColumnContent
-            if (leftColumnContentUrlType == "A")
-            {
-                addImageUsingPicasso(leftColumnContentUrl, img1, 150, 150)
-            }
-            else
-            {
-                val image: ResponseImageSearch?
-                image = imageSearch(ctext, realm, leftColumnContentWord)
-                addImage(image!!.uriType, image.uriToSearch, img1, 150, 150)
-            }
-        }
-        if (middleColumnContent != getString(R.string.nessuno) && middleColumnContent != " ")
-        {
-            title2.text = middleColumnContent
-            if (middleColumnContentUrlType == "A")
-            {
-                addImageUsingPicasso(middleColumnContentUrl, img2, 150, 150)
-            }
-            else
-            {
-                val image: ResponseImageSearch?
-                image = imageSearch(ctext, realm, middleColumnContentWord)
-                addImage(image!!.uriType, image.uriToSearch, img2, 150, 150)
-            }
-        }
-        if (rightColumnContent != getString(R.string.nessuno) && rightColumnContent != " ")
-        {
-            title3.text = rightColumnContent
-            if (rightColumnContentUrlType == "A")
-            {
-                addImageUsingPicasso(rightColumnContentUrl, img3, 150, 150)
-            }
-            else
-            {
-                val image: ResponseImageSearch?
-                image = imageSearch(ctext, realm, rightColumnContentWord)
-                addImage(image!!.uriType, image.uriToSearch, img3, 150, 150)
-            }
-
-        }
+        listenerGame2BleDialogFragment.receiveResultFromGame2DialogFragment()
         //
-        listenerGame1BleDialogFragment.receiveResultFromGame1DialogFragment()
-//
         return rootView
     }
 
@@ -236,7 +197,7 @@ class Game1BleDialogFragment: DialogFragment()  {
         fun newInstance(
             deviceEnabledUserName: String,
             messageFromGattServer: String
-        ): Game1BleDialogFragment = Game1BleDialogFragment().apply {
+        ): Game2BleDialogFragment = Game2BleDialogFragment().apply {
             arguments = Bundle().apply {
                 putString("DEVICE ENABLED USER NAME", deviceEnabledUserName)
                 putString("MESSAGE FROM GATT SERVER", messageFromGattServer)

@@ -24,7 +24,7 @@ import com.sampietro.NaiveAAC.R
 class SettingsStoriesRegistrationFragment(@LayoutRes contentLayoutId : Int = 0) : Game2FragmentAbstractClass(contentLayoutId) {
     var keywordStoryToAdd: String? = ""
     var phraseNumberToAdd: String? = ""
-    /**
+   /**
      * prepares the ui
      *
      *
@@ -54,10 +54,14 @@ class SettingsStoriesRegistrationFragment(@LayoutRes contentLayoutId : Int = 0) 
             phraseNumberToAdd = bundle.getString(getString(R.string.phrasenumbertoadd))
             sentenceToAdd.setText(bundle.getString(getString(R.string.etext)))
             //
-            val keywordstorytoadd = view.findViewById<View>(R.id.keywordstorytoadd) as TextView
-            val phrasenumbertoadd = view.findViewById<View>(R.id.phrasenumbertoadd) as TextView
-            keywordstorytoadd.setText(keywordStoryToAdd)
-            phrasenumbertoadd.setText(phraseNumberToAdd)
+            val keywordstorytoadd = view.findViewById<View>(R.id.keywordstorytoadd) as TextView?
+            val phrasenumbertoadd = view.findViewById<View>(R.id.phrasenumbertoadd) as TextView?
+            if (keywordstorytoadd != null) {
+                keywordstorytoadd.setText(keywordStoryToAdd)
+            }
+            if (phrasenumbertoadd != null) {
+                phrasenumbertoadd.setText(phraseNumberToAdd)
+            }
             //
         }
         //

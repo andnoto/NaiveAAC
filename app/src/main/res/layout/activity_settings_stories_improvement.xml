@@ -102,10 +102,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_mode_edit" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/game_container"
+    <com.sampietro.NaiveAAC.activities.Game.GameADA.GameADARecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/game_ada_recycler_view"
         android:layout_marginStart="8dp"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="8dp"
@@ -113,8 +113,8 @@
         app:layout_constraintBottom_toTopOf="@+id/insertsasentencebeforethisonebutton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/firstpagegameadabutton">
-    </androidx.fragment.app.FragmentContainerView>
+        app:layout_constraintTop_toBottomOf="@+id/firstpagegameadabutton">>
+    </com.sampietro.NaiveAAC.activities.Game.GameADA.GameADARecyclerView>
 
     <ImageButton
         android:id="@+id/insertsasentencebeforethisonebutton"
@@ -126,7 +126,7 @@
         android:src="@drawable/baseline_add_circle_outline_36"
         app:layout_constraintStart_toStartOf="@+id/firstpagegameadabutton"
         app:layout_constraintEnd_toStartOf="@+id/deletethesentencebutton"
-        app:layout_constraintTop_toBottomOf="@+id/game_container" />
+        app:layout_constraintTop_toBottomOf="@+id/game_ada_recycler_view" />
 
     <ImageButton
         android:id="@+id/deletethesentencebutton"
@@ -138,7 +138,7 @@
         android:src="@drawable/baseline_remove_circle_outline_36"
         app:layout_constraintStart_toEndOf="@+id/insertsasentencebeforethisonebutton"
         app:layout_constraintEnd_toStartOf="@+id/insertsasentenceafterthisbutton"
-        app:layout_constraintTop_toBottomOf="@+id/game_container" />
+        app:layout_constraintTop_toBottomOf="@+id/game_ada_recycler_view" />
 
     <ImageButton
         android:id="@+id/insertsasentenceafterthisbutton"
@@ -151,7 +151,31 @@
         android:src="@drawable/baseline_add_circle_outline_36"
         app:layout_constraintStart_toEndOf="@+id/deletethesentencebutton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/game_container" />
+        app:layout_constraintTop_toBottomOf="@+id/game_ada_recycler_view" />
+
+    <Button
+        android:id="@+id/bookmarkthesentencebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="bookmarkTheSentenceButton"
+        android:text="Associa alla frase un argomento o un segnalibro"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/insertsasentencebeforethisonebutton" />
+
+    <Button
+        android:id="@+id/answertothequestionbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="answerToTheQuestionButton"
+        android:text="Associa alla frase di domanda la relativa risposta"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bookmarkthesentencebutton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

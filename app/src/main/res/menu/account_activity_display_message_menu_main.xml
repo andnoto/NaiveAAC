@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
         android:id="@+id/MENU_MANUAL"
-        android:icon="@drawable/ic_manual"
+        android:icon="@drawable/ic_action_actionbar_help"
         android:title="Manual"
         app:showAsAction="ifRoom" />
     <item

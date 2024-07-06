@@ -107,7 +107,7 @@ class StoriesVideosSearchAdapter(
         var v = v
         if (v==null)
         {
-            v= LayoutInflater.from(context).inflate(R.layout.activity_settings_row_stories_videos_and_sounds_search, null)
+            v= LayoutInflater.from(context).inflate(R.layout.activity_settings_row_stories_images_videos_and_sounds_search, null)
         }
         val l = getItem(position) as Videos
         //

@@ -293,6 +293,7 @@ class AccountActivity : AccountActivityAbstractClass() {
             )
             i.descrizione = textPersonName
             i.uri = filePath
+            i.fromAssets = "N"
             realm.commitTransaction()
             realm.beginTransaction()
             val iIo = realm.createObject(
@@ -300,6 +301,7 @@ class AccountActivity : AccountActivityAbstractClass() {
             )
             iIo.descrizione = getString(R.string.io)
             iIo.uri = filePath
+            iIo.fromAssets = "N"
             realm.commitTransaction()
             // register the linked lists of names
             realm.beginTransaction()

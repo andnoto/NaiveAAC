@@ -533,9 +533,12 @@ class GameADAActivity : GameADAActivityAbstractClass(),
             extemporaneousInteractionWithVoice(eText)
             continueGameAda()
         } else {
-            // riattivo il bottone forward
+            // riattivo i bottoni forward e last page
             val forwardImageButton = findViewById<View>(R.id.continuegameadabutton) as ImageButton
+            val lastPageImageButton =
+                findViewById<View>(R.id.lastpagegameadabutton) as ImageButton
             forwardImageButton.visibility = View.VISIBLE
+            lastPageImageButton.visibility = View.VISIBLE
             //
             val value999 = 999
             resultsStories = realm.where(Stories::class.java)

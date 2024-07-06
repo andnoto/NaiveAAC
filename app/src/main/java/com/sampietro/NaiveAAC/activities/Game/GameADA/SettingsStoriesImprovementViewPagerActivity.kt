@@ -120,7 +120,7 @@ class SettingsStoriesImprovementViewPagerActivity : GameADAViewPagerActivityAbst
             .beginGroup()
             .equalTo(getString(R.string.story), sharedStory)
             .greaterThan(getString(R.string.wordnumberint), 0)
-            .lessThan(getString(R.string.wordnumberint), 99)
+            .lessThan(getString(R.string.wordnumberint), 999)
             .endGroup()
             .findAll()
         //
@@ -255,7 +255,7 @@ class SettingsStoriesImprovementViewPagerActivity : GameADAViewPagerActivityAbst
      *
      * @see SettingsStoriesImprovementActivity
      */
-    fun deleteTheSentenceButton(view: View?) {
+    fun deleteTheWordButton(view: View?) {
         val resultsStories = realm.where(Stories::class.java)
             .beginGroup()
             .equalTo(getString(R.string.story), sharedStory)

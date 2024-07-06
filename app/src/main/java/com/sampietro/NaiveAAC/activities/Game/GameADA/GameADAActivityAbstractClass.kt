@@ -3,6 +3,7 @@ package com.sampietro.NaiveAAC.activities.Game.GameADA
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
@@ -127,6 +128,13 @@ abstract class GameADAActivityAbstractClass : GameActivityAbstractClassWithRecog
      * @see .continueGameAda
      */
     fun firstPageGameAdaButton(v: View?) {
+        // riattivo i bottoni forward e last page
+        val forwardImageButton = findViewById<View>(R.id.continuegameadabutton) as ImageButton
+        val lastPageImageButton =
+            findViewById<View>(R.id.lastpagegameadabutton) as ImageButton
+        forwardImageButton.visibility = View.VISIBLE
+        lastPageImageButton.visibility = View.VISIBLE
+        //
         if (tTS1 != null) {
             if (!tTS1!!.isSpeaking) {
                 phraseToDisplayIndex = 1
@@ -188,6 +196,13 @@ abstract class GameADAActivityAbstractClass : GameActivityAbstractClassWithRecog
      * @see .continueGameAda
      */
     fun returnGameAdaButton(v: View?) {
+        // riattivo i bottoni forward e last page
+        val forwardImageButton = findViewById<View>(R.id.continuegameadabutton) as ImageButton
+        val lastPageImageButton =
+            findViewById<View>(R.id.lastpagegameadabutton) as ImageButton
+        forwardImageButton.visibility = View.VISIBLE
+        lastPageImageButton.visibility = View.VISIBLE
+        //
         if (tTS1 != null) {
             if (!tTS1!!.isSpeaking) {
                 if (phraseToDisplayIndex > 1) {
@@ -411,15 +426,15 @@ abstract class GameADAActivityAbstractClass : GameActivityAbstractClassWithRecog
                     )
                     toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
                 }
-                99 -> {
-                    voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                        sharedLastSession,
-                        sharedLastPhraseNumber, currentTime,
-                        99, " ", phraseToDisplay!!.word!!,
-                        " ", " ", " "
-                    )
-                    toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
-                }
+//                99 -> {
+//                    voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
+//                        sharedLastSession,
+//                        sharedLastPhraseNumber, currentTime,
+//                        99, " ", phraseToDisplay!!.word!!,
+//                        " ", " ", " "
+//                    )
+//                    toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
+//                }
                 999 -> {
                     voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
                         sharedLastSession,

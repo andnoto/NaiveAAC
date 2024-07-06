@@ -251,7 +251,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
             )
             i.descrizione = immD.text.toString()
             i.uri = filePath
-            i.fromAssets = ""
+            i.fromAssets = "N"
             realm.commitTransaction()
             // view the images settings fragment initializing ImagesFragment (FragmentTransaction
             // switch between Fragments).

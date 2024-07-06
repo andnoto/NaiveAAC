@@ -133,7 +133,7 @@ class GameADAViewPagerActivity : GameADAViewPagerActivityAbstractClass(),
             .beginGroup()
             .equalTo(getString(R.string.story), sharedStory)
             .greaterThan(getString(R.string.wordnumberint), 0)
-            .lessThan(getString(R.string.wordnumberint), 99)
+            .lessThan(getString(R.string.wordnumberint), 999)
             .endGroup()
             .findAll()
         //

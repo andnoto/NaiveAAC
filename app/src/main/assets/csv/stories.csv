@@ -65,7 +65,6 @@ educazionestradale,16,1,38,se non ci sono strisce pedonali,A,https://api.arasaac
 educazionestradale,17,0,0,fermare o attraversare?,,,,,,,N,Y
 educazionestradale,17,1,39,fermare,A,https://api.arasaac.org/api/pictograms/7195?download=false,null,null,,,,Y
 educazionestradale,17,2,40,o attraversare,A,https://api.arasaac.org/api/pictograms/5976?download=false,null,null,,,,Y
-educazionestradale,17,99,0,se non ci sono strisce pedonali mattia si deve?,,,,,,,N,Y
 educazionestradale,17,999,0,fermare,A,https://api.arasaac.org/api/pictograms/21888?download=false,,,,,N,Y
 educazionestradale,18,0,0,il bambino e la nonna mangiano un bel gelato al cioccolato,,,,,,,N,Y
 educazionestradale,18,1,41,il bambino,A,https://api.arasaac.org/api/pictograms/7176?download=false,null,null,,,,Y

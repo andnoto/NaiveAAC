@@ -3,6 +3,8 @@ package com.sampietro.NaiveAAC.activities.Game.Game1
 import android.Manifest
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothDevice.ACTION_BOND_STATE_CHANGED
 import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.ComponentName
@@ -28,6 +30,7 @@ import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstra
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothLeService
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
+import com.sampietro.NaiveAAC.activities.Game.Game2.Game2BleDialogFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.AndroidNotificationPermission
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyRegistration
 import com.sampietro.NaiveAAC.activities.Grammar.ComposesASentenceResults
@@ -70,7 +73,8 @@ import java.util.*
 class Game1BleActivity : GameActivityAbstractClass(),
     Game1RecyclerViewAdapterInterface,
     Game1BleSecondLevelFragment.onFragmentEventListenerGame1BleSecondLevelFragment,
-    Game1BleDialogFragment.onFragmentEventListenerGame1BleDialogFragment {
+    Game2BleDialogFragment.onFragmentEventListenerGame2BleDialogFragment
+    {
     // Code to manage Service lifecycle.
     var bluetoothService : BluetoothLeService? = null
     private val serviceConnection: ServiceConnection = object : ServiceConnection {
@@ -115,7 +119,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
                 // perform device scanning
                 bluetooth.scan()
                 //
-                bluetooth.activityInActiveState()
+                bluetooth.activityInActiveState("Game1BleActivity")
             }
         }
 
@@ -169,7 +173,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
     var middleColumnContentWord: String? = null
     var rightColumnContentWord: String? = null
     //
-    var dialog: Game1BleDialogFragment? = null
+    var dialog: Game2BleDialogFragment? = null
     var messageLeftColumnContent: String? = null
     var messageMiddleColumnContent: String? = null
     var messageRightColumnContent: String? = null
@@ -341,6 +345,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
         setToFullScreen(mywindow)
         //
         registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+        registerReceiver(bondStateReceiver, IntentFilter(ACTION_BOND_STATE_CHANGED))
         //
         // check Bluetooth Ble Permissions
         //
@@ -426,7 +431,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
                     // perform device scanning
                     bluetoothService!!.scan()
                     //
-                    bluetoothService!!.activityInActiveState()
+                    bluetoothService!!.activityInActiveState("Game1BleActivity")
                     }
                 }
             }
@@ -573,11 +578,41 @@ class Game1BleActivity : GameActivityAbstractClass(),
                         val cvsSplitBy = getString(R.string.character_comma)
                         val oneWord: Array<String?> =
                             messageFromGattServer.split(cvsSplitBy.toRegex()).toTypedArray()
-                        messageLeftColumnContent = oneWord[0]
-                        messageMiddleColumnContent = oneWord[4]
-                        messageRightColumnContent = oneWord[8]
+//                        messageLeftColumnContent = oneWord[0]
+//                        messageMiddleColumnContent = oneWord[4]
+//                        messageRightColumnContent = oneWord[8]
                         //
                         dialogFragmentShow()
+                    }
+                }
+            }
+        }
+    }
+    /*
+    step 20
+    This function is called when Bonding succeeded.
+    */
+    private val bondStateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @SuppressLint("MissingPermission")
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
+                    val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE)
+                    val bondState = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1)
+                    when (bondState) {
+                        BluetoothDevice.BOND_BONDING -> {
+                            // Bonding process has already started let it complete
+//                            Log.i(BluetoothLeService.TAG, "waiting for bonding to complete")
+                        }
+                        BluetoothDevice.BOND_BONDED -> {
+                            // Bonding succeeded
+                            /*
+                            If the discovery services was successful and bonding succeeded,
+                            we can now negotiate a larger MTU than the default (23 bytes).
+                            */
+//                            bluetoothService!!.bondingSucceeded()
+                        }
+                        BluetoothDevice.BOND_NONE -> {}
                     }
                 }
             }
@@ -596,9 +631,10 @@ class Game1BleActivity : GameActivityAbstractClass(),
             bluetoothService!!.stopAdvertising()
             bluetoothService!!.stopScanner()
             //
-            bluetoothService!!.activityInPausedState()
+            bluetoothService!!.activityInPausedState("Game1BleActivity")
             }
         unregisterReceiver(gattUpdateReceiver)
+        unregisterReceiver(bondStateReceiver)
     }
     /**
      * destroy SpeechRecognizer, TTS shutdown and more
@@ -690,23 +726,37 @@ class Game1BleActivity : GameActivityAbstractClass(),
     @SuppressLint("MissingPermission")
     fun sendMessage() {
         var messageToSend: String?
-        var leftColumnMessageToSend: String?
-        var middleColumnMessageToSend: String?
-        var rightColumnMessageToSend: String?
-        if (leftColumnContent == getString(R.string.nessuno))
-            { leftColumnMessageToSend = leftColumnContent + ","  + "," + ","  + "," }
-            else
-            { leftColumnMessageToSend = leftColumnContent + ","  + ","  + "," + leftColumnContentWord + ","}
-        if (middleColumnContent == getString(R.string.nessuno))
-            { middleColumnMessageToSend = middleColumnContent + ","  + "," + ","  + "," }
-            else
-            { middleColumnMessageToSend = middleColumnContent + "," + ","  + "," + middleColumnContentWord + "," }
-        if (rightColumnContent == getString(R.string.nessuno))
-            { rightColumnMessageToSend = rightColumnContent + ","  + "," + ","  + "," }
-            else
-            {rightColumnMessageToSend = rightColumnContent + "," + ","  + "," + rightColumnContentWord + ","}
+        var leftColumnMessageToSend: String = ""
+        var middleColumnMessageToSend: String = ""
+        var rightColumnMessageToSend: String = ""
+        if (leftColumnContent != getString(R.string.nessuno))
+    //        { leftColumnMessageToSend = leftColumnContent + ","  + "," + ","  + "," }
+    //        else
+            {
+                val image: ResponseImageSearch?
+                image = imageSearch(this, realm, leftColumnContentWord)
+                leftColumnMessageToSend = leftColumnContent + "," + image!!.uriType + "," + image.uriToSearch + ","
+            }
+        if (middleColumnContent != getString(R.string.nessuno))
+ //           { middleColumnMessageToSend = middleColumnContent + ","  + "," + ","  + "," }
+ //           else
+            {
+                val image: ResponseImageSearch?
+                image = imageSearch(this, realm, middleColumnContentWord)
+                middleColumnMessageToSend = middleColumnContent + "," + image!!.uriType + "," + image.uriToSearch + ","
+            }
+        if (rightColumnContent != getString(R.string.nessuno))
+//            { rightColumnMessageToSend = rightColumnContent + ","  + "," + ","  + "," }
+//            else
+            {
+                val image: ResponseImageSearch?
+                image = imageSearch(this, realm, rightColumnContentWord)
+                rightColumnMessageToSend = rightColumnContent + "," + image!!.uriType + "," + image.uriToSearch + ","
+            }
         messageToSend = leftColumnMessageToSend + middleColumnMessageToSend + rightColumnMessageToSend
-        bluetoothService!!.sendMessage(messageToSend)
+//        bluetoothService!!.sendMessage(messageToSend)
+        // Delete last character in String
+        bluetoothService!!.sendMessage(messageToSend.substring(0, messageToSend.length - 1))
     }
     /**
      * enable transmit to connected Bluetooth .
@@ -763,12 +813,12 @@ class Game1BleActivity : GameActivityAbstractClass(),
         bluetoothService!!.scan()
     }
     /**
-     * Show Game1BleDialogFragment .
+     * Show Game2BleDialogFragment .
      *
-     * @see Game1BleDialogFragment
+     * @see Game2BleDialogFragment
      */
     fun dialogFragmentShow() {
-        dialog = Game1BleDialogFragment.newInstance(deviceEnabledUserName!!, messageFromGattServer )
+        dialog = Game2BleDialogFragment.newInstance(deviceEnabledUserName!!, messageFromGattServer )
         dialog!!.show(supportFragmentManager, "GAME_DIALOG")
     }
     /**
@@ -777,7 +827,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
      * @param v view of tapped button
      * @see Game1BleDialogFragment
      */
-    override fun receiveResultOnClickFromGame1DialogFragment(v: View?) {
+    override fun receiveResultOnClickFromGame2DialogFragment(v: View?) {
         when (v!!.id) {
             R.id.dialog_sendtobluetoothimage -> {
                 // TTS
@@ -795,13 +845,30 @@ class Game1BleActivity : GameActivityAbstractClass(),
                 }
             }
             R.id.dialog_listenagainbutton -> {
+                var messageToSpeak = ""
+                // use comma as separator
+                val cvsSplitBy = getString(R.string.character_comma)
+                val oneWord: Array<String?> =
+                    messageFromGattServer.split(cvsSplitBy.toRegex()).toTypedArray()
+                val oneWordSize = oneWord.size
+                //
+                var irrh = 0
+                while (irrh < oneWordSize) {
+                    if (oneWord[irrh] == " ")
+                        break
+                    val firstMessageToSpeak = messageToSpeak
+                    if (oneWord[irrh] == getString(R.string.io))
+                    { oneWord[irrh] = " " }
+                    if (oneWord[irrh] != getString(R.string.nessuno) && oneWord[irrh] != " ")
+                        messageToSpeak =
+                            firstMessageToSpeak + " " + oneWord[irrh]!!
+                    irrh = irrh+3
+                }
                 // TTS
                 tTS1 = TextToSpeech(context) { status ->
                     if (status != TextToSpeech.ERROR) {
                         tTS1!!.speak(
-                            messageLeftColumnContent + " " +
-                                 messageMiddleColumnContent + " " +
-                                 messageRightColumnContent,
+                            messageToSpeak,
                             TextToSpeech.QUEUE_FLUSH,
                             null,
                             getString(R.string.prova_tts)
@@ -814,76 +881,39 @@ class Game1BleActivity : GameActivityAbstractClass(),
             R.id.dialog_continuegamebutton -> {
                 dialog!!.dismiss()
             }
-            R.id.dialog_img1 -> {
-                // TTS
-                tTS1 = TextToSpeech(context) { status ->
-                    if (status != TextToSpeech.ERROR) {
-                        tTS1!!.speak(
-                            messageLeftColumnContent,
-                            TextToSpeech.QUEUE_FLUSH,
-                            null,
-                            getString(R.string.prova_tts)
-                        )
-                    } else {
-                        Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            R.id.dialog_img2 -> {
-                // TTS
-                tTS1 = TextToSpeech(context) { status ->
-                    if (status != TextToSpeech.ERROR) {
-                        tTS1!!.speak(
-                            messageMiddleColumnContent,
-                            TextToSpeech.QUEUE_FLUSH,
-                            null,
-                            getString(R.string.prova_tts)
-                        )
-                    } else {
-                        Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            R.id.dialog_img3 -> {
-                // TTS
-                tTS1 = TextToSpeech(context) { status ->
-                    if (status != TextToSpeech.ERROR) {
-                        tTS1!!.speak(
-                            messageRightColumnContent,
-                            TextToSpeech.QUEUE_FLUSH,
-                            null,
-                            getString(R.string.prova_tts)
-                        )
-                    } else {
-                        Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
         }
     }
 
     /**
-     * Callback from Game1BleDialogFragment
+     * Callback from Game2BleDialogFragment
      *
-     * @see Game1BleDialogFragment
+     * @see Game2BleDialogFragment
      */
-    override fun receiveResultFromGame1DialogFragment() {
+    override fun receiveResultFromGame2DialogFragment() {
+        var messageToSpeak = ""
+        // use comma as separator
+        val cvsSplitBy = getString(R.string.character_comma)
+        val oneWord: Array<String?> =
+            messageFromGattServer.split(cvsSplitBy.toRegex()).toTypedArray()
+        val oneWordSize = oneWord.size
+        //
+        var irrh = 0
+        while (irrh < oneWordSize) {
+            if (oneWord[irrh] == " ")
+                break
+            val firstMessageToSpeak = messageToSpeak
+            if (oneWord[irrh] == getString(R.string.io))
+            { oneWord[irrh] = " " }
+            if (oneWord[irrh] != getString(R.string.nessuno) && oneWord[irrh] != " ")
+                messageToSpeak =
+                    firstMessageToSpeak + " " + oneWord[irrh]!!
+            irrh = irrh+3
+        }
         // TTS
-        var messageLeftColumnContentToSpeak = messageLeftColumnContent
-        var messageMiddleColumnContentToSpeak = messageMiddleColumnContent
-        var messageRightColumnContentToSpeak = messageRightColumnContent
-        if (messageLeftColumnContent == getString(R.string.nessuno))
-            { messageLeftColumnContentToSpeak = " "}
-        if (messageMiddleColumnContent == getString(R.string.nessuno))
-            { messageMiddleColumnContentToSpeak = " "}
-        if (messageRightColumnContent == getString(R.string.nessuno))
-            { messageRightColumnContentToSpeak = " "}
         tTS1 = TextToSpeech(context) { status ->
             if (status != TextToSpeech.ERROR) {
                 tTS1!!.speak(
-                messageLeftColumnContentToSpeak + " " +
-                     messageMiddleColumnContentToSpeak + " " +
-                     messageRightColumnContentToSpeak,
+                    messageToSpeak,
                     TextToSpeech.QUEUE_FLUSH,
                     null,
                     getString(R.string.prova_tts)

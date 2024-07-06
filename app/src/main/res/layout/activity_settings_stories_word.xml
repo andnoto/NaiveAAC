@@ -6,16 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsStoriesWordActivity">
 
-    <TextView
-        android:id="@+id/storiessettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="130dp"
-        android:ems="10"
-        android:text="@string/storia"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/newstoryrow"
         android:layout_width="match_parent"
@@ -26,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storiessettings"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.069">
 
     <LinearLayout
@@ -102,7 +92,6 @@
             android:id="@+id/wordtoadd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:inputType="text"
             android:autofillHints="@string/frase_nome_da_aggiungere_alla_storia" />
 
@@ -191,24 +180,15 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/storiesbuttons3"
+        android:id="@+id/storytoadd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="actionAfterResponse"
-        android:text="azione\ndopo risposta"
+        android:layout_marginLeft="15dp"
+        android:onClick="storyToAdd"
+        android:text="SALVA PAROLA /\n GRUPPO DI PAROLE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/storiesbuttons2"/>
-
-    <Button
-        android:id="@+id/storytoadd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storiesbuttons3"
-        android:onClick="storyToAdd"
-        android:text="@string/salva" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

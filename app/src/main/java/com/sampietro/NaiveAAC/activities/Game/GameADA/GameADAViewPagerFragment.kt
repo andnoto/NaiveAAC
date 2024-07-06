@@ -164,7 +164,17 @@ class GameADAViewPagerFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragm
             val imageGameImage = rootView.findViewById<ImageView>(R.id.gameimage)
             imageGameImage.contentDescription =
                 wordToDisplay!!.word!!.uppercase(Locale.getDefault())
-            addImage(wordToDisplay!!.uriType!!, wordToDisplay!!.uri, imageGameImage, 200, 200)
+            if (wordToDisplay!!.uriType!! == "I") {
+                val imageUrl = searchUri(ctext,
+                    realm,
+                    wordToDisplay!!.uri)
+                val uriType = "S"
+                val uri = imageUrl
+                addImage(uriType, uri, imageGameImage, 200, 200)
+                } else
+                {
+                addImage(wordToDisplay!!.uriType!!, wordToDisplay!!.uri, imageGameImage, 200, 200)
+                }
             // search for negation adverbs
             val imageGameImage2 = rootView.findViewById<ImageView>(R.id.gameimage2)
             imageGameImage2.visibility = View.INVISIBLE

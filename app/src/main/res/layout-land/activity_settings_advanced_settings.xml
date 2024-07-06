@@ -42,7 +42,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:onClick="bluetoothDevicesSettings"
-        android:text="BLUETOOTH"
+        android:text="AUTORIZZAZIONI BLUETOOTH"
         app:layout_constraintEnd_toStartOf="@id/gameParametersButton"
         app:layout_constraintStart_toEndOf="@id/generalSettingsButton"
         app:layout_constraintTop_toBottomOf="@id/settings" />

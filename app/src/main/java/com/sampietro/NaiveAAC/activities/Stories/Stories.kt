@@ -38,10 +38,7 @@ open class Stories : RealmObject() {
      * if wordNumber > 0 and < 99 then wordNumber contains the pass number of the word and word contains the word itself
      *
      *
-     * if wordNumber = 99 then word contain a question related to the phrase
-     *
-     *
-     * if wordNumber = 999 the word contain the answer related to the phrase
+     * if wordNumber = 999 the word contain the answer related to the question phrase
      *
      *
      * if wordNumber = 9999 the word contain the topic of the sentence
@@ -60,7 +57,7 @@ open class Stories : RealmObject() {
     /**
      * represent the type of media associated with the `word`.
      *
-     *
+     * uritype = I then , if it exists, uri refers to an image from Images Realm class
      * uritype = S then , if it exists, uri refers to an image from storage
      *
      *
@@ -77,10 +74,8 @@ open class Stories : RealmObject() {
     /**
      * contains the type of action associated with the `word` in case the word is an answer.
      *
-     *
      * answerActionType = V then the action consists of playing a video
-     *
-     *
+     * answerActionType = Y then the action consists of playing a youtube video
      * answerActionType = G then the action consists consists of executing a goto (phraseNumber) statement
      * corresponding to the topic of a sentence
      */

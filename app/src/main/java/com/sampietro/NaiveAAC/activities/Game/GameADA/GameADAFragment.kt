@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.View
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +20,7 @@ import io.realm.Realm
 import java.io.IOException
 import java.util.*
 
-class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
+open class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
     //
     var sharedLastPhraseNumber = 0
 
@@ -54,6 +55,11 @@ class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstra
 
     //
     private var gameUseVideoAndSound: String? = null
+    //
+    var deviceEnabledUserName: String? = ""
+    //
+    var keywordStoryToAdd = ""
+    var phraseNumberToAdd = ""
 
     /**
      * listener setting for game activities callbacks , context annotation, realm get default instance
@@ -101,6 +107,10 @@ class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstra
             wordToDisplayIndex = bundle.getInt("WORD TO DISPLAY INDEX")
             ttsEnabled = bundle.getBoolean("TTS ENABLED")
             gameUseVideoAndSound = bundle.getString("GAME USE VIDEO AND SOUND")
+            //
+            keywordStoryToAdd = bundle.getString(getString(R.string.keywordstorytoadd),"")
+            phraseNumberToAdd = bundle.getString(getString(R.string.phrasenumbertoadd),"")
+            //
         }
         //
         /*
@@ -151,7 +161,7 @@ class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstra
      *
      * @see History
     */
-    private fun prepareData1(): ArrayList<GameADAArrayList> {
+    open fun prepareData1(): ArrayList<GameADAArrayList> {
         var row1debugUrlNumber = 0
         //
         val results = realm.where(
@@ -227,13 +237,14 @@ class GameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstra
                     }
                 }
                 // nel caso di domanda con attesa risposta
-                // inibisco il bottone forward
-                if (wordNumber == 99) {
+                // inibisco i bottoni forward e last page
+                if (wordNumber == 999) {
                     val forwardImageButton =
                         requireActivity().findViewById<View>(R.id.continuegameadabutton) as ImageButton
-                    //                    ImageButton forwardImageButton =
-//                    (ImageButton)rootView.findViewById(R.id.continuegameadabutton);
+                    val lastPageImageButton =
+                        requireActivity().findViewById<View>(R.id.lastpagegameadabutton) as ImageButton
                     forwardImageButton.visibility = View.INVISIBLE
+                    lastPageImageButton.visibility = View.INVISIBLE
                 }
                 irrh++
             }

@@ -1,37 +1,42 @@
-package com.sampietro.NaiveAAC.activities.Game.GameADA
+package com.sampietro.NaiveAAC.activities.Game.Game2
 
-import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.speech.tts.TextToSpeech
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchNegationAdverb
+import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
+import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAArrayList
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
 import io.realm.Realm
-import java.util.Locale
 
 /**
- * <h1>GameADARecyclerViewAdapter</h1>
+ * <h1>Game2RecyclerViewAdapter1</h1>
  *
- * **GameADARecyclerViewAdapter** adapter for games
+ * **Game2RecyclerViewAdapter1** adapter for game2
  *
  * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
  * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
  *
  * @version     5.0, 01/04/2024
  * @see RecyclerView.Adapter<RecyclerView.ViewHolder>
-    */
-class GameADARecyclerViewAdapter(
-    private val context: Context, //
-    private val realm: Realm, //
+ */
+class Game2BleRecyclerViewAdapter(
+    private val context: Context,
     private val galleryList: ArrayList<GameADAArrayList>
-) : RecyclerView.Adapter<GameADARecyclerViewViewHolder>() {
-    var listener: GameADARecyclerViewAdapterInterface
+) : RecyclerView.Adapter<Game2BleRecyclerViewAdapter.ViewHolder>() {
+    var sharedPref: SharedPreferences
+    var preference_PrintPermissions: String?
+    //
+    lateinit var realm: Realm
 
     /**
      * used for TTS
@@ -39,15 +44,20 @@ class GameADARecyclerViewAdapter(
     var tTS1: TextToSpeech? = null
 
     /**
-     * GameRecyclerViewAdapter constructor.
-     * set game list and context annotation, get print permissions
+     * Game2RecyclerViewAdapter1 constructor.
+     * set game2 list and context annotation, get print permissions
      *
-    */
+     */
     init {
-        //
-        //
-        val activity = context as Activity
-        listener = activity as GameADARecyclerViewAdapterInterface
+        realm = Realm.getDefaultInstance()
+        // if is print permitted then preference_PrintPermissions = Y
+        sharedPref = context.getSharedPreferences(
+            context.getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
+        preference_PrintPermissions = sharedPref.getString(
+            context.getString(R.string.preference_print_permissions),
+            "DEFAULT"
+        )
     }
 
     /**
@@ -58,10 +68,10 @@ class GameADARecyclerViewAdapter(
      * @return RecyclerView.ViewHolder new View created inflating it from an XML layout file
      * @see RecyclerView.Adapter.onCreateViewHolder
      */
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): GameADARecyclerViewViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.activity_game_ada_cell_layout, viewGroup, false)
-        return GameADARecyclerViewViewHolder(view)
+            .inflate(R.layout.activity_game_2_cell_layout_1, viewGroup, false)
+        return ViewHolder(view)
     }
 
     /**
@@ -76,16 +86,13 @@ class GameADARecyclerViewAdapter(
      * @param i int with the position of the item within the adapter's data set.
      * @see RecyclerView.Adapter.onBindViewHolder
      *
-     * @see com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchNegationAdverb
-     *
      * @see addImage
+     *
      */
-    override fun onBindViewHolder(viewHolder: GameADARecyclerViewViewHolder, i: Int) {
-        //
-        viewHolder.onBind(galleryList[i])
-        //
+    override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
         viewHolder.title.text = galleryList[i].image_title
         viewHolder.img.scaleType = ImageView.ScaleType.CENTER_CROP
+        viewHolder.img.contentDescription = galleryList[i].image_title
         //
         if (galleryList[i].urlType == "I") {
             val imageUrl = searchUri(context,
@@ -97,29 +104,27 @@ class GameADARecyclerViewAdapter(
         addImage(
             galleryList[i].urlType,
             galleryList[i].url, viewHolder.img,
-            200,200
+            150,150
         )
-        // search for negation adverbs
-        viewHolder.img2.visibility = View.INVISIBLE
-        val negationAdverbImageToSearchFor = searchNegationAdverb(
-            context,
-            galleryList[i].image_title!!.lowercase(Locale.getDefault()), realm
-        )
-        if (negationAdverbImageToSearchFor != context.getString(R.string.non_trovato)) {
-            // INTERNAL MEMORY IMAGE SEARCH
-            val uriToSearch = searchUri(context, realm, negationAdverbImageToSearchFor)
-            viewHolder.img2.scaleType = ImageView.ScaleType.CENTER_CROP
-            addImage("S", uriToSearch, viewHolder.img2,
-                200,200)
-            viewHolder.img2.visibility = View.VISIBLE
-        }
         //
-        viewHolder.media_container.setOnClickListener { view ->
-            listener.onItemClick(
-                view,
-                i,
-                galleryList
-            )
+        viewHolder.img.setOnClickListener {
+            // TTS
+            tTS1 = TextToSpeech(context) { status ->
+                if (status != TextToSpeech.ERROR) {
+                    tTS1!!.speak(
+                        galleryList[i].image_title,
+                        TextToSpeech.QUEUE_FLUSH,
+                        null,
+                        "prova tts"
+                    )
+                } else {
+                    Toast.makeText(context, status, Toast.LENGTH_SHORT).show()
+                }
+            }
+            //
+            if (preference_PrintPermissions == "Y") {
+                printImage(context, galleryList[i].urlType, galleryList[i].url, 200, 200 )
+            }
         }
     }
 
@@ -132,4 +137,22 @@ class GameADARecyclerViewAdapter(
     override fun getItemCount(): Int {
         return galleryList.size
     }
+
+    /**
+     * viewholder for game2 recyclerview.
+     *
+     *
+     * @see RecyclerView.ViewHolder
+     */
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val title: TextView
+        val img: ImageView
+
+        init {
+            //
+            title = view.findViewById<View>(R.id.title) as TextView
+            img = view.findViewById<View>(R.id.img1) as ImageView
+        }
+    }
+
 }

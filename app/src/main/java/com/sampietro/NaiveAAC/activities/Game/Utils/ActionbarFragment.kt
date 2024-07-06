@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity
+import com.sampietro.NaiveAAC.activities.Game.Game2.Game2BleActivity
 import com.sampietro.NaiveAAC.activities.Info.EulaActivity
 import com.sampietro.NaiveAAC.activities.Info.InfoActivity
 import com.sampietro.NaiveAAC.activities.Info.PrivacyActivity
@@ -128,7 +129,7 @@ class ActionbarFragment : Fragment() {
                 /*
                 navigate to game2 screen (Game2Activity)
                 */
-                val intent3 = Intent(activity, Game2Activity::class.java)
+                val intent3 = Intent(activity, Game2BleActivity::class.java)
                 startActivity(intent3)
                 true
             }

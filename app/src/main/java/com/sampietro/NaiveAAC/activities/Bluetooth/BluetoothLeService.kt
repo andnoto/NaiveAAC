@@ -43,6 +43,7 @@ import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1BleActivity
+import com.sampietro.NaiveAAC.activities.Game.Game2.Game2BleActivity
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
@@ -52,6 +53,7 @@ import io.realm.Realm
 import java.io.File
 import java.io.UnsupportedEncodingException
 import java.util.UUID
+
 
 /**
  * <h1>BluetoothLeService</h1>
@@ -68,7 +70,8 @@ import java.util.UUID
  * Refer to [developer.android.com](https://developer.android.com/develop/connectivity/bluetooth/ble/find-ble-devices)
  * Refer to [developer.android.com](https://developer.android.com/develop/connectivity/bluetooth/ble/connect-gatt-server)
  * Refer to [developer.android.com](https://developer.android.com/develop/connectivity/bluetooth/ble/transfer-ble-data)
- * Refer to [medium.com](https://medium.com/@martijn.van.welie/making-android-ble-work-part-1-a736dcd53b02)
+ * Refer to [medium.com](https://medium.com/@martijn.van.welie/making-android-ble-work-part-1-a736dcd53b02
+ * and https://medium.com/@martijn.van.welie/making-android-ble-work-part-4-72a0b85cb442 )
  * By [Martijn van Welie](https://medium.com/@martijn.van.welie)
  * Refer to [bignerdranch.com](https://bignerdranch.com/blog/bluetooth-low-energy-on-android-part-1/
  * and https://bignerdranch.com/blog/bluetooth-low-energy-on-android-part-2/)
@@ -215,7 +218,9 @@ class BluetoothLeService : Service() {
                 offset,
                 value
             )
-            if (characteristic.uuid == CHARACTERISTIC_UUID) {
+            if (characteristic.uuid == CHARACTERISTIC_UUID
+                // if the user of the device has not been found, the request is not considered
+                && deviceEnabledUserName != "non trovato") {
                 mGattServer!!.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, null)
                 /*
                 // reverse the value of the Characteristic to differentiate the response from the request
@@ -253,22 +258,54 @@ class BluetoothLeService : Service() {
         if (messageFromGattServer != "I'M DISCONNECTING")
         {
             // use comma as separator
+//            val cvsSplitBy = getString(R.string.character_comma)
+//            val oneWord: Array<String?> =
+//                messageFromGattServer.split(cvsSplitBy.toRegex()).toTypedArray()
+            //
+//            if (oneWord[0] == getString(R.string.io))
+//                { oneWord[0] = " " }
+            //
+            var messageToSpeak = ""
+            // use comma as separator
             val cvsSplitBy = getString(R.string.character_comma)
             val oneWord: Array<String?> =
                 messageFromGattServer.split(cvsSplitBy.toRegex()).toTypedArray()
+            val oneWordSize = oneWord.size
             //
-            if (oneWord[0] == getString(R.string.io))
-                { oneWord[0] = " " }
-            // Create an explicit intent for an Activity in your app.
-            val fullScreenIntent = Intent(this, Game1BleActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            var irrh = 0
+            while (irrh < oneWordSize) {
+                if (oneWord[irrh] == " ")
+                    break
+                val firstMessageToSpeak = messageToSpeak
+                if (oneWord[irrh] == getString(R.string.io))
+                { oneWord[irrh] = " " }
+                if (oneWord[irrh] != getString(R.string.nessuno) && oneWord[irrh] != " ")
+                    messageToSpeak =
+                        firstMessageToSpeak + " " + oneWord[irrh]!!
+                irrh = irrh+3
             }
-            val fullScreenPendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            // Create an explicit intent for an Activity in your app.
+            var fullScreenPendingIntent: PendingIntent? = null
+            if (clientActivity == "Game1BleActivity")
+                {
+                val fullScreenIntent = Intent(this, Game1BleActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                fullScreenPendingIntent = PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                }
+                else
+                {
+                val fullScreenIntent = Intent(this, Game2BleActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                fullScreenPendingIntent = PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                }
             //
             val builder = Notification.Builder(ctext,NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.heart)
                 .setContentTitle(deviceEnabledUserName)
-                .setContentText(oneWord[0] + " " + oneWord[4] + " " + oneWord[8])
+//                .setContentText(oneWord[0] + " " + oneWord[4] + " " + oneWord[8])
+                .setContentText(messageToSpeak)
                 // Set the intent that fires when the user taps the notification.
                 .setFullScreenIntent(fullScreenPendingIntent, true)
                 .setLargeIcon(bitmap1)
@@ -278,22 +315,22 @@ class BluetoothLeService : Service() {
                 // notificationId is a unique int for each notification that you must define.
                 notify(1, builder.build())
             }
-            //
-            var messageLeftColumnContentToSpeak = oneWord[0]
-            var messageMiddleColumnContentToSpeak = oneWord[4]
-            var messageRightColumnContentToSpeak = oneWord[8]
-            if (oneWord[0] == getString(R.string.nessuno))
-            { messageLeftColumnContentToSpeak = " "}
-            if (oneWord[4] == getString(R.string.nessuno))
-            { messageMiddleColumnContentToSpeak = " "}
-            if (oneWord[8] == getString(R.string.nessuno))
-            { messageRightColumnContentToSpeak = " "}
+//            var messageLeftColumnContentToSpeak = oneWord[0]
+//            var messageMiddleColumnContentToSpeak = oneWord[4]
+//            var messageRightColumnContentToSpeak = oneWord[8]
+//            if (oneWord[0] == getString(R.string.nessuno))
+//            { messageLeftColumnContentToSpeak = " "}
+//            if (oneWord[4] == getString(R.string.nessuno))
+//            { messageMiddleColumnContentToSpeak = " "}
+//            if (oneWord[8] == getString(R.string.nessuno))
+//            { messageRightColumnContentToSpeak = " "}
             tTS1 = TextToSpeech(ctext) { status ->
                 if (status != TextToSpeech.ERROR) {
                     tTS1!!.speak(
-                        messageLeftColumnContentToSpeak + " "
-                           + messageMiddleColumnContentToSpeak + " "
-                           + messageRightColumnContentToSpeak,
+//                        messageLeftColumnContentToSpeak + " "
+//                           + messageMiddleColumnContentToSpeak + " "
+//                           + messageRightColumnContentToSpeak,
+                        messageToSpeak,
                         TextToSpeech.QUEUE_FLUSH,
                         null,
                         getString(R.string.prova_tts)
@@ -387,9 +424,12 @@ class BluetoothLeService : Service() {
                 {
                     device = bluetoothDevicesConnectedToTheGattServerList.first()
                     // search for image of the device user to send any notifications
-                    searchForImageOfTheDeviceUser()
-                    //
-                    bluetoothGatt = device.connectGatt(this, false, bluetoothGattCallback, TRANSPORT_LE)
+                    searchForDeviceUser()
+                    // if the user of the device has not been found, the connection will not be made
+                    if (deviceEnabledUserName != "non trovato")
+                    {
+                        bluetoothGatt = device.connectGatt(this, false, bluetoothGattCallback, TRANSPORT_LE)
+                    }
                 }
             }, SCAN_PERIOD)
             //
@@ -467,7 +507,7 @@ class BluetoothLeService : Service() {
                 {
                     device = adapter.getRemoteDevice(address)
                     // search for image of the device user to send any notifications
-                    searchForImageOfTheDeviceUser()
+                    searchForDeviceUser()
                     // connect to the GATT server on the device
                     /*
                     step 17
@@ -477,7 +517,16 @@ class BluetoothLeService : Service() {
                     This requires a Context object, an autoConnect boolean flag, and the BluetoothGattCallback.
                     In this example, the app is directly connecting to the BLE device, so false is passed for autoConnect.
                      */
-                    bluetoothGatt = device.connectGatt(this, false, bluetoothGattCallback, TRANSPORT_LE)
+                    // if the user of the device has not been found, the connection will not be made
+                    if (deviceEnabledUserName != "non trovato")
+                    {
+                        bluetoothGatt = device.connectGatt(this, false, bluetoothGattCallback, TRANSPORT_LE)
+                        return true
+                    }
+                    else
+                    {
+                        return false
+                    }
                 }
                 return true
             } catch (exception: IllegalArgumentException) {
@@ -536,6 +585,14 @@ class BluetoothLeService : Service() {
                 This function is called when the device reports on its available services.
                  */
                 // Attempts to discover services after successful connection.
+                /*
+                If you call createBond yourself, it still holds that you should not do
+                anything else at the same time and you still need to register
+                your broadcast receiver to monitor the process.
+                Note that if you call createBond on a device that is already paired,
+                you will get an error so check before calling it.
+                 */
+//                device.createBond()
                 gatt!!.discoverServices()
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 // disconnected from the GATT Server
@@ -547,24 +604,40 @@ class BluetoothLeService : Service() {
 
         }
 
-        /*
-        step 20
-        This function is called when the device reports on its available services.
-        */
+        /**
+         * step 19bis
+         * This function is called when the device reports on its available services.
+         * Refer to [stackoverflow](https://stackoverflow.com/questions/65441218/calling-connectgatt-and-createbond-together)
+         * answer of [Emil](https://stackoverflow.com/users/556495/emil)
+         */
         @SuppressLint("MissingPermission")
+//        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+//            if (status == BluetoothGatt.GATT_SUCCESS) {
+                /*
+                If you call createBond yourself, it still holds that you should not do
+                anything else at the same time and you still need to register
+                your broadcast receiver to monitor the process.
+                Note that if you call createBond on a device that is already paired,
+                you will get an error so check before calling it.
+                 */
+//                device.createBond()
+//            } else {
+//                disconnect()
+//                Log.w(TAG, "onServicesDiscovered received: $status")
+//            }
+//        }
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 /*
                 If the discovery services was successful, we can now negotiate a larger MTU than the
                 default (23 bytes).
                 */
-                gatt!!.requestMtu(256)
+                gatt!!.requestMtu(512)
             } else {
                 disconnect()
                 Log.w(TAG, "onServicesDiscovered received: $status")
             }
-        }
-
+       }
         /*
         step 21
         If the discovery services was successful and the MTU has been agreed,
@@ -725,18 +798,21 @@ class BluetoothLeService : Service() {
     }
 
     var activityIsPaused:Boolean = false
-    fun activityInPausedState() {
+    var clientActivity: String? = null
+    fun activityInPausedState(parameterWithClientActivity: String) {
+        clientActivity = parameterWithClientActivity
         activityIsPaused = true
     }
 
-    fun activityInActiveState() {
+    fun activityInActiveState(parameterWithClientActivity: String) {
+        clientActivity = parameterWithClientActivity
         activityIsPaused = false
     }
     /**
      * used for notification
      */
     var deviceEnabledUserName = "non trovato"
-    fun searchForImageOfTheDeviceUser() {
+    fun searchForDeviceUser() {
         var deviceEnabledName : String? = "non trovato"
         if (getDeviceEnabledName() != null)
         { deviceEnabledName = getDeviceEnabledName() }
@@ -760,10 +836,10 @@ class BluetoothLeService : Service() {
             image = ImageSearchHelper.imageSearch(ctext, realm, deviceEnabledUserName)
             addImage(image!!.uriType, image.uriToSearch)
         }
-        else {
-            val uri = ctext.filesDir.absolutePath + "/images/puntointerrogativo.png"
-            addImage("S", uri)
-        }
+//        else {
+//            val uri = ctext.filesDir.absolutePath + "/images/puntointerrogativo.png"
+//            addImage("S", uri)
+//        }
     }
     /**
      * used for notification
@@ -796,7 +872,19 @@ class BluetoothLeService : Service() {
             GraphicsAndPrintingHelper.getTargetBitmapFromFileUsingPicasso(f, target1,200,200)
         }
     }
-
+    /*
+    step 20
+    This function is called when Bonding succeeded.
+    */
+    @SuppressLint("MissingPermission")
+    fun bondingSucceeded() {
+        if (bluetoothGatt != null)
+        {
+            // Ignore updates for other devices
+            if (device.getAddress().equals(bluetoothGatt!!.getDevice().getAddress()))
+                bluetoothGatt!!.discoverServices()
+        }
+    }
     companion object {
         // Stops scanning after 30 seconds.
         private const val SCAN_PERIOD: Long = 30000

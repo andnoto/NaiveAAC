@@ -8,9 +8,11 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
+import io.realm.Realm
 import java.util.*
 
 /**
@@ -28,6 +30,10 @@ import java.util.*
 class StoriesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     //
     private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
+    //
+    lateinit var realm: Realm
+    //
+    var deviceEnabledUserName: String? = ""
 
     /**
      * prepares the ui
@@ -44,6 +50,8 @@ class StoriesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayou
         val wordnumbertoadd = view.findViewById<View>(R.id.wordnumbertoadd) as TextView
         val wordtoadd = view.findViewById<View>(R.id.wordtoadd) as EditText
         val gameimage = view.findViewById<View>(R.id.gameimage) as ImageView
+        //
+        realm = Realm.getDefaultInstance()
         /*
         Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
         constructor.
@@ -60,10 +68,20 @@ class StoriesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayou
                 wordnumbertoadd.setText(String.format(Locale.getDefault(), "%d",voiceToBeRecordedInStories.wordNumberInt))
                 wordtoadd.setText(voiceToBeRecordedInStories.word)
                 if (voiceToBeRecordedInStories.uriType != "")
-                {
-                    GraphicsAndPrintingHelper.addImage(
-                        voiceToBeRecordedInStories.uriType,
-                        voiceToBeRecordedInStories.uri, gameimage,
+                {   var uriType = voiceToBeRecordedInStories.uriType
+                    var uri = voiceToBeRecordedInStories.uri
+                    if (uriType == "I") {
+                        val imageUrl = searchUri(
+                            ctext,
+                            realm,
+                            uri
+                        )
+                        uriType = "S"
+                        uri = imageUrl
+                    }
+                    addImage(
+                        uriType,
+                        uri, gameimage,
                         200, 200
                     )
                 }

@@ -1,5 +1,5 @@
 gameName,gameActive,gameIconType,gameIconPath,gameInfo,gameJavaClass,gameParameter,gameUseVideoAndSound,fromAssets
-PECS,A,AS,images/pecs.png,Picture Exchange Communication System,PECS,,Y,Y
+Scambio Immagini tramite Bluetooth,A,AS,images/pecs.png,Picture Exchange Communication System,PECS,,Y,Y
 NAVIGATORE,A,AS,images/browser.png,l'app visualizza raccolte di immagini di parole che si possono selezionare per formare delle semplici frasi,NAVIGATORE,,Y,Y
 COMUNICATORE,A,AS,images/communicator.png,l'app visualizza le immagini (caricate dall'utente o i pittogrammi Arasaac) delle parole pronunciate dopo aver premuto il tasto ascolta,COMUNICATORE,,Y,Y
 storia sociale - devi mangiare,A,AS,images/racconto.png,devi mangiare,A/DA,devi mangiare,Y,Y

@@ -233,6 +233,13 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
 //                                (maybe it is not necessary to call observe)
                             voiceToBeRecordedInStories!!.uriType = "S"
                             voiceToBeRecordedInStories!!.uri = filePath
+                            //
+                            val frag = StoriesFragment(R.layout.activity_settings_stories_word)
+                            //
+                            val ft = supportFragmentManager.beginTransaction()
+                            ft.replace(R.id.settings_container, frag)
+                            ft.addToBackStack(null)
+                            ft.commit()
                         }
                     }
                 }
@@ -298,7 +305,7 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
             textWord3.text.toString().toInt()
         voiceToBeRecordedInStories!!.word = textWord4.text.toString()
         //
-        val frag = StoriesVideosSearchFragment(R.layout.activity_settings_stories_videos)
+        val frag = StoriesVideosSearchFragment(R.layout.activity_settings_stories_images_videos)
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)

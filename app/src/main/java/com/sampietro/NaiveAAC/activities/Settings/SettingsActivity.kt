@@ -41,9 +41,14 @@ import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAllToModifyAdapter.Pi
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevicesAdapter
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFile
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromInternalToSharedStorage
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorage
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileZipFromInternalToSharedStorage
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFilesInFolderToRoot
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.extractFolder
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.zipFileAtPath
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter.GameParametersAdapterInterface
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
@@ -64,6 +69,7 @@ import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
 import io.realm.RealmResults
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 import java.net.URISyntaxException
 import java.util.*
@@ -120,7 +126,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     var checkboxStoriesChecked = false
     var checkboxGrammaticalExceptionsChecked = false
     var checkboxGameParametersChecked = false
-
+    //
+    var myLayoutId = R.layout.activity_settings_advanced_settings
     /**
      * configurations of settings start screen.
      *
@@ -726,16 +733,65 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             bd.deviceName = bdDN.text.toString()
             bd.fromAssets = "N"
             realm.commitTransaction()
-            // view the Bluetooth Devices settings initializing BluetoothDevicesFragment
-            // (FragmentTransaction switch between Fragments).
-            val frag = BluetoothDevicesFragment(R.layout.activity_settings_bluetooth_devices)
-            val ft = supportFragmentManager.beginTransaction()
-            ft.replace(R.id.settings_container, frag)
-            ft.addToBackStack(null)
-            ft.commit()
+            //
+            doYouWantToImportImages(bdUN.text.toString())
         }
     }
-
+    /**
+     * Called when the user taps the save button from the Bluetooth Devices settings.
+     *
+     * @param deviceUserName string
+     */
+    fun doYouWantToImportImages(deviceUserName: String) {
+            val d = Dialog(this)
+            // Setting dialogview
+            val window = d.window
+            val wlp = window!!.attributes
+            wlp.gravity = Gravity.BOTTOM
+            wlp.flags = wlp.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv()
+            window.attributes = wlp
+            //
+            d.setCancelable(false)
+            d.setContentView(R.layout.activity_settings_write_dialog_bluetooth)
+            //
+            val dialogTitle =
+                d.findViewById<TextView>(R.id.bluetoothTV)
+            dialogTitle.setText("Vuoi importare le immagini \ndal file NaiveAACimages.zip precedentemente esportato\ndallo smartphone di " + deviceUserName )
+            val submitResponseOrRequestButton =
+                d.findViewById<ImageButton>(R.id.importImagesButton)
+            val cancelTheAnswerOrRequestButton =
+                d.findViewById<ImageButton>(R.id.doNotImportImagesButton)
+            //
+            submitResponseOrRequestButton.requestFocus()
+            //
+            submitResponseOrRequestButton.setOnClickListener { //
+                //
+                d.cancel()
+                //
+                checkboxImagesChecked = true
+                checkboxVideosChecked = false
+                checkboxSoundsChecked = false
+                checkboxPhrasesChecked = false
+                checkboxWordPairsChecked = false
+                checkboxListsOfNamesChecked = false
+                checkboxStoriesChecked = false
+                checkboxGrammaticalExceptionsChecked = false
+                radiobuttonDataImportAppendClicked = true
+                settingsDataImportSave(submitResponseOrRequestButton)
+            }
+            cancelTheAnswerOrRequestButton.setOnClickListener { //
+                d.cancel()
+                // view the Bluetooth Devices settings initializing BluetoothDevicesFragment
+                // (FragmentTransaction switch between Fragments).
+                val frag = BluetoothDevicesFragment(R.layout.activity_settings_bluetooth_devices)
+                val ft = supportFragmentManager.beginTransaction()
+                ft.replace(R.id.settings_container, frag)
+                ft.addToBackStack(null)
+                ft.commit()
+            }
+            //
+            d.show()
+    }
     /**
      * on callback from BluetoothDevicesAdapter to this Activity
      *
@@ -1064,6 +1120,15 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      *
      */
     fun settingsDataImportSave(view: View?) {
+        //
+        when (view!!.id) {
+            R.id.importImagesButton -> {
+                myLayoutId = R.layout.activity_settings_bluetooth_devices
+            }
+            R.id.importSaveButton -> {
+                myLayoutId = R.layout.activity_settings_advanced_settings
+            }
+        }
         // Choose a directory using the system's file picker.
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         // Optionally, specify a URI for the directory that should be opened in
@@ -1127,17 +1192,26 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                 if (radiobuttonDataImportReplaceClicked) importMode = getString(R.string.replace)
                                 if (checkboxImagesChecked) {
                                     assert(inputFolder != null)
-                                    val documentFileNewFile = inputFolder!!.findFile("images.csv")!!
-                                    val csvFileUri = documentFileNewFile.uri
-                                    try {
-                                        copyFileFromSharedToInternalStorage(
-                                            context,
-                                            csvFileUri,
-                                            "images.csv"
-                                        )
-                                    } catch (e: IOException) {
-                                        e.printStackTrace()
-                                    }
+                                    //
+                                    imagesImportFromZip(inputFolder!!)
+                                    //
+//                                    val rootPath = context.filesDir.absolutePath
+//                                    val dirName = "Images"
+//                                    val inputFile = File("$rootPath/$dirName/images.csv")
+//                                    val outputFile = File("$rootPath/images.csv")
+//                                    copyFile(inputFile, outputFile)
+                                    //
+//                                    val documentFileNewFile = inputFolder.findFile("images.csv")!!
+//                                    val csvFileUri = documentFileNewFile.uri
+//                                    try {
+//                                        copyFileFromSharedToInternalStorage(
+//                                            context,
+//                                            csvFileUri,
+//                                            "images.csv"
+//                                        )
+//                                    } catch (e: IOException) {
+//                                        e.printStackTrace()
+//                                    }
                                     Images.importFromCsvFromInternalStorage(
                                         context,
                                         realm,
@@ -1310,19 +1384,67 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                 // the shared preferences should be set to the latest phrasenumber
                                 // of imported history
                             }
-                            // view the advanced settings initializing AdvancedSettingsFragment (FragmentTransaction
-                            // switch between Fragments).
-                            val frag = Fragment(R.layout.activity_settings_advanced_settings)
-                            val ft = supportFragmentManager.beginTransaction()
-                            ft.replace(R.id.settings_container, frag)
-                            ft.addToBackStack(null)
-                            ft.commit()
+                            when (myLayoutId) {
+                                R.layout.activity_settings_bluetooth_devices -> {
+                                    val frag = BluetoothDevicesFragment(myLayoutId)
+                                    val ft = supportFragmentManager.beginTransaction()
+                                    ft.replace(R.id.settings_container, frag)
+                                    ft.addToBackStack(null)
+                                    ft.commit()
+                                }
+                                R.layout.activity_settings_advanced_settings -> {
+                                    // view the advanced settings initializing AdvancedSettingsFragment (FragmentTransaction
+                                    // switch between Fragments).
+                                    val frag = Fragment(myLayoutId)
+                                    val ft = supportFragmentManager.beginTransaction()
+                                    ft.replace(R.id.settings_container, frag)
+                                    ft.addToBackStack(null)
+                                    ft.commit()
+                                }
+                            }
                         }
                     }
                 }
             })
 
         //
+    }
+    //
+    fun imagesImportFromZip(inputFolder: DocumentFile) {
+        // creo le dir della storia
+        val rootPath = context.filesDir.absolutePath
+        val dirName = "NaiveAACimages"
+        val d = File("$rootPath/$dirName")
+        if (!d.exists()) {
+            d.mkdirs()
+        } else {
+            d.delete()
+            d.mkdirs()
+        }
+        assert(inputFolder != null)
+        val documentFileNewFile =
+            inputFolder.findFile("$dirName.zip")!!
+        val zipFileUri = documentFileNewFile.uri
+        try {
+            copyFileFromSharedToInternalStorage(
+                context,
+                zipFileUri,
+                "$dirName.zip"
+            )
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        // unzippo la directory di input
+        try {
+            extractFolder(
+                File(rootPath),
+                File("$rootPath/$dirName.zip")
+            )
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        // creo copia dei file immagini
+        copyFilesInFolderToRoot(context, "$rootPath/$dirName")
     }
 
     /**
@@ -1389,6 +1511,9 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                             //
                             if (isStoragePermissionGranted) {
                                 Images.exporttoCsv(context, realm)
+                                //
+                                imagesExportToZip(outputFolder!!)
+                                //
                                 Videos.exporttoCsv(context, realm)
                                 Sounds.exporttoCsv(context, realm)
                                 Phrases.exporttoCsv(context, realm)
@@ -1453,7 +1578,94 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                     }
                 }
             })
-    }//permission is automatically granted on sdk<23 upon installation
+    }
+    //
+    fun imagesExportToZip(outputFolder: DocumentFile) {
+        // immagini
+        // creo le dir delle immagini
+        val rootPath = context.filesDir.absolutePath
+        val dirName = "NaiveAACimages"
+        val d = File("$rootPath/$dirName")
+        if (!d.exists()) {
+            d.mkdirs()
+        } else {
+            d.delete()
+            d.mkdirs()
+        }
+        // creo copia del file images.csv
+        var finput: File
+        var foutput: File
+        finput = File("$rootPath/images.csv")
+        foutput = File(
+                "$rootPath/NaiveAACimages/" + "images.csv"
+            )
+        try {
+                copyFile(finput, foutput)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        // creo un set (in modo da non ammettere duplicati) con i media file utilizzati
+        val imagesSet = HashSet<String?>()
+        val resultsImages = realm.where(
+            Images::class.java
+        ).findAll()
+        //
+        val count = resultsImages.size
+        if (count != 0) {
+            var irrh = 0
+            while (irrh < count) {
+                if (resultsImages[irrh]!!.descrizione != getString(R.string.io))
+                { imagesSet.add(
+                    resultsImages[irrh]!!.uri
+                    )
+                }
+                irrh++
+            }
+        }
+        // trasformo il set ottenuto in una list contenente i path dei media file utilizzati
+        val imagesList: MutableList<String?> = ArrayList()
+        imagesList.addAll(imagesSet)
+        // creo copia dei file immagini
+//        var finput: File
+//        var foutput: File
+        val imagesSize = imagesList.size
+        var irrh = 0
+        while (irrh < imagesSize) {
+            finput = File(imagesList[irrh]!!)
+            foutput = File(
+                "$rootPath/NaiveAACimages/" + imagesList[irrh]!!
+                    .substring(
+                        imagesList[irrh]!!.lastIndexOf(
+                            "/"
+                        ) + 1
+                    )
+            )
+            try {
+                copyFile(finput, foutput)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            irrh++
+        }
+        // zippo la directory di output
+        zipFileAtPath(
+            "$rootPath/$dirName",
+            "$rootPath/$dirName.zip"
+        )
+//        assert(outputFolder != null)
+        // copio il file zip sulla shared storage
+        try {
+            copyFileZipFromInternalToSharedStorage(
+                context,
+                outputFolder,
+                "$dirName.zip"
+            )
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+    }
+    //permission is automatically granted on sdk<23 upon installation
     /**
      * check permissions.
      *
