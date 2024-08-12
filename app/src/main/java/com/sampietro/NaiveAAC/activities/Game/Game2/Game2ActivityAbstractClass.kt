@@ -4,9 +4,10 @@ import android.speech.tts.TextToSpeech
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAArrayList
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.splitString
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchId
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.destroyRecognizer
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
@@ -68,7 +69,6 @@ abstract class Game2ActivityAbstractClass : GameActivityAbstractClassWithRecogni
      * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
      */
     override fun onEndOfSpeech(editText: String?) {
-//
     }
 
     /**
@@ -81,15 +81,13 @@ abstract class Game2ActivityAbstractClass : GameActivityAbstractClassWithRecogni
      *
      * @see com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
      *
-     * @see ImageSearchHelper.searchUri
-     * @see ImageSearchHelper.searchId
-     * @see GrammarHelper.searchType
-     * @see GrammarHelper.searchPlural
-    </VoiceToBeRecordedInHistory> */
+     * @see searchUri
+     * @see searchId
+    */
     //    public ToBeRecordedInHistory<VoiceToBeRecordedInHistory> gettoBeRecordedInHistory(Realm realm, String eText)
     fun gettoBeRecordedInHistory(realm: Realm, eText: String?): ToBeRecordedInHistoryImpl {
         // decomposes EditText
-        val arrWords = GrammarHelper.splitString(eText!!)
+        val arrWords = splitString(eText!!)
         // initializes the list of items to be registered on History
         val toBeRecordedInHistory: ToBeRecordedInHistoryImpl
         toBeRecordedInHistory = ToBeRecordedInHistoryImpl()
@@ -130,13 +128,13 @@ abstract class Game2ActivityAbstractClass : GameActivityAbstractClassWithRecogni
             createList.soundAssociatedWithThePhraseReplacesTheOtherSounds = ""
             //
             // INTERNAL MEMORY IMAGE SEARCH
-            val uriToSearch = ImageSearchHelper.searchUri(context, realm, arrWords[i])
+            val uriToSearch = searchUri(context, realm, arrWords[i])
             if (uriToSearch != getString(R.string.non_trovata)) {
                 createList.urlType = "S"
                 createList.url = uriToSearch
             } else {
                 // SEARCH VERBS WITH REALM
-                val verbToSearch = GrammarHelper.searchVerb(context, arrWords[i], realm)
+                val verbToSearch = searchVerb(context, arrWords[i], realm)
                 var idToSearch: String
                 idToSearch = if (verbToSearch != getString(R.string.non_trovato)) {
                     searchId(context, realm, verbToSearch)

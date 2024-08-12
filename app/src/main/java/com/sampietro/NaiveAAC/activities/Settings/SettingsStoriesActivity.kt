@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListener
-import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorageAndGetPath
 import com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesRegistrationActivity
 import com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementActivity
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
@@ -149,7 +149,9 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
                             uri = Objects.requireNonNull(resultData).data
                             //
                             try {
-                                filePath = DataStorageHelper.getFilePath(context, uri)
+                                filePath = copyFileFromSharedToInternalStorageAndGetPath(context,
+                                    uri!!
+                                )
                             } catch (e: URISyntaxException) {
                                 e.printStackTrace()
                             }

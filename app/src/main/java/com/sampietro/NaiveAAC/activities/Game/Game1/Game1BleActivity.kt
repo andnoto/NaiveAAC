@@ -23,15 +23,17 @@ import android.view.Window
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothLeService
+import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothStatus
+import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothStatusViewModel
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2BleDialogFragment
-import com.sampietro.NaiveAAC.activities.Game.Utils.AndroidNotificationPermission
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyRegistration
 import com.sampietro.NaiveAAC.activities.Grammar.ComposesASentenceResults
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.composesASentence
@@ -108,21 +110,27 @@ class Game1BleActivity : GameActivityAbstractClass(),
                     Log.e(TAG, "Unable to initialize Bluetooth")
                     finish()
                 }
-                /*
-                BluetootLeService -> step 7 -> BluetootLeService
-                */
-                bluetooth.setupServer()
-                bluetooth.startAdvertising()
-                /*
-                step 10 -> BluetootLeService
-                 */
-                // perform device scanning
-                bluetooth.scan()
-                //
+                if (preference_BluetoothMode == "Server")
+                {
+                    // mode = GATT server
+                    /*
+                    BluetootLeService -> step 7 -> BluetootLeService
+                    */
+                    bluetooth.setupServer()
+                    bluetooth.startAdvertising()
+                }
+                else
+                {
+                    // mode = GATT client
+                    /*
+                    step 10 -> BluetootLeService
+                     */
+                    // perform device scanning
+                    bluetooth.scan()
+                }
                 bluetooth.activityInActiveState("Game1BleActivity")
             }
         }
-
         override fun onServiceDisconnected(componentName: ComponentName) {
             bluetoothService = null
         }
@@ -132,7 +140,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
      */
     lateinit var btAdapter: BluetoothAdapter
     var mConnected : Boolean = false
-    var deviceEnabledUserName : String? = "non trovato"
+//    var deviceEnabledUserName : String? = "non trovato"
     var deviceEnabledName : String? = "non trovato"
     var messageFromGattServer = "nessun messaggio"
     /**
@@ -155,15 +163,8 @@ class Game1BleActivity : GameActivityAbstractClass(),
     // and three numbers which, if applicable, indicate the choice menus for each column
     // identified by PhraseNumber on History
     var leftColumnContent: String? = null
-//    var leftColumnContentUrlType: String? = null
-//    var leftColumnContentUrl: String? = null
     var middleColumnContent: String? = null
-//    var middleColumnContentUrlType: String? = null
-//    var middleColumnContentUrl: String? = null
     var rightColumnContent: String? = null
-//    var rightColumnContentUrlType: String? = null
-//    var rightColumnContentUrl: String? = null
-
     //
     var leftColumnMenuPhraseNumber: Int? = null
     var middleColumnMenuPhraseNumber: Int? = null
@@ -174,9 +175,6 @@ class Game1BleActivity : GameActivityAbstractClass(),
     var rightColumnContentWord: String? = null
     //
     var dialog: Game2BleDialogFragment? = null
-    var messageLeftColumnContent: String? = null
-    var messageMiddleColumnContent: String? = null
-    var messageRightColumnContent: String? = null
     //
     var numberOfWordsChosen = 0
     //
@@ -186,6 +184,11 @@ class Game1BleActivity : GameActivityAbstractClass(),
     //
     var preference_PrintPermissions: String? = null
     var preference_AllowedMarginOfError = 0
+    //
+    var preference_BluetoothMode: String? = null
+    //
+    private var bluetoothStatus: BluetoothStatus? = null
+    private lateinit var viewModel: BluetoothStatusViewModel
     //  ViewPager2
     // - 1) Create the views (activity_game_1_viewpager_content.xml)
     // - 2) Create the fragment (Game1ViewPagerFirstLevelFragment and Game1ViewPagerSecondLevelFragment)
@@ -282,8 +285,6 @@ class Game1BleActivity : GameActivityAbstractClass(),
         /*
 
         */
-        AndroidNotificationPermission.checkPermission(this)
-        //
         realm = Realm.getDefaultInstance()
         //
         context = this
@@ -299,6 +300,9 @@ class Game1BleActivity : GameActivityAbstractClass(),
             sharedPref.getString(getString(R.string.preference_print_permissions), "DEFAULT")
         preference_AllowedMarginOfError =
             sharedPref.getInt(getString(R.string.preference_allowed_margin_of_error), 20)
+        //
+        preference_BluetoothMode =
+            sharedPref.getString(getString(R.string.preference_bluetoothmode), "DEFAULT")
         // viewpager
         // Wire Adapter with ViewPager2
         mViewPager = findViewById<View>(R.id.pager) as ViewPager2
@@ -325,6 +329,19 @@ class Game1BleActivity : GameActivityAbstractClass(),
 //            finish()
 //            return
 //        }
+        //
+        /*
+        Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
+        constructor.
+        The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
+        */
+        // In the Activity#onCreate make the only setItem
+        bluetoothStatus = BluetoothStatus()
+        viewModel = ViewModelProvider(this).get(
+            BluetoothStatusViewModel::class.java
+        )
+        viewModel.setItem(bluetoothStatus!!)
+        clearFieldsOfViewmodelDataClass()
      }
     /**
      * Hide the Navigation Bar,
@@ -344,13 +361,20 @@ class Game1BleActivity : GameActivityAbstractClass(),
         mywindow = getWindow()
         setToFullScreen(mywindow)
         //
-        registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
-        registerReceiver(bondStateReceiver, IntentFilter(ACTION_BOND_STATE_CHANGED))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter(), RECEIVER_NOT_EXPORTED)
+            registerReceiver(bondStateReceiver, IntentFilter(ACTION_BOND_STATE_CHANGED), RECEIVER_NOT_EXPORTED)
+            }
+            else
+            {
+            registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+            registerReceiver(bondStateReceiver, IntentFilter(ACTION_BOND_STATE_CHANGED))
+            }
         //
         // check Bluetooth Ble Permissions
         //
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-            // version code S = version 31 = Android 12
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            // version code TIRAMISU = version 33 = Android 13
             && (
                     (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE
                     ) != PackageManager.PERMISSION_GRANTED)
@@ -360,36 +384,142 @@ class Game1BleActivity : GameActivityAbstractClass(),
                             ||
                             (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN
                             ) != PackageManager.PERMISSION_GRANTED)
+                            ||
+                            (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS
+                            ) != PackageManager.PERMISSION_GRANTED)
                     ))
         {
             // se siamo qui è perchè non si è mostrata alcuna spiegazione all'utente, richiesta di permission
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN ),
+                arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.POST_NOTIFICATIONS
+                    ),
                 1
             )
         }
         else
         {
-            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
                 // version code S = version 31 = Android 12
                 && (
-                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH
+                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE
                         ) != PackageManager.PERMISSION_GRANTED)
                                 ||
-                                (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION
+                                (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT
+                                ) != PackageManager.PERMISSION_GRANTED)
+                                ||
+                                (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN
                                 ) != PackageManager.PERMISSION_GRANTED)
                         ))
             {
                 // se siamo qui è perchè non si è mostrata alcuna spiegazione all'utente, richiesta di permission
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION ),
+                    arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN ),
                     2
                 )
             }
             else
             {
+                if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
+                    // version code S = version 31 = Android 12
+                    && (
+                            (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH
+                            ) != PackageManager.PERMISSION_GRANTED)
+                                    ||
+                                    (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION
+                                    ) != PackageManager.PERMISSION_GRANTED)
+                            ))
+                {
+                    // se siamo qui è perchè non si è mostrata alcuna spiegazione all'utente, richiesta di permission
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION ),
+                        3
+                    )
+                }
+                else
+                {
+                    if (!btAdapter.isEnabled) {
+                        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                        enableBtResultLauncher.launch(enableBtIntent)
+                    } else {
+                        /*
+                        step 3 -> BluetoothLeService
+                        A client binds to a service by calling bindService().
+                        When it does, it must provide an implementation of ServiceConnection, which monitors
+                        the connection with the service.
+                        The return value of bindService() indicates whether the requested service exists and
+                        whether the client is permitted access to it.
+                        */
+                        if (bluetoothService == null) {
+                            val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
+                            bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+                            }
+                            else
+                            {
+                            /*
+                            BluetootLeService -> step 5 -> BluetootLeService
+                            The activity calls this function within its ServiceConnection implementation.
+                            Handling a false return value from the initialize() function depends on your application.
+                            You could show an error message to the user indicating that the current device
+                            does not support the Bluetooth operation or disable any features that require Bluetooth to work.
+                            In the following example, finish() is called on the activity to send the user back to the previous screen.
+                            */
+                            if (!bluetoothService!!.initialize(this)) {
+                                Log.e(TAG, "Unable to initialize Bluetooth")
+                                finish()
+                            }
+                            if (preference_BluetoothMode == "Server")
+                                {
+                                    /*
+                                    BluetootLeService -> step 7 -> BluetootLeService
+                                    */
+                                    bluetoothService!!.setupServer()
+                                    bluetoothService!!.startAdvertising()
+                                }
+                                else
+                                {
+                                    /*
+                                    step 10 -> BluetootLeService
+                                    */
+                                    // perform device scanning
+                                    bluetoothService!!.scan()
+                                }
+                            bluetoothService!!.activityInActiveState("Game1BleActivity")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //
+    private fun makeGattUpdateIntentFilter(): IntentFilter {
+        return IntentFilter().apply {
+            addAction(BluetoothLeService.ACTION_GATT_SERVER_CONNECTED)
+            addAction(BluetoothLeService.ACTION_GATT_SERVER_DISCONNECTED)
+            addAction(BluetoothLeService.ACTION_GATT_CONNECTED)
+            addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED)
+            addAction(BluetoothLeService.MESSAGE_FROM_GATT_SERVER)
+            addAction(BluetoothLeService.MESSAGE_FROM_GATT)
+        }
+    }
+    //
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1) {
+            //
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                && grantResults[2] == PackageManager.PERMISSION_GRANTED
+                && grantResults[3] == PackageManager.PERMISSION_GRANTED
+            ) {
                 if (!btAdapter.isEnabled) {
                     val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                     enableBtResultLauncher.launch(enableBtIntent)
@@ -408,81 +538,44 @@ class Game1BleActivity : GameActivityAbstractClass(),
                     }
                     else
                     {
-                    /*
+                        /*
                         BluetootLeService -> step 5 -> BluetootLeService
                         The activity calls this function within its ServiceConnection implementation.
                         Handling a false return value from the initialize() function depends on your application.
                         You could show an error message to the user indicating that the current device
                         does not support the Bluetooth operation or disable any features that require Bluetooth to work.
                         In the following example, finish() is called on the activity to send the user back to the previous screen.
-                    */
-                    if (!bluetoothService!!.initialize(this)) {
+                        */
+                        if (!bluetoothService!!.initialize(this)) {
                             Log.e(TAG, "Unable to initialize Bluetooth")
                             finish()
                         }
-                    /*
-                    BluetootLeService -> step 7 -> BluetootLeService
-                    */
-                    bluetoothService!!.setupServer()
-                    bluetoothService!!.startAdvertising()
-                    /*
-                    step 10 -> BluetootLeService
-                    */
-                    // perform device scanning
-                    bluetoothService!!.scan()
-                    //
-                    bluetoothService!!.activityInActiveState("Game1BleActivity")
+                        if (preference_BluetoothMode == "Server")
+                        {
+                            /*
+                            BluetootLeService -> step 7 -> BluetootLeService
+                            */
+                            bluetoothService!!.setupServer()
+                            bluetoothService!!.startAdvertising()
+                        }
+                        else
+                        {
+                            /*
+                            step 10 -> BluetootLeService
+                            */
+                            // perform device scanning
+                            bluetoothService!!.scan()
+                        }
+                        bluetoothService!!.activityInActiveState("Game1BleActivity")
                     }
                 }
-            }
-        }
-
-    }
-    //
-    private fun makeGattUpdateIntentFilter(): IntentFilter {
-        return IntentFilter().apply {
-            addAction(BluetoothLeService.ACTION_GATT_CONNECTED)
-            addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED)
-            addAction(BluetoothLeService.MESSAGE_FROM_GATT_SERVER)
-        }
-    }
-    //
-    @SuppressLint("MissingPermission")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1) {
-            //
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED
-                && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                && grantResults[2] == PackageManager.PERMISSION_GRANTED
-            ) {
-                //
-                if (!btAdapter.isEnabled) {
-                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                    enableBtResultLauncher.launch(enableBtIntent)
-                } else {
-                    /*
-                    step 3 -> BluetoothLeService
-                    A client binds to a service by calling bindService().
-                    When it does, it must provide an implementation of ServiceConnection, which monitors
-                    the connection with the service.
-                    The return value of bindService() indicates whether the requested service exists and
-                    whether the client is permitted access to it.
-                    */
-                    val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
-                    bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-                }
-                //
             }
             else
             {
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN ),
+                    arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN,
+                        Manifest.permission.POST_NOTIFICATIONS),
                     1
                 )
             }
@@ -491,6 +584,71 @@ class Game1BleActivity : GameActivityAbstractClass(),
             //
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED
                 && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                && grantResults[2] == PackageManager.PERMISSION_GRANTED
+            ) {
+                if (!btAdapter.isEnabled) {
+                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                    enableBtResultLauncher.launch(enableBtIntent)
+                } else {
+                    /*
+                    step 3 -> BluetoothLeService
+                    A client binds to a service by calling bindService().
+                    When it does, it must provide an implementation of ServiceConnection, which monitors
+                    the connection with the service.
+                    The return value of bindService() indicates whether the requested service exists and
+                    whether the client is permitted access to it.
+                    */
+                    if (bluetoothService == null) {
+                        val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
+                        bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+                    }
+                    else
+                    {
+                        /*
+                        BluetootLeService -> step 5 -> BluetootLeService
+                        The activity calls this function within its ServiceConnection implementation.
+                        Handling a false return value from the initialize() function depends on your application.
+                        You could show an error message to the user indicating that the current device
+                        does not support the Bluetooth operation or disable any features that require Bluetooth to work.
+                        In the following example, finish() is called on the activity to send the user back to the previous screen.
+                        */
+                        if (!bluetoothService!!.initialize(this)) {
+                            Log.e(TAG, "Unable to initialize Bluetooth")
+                            finish()
+                        }
+                        if (preference_BluetoothMode == "Server")
+                        {
+                            /*
+                            BluetootLeService -> step 7 -> BluetootLeService
+                            */
+                            bluetoothService!!.setupServer()
+                            bluetoothService!!.startAdvertising()
+                        }
+                        else
+                        {
+                            /*
+                            step 10 -> BluetootLeService
+                            */
+                            // perform device scanning
+                            bluetoothService!!.scan()
+                        }
+                        bluetoothService!!.activityInActiveState("Game1BleActivity")
+                    }
+                }
+            }
+            else
+            {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN),
+                    2
+                )
+            }
+        }
+        if (requestCode == 3) {
+            //
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && grantResults[1] == PackageManager.PERMISSION_GRANTED
             ) {
                 //
                 if (!btAdapter.isEnabled) {
@@ -505,8 +663,42 @@ class Game1BleActivity : GameActivityAbstractClass(),
                     The return value of bindService() indicates whether the requested service exists and
                     whether the client is permitted access to it.
                     */
-                    val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
-                    bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+                    if (bluetoothService == null) {
+                        val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
+                        bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+                    }
+                    else
+                    {
+                        /*
+                        BluetootLeService -> step 5 -> BluetootLeService
+                        The activity calls this function within its ServiceConnection implementation.
+                        Handling a false return value from the initialize() function depends on your application.
+                        You could show an error message to the user indicating that the current device
+                        does not support the Bluetooth operation or disable any features that require Bluetooth to work.
+                        In the following example, finish() is called on the activity to send the user back to the previous screen.
+                        */
+                        if (!bluetoothService!!.initialize(this)) {
+                            Log.e(TAG, "Unable to initialize Bluetooth")
+                            finish()
+                        }
+                        if (preference_BluetoothMode == "Server")
+                        {
+                            /*
+                            BluetootLeService -> step 7 -> BluetootLeService
+                            */
+                            bluetoothService!!.setupServer()
+                            bluetoothService!!.startAdvertising()
+                        }
+                        else
+                        {
+                            /*
+                            step 10 -> BluetootLeService
+                            */
+                            // perform device scanning
+                            bluetoothService!!.scan()
+                        }
+                        bluetoothService!!.activityInActiveState("Game1BleActivity")
+                    }
                 }
                 //
             }
@@ -515,11 +707,10 @@ class Game1BleActivity : GameActivityAbstractClass(),
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION ),
-                    2
+                    3
                 )
             }
         }
-
     }
 
     @SuppressLint("MissingPermission")
@@ -542,7 +733,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
             }
     }
     /*
-    BluetootLeService -> 18 -> BluetootLeService
+    BluetootLeService -> step 18 -> BluetootLeService
     Once the service broadcasts the connection updates, the activity needs to implement a BroadcastReceiver.
     Register this receiver when setting up the activity, and unregister it when the activity is leaving the screen.
     By listening for the events from the service, the activity is able to update the user interface
@@ -553,13 +744,27 @@ class Game1BleActivity : GameActivityAbstractClass(),
     private val gattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
+                BluetoothLeService.ACTION_GATT_SERVER_CONNECTED -> {
+                    mConnected = true
+                    // if MultipleAdvertisement is not supported the device name is not available
+                    if (bluetoothService!!.getDeviceEnabledName() != null)
+                    { deviceEnabledName = bluetoothService!!.getDeviceEnabledName() }
+                    else
+                    { deviceEnabledName = "manca device name" }
+                    //
+                    enableTransmitToConnectedBluetooth()
+                }
+                BluetoothLeService.ACTION_GATT_SERVER_DISCONNECTED -> {
+                    mConnected = false
+                    disableTransmitToDisconnectedBluetooth()
+                }
                 BluetoothLeService.ACTION_GATT_CONNECTED -> {
                     mConnected = true
                     // if MultipleAdvertisement is not supported the device name is not available
                     if (bluetoothService!!.getDeviceEnabledName() != null)
                         { deviceEnabledName = bluetoothService!!.getDeviceEnabledName() }
                         else
-                        { deviceEnabledName = "mancante" }
+                        { deviceEnabledName = "manca device name" }
                     //
                     enableTransmitToConnectedBluetooth()
                 }
@@ -574,14 +779,16 @@ class Game1BleActivity : GameActivityAbstractClass(),
                     }
                     else
                     {
-                        // use comma as separator
-                        val cvsSplitBy = getString(R.string.character_comma)
-                        val oneWord: Array<String?> =
-                            messageFromGattServer.split(cvsSplitBy.toRegex()).toTypedArray()
-//                        messageLeftColumnContent = oneWord[0]
-//                        messageMiddleColumnContent = oneWord[4]
-//                        messageRightColumnContent = oneWord[8]
-                        //
+                        dialogFragmentShow()
+                    }
+                }
+                BluetoothLeService.MESSAGE_FROM_GATT -> {
+                    messageFromGattServer = bluetoothService!!.getMessageFromGatt()
+                    if (messageFromGattServer == "I'M DISCONNECTING")
+                    {
+                    }
+                    else
+                    {
                         dialogFragmentShow()
                     }
                 }
@@ -625,14 +832,27 @@ class Game1BleActivity : GameActivityAbstractClass(),
      */
     override fun onPause() {
         super.onPause()
+        if (preference_BluetoothMode == "Server")
+        {
+            if (bluetoothService != null)
+            {
+                bluetoothService!!.sendMessageFromServer("I'M DISCONNECTING")
+                bluetoothService!!.stopAdvertising()
+            }
+        }
+        else
+        {
+            if (bluetoothService != null)
+            {
+                bluetoothService!!.sendMessageFromClient("I'M DISCONNECTING")
+                bluetoothService!!.stopScanner()
+            }
+        }
         if (bluetoothService != null)
             {
-            bluetoothService!!.sendMessage("I'M DISCONNECTING")
-            bluetoothService!!.stopAdvertising()
-            bluetoothService!!.stopScanner()
-            //
             bluetoothService!!.activityInPausedState("Game1BleActivity")
             }
+        //
         unregisterReceiver(gattUpdateReceiver)
         unregisterReceiver(bondStateReceiver)
     }
@@ -644,8 +864,14 @@ class Game1BleActivity : GameActivityAbstractClass(),
     @SuppressLint("MissingPermission")
     override fun onDestroy() {
         super.onDestroy()
-        bluetoothService!!.stopServer()
-        bluetoothService!!.disconnect()
+        if (preference_BluetoothMode == "Server")
+        {
+            bluetoothService!!.stopServer()
+        }
+        else
+        {
+            bluetoothService!!.disconnect()
+        }
         // TTS
         if (tTS1 != null) {
             tTS1!!.stop()
@@ -730,33 +956,34 @@ class Game1BleActivity : GameActivityAbstractClass(),
         var middleColumnMessageToSend: String = ""
         var rightColumnMessageToSend: String = ""
         if (leftColumnContent != getString(R.string.nessuno))
-    //        { leftColumnMessageToSend = leftColumnContent + ","  + "," + ","  + "," }
-    //        else
             {
                 val image: ResponseImageSearch?
                 image = imageSearch(this, realm, leftColumnContentWord)
                 leftColumnMessageToSend = leftColumnContent + "," + image!!.uriType + "," + image.uriToSearch + ","
             }
         if (middleColumnContent != getString(R.string.nessuno))
- //           { middleColumnMessageToSend = middleColumnContent + ","  + "," + ","  + "," }
- //           else
             {
                 val image: ResponseImageSearch?
                 image = imageSearch(this, realm, middleColumnContentWord)
                 middleColumnMessageToSend = middleColumnContent + "," + image!!.uriType + "," + image.uriToSearch + ","
             }
         if (rightColumnContent != getString(R.string.nessuno))
-//            { rightColumnMessageToSend = rightColumnContent + ","  + "," + ","  + "," }
-//            else
             {
                 val image: ResponseImageSearch?
                 image = imageSearch(this, realm, rightColumnContentWord)
                 rightColumnMessageToSend = rightColumnContent + "," + image!!.uriType + "," + image.uriToSearch + ","
             }
         messageToSend = leftColumnMessageToSend + middleColumnMessageToSend + rightColumnMessageToSend
-//        bluetoothService!!.sendMessage(messageToSend)
-        // Delete last character in String
-        bluetoothService!!.sendMessage(messageToSend.substring(0, messageToSend.length - 1))
+        if (preference_BluetoothMode == "Server")
+        {
+            // Delete last character in String
+            bluetoothService!!.sendMessageFromServer(messageToSend.substring(0, messageToSend.length - 1))
+        }
+        else
+        {
+            // Delete last character in String
+            bluetoothService!!.sendMessageFromClient(messageToSend.substring(0, messageToSend.length - 1))
+        }
     }
     /**
      * enable transmit to connected Bluetooth .
@@ -768,7 +995,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
      */
     @SuppressLint("MissingPermission")
     fun enableTransmitToConnectedBluetooth() {
-        deviceEnabledUserName = "non trovato"
+        bluetoothStatus!!.deviceEnabledUserName = "non trovato"
         val results = realm.where(
             BluetoothDevices::class.java
         ).equalTo("deviceName", deviceEnabledName).findAll()
@@ -776,7 +1003,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
         if (count != 0) {
             val result = results[0]
             if (result != null) {
-                deviceEnabledUserName = result.deviceUserName!!
+                bluetoothStatus!!.deviceEnabledUserName = result.deviceUserName!!
             }
         }
         //
@@ -799,7 +1026,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
     @SuppressLint("MissingPermission")
     fun disableTransmitToDisconnectedBluetooth() {
         deviceEnabledName = "non trovato"
-        deviceEnabledUserName = "non trovato"
+        bluetoothStatus!!.deviceEnabledUserName = "non trovato"
         //
         displaySecondLevelMenu()
     }
@@ -818,7 +1045,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
      * @see Game2BleDialogFragment
      */
     fun dialogFragmentShow() {
-        dialog = Game2BleDialogFragment.newInstance(deviceEnabledUserName!!, messageFromGattServer )
+        dialog = Game2BleDialogFragment.newInstance(bluetoothStatus!!.deviceEnabledUserName!!, messageFromGattServer )
         dialog!!.show(supportFragmentManager, "GAME_DIALOG")
     }
     /**
@@ -834,7 +1061,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
                 tTS1 = TextToSpeech(context) { status ->
                     if (status != TextToSpeech.ERROR) {
                         tTS1!!.speak(
-                            deviceEnabledUserName,
+                            bluetoothStatus!!.deviceEnabledUserName,
                             TextToSpeech.QUEUE_FLUSH,
                             null,
                             getString(R.string.prova_tts)
@@ -1062,20 +1289,8 @@ class Game1BleActivity : GameActivityAbstractClass(),
         val frag = Game1BleSecondLevelFragment(R.layout.activity_game_1_ble)
         val bundle = Bundle()
         bundle.putString(getString(R.string.left_column_content), leftColumnContent)
-//        bundle.putString(getString(R.string.left_column_content_url_type), leftColumnContentUrlType)
-//        bundle.putString(getString(R.string.left_column_content_url), leftColumnContentUrl)
         bundle.putString(getString(R.string.middle_column_content), middleColumnContent)
-//        bundle.putString(
-//            getString(R.string.middle_column_content_url_type),
-//            middleColumnContentUrlType
-//        )
-//        bundle.putString(getString(R.string.middle_column_content_url), middleColumnContentUrl)
         bundle.putString(getString(R.string.right_column_content), rightColumnContent)
-//        bundle.putString(
-//            getString(R.string.right_column_content_url_type),
-//            rightColumnContentUrlType
-//        )
-//        bundle.putString(getString(R.string.right_column_content_url), rightColumnContentUrl)
         bundle.putInt(
             getString(R.string.left_column_menu_phrase_number),
             leftColumnMenuPhraseNumber!!
@@ -1095,7 +1310,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
             { bundle.putBoolean("THE SENTENCE IS COMPLETED", false) }
         //
         bundle.putString("DEVICE ENABLED NAME", deviceEnabledName)
-        bundle.putString("DEVICE ENABLED USER NAME", deviceEnabledUserName)
+        bundle.putString("DEVICE ENABLED USER NAME", bluetoothStatus!!.deviceEnabledUserName)
         bundle.putString("MESSAGE FROM GATT SERVER", messageFromGattServer)
         //
         frag.arguments = bundle
@@ -1523,7 +1738,15 @@ class Game1BleActivity : GameActivityAbstractClass(),
             }
         }
     }
-
+        /**
+         * clear fields of viewmodel data class
+         *
+         *
+         * @see BluetoothStatus
+         */
+        fun clearFieldsOfViewmodelDataClass() {
+            bluetoothStatus!!.deviceEnabledUserName = "non trovato"
+        }
     companion object {
         //
         private const val TAG = "Game1BleActivity"

@@ -41,8 +41,6 @@ abstract class Game2FragmentAbstractClass(@LayoutRes contentLayoutId : Int = 0) 
         phraseNumber: Int
     ): ArrayList<Game1ArrayList>
     {
-//        var row1debugUrlNumber = 0
-        //
         val results = realm.where(
             History::class.java
         ).equalTo(getString(R.string.phrase_number), phraseNumber.toString()).findAll()

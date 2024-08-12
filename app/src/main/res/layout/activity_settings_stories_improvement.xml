@@ -19,6 +19,19 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="submitStories"
+        android:text="indietro"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/baseline_arrow_left_36"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_mode_edit"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
         android:id="@+id/btn_mode_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

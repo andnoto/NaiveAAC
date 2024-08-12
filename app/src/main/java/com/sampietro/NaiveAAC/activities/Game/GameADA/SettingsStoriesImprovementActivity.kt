@@ -11,9 +11,7 @@ import android.view.inputmethod.InputMethodManager.HIDE_IMPLICIT_ONLY
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.TextView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesRegistrationActivity
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
@@ -22,13 +20,11 @@ import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.splitString
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
-import com.sampietro.NaiveAAC.activities.Settings.BluetoothDevicesFragment
+import com.sampietro.NaiveAAC.activities.Settings.SettingsStoriesActivity
 import com.sampietro.NaiveAAC.activities.Settings.StoriesActionAfterResponseFragment
-import com.sampietro.NaiveAAC.activities.Settings.StoriesFragment
 import com.sampietro.NaiveAAC.activities.Settings.StoriesVideosSearchAdapter
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper
-import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
@@ -63,7 +59,6 @@ class SettingsStoriesImprovementActivity : GameADAActivityAbstractClass(),
         super.onCreate(savedInstanceState)
         //
         setContentView(R.layout.activity_settings)
-//        setContentView(R.layout.activity_settings_stories_improvement)
         //
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -92,15 +87,12 @@ class SettingsStoriesImprovementActivity : GameADAActivityAbstractClass(),
             sharedStory = sharedPref.getString(getString(R.string.preference_story), getString(R.string.default_string))
         }
         // resumes the story from the last sentence displayed
-        if (intent.hasExtra(ChoiseOfGameActivity.EXTRA_MESSAGE_GAME_PARAMETER)) {
-            val hasPhraseToDisplayIndex =
-                sharedPref.contains(sharedStory + getString(R.string.preference_phrasetodisplayindex))
-            if (hasPhraseToDisplayIndex) {
-                phraseToDisplayIndex =
-                    sharedPref.getInt(sharedStory + getString(R.string.preference_phrasetodisplayindex), 1)
-            }
+        val hasPhraseToDisplayIndex =
+            sharedPref.contains(sharedStory + getString(R.string.preference_phrasetodisplayindex))
+        if (hasPhraseToDisplayIndex) {
+            phraseToDisplayIndex =
+                sharedPref.getInt(sharedStory + getString(R.string.preference_phrasetodisplayindex), 1)
         }
-        //
         val hasLastPhraseNumber = sharedPref.contains(getString(R.string.preference_last_phrase_number))
         if (hasLastPhraseNumber) {
             sharedLastPhraseNumber = sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
@@ -164,6 +156,22 @@ class SettingsStoriesImprovementActivity : GameADAActivityAbstractClass(),
     override fun onResume() {
         super.onResume()
         continueGameAda()
+    }
+    /**
+     * Called when the user taps the back button .
+     *
+     * the activity is notified to view the stories settings.
+     *
+     *
+     * @param view view of tapped button
+     * @see SettingsStoriesActivity
+     */
+    fun submitStories(view: View?) {
+        /*
+                navigate to settings stories screen
+        */
+        val intent = Intent(context, SettingsStoriesActivity::class.java)
+        startActivity(intent)
     }
     /**
      * Called when the user taps the start write button.
@@ -264,11 +272,9 @@ class SettingsStoriesImprovementActivity : GameADAActivityAbstractClass(),
      * @param galleryList ArrayList<GameADAArrayList> list for choice of words
      * @see GameADAArrayList
      *
-     * @see .getTargetBitmapFromUrlUsingPicasso
+     * @see printImage
      *
-     * @see .getTargetBitmapFromFileUsingPicasso
-     *
-     * @see GameADAViewPagerActivity
+     * @see SettingsStoriesImprovementViewPagerActivity
     */
     override fun onItemClick(view: View?, i: Int, galleryList: ArrayList<GameADAArrayList>) {
         if (preference_PrintPermissions == "Y") {
@@ -393,6 +399,9 @@ class SettingsStoriesImprovementActivity : GameADAActivityAbstractClass(),
      * @see SettingsStoriesRegistrationActivity
      */
     fun insertsASentenceBeforeThisOneButton(view: View?) {
+        val editor = sharedPref.edit()
+        editor.putInt(sharedStory + getString(R.string.preference_phrasetodisplayindex), phraseToDisplayIndex)
+        editor.apply()
         val intent: Intent?
         intent = Intent(
             this,
@@ -410,6 +419,9 @@ class SettingsStoriesImprovementActivity : GameADAActivityAbstractClass(),
      * @see SettingsStoriesRegistrationActivity
      */
     fun insertsASentenceAfterThisButton(view: View?) {
+        val editor = sharedPref.edit()
+        editor.putInt(sharedStory + getString(R.string.preference_phrasetodisplayindex), phraseToDisplayIndex)
+        editor.apply()
         val intent: Intent?
         intent = Intent(
             this,

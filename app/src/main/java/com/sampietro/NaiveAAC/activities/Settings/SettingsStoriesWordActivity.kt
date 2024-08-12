@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListener
-import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorageAndGetPath
 import com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementActivity
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
@@ -121,13 +121,6 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
                         voiceToBeRecordedInStories!!.soundReplacesTTS = daModificare[0]!!.soundReplacesTTS
                         voiceToBeRecordedInStories!!.fromAssets = daModificare[0]!!.fromAssets
                         theNewWordsMustBeInsertedBeforeThese = voiceToBeRecordedInStories!!.word
-                        // delete
-                        realm.beginTransaction()
-                        daModificare.deleteAllFromRealm()
-                        realm.commitTransaction()
-                        //
-                        renumberAPhraseOfAStory(realm, voiceToBeRecordedInStories!!.story, voiceToBeRecordedInStories!!.phraseNumberInt)
-                        renumberAStory(realm, voiceToBeRecordedInStories!!.story)
                     }
                 }
                 else
@@ -178,7 +171,7 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
      * and to [stackoverflow](https://stackoverflow.com/questions/7620401/how-to-convert-image-file-data-in-a-byte-array-to-a-bitmap)
      * answer of [Uttam](https://stackoverflow.com/users/840861/uttam)
      *
-     * @see getFilePath
+     * @see copyFileFromSharedToInternalStorageAndGetPath
      */
     fun setActivityResultLauncher() {
         //
@@ -197,7 +190,9 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
                             uri = Objects.requireNonNull(resultData).data
                             //
                             try {
-                                filePath = getFilePath(context, uri)
+                                filePath = copyFileFromSharedToInternalStorageAndGetPath(context,
+                                    uri!!
+                                )
                             } catch (e: URISyntaxException) {
                                 e.printStackTrace()
                             }
@@ -244,6 +239,21 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
                     }
                 }
             })
+    }
+    /**
+     * Called when the user taps the go back button.
+     * return to SettingsStoriesImprovementActivity
+     * @param v view of tapped button
+     * @see SettingsStoriesImprovementActivity
+     */
+    fun onClickGoBackFromWord(v: View?) {
+        intent = Intent(
+            this,
+            SettingsStoriesImprovementActivity::class.java
+        )
+        intent.putExtra(getString(R.string.story), voiceToBeRecordedInStories!!.story)
+        intent.putExtra(getString(R.string.phrase_number), voiceToBeRecordedInStories!!.phraseNumberInt)
+        startActivity(intent)
     }
     /**
      * Called when the user taps the image search button.
@@ -658,6 +668,10 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
                                 }
                                 irrh++
                             }
+                            if (updateMode == getString(R.string.modify))
+                            {
+                                irrh++
+                            }
                             // inserisco la nuova parola
                             // registro nuova parola
                             // Note that the realm object was generated with the createObject method
@@ -749,14 +763,7 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
                             {
                                 // the new words are at the end of the sentence
                                 realm.beginTransaction()
-//                                if (updateMode == getString(R.string.modify))
-//                                {
-//                                    daModificare.word = "$wordsToChange $wordsToBeInserted"
-//                                }
-//                                else
-//                                {
                                 daModificare.word = "$wordsToChange $wordsToBeInserted"
-//                                }
                                 realm.insertOrUpdate(daModificare)
                                 realm.commitTransaction()
                             }

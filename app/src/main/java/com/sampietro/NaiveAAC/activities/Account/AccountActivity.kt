@@ -30,7 +30,7 @@ import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbs
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyAssets
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromAssetsToInternalStorage
-import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorageAndGetPath
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
@@ -267,6 +267,8 @@ class AccountActivity : AccountActivityAbstractClass() {
         editor.apply()
         editor.putInt(getString(R.string.preference_allowed_margin_of_error), 20)
         editor.apply()
+        editor.putString(getString(R.string.preference_bluetoothmode), "DEFAULT")
+        editor.apply()
         // register the user in the shared preferences
         // and move on to the welcome activity
         val editText = findViewById<View>(R.id.editTextTextAccount) as EditText
@@ -377,7 +379,7 @@ class AccountActivity : AccountActivityAbstractClass() {
      * Refer to [stackoverflow](https://stackoverflow.com/questions/56651444/deprecated-getbitmap-with-api-29-any-alternative-codes)
      * answer of [Ally](https://stackoverflow.com/users/6258197/ally)
      *
-     * @see .getFilePath
+     * @see copyFileFromSharedToInternalStorageAndGetPath
      *
      * @see .showImage
      */
@@ -398,7 +400,9 @@ class AccountActivity : AccountActivityAbstractClass() {
                             uri = Objects.requireNonNull(resultData).data
                             //
                             try {
-                                filePath = getFilePath(context, uri)
+                                filePath = copyFileFromSharedToInternalStorageAndGetPath(context,
+                                    uri!!
+                                )
                             } catch (e: URISyntaxException) {
                                 e.printStackTrace()
                             }

@@ -4,12 +4,13 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 object AndroidNotificationPermission : Activity() {
     //
-    const val ID_REQUEST_PERMISSION_POST_NOTIFICATIONS = 1
+    const val ID_REQUEST_PERMISSION_POST_NOTIFICATIONS = 11
 
     //
     // we check if the permission RECORD_AUDIO is granted
@@ -20,11 +21,13 @@ object AndroidNotificationPermission : Activity() {
             != PackageManager.PERMISSION_GRANTED
         ) {
             // the permission has not yet been granted
-            ActivityCompat.requestPermissions(
-                activity!!,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                ID_REQUEST_PERMISSION_POST_NOTIFICATIONS
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.requestPermissions(
+                    activity!!,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    ID_REQUEST_PERMISSION_POST_NOTIFICATIONS
+                )
+            }
         }
     } //
 }

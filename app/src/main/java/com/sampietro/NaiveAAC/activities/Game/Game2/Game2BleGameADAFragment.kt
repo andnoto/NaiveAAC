@@ -12,7 +12,8 @@ class Game2BleGameADAFragment(@LayoutRes contentLayoutId : Int = 0) : GameADAFra
     /**
      * prepare data for the recyclerview using data from the history table
      *
-     * @return theimage arraylist<Game2ArrayList> data for recyclerview
+     * @return theimage arraylist<GameADAArrayList> data for recyclerview
+     * @see GameADAFragment
      * @see GameADAArrayList
      *
      * @see History

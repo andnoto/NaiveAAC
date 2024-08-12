@@ -6,29 +6,28 @@ import android.view.View
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesRegistrationActivity
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Settings.SettingsStoriesWordActivity
 import com.sampietro.NaiveAAC.activities.Stories.Stories
-import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper
+import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAPhraseOfAStory
+import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission.checkPermission
 import io.realm.Realm
 import io.realm.RealmResults
 
 /**
- * <h1>GameAdaViewPagerActivity</h1>
+ * <h1>SettingsStoriesImprovementViewPagerActivity</h1>
  *
- * **GameAdaViewPagerActivity** displays images (uploaded by the user or Arasaac pictograms) of the
+ * **SettingsStoriesImprovementViewPagerActivity** displays images (uploaded by the user or Arasaac pictograms) of the
  * * phrases of a story
  *
  * Refer to [raywenderlich.com](https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started)
  * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
  *
  * @version     5.0, 01/04/2024
- * @see GameActivityAbstractClass
+ * @see GameADAViewPagerActivityAbstractClass
  *
- * @see GameADAViewPagerAdapter
+ * @see SettingsStoriesImprovementViewPagerAdapter
  */
 class SettingsStoriesImprovementViewPagerActivity : GameADAViewPagerActivityAbstractClass(),
     GameADAViewPagerOnFragmentEventListener, GameADAViewPagerOnFragmentSoundMediaPlayerListener,
@@ -156,8 +155,25 @@ class SettingsStoriesImprovementViewPagerActivity : GameADAViewPagerActivityAbst
         super.onSaveInstanceState(savedInstanceState)
     }
     /**
+     * Called when the user taps the go back button.
+     * return to SettingsStoriesImprovementActivity
+     * @param v view of tapped button
+     * @see SettingsStoriesImprovementActivity
+     */
+    fun onClickGoBackFromImprovementViewPager(v: View?) {
+        //
+        val intent: Intent?
+        intent = Intent(
+            this,
+            SettingsStoriesImprovementActivity::class.java
+        )
+        intent.putExtra(getString(R.string.story), sharedStory)
+        intent.putExtra(getString(R.string.phrase_number), phraseToDisplay)
+        startActivity(intent)
+    }
+    /**
      * Called when the user taps the image.
-     * return to GameADAActivity
+     * return to SettingsStoriesWordActivity
      * @param v view of tapped button
      * @see GameADAActivity
      */
@@ -222,7 +238,7 @@ class SettingsStoriesImprovementViewPagerActivity : GameADAViewPagerActivityAbst
      *
      * @param view view of tapped picture
      *
-     * @see SettingsStoriesRegistrationActivity
+     * @see SettingsStoriesWordActivity
      */
     fun insertsAWordAfterThisButton(view: View?) {
         val resultsStories = realm.where(Stories::class.java)
@@ -302,12 +318,12 @@ class SettingsStoriesImprovementViewPagerActivity : GameADAViewPagerActivityAbst
             daCancellare.deleteAllFromRealm()
             realm.commitTransaction()
             //
-            StoriesHelper.renumberAPhraseOfAStory(
+            renumberAPhraseOfAStory(
                 realm,
                 sharedStory,
                 phraseToDisplay
             )
-            StoriesHelper.renumberAStory(realm, sharedStory)
+            renumberAStory(realm, sharedStory)
         }
         //
         val intent: Intent?

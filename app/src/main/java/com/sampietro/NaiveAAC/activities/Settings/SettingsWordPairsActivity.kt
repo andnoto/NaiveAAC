@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorageAndGetPath
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
@@ -369,7 +369,9 @@ class SettingsWordPairsActivity : ActivityAbstractClass(), WordPairsAdapterInter
                                 val awardType = findViewById<EditText>(R.id.awardtype)
                                 val uriPremiumVideo = findViewById<TextView>(R.id.uripremiumvideo)
                                 try {
-                                    filePath = DataStorageHelper.getFilePath(context, uri)
+                                    filePath = copyFileFromSharedToInternalStorageAndGetPath(context,
+                                        uri!!
+                                    )
                                     assert(filePath != null)
                                     val cut = filePath!!.lastIndexOf('/')
                                     if (cut != -1) {

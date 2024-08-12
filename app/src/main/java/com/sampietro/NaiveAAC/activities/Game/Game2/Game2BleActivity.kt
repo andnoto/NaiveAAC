@@ -30,29 +30,27 @@ import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractCl
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothLeService
+import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothStatus
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAActivity
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAArrayList
-import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAFragment
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAOnFragmentEventListener
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADARecyclerViewAdapterInterface
-import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAViewPagerActivity
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAViewPagerFragment
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAViewPagerMediaContainerOnClickListener
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAViewPagerOnFragmentEventListener
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAViewPagerOnFragmentSoundMediaPlayerListener
-import com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementActivity
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.AndroidNotificationPermission
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper
-import com.sampietro.NaiveAAC.activities.Settings.SettingsStoriesWordActivity
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printPhrase
 import com.sampietro.NaiveAAC.activities.Settings.StoriesFragment
 import com.sampietro.NaiveAAC.activities.Settings.Utils.ImageSearchArasaacFragment
 import com.sampietro.NaiveAAC.activities.Settings.Utils.ImageSearchArasaacRecyclerViewAdapterInterface
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Stories.StoriesComparator
-import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper
+import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAPhraseOfAStory
 import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
@@ -65,15 +63,26 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 /**
- * <h1>SettingsStoriesRegistrationActivity</h1>
+ * <h1>Game2BleActivity</h1>
  *
  * **SettingsStoriesRegistrationActivity** displays images (uploaded by the user or Arasaac pictograms) of the words
  * spoken after pressing the listen button
- *
+ * * Step 1
+ * the BLE app provides an activity (Game2BleActivity) to connect to Bluetooth device.
+ * Based on user input, this activity communicates with a Service called BluetoothLeService,
+ * which interacts with the BLE device via the BLE API.
+ * The communication is performed using a bound service which allows the activity to connect to the
+ * BluetoothLeService and call functions to connect to the devices.
  *
  * @version     5.0, 01/04/2024
  * @see GameActivityAbstractClassWithRecognizerCallback
  * @see Game2ActivityAbstractClass
+ * @see SettingsStoriesRegistrationActivityAbstractClass
+ * @see SettingsStoriesRegistrationFragment
+ * @see Game2BleGameADAFragment
+ * @see GameADAViewPagerFragment
+ * @see StoriesFragment
+ * @see BluetoothLeService
  */
 class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     FragmentAbstractClassWithListener.onBaseFragmentEventListenerSettings,
@@ -119,17 +128,24 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                     Log.e(TAG, "Unable to initialize Bluetooth")
                     finish()
                 }
-                /*
-                BluetootLeService -> step 7 -> BluetootLeService
-                */
-                bluetooth.setupServer()
-                bluetooth.startAdvertising()
-                /*
-                step 10 -> BluetootLeService
-                 */
-                // perform device scanning
-                bluetooth.scan()
-                //
+                if (preference_BluetoothMode == "Server")
+                {
+                    // mode = GATT server
+                    /*
+                    BluetootLeService -> step 7 -> BluetootLeService
+                    */
+                    bluetooth.setupServer()
+                    bluetooth.startAdvertising()
+                }
+                else
+                {
+                    // mode = GATT client
+                    /*
+                    step 10 -> BluetootLeService
+                     */
+                    // perform device scanning
+                    bluetooth.scan()
+                }
                 bluetooth.activityInActiveState("Game2BleActivity")
             }
         }
@@ -149,6 +165,12 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     var dialog: Game2BleDialogFragment? = null
     //
     var preference_PrintPermissions: String? = null
+    //
+    var preference_BluetoothMode: String? = null
+    //
+    private var bluetoothStatus: BluetoothStatus? = null
+//    private lateinit var viewModel: BluetoothStatusViewModel
+    //
     lateinit var galleryList: ArrayList<GameADAArrayList>
     //
     private var voiceToBeRecordedInStories: VoiceToBeRecordedInStories? = null
@@ -195,6 +217,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
         */
         // In the Activity#onCreate make the only setItem
+        bluetoothStatus = BluetoothStatus()
         voiceToBeRecordedInStories = VoiceToBeRecordedInStories()
         viewModel = ViewModelProvider(this).get(
             VoiceToBeRecordedInStoriesViewModel::class.java
@@ -203,13 +226,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         voiceToBeRecordedInStories!!.story = "Image exchange via Bluetooth"
         voiceToBeRecordedInStories!!.phraseNumberInt = 1
         clearFieldsOfViewmodelDataClass()
-//        val intent = intent
-//        if (intent.hasExtra(getString(R.string.story))) {
-//        keywordStoryToAdd = "Image exchange via Bluetooth"
-//        }
-//        phraseNumberToAdd = "1"
-        //
-        AndroidNotificationPermission.checkPermission(this)
         //
         realm = Realm.getDefaultInstance()
         //
@@ -234,6 +250,9 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
             context.getString(R.string.preference_print_permissions),
             getString(R.string.default_string)
         )
+        //
+        preference_BluetoothMode =
+            sharedPref.getString(getString(R.string.preference_bluetoothmode), "DEFAULT")
         /*
         the device must have Bluetooth enabled and support low energy functionality
          */
@@ -272,13 +291,20 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     override fun onResume() {
         super.onResume()
         //
-        registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
-        registerReceiver(bondStateReceiver, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter(), RECEIVER_NOT_EXPORTED)
+            registerReceiver(bondStateReceiver, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED), RECEIVER_NOT_EXPORTED)
+        }
+        else
+        {
+            registerReceiver(gattUpdateReceiver, makeGattUpdateIntentFilter())
+            registerReceiver(bondStateReceiver, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED))
+        }
         //
         // check Bluetooth Ble Permissions
         //
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-            // version code S = version 31 = Android 12
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            // version code TIRAMISU = version 33 = Android 13
             && (
                     (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE
                     ) != PackageManager.PERMISSION_GRANTED)
@@ -288,36 +314,144 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                             ||
                             (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN
                             ) != PackageManager.PERMISSION_GRANTED)
+                            ||
+                            (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS
+                            ) != PackageManager.PERMISSION_GRANTED)
                     ))
         {
             // se siamo qui è perchè non si è mostrata alcuna spiegazione all'utente, richiesta di permission
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN ),
+                arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ),
                 1
             )
         }
         else
         {
-            if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
                 // version code S = version 31 = Android 12
                 && (
-                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH
+                        (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE
                         ) != PackageManager.PERMISSION_GRANTED)
                                 ||
-                                (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION
+                                (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT
+                                ) != PackageManager.PERMISSION_GRANTED)
+                                ||
+                                (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN
                                 ) != PackageManager.PERMISSION_GRANTED)
                         ))
             {
                 // se siamo qui è perchè non si è mostrata alcuna spiegazione all'utente, richiesta di permission
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION ),
+                    arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN ),
                     2
                 )
             }
             else
             {
+                if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.S)
+                    // version code S = version 31 = Android 12
+                    && (
+                            (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH
+                            ) != PackageManager.PERMISSION_GRANTED)
+                                    ||
+                                    (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION
+                                    ) != PackageManager.PERMISSION_GRANTED)
+                            ))
+                {
+                    // se siamo qui è perchè non si è mostrata alcuna spiegazione all'utente, richiesta di permission
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION ),
+                        3
+                    )
+                }
+                else
+                {
+                    if (!btAdapter.isEnabled) {
+                        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                        enableBtResultLauncher.launch(enableBtIntent)
+                    } else {
+                        /*
+                        step 3 -> BluetoothLeService
+                        A client binds to a service by calling bindService().
+                        When it does, it must provide an implementation of ServiceConnection, which monitors
+                        the connection with the service.
+                        The return value of bindService() indicates whether the requested service exists and
+                        whether the client is permitted access to it.
+                        */
+                        if (bluetoothService == null) {
+                            val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
+                            bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+                        }
+                        else
+                        {
+                            /*
+                            BluetootLeService -> step 5 -> BluetootLeService
+                            The activity calls this function within its ServiceConnection implementation.
+                            Handling a false return value from the initialize() function depends on your application.
+                            You could show an error message to the user indicating that the current device
+                            does not support the Bluetooth operation or disable any features that require Bluetooth to work.
+                            In the following example, finish() is called on the activity to send the user back to the previous screen.
+                            */
+                            if (!bluetoothService!!.initialize(this)) {
+                                Log.e(TAG, "Unable to initialize Bluetooth")
+                                finish()
+                            }
+                            if (preference_BluetoothMode == "Server")
+                            {
+                                /*
+                                BluetootLeService -> step 7 -> BluetootLeService
+                                */
+                                bluetoothService!!.setupServer()
+                                bluetoothService!!.startAdvertising()
+                            }
+                            else
+                            {
+                                /*
+                                step 10 -> BluetootLeService
+                                */
+                                // perform device scanning
+                                bluetoothService!!.scan()
+                            }
+                            bluetoothService!!.activityInActiveState("Game2BleActivity")
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    //
+    private fun makeGattUpdateIntentFilter(): IntentFilter {
+        return IntentFilter().apply {
+            addAction(BluetoothLeService.ACTION_GATT_SERVER_CONNECTED)
+            addAction(BluetoothLeService.ACTION_GATT_SERVER_DISCONNECTED)
+            addAction(BluetoothLeService.ACTION_GATT_CONNECTED)
+            addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED)
+            addAction(BluetoothLeService.MESSAGE_FROM_GATT_SERVER)
+            addAction(BluetoothLeService.MESSAGE_FROM_GATT)
+        }
+    }
+    //
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1) {
+            //
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                && grantResults[2] == PackageManager.PERMISSION_GRANTED
+                && grantResults[3] == PackageManager.PERMISSION_GRANTED
+            ) {
+                //
                 if (!btAdapter.isEnabled) {
                     val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                     enableBtResultLauncher.launch(enableBtIntent)
@@ -337,80 +471,43 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                     else
                     {
                         /*
-                            BluetootLeService -> step 5 -> BluetootLeService
-                            The activity calls this function within its ServiceConnection implementation.
-                            Handling a false return value from the initialize() function depends on your application.
-                            You could show an error message to the user indicating that the current device
-                            does not support the Bluetooth operation or disable any features that require Bluetooth to work.
-                            In the following example, finish() is called on the activity to send the user back to the previous screen.
+                        BluetootLeService -> step 5 -> BluetootLeService
+                        The activity calls this function within its ServiceConnection implementation.
+                        Handling a false return value from the initialize() function depends on your application.
+                        You could show an error message to the user indicating that the current device
+                        does not support the Bluetooth operation or disable any features that require Bluetooth to work.
+                        In the following example, finish() is called on the activity to send the user back to the previous screen.
                         */
                         if (!bluetoothService!!.initialize(this)) {
                             Log.e(TAG, "Unable to initialize Bluetooth")
                             finish()
                         }
-                        /*
-                        BluetootLeService -> step 7 -> BluetootLeService
-                        */
-                        bluetoothService!!.setupServer()
-                        bluetoothService!!.startAdvertising()
-                        /*
-                        step 10 -> BluetootLeService
-                        */
-                        // perform device scanning
-                        bluetoothService!!.scan()
-                        //
+                        if (preference_BluetoothMode == "Server")
+                        {
+                            /*
+                            BluetootLeService -> step 7 -> BluetootLeService
+                            */
+                            bluetoothService!!.setupServer()
+                            bluetoothService!!.startAdvertising()
+                        }
+                        else
+                        {
+                            /*
+                            step 10 -> BluetootLeService
+                            */
+                            // perform device scanning
+                            bluetoothService!!.scan()
+                        }
                         bluetoothService!!.activityInActiveState("Game2BleActivity")
                     }
                 }
-            }
-        }
-
-    }
-    //
-    private fun makeGattUpdateIntentFilter(): IntentFilter {
-        return IntentFilter().apply {
-            addAction(BluetoothLeService.ACTION_GATT_CONNECTED)
-            addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED)
-            addAction(BluetoothLeService.MESSAGE_FROM_GATT_SERVER)
-        }
-    }
-    //
-    @SuppressLint("MissingPermission")
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1) {
-            //
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED
-                && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                && grantResults[2] == PackageManager.PERMISSION_GRANTED
-            ) {
-                //
-                if (!btAdapter.isEnabled) {
-                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                    enableBtResultLauncher.launch(enableBtIntent)
-                } else {
-                    /*
-                    step 3 -> BluetoothLeService
-                    A client binds to a service by calling bindService().
-                    When it does, it must provide an implementation of ServiceConnection, which monitors
-                    the connection with the service.
-                    The return value of bindService() indicates whether the requested service exists and
-                    whether the client is permitted access to it.
-                    */
-                    val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
-                    bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-                }
-                //
             }
             else
             {
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN ),
+                    arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN,
+                        Manifest.permission.POST_NOTIFICATIONS),
                     1
                 )
             }
@@ -419,6 +516,71 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
             //
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED
                 && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                && grantResults[2] == PackageManager.PERMISSION_GRANTED
+            ) {
+                if (!btAdapter.isEnabled) {
+                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                    enableBtResultLauncher.launch(enableBtIntent)
+                } else {
+                    /*
+                    step 3 -> BluetoothLeService
+                    A client binds to a service by calling bindService().
+                    When it does, it must provide an implementation of ServiceConnection, which monitors
+                    the connection with the service.
+                    The return value of bindService() indicates whether the requested service exists and
+                    whether the client is permitted access to it.
+                    */
+                    if (bluetoothService == null) {
+                        val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
+                        bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+                    }
+                    else
+                    {
+                        /*
+                        BluetootLeService -> step 5 -> BluetootLeService
+                        The activity calls this function within its ServiceConnection implementation.
+                        Handling a false return value from the initialize() function depends on your application.
+                        You could show an error message to the user indicating that the current device
+                        does not support the Bluetooth operation or disable any features that require Bluetooth to work.
+                        In the following example, finish() is called on the activity to send the user back to the previous screen.
+                        */
+                        if (!bluetoothService!!.initialize(this)) {
+                            Log.e(TAG, "Unable to initialize Bluetooth")
+                            finish()
+                        }
+                        if (preference_BluetoothMode == "Server")
+                        {
+                            /*
+                            BluetootLeService -> step 7 -> BluetootLeService
+                            */
+                            bluetoothService!!.setupServer()
+                            bluetoothService!!.startAdvertising()
+                        }
+                        else
+                        {
+                            /*
+                            step 10 -> BluetootLeService
+                            */
+                            // perform device scanning
+                            bluetoothService!!.scan()
+                        }
+                        bluetoothService!!.activityInActiveState("Game2BleActivity")
+                    }
+                }
+            }
+            else
+            {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.BLUETOOTH_ADVERTISE, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN),
+                    2
+                )
+            }
+        }
+        if (requestCode == 3) {
+            //
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                && grantResults[1] == PackageManager.PERMISSION_GRANTED
             ) {
                 //
                 if (!btAdapter.isEnabled) {
@@ -433,8 +595,42 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                     The return value of bindService() indicates whether the requested service exists and
                     whether the client is permitted access to it.
                     */
-                    val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
-                    bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+                    if (bluetoothService == null) {
+                        val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
+                        bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
+                    }
+                    else
+                    {
+                        /*
+                        BluetootLeService -> step 5 -> BluetootLeService
+                        The activity calls this function within its ServiceConnection implementation.
+                        Handling a false return value from the initialize() function depends on your application.
+                        You could show an error message to the user indicating that the current device
+                        does not support the Bluetooth operation or disable any features that require Bluetooth to work.
+                        In the following example, finish() is called on the activity to send the user back to the previous screen.
+                        */
+                        if (!bluetoothService!!.initialize(this)) {
+                            Log.e(TAG, "Unable to initialize Bluetooth")
+                            finish()
+                        }
+                        if (preference_BluetoothMode == "Server")
+                        {
+                            /*
+                            BluetootLeService -> step 7 -> BluetootLeService
+                            */
+                            bluetoothService!!.setupServer()
+                            bluetoothService!!.startAdvertising()
+                        }
+                        else
+                        {
+                            /*
+                            step 10 -> BluetootLeService
+                            */
+                            // perform device scanning
+                            bluetoothService!!.scan()
+                        }
+                        bluetoothService!!.activityInActiveState("Game2BleActivity")
+                    }
                 }
                 //
             }
@@ -443,11 +639,10 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                 ActivityCompat.requestPermissions(
                     this,
                     arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION ),
-                    2
+                    3
                 )
             }
         }
-
     }
 
     @SuppressLint("MissingPermission")
@@ -470,7 +665,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
             }
     }
     /*
-    BluetootLeService -> 18 -> BluetootLeService
+    BluetootLeService -> step 18 -> BluetootLeService
     Once the service broadcasts the connection updates, the activity needs to implement a BroadcastReceiver.
     Register this receiver when setting up the activity, and unregister it when the activity is leaving the screen.
     By listening for the events from the service, the activity is able to update the user interface
@@ -481,13 +676,31 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     private val gattUpdateReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
+                BluetoothLeService.ACTION_GATT_SERVER_CONNECTED -> {
+                    mConnected = true
+                    // if MultipleAdvertisement is not supported the device name is not available
+                    if (bluetoothService!!.getDeviceEnabledName() != null)
+                    { deviceEnabledName = bluetoothService!!.getDeviceEnabledName() }
+                    else
+                    { deviceEnabledName = "manca device name" }
+                    //
+                    enableTransmitToConnectedBluetooth()
+                    val deviceenabledusername = findViewById<View>(R.id.deviceenabledusername) as TextView
+                    deviceenabledusername.setText(deviceEnabledUserName)
+                }
+                BluetoothLeService.ACTION_GATT_SERVER_DISCONNECTED -> {
+                    mConnected = false
+                    disableTransmitToDisconnectedBluetooth()
+                    val deviceenabledusername = findViewById<View>(R.id.deviceenabledusername) as TextView
+                    deviceenabledusername.setText(deviceEnabledUserName)
+                }
                 BluetoothLeService.ACTION_GATT_CONNECTED -> {
                     mConnected = true
                     // if MultipleAdvertisement is not supported the device name is not available
                     if (bluetoothService!!.getDeviceEnabledName() != null)
                     { deviceEnabledName = bluetoothService!!.getDeviceEnabledName() }
                     else
-                    { deviceEnabledName = "mancante" }
+                    { deviceEnabledName = "manca device name" }
                     //
                     enableTransmitToConnectedBluetooth()
                     val deviceenabledusername = findViewById<View>(R.id.deviceenabledusername) as TextView
@@ -506,14 +719,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                     }
                     else
                     {
-                        // use comma as separator
-                        val cvsSplitBy = getString(R.string.character_comma)
-                        val oneWord: Array<String?> =
-                            messageFromGattServer.split(cvsSplitBy.toRegex()).toTypedArray()
-//                        messageLeftColumnContent = oneWord[0]
-//                        messageMiddleColumnContent = oneWord[4]
-//                        messageRightColumnContent = oneWord[8]
-                        //
                         dialogFragmentShow()
                     }
                 }
@@ -557,14 +762,27 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      */
     override fun onPause() {
         super.onPause()
+        if (preference_BluetoothMode == "Server")
+        {
+            if (bluetoothService != null)
+            {
+                bluetoothService!!.sendMessageFromServer("I'M DISCONNECTING")
+                bluetoothService!!.stopAdvertising()
+            }
+        }
+        else
+        {
+            if (bluetoothService != null)
+            {
+                bluetoothService!!.sendMessageFromClient("I'M DISCONNECTING")
+                bluetoothService!!.stopScanner()
+            }
+        }
         if (bluetoothService != null)
         {
-            bluetoothService!!.sendMessage("I'M DISCONNECTING")
-            bluetoothService!!.stopAdvertising()
-            bluetoothService!!.stopScanner()
-            //
             bluetoothService!!.activityInPausedState("Game2BleActivity")
         }
+        //
         unregisterReceiver(gattUpdateReceiver)
         unregisterReceiver(bondStateReceiver)
     }
@@ -576,8 +794,14 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     @SuppressLint("MissingPermission")
     override fun onDestroy() {
         super.onDestroy()
-        bluetoothService!!.stopServer()
-        bluetoothService!!.disconnect()
+        if (preference_BluetoothMode == "Server")
+        {
+            bluetoothService!!.stopServer()
+        }
+        else
+        {
+            bluetoothService!!.disconnect()
+        }
         // TTS
         if (tTS1 != null) {
             tTS1!!.stop()
@@ -602,19 +826,24 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                 irrh++
             }
         }
-        // Delete last character in String
-        bluetoothService!!.sendMessage(messageToSend.substring(0, messageToSend.length - 1))
+        if (preference_BluetoothMode == "Server")
+        {
+            // Delete last character in String
+            bluetoothService!!.sendMessageFromServer(messageToSend.substring(0, messageToSend.length - 1))
+        }
+        else
+        {
+            // Delete last character in String
+            bluetoothService!!.sendMessageFromClient(messageToSend.substring(0, messageToSend.length - 1))
+        }
     }
     /**
      * enable transmit to connected Bluetooth .
      *
-     * @see readingOfTheText
-     * @see sendMessage
-     * @see prepareTheFragmentTransaction
-     * @see fragmentTransactionStart
      */
     @SuppressLint("MissingPermission")
     fun enableTransmitToConnectedBluetooth() {
+        bluetoothStatus!!.deviceEnabledUserName = "non trovato"
         deviceEnabledUserName = "non trovato"
         val results = realm.where(
             BluetoothDevices::class.java
@@ -623,48 +852,44 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         if (count != 0) {
             val result = results[0]
             if (result != null) {
+                bluetoothStatus!!.deviceEnabledUserName = result.deviceUserName!!
                 deviceEnabledUserName = result.deviceUserName!!
             }
         }
-        //
-//        prepareTheFragmentTransaction()
-//        fragmentTransactionStart()
     }
     /**
      * disable transmit to disconnected Bluetooth .
      *
-     * @see displaySecondLevelMenu
      */
     @SuppressLint("MissingPermission")
     fun disableTransmitToDisconnectedBluetooth() {
         deviceEnabledName = "non trovato"
+        bluetoothStatus!!.deviceEnabledUserName = "non trovato"
         deviceEnabledUserName = "non trovato"
-        //
-//        displaySecondLevelMenu()
     }
     /**
-     * scan request Bluetooth Devices from Game1BleSecondLevelFragment .
+     * scan request Bluetooth Devices .
      *
-     * @see Game1BleSecondLevelFragment
      * @see BluetoothLeService.scan
      */
     fun scanRequestBluetoothDevices() {
         bluetoothService!!.scan()
     }
     /**
-     * Show Game1BleDialogFragment .
+     * Show Game2BleDialogFragment .
      *
-     * @see Game1BleDialogFragment
+     * @see Game2BleDialogFragment
      */
     fun dialogFragmentShow() {
-        dialog = Game2BleDialogFragment.newInstance(deviceEnabledUserName!!, messageFromGattServer )
+//        dialog = Game2BleDialogFragment.newInstance(deviceEnabledUserName!!, messageFromGattServer )
+        dialog = Game2BleDialogFragment.newInstance(bluetoothStatus!!.deviceEnabledUserName!!, messageFromGattServer )
         dialog!!.show(supportFragmentManager, "GAME_DIALOG")
     }
     /**
-     * Called when the user taps the Game1BleDialogFragment buttons.
+     * Called when the user taps the Game2BleDialogFragment buttons.
      *
      * @param v view of tapped button
-     * @see Game1BleDialogFragment
+     * @see Game2BleDialogFragment
      */
     override fun receiveResultOnClickFromGame2DialogFragment(v: View?) {
         when (v!!.id) {
@@ -673,6 +898,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                 tTS1 = TextToSpeech(context) { status ->
                     if (status != TextToSpeech.ERROR) {
                         tTS1!!.speak(
+//                            bluetoothStatus!!.deviceEnabledUserName,
                             deviceEnabledUserName,
                             TextToSpeech.QUEUE_FLUSH,
                             null,
@@ -723,9 +949,9 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         }
     }
     /**
-     * Callback from Game1BleDialogFragment
+     * Callback from Game2BleDialogFragment
      *
-     * @see Game1BleDialogFragment
+     * @see Game2BleDialogFragment
      */
     override fun receiveResultFromGame2DialogFragment() {
         var messageToSpeak = ""
@@ -765,13 +991,10 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     /**
      * Called when the user taps the continue game button.
      *
-     * display second level menu
      *
      * @param v view of tapped button
-     * @see displaySecondLevelMenu
      */
     fun continueGameButton(v: View?) {
-//        displaySecondLevelMenu()
     }
     /**
      * Called when the user taps the start speech button.
@@ -809,11 +1032,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         val bundle = Bundle()
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         bundle.putString(getString(R.string.etext), eText)
-        bundle.putString(getString(R.string.keywordstorytoadd), voiceToBeRecordedInStories!!.story)
-        bundle.putString(getString(R.string.phrasenumbertoadd),
-            voiceToBeRecordedInStories!!.phraseNumberInt.toString()
-        )
-//        bundle.putString(getString(R.string.wordtoadd), wordToAdd)
         frag.arguments = bundle
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
@@ -831,9 +1049,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     /**
      * initiate Fragment transaction.
      *
-     *
-     *
-     * @see GameADAFragment
+     * @see Game2BleGameADAFragment
      */
     fun gameADAFragmentTransactionStart() {
         //
@@ -868,9 +1084,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     /**
      * initiate Fragment transaction.
      *
-     *
-     *
-     * @see GameADAFragment
+     * @see GameADAViewPagerFragment
      */
     fun gameADAViewPagerFragmentTransactionStart(position: Int) {
         val frag = GameADAViewPagerFragment(R.layout.activity_settings_stories_improvement_viewpager_content)
@@ -879,12 +1093,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         bundle.putInt(context.getString(R.string.word_to_display_index), position)
         bundle.putString(context.getString(R.string.game_use_video_and_sound), "Y")
         //
-//        val frag = GameADAFragment(R.layout.activity_game_2_ble_improvement)
-//        val bundle = Bundle()
-//        bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
-//        bundle.putInt(getString(R.string.word_to_display_index), 0)
-//        bundle.putBoolean(getString(R.string.tts_enabled), true)
-//        bundle.putString(getString(R.string.game_use_video_and_sound), "Y")
         frag.arguments = bundle
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
@@ -910,9 +1118,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     /**
      * initiate Fragment transaction.
      *
-     *
-     *
-     * @see GameADAFragment
+     * @see StoriesFragment
      */
     fun storiesFragmentTransactionStart() {
         if (updateMode == getString(R.string.modify))
@@ -937,17 +1143,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                 voiceToBeRecordedInStories!!.soundReplacesTTS = daModificare[0]!!.soundReplacesTTS
                 voiceToBeRecordedInStories!!.fromAssets = daModificare[0]!!.fromAssets
                 theNewWordsMustBeInsertedBeforeThese = voiceToBeRecordedInStories!!.word
-                // delete
-                realm.beginTransaction()
-                daModificare.deleteAllFromRealm()
-                realm.commitTransaction()
-                //
-                StoriesHelper.renumberAPhraseOfAStory(
-                    realm,
-                    voiceToBeRecordedInStories!!.story,
-                    voiceToBeRecordedInStories!!.phraseNumberInt
-                )
-                renumberAStory(realm, voiceToBeRecordedInStories!!.story)
             }
         }
         else
@@ -969,9 +1164,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         val frag = StoriesFragment(R.layout.activity_game_2_ble_word)
         val bundle = Bundle()
         bundle.putString(context.getString(R.string.game_use_video_and_sound), "Y")
-//        bundle.putString(context.getString(R.string.story_to_display), voiceToBeRecordedInStories!!.story)
-//        bundle.putInt(context.getString(R.string.word_to_display_index), position)
-//        bundle.putString(context.getString(R.string.game_use_video_and_sound), "Y")
+        //
         frag.arguments = bundle
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
@@ -1000,8 +1193,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      */
     override fun saveStories(v: View?) {
         //
-//        val textWord1 = findViewById<View>(R.id.keywordstorytoadd) as TextView
-//        val textWord2 = findViewById<View>(R.id.phrasenumbertoadd) as TextView
         val textWord3 = findViewById<View>(R.id.sentencetoadd) as EditText
         //
         val keywordstorytoadd = textWord3.text.toString()
@@ -1058,13 +1249,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         }
         //
         renumberAStory(realm, voiceToBeRecordedInStories!!.story)
-        /*
-        navigate to settings stories improvement activity
-        */
-//        val intent = Intent(context, SettingsStoriesImprovementActivity::class.java)
-//        intent.putExtra(getString(R.string.story), textWord1.text.toString().lowercase(Locale.getDefault()))
-//        intent.putExtra(getString(R.string.phrase_number), phraseNumberToPutInTheBundle)
-//        startActivity(intent)
+        //
         gameADAFragmentTransactionStart()
     }
     /**
@@ -1072,19 +1257,18 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      *
      *
      * @param v view of tapped button
-     * @see .printPhraseCacheImages
-     *
-     * @see .printPhraseCreateMergedImages
+     * @see printPhrase
      */
     fun printSentenceOfAStory(v: View?) {
-        GraphicsAndPrintingHelper.printPhrase(context, realm, galleryList)
+        printPhrase(context, realm, galleryList)
     }
     /**
      * Called when the user taps send sentence button.
      *
      * @param view view of tapped picture
      *
-     * @see SettingsStoriesImprovementActivity
+     * @see sendMessage
+     * @see fragmentTransactionStart
      */
     fun sendSentenceButton(view: View?) {
         // send message
@@ -1102,7 +1286,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      *
      * @param view view of tapped picture
      *
-     * @see SettingsStoriesImprovementActivity
+     * @see fragmentTransactionStart
      */
     fun deleteTheSentenceButton(view: View?) {
         realm = Realm.getDefaultInstance()
@@ -1125,15 +1309,12 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      * @param galleryList ArrayList<GameADAArrayList> list for choice of words
      * @see GameADAArrayList
      *
-     * @see .getTargetBitmapFromUrlUsingPicasso
-     *
-     * @see .getTargetBitmapFromFileUsingPicasso
-     *
-     * @see GameADAViewPagerActivity
+     * @see printImage
+     * @see gameADAViewPagerFragmentTransactionStart
      */
     override fun onItemClick(view: View?, i: Int, galleryList: ArrayList<GameADAArrayList>) {
         if (preference_PrintPermissions == "Y") {
-            GraphicsAndPrintingHelper.printImage(
+            printImage(
                 context,
                 galleryList[i].urlType,
                 galleryList[i].url,
@@ -1143,18 +1324,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         } else {
             //
             wordToDisplayInTheStory = i
-            gameADAViewPagerFragmentTransactionStart(i)
-//            val intent: Intent?
-//            intent = Intent(
-//                this,
-//                SettingsStoriesImprovementViewPagerActivity::class.java
-//            )
-//            intent.putExtra(getString(R.string.story_to_display), sharedStory)
-//            intent.putExtra(getString(R.string.phrase_to_display), phraseToDisplayIndex)
-//            intent.putExtra(getString(R.string.word_to_display), i + 1)
-//            intent.putExtra(getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
-//            startActivity(intent)
-            //
+            gameADAViewPagerFragmentTransactionStart(wordToDisplayInTheStory)
         }
     }
     /**
@@ -1173,17 +1343,25 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         galleryList = gL
     }
     /**
-     * Called when the user taps the image.
-     * return to GameADAActivity
+     * Called when the user taps the go back button.
+     * return to Game2BleGameADAFragment
      * @param v view of tapped button
      * @see GameADAActivity
+     */
+    fun onClickGoBackFromImprovementViewPager(v: View?) {
+        gameADAFragmentTransactionStart()
+    }
+    /**
+     * Called when the user taps the image.
+     * @param v view of tapped button
+     * @see storiesFragmentTransactionStart
      */
     fun onClickGameImage(v: View?) {
         //
         val resultsStories = realm.where(Stories::class.java)
             .beginGroup()
             .equalTo(getString(R.string.story), voiceToBeRecordedInStories!!.story)
-            .equalTo(getString(R.string.wordnumberintinthestory), wordToDisplayInTheStory)
+            .equalTo(getString(R.string.wordnumberintinthestory), wordToDisplayInTheStory + 1)
             .endGroup()
             .findAll()
         val storiesSize = resultsStories.size
@@ -1195,16 +1373,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
             voiceToBeRecordedInStories!!.uriType = resultsStories[0]!!.uriType
             voiceToBeRecordedInStories!!.uri = resultsStories[0]!!.uri
         }
-//        val intent: Intent
-//        intent = Intent(
-//            this,
-//            SettingsStoriesWordActivity::class.java
-//        )
-//        intent.putExtra(getString(R.string.story_to_display), sharedStory)
-//        intent.putExtra(getString(R.string.phrase_to_display), phraseToDisplay)
-//        intent.putExtra(getString(R.string.word_to_display), wordToDisplay)
-//        intent.putExtra(getString(R.string.update_mode), getString(R.string.modify))
-//        startActivity(intent)
+        //
         updateMode = getString(R.string.modify)
         storiesFragmentTransactionStart()
     }
@@ -1213,7 +1382,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      *
      * @param view view of tapped picture
      *
-     * @see SettingsStoriesWordActivity
+     * @see storiesFragmentTransactionStart
      */
     fun insertsAWordBeforeThisOneButton(view: View?) {
         val resultsStories = realm.where(Stories::class.java)
@@ -1228,16 +1397,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
             voiceToBeRecordedInStories!!.phraseNumberInt = resultsStories[0]!!.phraseNumberInt
             voiceToBeRecordedInStories!!.wordNumberInt = resultsStories[0]!!.wordNumberInt
         }
-//        val intent: Intent?
-//        intent = Intent(
-//            this,
-//            SettingsStoriesWordActivity::class.java
-//        )
-//        intent.putExtra(getString(R.string.story_to_display), voiceToBeRecordedInStories!!.story)
-//        intent.putExtra(getString(R.string.phrase_to_display), phraseToDisplay)
-//        intent.putExtra(getString(R.string.word_to_display), wordToDisplay)
-//        intent.putExtra(getString(R.string.update_mode), getString(R.string.insert))
-//        startActivity(intent)
+        //
         updateMode =  getString(R.string.insert)
         storiesFragmentTransactionStart()
     }
@@ -1246,7 +1406,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      *
      * @param view view of tapped picture
      *
-     * @see SettingsStoriesRegistrationActivity
+     * @see storiesFragmentTransactionStart
      */
     fun insertsAWordAfterThisButton(view: View?) {
         val resultsStories = realm.where(Stories::class.java)
@@ -1261,16 +1421,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
             voiceToBeRecordedInStories!!.phraseNumberInt = resultsStories[0]!!.phraseNumberInt
             voiceToBeRecordedInStories!!.wordNumberInt = resultsStories[0]!!.wordNumberInt + 1
         }
-//        val intent: Intent?
-//        intent = Intent(
-//            this,
-//            SettingsStoriesWordActivity::class.java
-//        )
-//        intent.putExtra(getString(R.string.story_to_display), voiceToBeRecordedInStories!!.story)
-//        intent.putExtra(getString(R.string.phrase_to_display), phraseToDisplay)
-//        intent.putExtra(getString(R.string.word_to_display), wordToDisplay + 1)
-//        intent.putExtra(getString(R.string.update_mode), getString(R.string.insert))
-//        startActivity(intent)
+        //
         updateMode =  getString(R.string.insert)
         storiesFragmentTransactionStart()
     }
@@ -1279,7 +1430,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      *
      * @param view view of tapped picture
      *
-     * @see SettingsStoriesImprovementActivity
+     * @see gameADAFragmentTransactionStart
      */
     fun deleteTheWordButton(view: View?) {
         val resultsStories = realm.where(Stories::class.java)
@@ -1328,7 +1479,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
             daCancellare.deleteAllFromRealm()
             realm.commitTransaction()
             //
-            StoriesHelper.renumberAPhraseOfAStory(
+            renumberAPhraseOfAStory(
                 realm,
                 voiceToBeRecordedInStories!!.story,
                 phraseToDisplay
@@ -1336,15 +1487,16 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
             renumberAStory(realm, voiceToBeRecordedInStories!!.story)
         }
         //
-//        val intent: Intent?
-//        intent = Intent(
-//            this,
-//            SettingsStoriesImprovementActivity::class.java
-//        )
-//        intent.putExtra(getString(R.string.story), sharedStory)
-//        intent.putExtra(getString(R.string.phrase_number), phraseToDisplay)
-//        startActivity(intent)
         gameADAFragmentTransactionStart()
+    }
+    /**
+     * Called when the user taps the go back button.
+     * return to GameADAViewPagerFragment
+     * @param v view of tapped button
+     * @see GameADAActivity
+     */
+    fun onClickGoBackFromWord(v: View?) {
+        gameADAViewPagerFragmentTransactionStart(wordToDisplayInTheStory)
     }
     /**
      * Called when the user taps the image search button.
@@ -1485,14 +1637,12 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
             }
     }
     /**
-     * Called when the user taps the add button from stories settings.
+     * Called when the user taps the add button .
      *
      * after the checks it adds the piece of story on realm
      *
-     * and the activity is notified to view the stories settings.
-     *
      * @param v view of tapped button
-     * @see StoriesFragment
+     * @see gameADAFragmentTransactionStart
      *
      * @see Stories
      */
@@ -1563,6 +1713,10 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                                 }
                                 irrh++
                             }
+                            if (updateMode == getString(R.string.modify))
+                                {
+                                    irrh++
+                                }
                             // inserisco la nuova parola
                             // registro nuova parola
                             // Note that the realm object was generated with the createObject method
@@ -1630,7 +1784,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                             realm.commitTransaction()
                         }
                         // riordino
-                        StoriesHelper.renumberAPhraseOfAStory(
+                        renumberAPhraseOfAStory(
                             realm,
                             textWord1.text.toString(),
                             textWord2.text.toString().toInt()
@@ -1654,14 +1808,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                             {
                                 // the new words are at the end of the sentence
                                 realm.beginTransaction()
-//                                if (updateMode == getString(R.string.modify))
-//                                {
-//                                    daModificare.word = "$wordsToChange $wordsToBeInserted"
-//                                }
-//                                else
-//                                {
                                 daModificare.word = "$wordsToChange $wordsToBeInserted"
-//                                }
                                 realm.insertOrUpdate(daModificare)
                                 realm.commitTransaction()
                             }
@@ -1695,16 +1842,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                         clearFieldsOfViewmodelDataClass()
                     }
                     //
-//                    val gameUseVideoAndSound = "N"
-//                    val intent: Intent?
-//                    intent = Intent(
-//                        this,
-//                        SettingsStoriesImprovementActivity::class.java
-//                    )
-//                    intent.putExtra(getString(R.string.story), textWord1.text.toString().lowercase(Locale.getDefault()))
-//                    intent.putExtra(getString(R.string.phrase_number), textWord2.text.toString().toInt())
-//                    startActivity(intent)
-                    StoriesHelper.renumberAPhraseOfAStory(
+                    renumberAPhraseOfAStory(
                         realm,
                         voiceToBeRecordedInStories.story,
                         1
@@ -1731,6 +1869,8 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         voiceToBeRecordedInStories!!.video = ""
         voiceToBeRecordedInStories!!.sound = ""
         voiceToBeRecordedInStories!!.soundReplacesTTS = ""
+        //
+        bluetoothStatus!!.deviceEnabledUserName = "non trovato"
     }
     companion object {
         //

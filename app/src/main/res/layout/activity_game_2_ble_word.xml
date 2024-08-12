@@ -6,6 +6,29 @@
     android:layout_height="match_parent"
     tools:context="com.sampietro.NaiveAAC.activities.Game.Game2.Game2BleActivity">
 
+    <View
+        android:id="@+id/background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/azzurro_pastello"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="onClickGoBackFromWord"
+        android:text="indietro"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/baseline_arrow_left_36"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:id="@+id/newstoryrow"
         android:layout_width="match_parent"
@@ -16,7 +39,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_back"
         app:layout_constraintVertical_bias="0.069">
 
     <LinearLayout

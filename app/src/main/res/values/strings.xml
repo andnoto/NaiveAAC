@@ -280,5 +280,6 @@
     <string name="word_to_display" translatable="false">WORD TO DISPLAY</string>
     <string name="word_to_display_index" translatable="false">WORD TO DISPLAY INDEX</string>
     <string name="word_to_search_second_level_menu" translatable="false">WORD TO SEARCH SECOND LEVEL MENU</string>
+    <string name="preference_bluetoothmode">preference_BluetoothMode</string>
 
 </resources>

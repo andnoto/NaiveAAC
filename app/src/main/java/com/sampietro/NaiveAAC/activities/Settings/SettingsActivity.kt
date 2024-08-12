@@ -44,10 +44,10 @@ import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevicesAdapter
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFile
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromInternalToSharedStorage
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorage
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorageAndGetPath
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileZipFromInternalToSharedStorage
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFilesInFolderToRoot
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.extractFolder
-import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.zipFileAtPath
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParametersAdapter.GameParametersAdapterInterface
@@ -641,7 +641,53 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             }
         }
     }
-
+    /**
+     * Called when the user click the bluetooth mode radiobutton from general settings.
+     *
+     * register in the shared preferences
+     *
+     * @param view view of clicked radiobutton
+     */
+    fun bluetoothModeRadioButtonClicked(view: View) {
+        //
+        // Is the button now checked?
+        val checked = (view as RadioButton).isChecked
+        when (view.getId()) {
+            R.id.serverbluetoothmode -> if (checked) {
+                sharedPref = getSharedPreferences(
+                    getString(R.string.preference_file_key), MODE_PRIVATE
+                )
+                val editor = sharedPref.edit()
+                editor.putString(
+                    getString(R.string.preference_bluetoothmode),
+                    "Server"
+                )
+                editor.apply()
+            }
+            R.id.clientbluetoothmode -> if (checked) {
+                sharedPref = getSharedPreferences(
+                    getString(R.string.preference_file_key), MODE_PRIVATE
+                )
+                val editor = sharedPref.edit()
+                editor.putString(
+                    getString(R.string.preference_bluetoothmode),
+                    "Client"
+                )
+                editor.apply()
+            }
+            R.id.defaultbluetoothmode -> if (checked) {
+                sharedPref = getSharedPreferences(
+                    getString(R.string.preference_file_key), MODE_PRIVATE
+                )
+                val editor = sharedPref.edit()
+                editor.putString(
+                    getString(R.string.preference_bluetoothmode),
+                    "DEFAULT"
+                )
+                editor.apply()
+            }
+        }
+    }
     /**
      * Called when the user taps the save button from general settings.
      *
@@ -1942,9 +1988,9 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * Refer to [stackoverflow](https://stackoverflow.com/questions/56651444/deprecated-getbitmap-with-api-29-any-alternative-codes)
      * answer of [Ally](https://stackoverflow.com/users/6258197/ally)
      *
-     * @see .getFilePath
+     * @see copyFileFromSharedToInternalStorageAndGetPath
      *
-     * @see .showImage
+     * @see showImage
      */
     fun setActivityResultLauncher() {
         // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
@@ -1964,7 +2010,9 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                             uri = Objects.requireNonNull(resultData).data
                             //
                             try {
-                                filePath = getFilePath(context, uri)
+                                filePath = copyFileFromSharedToInternalStorageAndGetPath(context,
+                                    uri!!
+                                )
                                 gameIconType = "S"
                             } catch (e: URISyntaxException) {
                                 e.printStackTrace()
@@ -2020,7 +2068,9 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                             uri = Objects.requireNonNull(resultData).data
                             //
                             try {
-                                filePath = getFilePath(context, uri)
+                                filePath = copyFileFromSharedToInternalStorageAndGetPath(context,
+                                    uri!!
+                                )
                             } catch (e: URISyntaxException) {
                                 e.printStackTrace()
                             }

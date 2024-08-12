@@ -38,7 +38,6 @@ class Game2Fragment(@LayoutRes contentLayoutId : Int = 0) : Game2FragmentAbstrac
         view: View,
         savedInstanceState: Bundle?
     ) {
-//        rootView = inflater.inflate(R.layout.activity_game_2, container, false)
         //
         hearingImageButton = view.findViewById<View>(R.id.btn_start) as ImageButton
         hearingImageButton.setImageResource(R.drawable.ic_baseline_hearing_36_red) //set the image programmatically
@@ -69,8 +68,5 @@ class Game2Fragment(@LayoutRes contentLayoutId : Int = 0) : Game2FragmentAbstrac
         val createLists2 = prepareData(sharedLastPhraseNumber - 1)
         val adapter2 = Game2RecyclerViewAdapter(ctext, createLists2)
         recyclerView2.adapter = adapter2
-        //
-//        listener.receiveResultGameFragment(rootView)
-//        return rootView
     }
 }

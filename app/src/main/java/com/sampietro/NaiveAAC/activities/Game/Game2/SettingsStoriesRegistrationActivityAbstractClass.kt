@@ -12,23 +12,20 @@ import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementActivity
-import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameFragmentHear
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyAdd
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.lookForTheAnswerToLastPieceOfTheSentence
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Stories.StoriesComparator
 import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
 import com.sampietro.NaiveAAC.activities.history.History
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistory
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
-import io.realm.Realm
 import java.util.*
 
 /**
- * <h1>SettingsStoriesRegistrationActivity</h1>
+ * <h1>SettingsStoriesRegistrationActivityAbstractClass</h1>
  *
  * **SettingsStoriesRegistrationActivity** displays images (uploaded by the user or Arasaac pictograms) of the words
  * spoken after pressing the listen button
@@ -40,8 +37,6 @@ import java.util.*
  */
 abstract class SettingsStoriesRegistrationActivityAbstractClass : Game2ActivityAbstractClass() {
     //
-    var keywordStoryToAdd = ""
-    var phraseNumberToAdd = ""
     var wordToAdd = ""
     //
     var phraseNumberToPutInTheBundle = 0
@@ -103,7 +98,7 @@ abstract class SettingsStoriesRegistrationActivityAbstractClass : Game2ActivityA
      * Called when the user taps the delete sentence button.
      *
      * @param v view of tapped button
-     * @see .fragmentTransactionStart
+     * @see fragmentTransactionStart
      */
     fun deleteSentence(v: View?) {
         fragmentTransactionStart("")
@@ -120,8 +115,6 @@ abstract class SettingsStoriesRegistrationActivityAbstractClass : Game2ActivityA
         val bundle = Bundle()
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         bundle.putString(getString(R.string.etext), eText)
-        bundle.putString(getString(R.string.keywordstorytoadd), keywordStoryToAdd)
-        bundle.putString(getString(R.string.phrasenumbertoadd), phraseNumberToAdd)
         bundle.putString(getString(R.string.wordtoadd), wordToAdd)
         frag.arguments = bundle
         val ft = supportFragmentManager.beginTransaction()
@@ -372,6 +365,10 @@ abstract class SettingsStoriesRegistrationActivityAbstractClass : Game2ActivityA
                 }
             }
             renumberAStory(realm, textWord1.text.toString().lowercase(Locale.getDefault()))
+        //
+        val editor = sharedPref.edit()
+        editor.putInt(textWord1.text.toString().lowercase(Locale.getDefault()) + getString(R.string.preference_phrasetodisplayindex), phraseNumberToPutInTheBundle)
+        editor.apply()
         /*
         navigate to settings stories improvement activity
         */
@@ -387,7 +384,7 @@ abstract class SettingsStoriesRegistrationActivityAbstractClass : Game2ActivityA
      * @see Game1ArrayList
      *
      * @see History
-    </Game2ArrayList> */
+     */
     fun prepareData1(): ArrayList<Game1ArrayList> {
         val results = realm.where(
             History::class.java

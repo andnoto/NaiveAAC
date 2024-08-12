@@ -18,8 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
-
     <RadioGroup
             android:id="@+id/enableprintingradiogroup"
             android:layout_width="match_parent"
@@ -142,6 +140,44 @@
             android:autofillHints="@string/percentuale_errori_consentita" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/bluetoothmodetv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="130dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="@string/edit_message"
+        android:text="modalità bluetooth"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/allowedmarginoferrorLL"/>
+
+    <RadioGroup
+        android:id="@+id/bluetoothmoderadiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bluetoothmodetv"
+        app:layout_constraintVertical_bias="0.069">
+        <RadioButton android:id="@+id/serverbluetoothmode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="server"
+            android:onClick="bluetoothModeRadioButtonClicked"/>
+        <RadioButton android:id="@+id/clientbluetoothmode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="client"
+            android:onClick="bluetoothModeRadioButtonClicked"/>
+        <RadioButton android:id="@+id/defaultbluetoothmode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="automatico"
+            android:onClick="bluetoothModeRadioButtonClicked"/>
+    </RadioGroup>
 
     <Button
         android:id="@+id/generalsettingssave"
@@ -149,7 +185,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/allowedmarginoferrorLL"
+        app:layout_constraintTop_toBottomOf="@+id/bluetoothmoderadiogroup"
         android:onClick="generalSettingsSave"
         android:text="@string/salva" />
 

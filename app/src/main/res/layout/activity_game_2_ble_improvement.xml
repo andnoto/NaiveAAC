@@ -19,11 +19,25 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="deleteSentence"
+        android:text="indietro"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/baseline_arrow_left_36"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/printbutton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
         android:id="@+id/printbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="printSentenceOfAStory"
         android:text="@string/inizia"
+        app:layout_constraintStart_toEndOf="@+id/btn_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:backgroundTint="@color/azzurro_pastello"

@@ -19,7 +19,7 @@ import androidx.fragment.app.FragmentManager
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.getFilePath
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorageAndGetPath
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.showImage
 import com.sampietro.NaiveAAC.activities.Graphics.Images
@@ -155,9 +155,9 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
         //
         val vidD = findViewById<View>(R.id.videoDescription) as EditText
         if (vidD.length() > 0 && stringUri != null) {
-            uri = Uri.parse(stringUri)
+//            uri = Uri.parse(stringUri)
             try {
-                filePath = getFilePath(this, uri)
+                filePath = copyFileFromSharedToInternalStorageAndGetPath(this, uri!!)
             } catch (e: URISyntaxException) {
                 e.printStackTrace()
             }
@@ -430,7 +430,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
      * Refer to [stackoverflow](https://stackoverflow.com/questions/56651444/deprecated-getbitmap-with-api-29-any-alternative-codes)
      * answer of [Ally](https://stackoverflow.com/users/6258197/ally)
      *
-     * @see getFilePath
+     * @see copyFileFromSharedToInternalStorageAndGetPath
      *
      * @see showImage
      */
@@ -450,7 +450,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
                             uri = Objects.requireNonNull(resultData).data
                             //
                             try {
-                                filePath = getFilePath(context, uri)
+                                filePath = copyFileFromSharedToInternalStorageAndGetPath(context, uri!!)
                             } catch (e: URISyntaxException) {
                                 e.printStackTrace()
                             }
@@ -564,7 +564,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
                             stringUri = uri.toString()
                             //
                             try {
-                                filePath = getFilePath(context, uri)
+                                filePath = copyFileFromSharedToInternalStorageAndGetPath(context, uri!!)
                                 assert(filePath != null)
                                 val cut = filePath!!.lastIndexOf('/')
                                 if (cut != -1) {

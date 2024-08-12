@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,20 +36,6 @@ class Game2BleDialogFragment: DialogFragment()  {
     //
     val theimage = ArrayList<GameADAArrayList>()
     //
-    var leftColumnContent: String? = null
-    var leftColumnContentUrlType: String? = null
-    var leftColumnContentUrl: String? = null
-    var middleColumnContent: String? = null
-    var middleColumnContentUrlType: String? = null
-    var middleColumnContentUrl: String? = null
-    var rightColumnContent: String? = null
-    var rightColumnContentUrlType: String? = null
-    var rightColumnContentUrl: String? = null
-    //
-    var leftColumnContentWord: String? = null
-    var middleColumnContentWord: String? = null
-    var rightColumnContentWord: String? = null
-    //
     lateinit var listenAgainButton: ImageButton
     lateinit var continueGameButton: ImageButton
     //
@@ -59,9 +44,6 @@ class Game2BleDialogFragment: DialogFragment()  {
     lateinit var img1: ImageView
     lateinit var img2: ImageView
     lateinit var img3: ImageView
-    lateinit var title1: TextView
-    lateinit var title2: TextView
-    lateinit var title3: TextView
 
     /**
      * listener setting for game activities callbacks , context annotation, realm get default instance
@@ -69,14 +51,12 @@ class Game2BleDialogFragment: DialogFragment()  {
      */
     private lateinit var listenerGame2BleDialogFragment: onFragmentEventListenerGame2BleDialogFragment
     /**
-     * <h1>onFragmentEventListenerGame1SecondLevelFragment</h1>
+     * <h1>onFragmentEventListenerGame2BleDialogFragment</h1>
      *
-     * **onFragmentEventListenerGame1SecondLevelFragment**
+     * **onFragmentEventListenerGame2BleDialogFragment**
      * interface used to refer to the Activity without having to explicitly use its class
      *
-     *
-     *
-     * @see .onAttach
+     * @see onAttach
      */
     interface onFragmentEventListenerGame2BleDialogFragment {
         // insert here any references to the Activity
@@ -107,11 +87,6 @@ class Game2BleDialogFragment: DialogFragment()  {
             createList.image_title = oneWord[irrh]
             createList.urlType = oneWord[irrh+1]
             createList.url = oneWord[irrh+2]
-//            createList.video = row1debugVideo[i]
-//            createList.sound = row1debugSound[i]
-//            createList.soundReplacesTTS = row1debugSoundReplacesTTS[i]
-//            createList.soundAssociatedWithThePhraseReplacesTheOtherSounds =
-//                soundAssociatedWithThePhraseReplacesTheOtherSounds
             theimage.add(createList)
             irrh = irrh+3
         }
@@ -155,7 +130,6 @@ class Game2BleDialogFragment: DialogFragment()  {
         val layoutManager1: RecyclerView.LayoutManager =
             LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false)
         recyclerView1.layoutManager = layoutManager1
-//        val createLists1 = prepareData(sharedLastPhraseNumber)
         val adapter1 = Game2BleRecyclerViewAdapter(ctext, theimage)
         recyclerView1.adapter = adapter1
         //

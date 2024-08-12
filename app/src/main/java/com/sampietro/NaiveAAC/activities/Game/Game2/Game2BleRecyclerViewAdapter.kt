@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAArrayList
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
@@ -19,7 +18,7 @@ import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
 import io.realm.Realm
 
 /**
- * <h1>Game2RecyclerViewAdapter1</h1>
+ * <h1>Game2BleRecyclerViewAdapter1</h1>
  *
  * **Game2RecyclerViewAdapter1** adapter for game2
  *
@@ -36,7 +35,7 @@ class Game2BleRecyclerViewAdapter(
     var sharedPref: SharedPreferences
     var preference_PrintPermissions: String?
     //
-    lateinit var realm: Realm
+    var realm: Realm
 
     /**
      * used for TTS

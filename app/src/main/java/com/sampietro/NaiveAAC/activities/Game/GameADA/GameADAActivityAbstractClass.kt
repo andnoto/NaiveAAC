@@ -426,15 +426,6 @@ abstract class GameADAActivityAbstractClass : GameActivityAbstractClassWithRecog
                     )
                     toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
                 }
-//                99 -> {
-//                    voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-//                        sharedLastSession,
-//                        sharedLastPhraseNumber, currentTime,
-//                        99, " ", phraseToDisplay!!.word!!,
-//                        " ", " ", " "
-//                    )
-//                    toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
-//                }
                 999 -> {
                     voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
                         sharedLastSession,
@@ -498,13 +489,12 @@ abstract class GameADAActivityAbstractClass : GameActivityAbstractClassWithRecog
      * @param v view root fragment view
      * @param t TextToSpeech
      * @param gL ArrayList<GameADAArrayList>
-    </GameADAArrayList> */
+    */
     override fun receiveResultGameFragment(
         v: View?,
         t: TextToSpeech?,
         gL: ArrayList<GameADAArrayList>
     ) {
-//        rootViewImageFragment = v
         tTS1 = t
         galleryList = gL
     }

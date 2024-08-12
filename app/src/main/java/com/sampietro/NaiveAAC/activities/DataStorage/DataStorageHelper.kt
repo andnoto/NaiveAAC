@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import com.sampietro.NaiveAAC.R
@@ -469,13 +470,14 @@ object DataStorageHelper {
      *
      * Refer to [stackoverflow](https://stackoverflow.com/questions/3401579/get-filename-and-path-from-uri-from-mediastore)
      * answer of [Jitendra Ramoliya](https://stackoverflow.com/users/4118297/jitendra-ramoliya)
-     *
+     * This funcion has been replaced by copyFileFromSharedToInternalStorageAndGetPath starting from Android 14
      *
      *
      * @param context context
      * @param uri uri
      * @return string with the filepath identified by uri from mediastore
      */
+    @Deprecated("replaced by {@link #copyFileFromSharedToInternalStorageAndGetPath(Context?,Uri?):String?}")
     @JvmStatic
     @SuppressLint("NewApi")
     @Throws(URISyntaxException::class)
@@ -580,5 +582,42 @@ object DataStorageHelper {
     @JvmStatic
     fun isGooglePhotosUri(uri: Uri?): Boolean {
         return "com.google.android.apps.photos.content" == uri!!.authority
+    }
+    /**
+     * copy file and get the FilePath from the uri.
+     * This function replaces getFilePath starting from Android 14
+     *
+     * @param context context
+     * @param uri uri
+     * @return string with the filepath identified by uri from mediastore
+     */
+    @JvmStatic
+    @SuppressLint("NewApi")
+    fun copyFileFromSharedToInternalStorageAndGetPath(context: Context, uri: Uri): String? {
+        // The query, because it only applies to a single document, returns only
+        // one row. There's no need to filter, sort, or select fields,
+        // because we want all fields for one document.
+        val cursor: Cursor? = context.contentResolver.query(
+            uri, null, null, null, null, null)
+        var displayName: String? = null
+        cursor?.use {
+            // moveToFirst() returns false if the cursor has 0 rows. Very handy for
+            // "if there's anything to look at, look at it" conditionals.
+            if (it.moveToFirst()) {
+                // Note it's called "Display Name". This is
+                // provider-specific, and might not necessarily be the file name.
+                val myCursorColumnIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                displayName =
+                    it.getString(myCursorColumnIndex)
+            }
+        }
+        //
+        val rootPath = context.filesDir.absolutePath
+        if (displayName != null)
+        {
+            copyFileFromSharedToInternalStorage(context, uri, displayName)
+            return rootPath+"/"+displayName
+        }
+        return null
     }
 }

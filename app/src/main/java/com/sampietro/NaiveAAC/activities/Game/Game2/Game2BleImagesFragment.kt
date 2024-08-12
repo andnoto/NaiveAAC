@@ -10,13 +10,13 @@ import com.sampietro.NaiveAAC.activities.Graphics.ImagesAdapter
 import io.realm.Realm
 
 /**
- * <h1>ImagesFragment</h1>
+ * <h1>Game2BleImagesFragment</h1>
  *
  * **ImagesFragment** UI for images settings
  *
  *
  * @version     5.0, 01/04/2024
- * @see SettingsActivity
+ * @see Game2BleActivity
  */
 class Game2BleImagesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
     //

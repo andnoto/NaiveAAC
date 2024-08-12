@@ -18,9 +18,9 @@ import io.realm.Realm
  * @version     5.0, 01/04/2024
  * @see com.sampietro.NaiveAAC.activities.Graphics.Images
  *
- * @see com.sampietro.NaiveAAC.activities.Settings.ImagesFragment
+ * @see Game2BleImagesFragment
  *
- * @see com.sampietro.NaiveAAC.activities.Settings.SettingsActivity
+ * @see Game2BleActivity
  */
 class Game2BleImagesSearchAdapter(private val context: Context, private val images: List<Images>?, listview: ListView) : BaseAdapter() {
     /**
@@ -79,10 +79,10 @@ class Game2BleImagesSearchAdapter(private val context: Context, private val imag
      * @param v view to inflate with the row corresponding to a specific index within the list<Images>
      * @param vg viewgroup the parent that this view will eventually be attached to
      * @return view with the row corresponding to a specific index within the list<Images>
-     * @see .getItem
+     * @see getItem
      *
-     * @see .clickListenerDeleteImage
-    </Images></Images></Images></Images> */
+     * @see clickListenerSelectImage
+    */
     override fun getView(position: Int, v: View?, vg: ViewGroup): View {
         // 1) it is checked if the View passed in input is null and only in this
         // case is initialized with the LayoutInflater.
@@ -111,8 +111,6 @@ class Game2BleImagesSearchAdapter(private val context: Context, private val imag
      * it makes the callback to the activity to reload the fragment with the updated data
      *
      * @see View.OnClickListener
-     *
-     * @see StoriesSoundsSearchAdapterInterface.reloadStoriesFragmentFromSoundsSearch
      */
     private val clickListenerSelectImage = View.OnClickListener { v ->
         val position = listview.getPositionForView(v)

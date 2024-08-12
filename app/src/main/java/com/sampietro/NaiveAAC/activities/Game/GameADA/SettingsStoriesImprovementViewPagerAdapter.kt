@@ -12,9 +12,9 @@ import io.realm.Realm
 import io.realm.RealmResults
 
 /**
- * <h1>GameADAViewPagerAdapter</h1>
+ * <h1>SettingsStoriesImprovementViewPagerAdapter</h1>
  *
- * **GameADAViewPagerAdapter** adapter for game1
+ * **SettingsStoriesImprovementViewPagerAdapter** adapter for gameADA
  *
  * Refer to [raywenderlich.com](https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started)
  * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.view.View
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager

@@ -16,9 +16,9 @@ import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addI
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
 
 /**
- * <h1>Game2RecyclerViewAdapter1</h1>
+ * <h1>Game2RecyclerViewAdapter</h1>
  *
- * **Game2RecyclerViewAdapter1** adapter for game2
+ * **Game2RecyclerViewAdapter** adapter for game2
  *
  * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
  * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
