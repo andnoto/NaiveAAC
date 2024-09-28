@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
+
+    <TextView
+        android:id="@+id/generalsettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:hint="@string/edit_message"
+        android:text="@string/impostazioni_generali"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+            android:id="@+id/enableprintingradiogroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/generalsettings"
+            app:layout_constraintTop_toTopOf="@+id/titlewritingtyperadiogroup"
+            app:layout_constraintVertical_bias="0.069">
+            <RadioButton android:id="@+id/enableprinting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/abilita_stampa"
+                android:onClick="PrintingRadioButtonClicked"/>
+            <RadioButton android:id="@+id/disableprinting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/disabilita_stampa"
+                android:onClick="PrintingRadioButtonClicked"/>
+        </RadioGroup>
+
+    <TextView
+        android:id="@+id/titlewritingtypetv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:hint="@string/edit_message"
+        android:text="Tipo di scrittura dei titoli"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/enableprintingradiogroup"
+        app:layout_constraintTop_toBottomOf="@+id/generalsettings" />
+
+
+    <RadioGroup
+        android:id="@+id/titlewritingtyperadiogroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/titlewritingtypetv"
+        app:layout_constraintTop_toBottomOf="@+id/titlewritingtypetv"
+        app:layout_constraintVertical_bias="0.069">
+        <RadioButton android:id="@+id/uppercase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MAIUSCOLO"
+            android:onClick="titleWritingTypeRadioButtonClicked"/>
+        <RadioButton android:id="@+id/lowercase"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="minuscolo"
+            android:onClick="titleWritingTypeRadioButtonClicked"/>
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/listmodetv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="@string/edit_message"
+        android:text="@string/modalita_elenco"
+        app:layout_constraintStart_toStartOf="@+id/titlewritingtypetv"
+        app:layout_constraintTop_toBottomOf="@+id/titlewritingtyperadiogroup" />
+
+
+    <RadioGroup
+        android:id="@+id/listmoderadiogroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/titlewritingtypetv"
+        app:layout_constraintTop_toBottomOf="@+id/listmodetv"
+        app:layout_constraintVertical_bias="0.069">
+        <RadioButton android:id="@+id/disablelistmode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/disabilitata"
+            android:onClick="listModeRadioButtonClicked"/>
+        <RadioButton android:id="@+id/enablesortedlistmode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ordinato"
+            android:onClick="listModeRadioButtonClicked"/>
+        <RadioButton android:id="@+id/enablerandomlistmode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/casuale"
+            android:onClick="listModeRadioButtonClicked"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/allowedmarginoferrorLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/generalsettings"
+        app:layout_constraintTop_toTopOf="@+id/listmoderadiogroup">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="@string/percentuale_errori_consentita" />
+
+        <EditText
+            android:id="@+id/allowedmarginoferror"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:inputType="number"
+            android:autofillHints="@string/percentuale_errori_consentita" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bluetoothmodetv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="@string/edit_message"
+        android:text="modalità bluetooth"
+        app:layout_constraintStart_toStartOf="@+id/titlewritingtypetv"
+        app:layout_constraintTop_toBottomOf="@+id/listmoderadiogroup"/>
+
+    <RadioGroup
+        android:id="@+id/bluetoothmoderadiogroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/titlewritingtypetv"
+        app:layout_constraintTop_toBottomOf="@+id/bluetoothmodetv"
+        app:layout_constraintVertical_bias="0.069">
+        <RadioButton android:id="@+id/serverbluetoothmode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="server"
+            android:onClick="bluetoothModeRadioButtonClicked"/>
+        <RadioButton android:id="@+id/clientbluetoothmode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="client"
+            android:onClick="bluetoothModeRadioButtonClicked"/>
+        <RadioButton android:id="@+id/defaultbluetoothmode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="automatico"
+            android:onClick="bluetoothModeRadioButtonClicked"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/generalsettingssave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/generalsettings"
+        app:layout_constraintTop_toTopOf="@+id/bluetoothmoderadiogroup"
+        android:onClick="generalSettingsSave"
+        android:text="@string/salva" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

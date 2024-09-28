@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -14,9 +15,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.VideoView
-import androidx.annotation.LayoutRes
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Game.Utils.CenterVideoView
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchNegationAdverb
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
@@ -41,7 +42,7 @@ import java.util.Locale
  *
  * @see GameADAViewPagerActivity
  */
-class GameADAViewPagerFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
+class GameADAViewPagerFragment() : GameFragmentAbstractClassWithoutConstructor() {
     lateinit var rootView: View
     //
     var sharedStory: String? = null
@@ -106,7 +107,23 @@ class GameADAViewPagerFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragm
             false
         }
     }
-
+    /**
+     * prepares the ui and makes the callback to the activity
+     *
+     *
+     * Refer to [raywenderlich.com](https://www.raywenderlich.com/8192680-viewpager2-in-android-getting-started)
+     * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
+     *
+     * @see androidx.fragment.app.Fragment.onCreateView
+     */
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_game_ada_viewpager_content, container, false)
+        return rootView
+    }
     /**
      * prepares the ui and makes the callback to the activity
      *
@@ -116,12 +133,13 @@ class GameADAViewPagerFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragm
      *
      * @see androidx.fragment.app.Fragment.onViewCreated
      */
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
-        rootView = view
-    }
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+//        rootView = view
+//
+//    }
     //
     /**
      * prepares the ui and makes the callback to the activity
@@ -160,6 +178,8 @@ class GameADAViewPagerFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragm
             val textTitleImage = rootView.findViewById<View>(R.id.titleimage) as TextView
             textTitleImage.text = wordToDisplay!!.word!!.uppercase(Locale.getDefault())
             Log.e("TAGWORDTODISPLAY", wordToDisplay!!.word!!)
+            //
+            val imageSize = calculateImageSize()
             // ricerca immagine
             val imageGameImage = rootView.findViewById<ImageView>(R.id.gameimage)
             imageGameImage.contentDescription =
@@ -170,10 +190,10 @@ class GameADAViewPagerFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragm
                     wordToDisplay!!.uri)
                 val uriType = "S"
                 val uri = imageUrl
-                addImage(uriType, uri, imageGameImage, 200, 200)
+                addImage(uriType, uri, imageGameImage, imageSize, imageSize)
                 } else
                 {
-                addImage(wordToDisplay!!.uriType!!, wordToDisplay!!.uri, imageGameImage, 200, 200)
+                addImage(wordToDisplay!!.uriType!!, wordToDisplay!!.uri, imageGameImage, imageSize, imageSize)
                 }
             // search for negation adverbs
             val imageGameImage2 = rootView.findViewById<ImageView>(R.id.gameimage2)
@@ -185,7 +205,7 @@ class GameADAViewPagerFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragm
             if (negationAdverbImageToSearchFor != ctext.getString(R.string.non_trovato)) {
                 // INTERNAL MEMORY IMAGE SEARCH
                 val uriToSearch = searchUri(ctext, realm, negationAdverbImageToSearchFor)
-                addImage("S", uriToSearch, imageGameImage2, 200, 200)
+                addImage("S", uriToSearch, imageGameImage2, imageSize, imageSize)
                 imageGameImage2.visibility = View.VISIBLE
             }
             // TTS

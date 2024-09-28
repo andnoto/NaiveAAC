@@ -6,7 +6,7 @@ package com.sampietro.NaiveAAC.activities.Grammar
  *
  * **VoiceToBeRecordedInListOfNames** utility class for registration in ListOfNames class.
  *
- * @see ListOfNames
+ * @see ListsOfNames
  *
  * @version     5.0, 01/04/2024
  */

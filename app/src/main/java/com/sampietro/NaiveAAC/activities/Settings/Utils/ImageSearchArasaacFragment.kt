@@ -1,7 +1,9 @@
 package com.sampietro.NaiveAAC.activities.Settings.Utils
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,7 +13,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListener
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListenerWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Game.Game1.Game1ArrayList
 import org.json.JSONException
 
@@ -22,9 +24,9 @@ import org.json.JSONException
  *
  *
  * @version     5.0, 01/04/2024
- * @see FragmentAbstractClassWithListener
+ * @see FragmentAbstractClassWithListenerWithoutConstructor
  */
-class ImageSearchArasaacFragment(contentLayoutId: Int) : FragmentAbstractClassWithListener(contentLayoutId) {
+class ImageSearchArasaacFragment() : FragmentAbstractClassWithListenerWithoutConstructor() {
     //
     var keywordToSearchArasaac: String? = null
     private var mRequestQueue: RequestQueue? = null
@@ -38,25 +40,30 @@ class ImageSearchArasaacFragment(contentLayoutId: Int) : FragmentAbstractClassWi
     /**
      * prepares the ui and makes the callback to the activity
      *
-     *
      * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
      * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
      *
-     * @see androidx.fragment.app.Fragment.onViewCreated
+     * @see androidx.fragment.app.Fragment.onCreateView
      *
      * @see Game1ArrayList
      *
      * @see ImageSearchArasaacRecyclerViewAdapter
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_settings_stories_arasaac, container, false)
         //
         val request: JsonArrayRequest
         //
         keywordArasaacToSearch =
-            view.findViewById<View>(R.id.keywordarasaactosearch) as EditText
+            rootView.findViewById<View>(R.id.keywordarasaactosearch) as EditText
         //
         val bundle = this.arguments
         //
@@ -107,7 +114,7 @@ class ImageSearchArasaacFragment(contentLayoutId: Int) : FragmentAbstractClassWi
                     }
                     //
                     val recyclerView =
-                        view.findViewById<View>(R.id.imagegallery) as RecyclerView
+                        rootView.findViewById<View>(R.id.imagegallery) as RecyclerView
                     recyclerView.setHasFixedSize(true)
                     val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
                     recyclerView.layoutManager = layoutManager
@@ -124,10 +131,12 @@ class ImageSearchArasaacFragment(contentLayoutId: Int) : FragmentAbstractClassWi
         }
         //
         val buttonSearchArasaac =
-            view.findViewById<View>(R.id.btn_search_arasaac) as ImageButton
+            rootView.findViewById<View>(R.id.btn_search_arasaac) as ImageButton
         buttonSearchArasaac.setOnClickListener {
             listener.receiveResultSettings(buttonSearchArasaac)
         }
+        //
+        return rootView
     }
 
     companion object {

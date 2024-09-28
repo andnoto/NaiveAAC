@@ -9,18 +9,17 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.AccountActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorageAndGetPath
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.showImage
 import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.Graphics.ImagesAdapter.ImagesAdapterInterface
@@ -49,10 +48,6 @@ import java.util.Objects
  */
 class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
     VideosAdapterInterface, SoundsAdapterInterface {
-    var message = "messaggio non formato"
-    var textView: TextView? = null
-
-    //
     var fragmentManager: FragmentManager? = null
 
     /**
@@ -75,13 +70,22 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
         //
         setActivityResultLauncher()
         //
-        if (savedInstanceState == null) {
+        if (savedInstanceState != null) {
+            // The onSaveInstanceState method is called before an activity may be killed
+            // (for Screen Rotation Handling) so that
+            // when it comes back it can restore its state.
+            filePath = savedInstanceState.getString("IMAGE VIDEO OR SOUND FILE PATH")
+        }
+        else
+        {
+            filePath = getString(R.string.non_trovato)
+//        if (savedInstanceState == null) {
             fragmentManager = supportFragmentManager
             fragmentManager!!.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
                 .add(
                     R.id.settings_container,
-                    Fragment(R.layout.activity_settings_media_menu),
+                    ChoiseOfMediaToSetFragment(),
                     "ChoiseOfMediaToSetFragment"
                 )
                 .commit()
@@ -90,6 +94,20 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
         // To use it in the Activity, a reference must be obtained to a Realm object in the onCreate method.
         // The Realm object must be closed in the onDestroy method.
         realm = Realm.getDefaultInstance()
+    }
+    /**
+     * This method is called before an activity may be killed so that when it comes back some time in the future it can restore its state..
+     *
+     *
+     * it stores the limage video or sound file path
+     *
+     * @param savedInstanceState Define potentially saved parameters due to configurations changes.
+     */
+    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        //
+        savedInstanceState.putString("IMAGE VIDEO OR SOUND FILE PATH", filePath)
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState)
     }
     /**
      * Called when the user taps the video button from the media settings menu.
@@ -103,7 +121,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
     fun submitVideo(view: View?) {
         // view the videos settings fragment initializing VideosFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = VideosFragment(R.layout.activity_settings_videos)
+        val frag = VideosFragment()
         val bundle = Bundle()
         bundle.putString(getString(R.string.uri), getString(R.string.none))
         frag.arguments = bundle
@@ -151,16 +169,31 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
      * @see Videos
      */
     fun videoAdd(v: View?) {
-        realm = Realm.getDefaultInstance()
+//        realm = Realm.getDefaultInstance()
         //
         val vidD = findViewById<View>(R.id.videoDescription) as EditText
-        if (vidD.length() > 0 && stringUri != null) {
+//        if (vidD.length() > 0 && stringUri != null) {
+        if (vidD.length() > 0 && filePath != getString(R.string.non_trovato)) {
 //            uri = Uri.parse(stringUri)
-            try {
-                filePath = copyFileFromSharedToInternalStorageAndGetPath(this, uri!!)
-            } catch (e: URISyntaxException) {
-                e.printStackTrace()
-            }
+//            try {
+//                filePath = copyFileFromSharedToInternalStorageAndGetPath(this, uri!!)
+//            } catch (e: URISyntaxException) {
+//                e.printStackTrace()
+//            }
+                // cancello il vecchio item
+                val results = realm.where(Videos::class.java)
+                    .equalTo(
+                        "descrizione",
+                        vidD.text.toString()
+                    )
+                    .findAll()
+                val resultsSize = results.size
+                //
+                if (resultsSize > 0) {
+                    realm.beginTransaction()
+                    results.deleteAllFromRealm()
+                    realm.commitTransaction()
+                }
             // Note that the realm object was generated with the createObject method
             // and not with the new operator.
             // The modification operations will be performed within a Transaction.
@@ -172,7 +205,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
             realm.commitTransaction()
             // view the videos settings fragment initializing VideosFragment (FragmentTransaction
             // switch between Fragments).
-            val frag = VideosFragment(R.layout.activity_settings_videos)
+            val frag = VideosFragment()
             val bundle = Bundle()
             bundle.putString(getString(R.string.uri), getString(R.string.none))
             frag.arguments = bundle
@@ -182,7 +215,26 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
             ft.commit()
         }
     }
-
+    /**
+     * Called when the user taps the show list button .
+     *
+     * the activity is notified to view the videos list.
+     *
+     *
+     * @param view view of tapped button
+     * @see VideosFragment
+     *
+     * @see VideosListFragment
+     */
+    fun videosList(view: View?) {
+        // view the videos list fragment initializing VideosListFragment (FragmentTransaction
+        // switch between Fragments).
+        val frag = VideosListFragment()
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
     /**
      * on callback from VideosAdapter to this Activity
      *
@@ -196,7 +248,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
     override fun reloadVideosFragment() {
         // view the videos settings fragment initializing VideosFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = VideosFragment(R.layout.activity_settings_videos)
+        val frag = VideosFragment()
         val bundle = Bundle()
         bundle.putString(getString(R.string.uri), getString(R.string.none))
         frag.arguments = bundle
@@ -218,7 +270,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
     fun submitImages(view: View?) {
         // view the images settings fragment initializing ImagesFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = ImagesFragment(R.layout.activity_settings_images)
+        val frag = ImagesFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -238,10 +290,24 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
      * @see Images
      */
     fun imageAdd(v: View?) {
-        realm = Realm.getDefaultInstance()
+//        realm = Realm.getDefaultInstance()
         //
         val immD = findViewById<View>(R.id.imageDescription) as EditText
         if (immD.length() > 0 && filePath != getString(R.string.non_trovato)) {
+            // cancello il vecchio item
+            val results = realm.where(Images::class.java)
+                .equalTo(
+                    "descrizione",
+                    immD.text.toString()
+                )
+                .findAll()
+            val resultsSize = results.size
+            //
+            if (resultsSize > 0) {
+                realm.beginTransaction()
+                results.deleteAllFromRealm()
+                realm.commitTransaction()
+            }
             // Note that the realm object was generated with the createObject method
             // and not with the new operator.
             // The modification operations will be performed within a Transaction.
@@ -255,14 +321,33 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
             realm.commitTransaction()
             // view the images settings fragment initializing ImagesFragment (FragmentTransaction
             // switch between Fragments).
-            val frag = ImagesFragment(R.layout.activity_settings_images)
+            val frag = ImagesFragment()
             val ft = supportFragmentManager.beginTransaction()
             ft.replace(R.id.settings_container, frag)
             ft.addToBackStack(null)
             ft.commit()
         }
     }
-
+    /**
+     * Called when the user taps the show list button .
+     *
+     * the activity is notified to view the images list.
+     *
+     *
+     * @param view view of tapped button
+     * @see ImagesFragment
+     *
+     * @see ImagesListFragment
+     */
+    fun imagesList(view: View?) {
+        // view the images list fragment initializing ImagesListFragment (FragmentTransaction
+        // switch between Fragments).
+        val frag = ImagesListFragment()
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
     /**
      * on callback from ImagesAdapter to this Activity
      *
@@ -276,7 +361,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
     override fun reloadImagesFragment() {
         // view the images settings fragment initializing ImagesFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = ImagesFragment(R.layout.activity_settings_images)
+        val frag = ImagesFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -295,7 +380,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
     fun submitSounds(view: View?) {
         // view the sounds settings fragment initializing SoundsFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = SoundsFragment(R.layout.activity_settings_sounds)
+        val frag = SoundsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -362,29 +447,62 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
      * @see Sounds
      */
     fun soundAdd(v: View?) {
-        realm = Realm.getDefaultInstance()
+//        realm = Realm.getDefaultInstance()
         //
-        val immD = findViewById<View>(R.id.soundDescription) as EditText
-        if (immD.length() > 0 && filePath != getString(R.string.non_trovato)) {
+        val souD = findViewById<View>(R.id.soundDescription) as EditText
+        if (souD.length() > 0 && filePath != getString(R.string.non_trovato)) {
+            // cancello il vecchio item
+            val results = realm.where(Sounds::class.java)
+                .equalTo(
+                    "descrizione",
+                    souD.text.toString()
+                )
+                .findAll()
+            val resultsSize = results.size
+            //
+            if (resultsSize > 0) {
+                realm.beginTransaction()
+                results.deleteAllFromRealm()
+                realm.commitTransaction()
+            }
             // Note that the realm object was generated with the createObject method
             // and not with the new operator.
             // The modification operations will be performed within a Transaction.
             realm.beginTransaction()
             val s = realm.createObject(Sounds::class.java)
-            s.descrizione = immD.text.toString()
+            s.descrizione = souD.text.toString()
             s.uri = filePath
             s.fromAssets = ""
             realm.commitTransaction()
             // view the sounds settings fragment initializing SoundsFragment (FragmentTransaction
             // switch between Fragments).
-            val frag = SoundsFragment(R.layout.activity_settings_sounds)
+            val frag = SoundsFragment()
             val ft = supportFragmentManager.beginTransaction()
             ft.replace(R.id.settings_container, frag)
             ft.addToBackStack(null)
             ft.commit()
         }
     }
-
+    /**
+     * Called when the user taps the show list button .
+     *
+     * the activity is notified to view the sounds list.
+     *
+     *
+     * @param view view of tapped button
+     * @see SoundsFragment
+     *
+     * @see SoundsListFragment
+     */
+    fun soundsList(view: View?) {
+        // view the sounds list fragment initializing SoundsListFragment (FragmentTransaction
+        // switch between Fragments).
+        val frag = SoundsListFragment()
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
     /**
      * on callback from SoundsAdapter to this Activity
      *
@@ -398,7 +516,7 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
     override fun reloadSoundsFragment() {
         // view the images settings fragment initializing ImagesFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = SoundsFragment(R.layout.activity_settings_sounds)
+        val frag = SoundsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -410,14 +528,14 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
     var videoSearchActivityResultLauncher: ActivityResultLauncher<Intent>? = null
     @JvmField
     var soundSearchActivityResultLauncher: ActivityResultLauncher<Intent>? = null
-    @JvmField
-    var uri: Uri? = null
-    @JvmField
-    var stringUri: String? = null
+//    @JvmField
+//    var uri: Uri? = null
+//    @JvmField
+//    var stringUri: String? = null
     @JvmField
     var filePath: String? = null
-    var fileName: String? = null
-    lateinit var byteArray: ByteArray
+//    var fileName: String? = null
+//    lateinit var byteArray: ByteArray
     //
     /**
      * setting callbacks to search for images and videos via ACTION_OPEN_DOCUMENT which is
@@ -444,8 +562,12 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
                         // There are no request codes
                         val resultData = result.data
                         // doSomeOperations();
-                        uri = null
+                        var uri: Uri? = null
+                        var stringUri: String? = null
                         filePath = getString(R.string.non_trovato)
+                        //
+                        val immD = findViewById<View>(R.id.imageDescription) as EditText
+                        //
                         if (resultData != null) {
                             uri = Objects.requireNonNull(resultData).data
                             //
@@ -462,28 +584,52 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
                                 takeFlags
                             )
                             //
-                            var bitmap: Bitmap? = null
+                            stringUri = uri.toString()
                             //
-                            try {
-                                val source = ImageDecoder.createSource(
-                                    context.contentResolver,
-                                    uri!!
+//                            var bitmap: Bitmap? = null
+                            //
+//                            try {
+//                                val source = ImageDecoder.createSource(
+//                                    context.contentResolver,
+//                                    uri
+//                                )
+//                                bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+//                                    decoder.setTargetSampleSize(1) // shrinking by
+//                                    decoder.isMutableRequired = true // this resolve the hardware type of bitmap problem
+//                                }
+//                            } catch (e: Exception) {
+//                                e.printStackTrace()
+//                            }
+                            //
+//                            val stream = ByteArrayOutputStream()
+//                            bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
+//                            byteArray = stream.toByteArray()
+                            //
+                            val frag = ImagesFragment()
+                            val bundle = Bundle()
+                            //
+                            if (immD.length() > 0) {
+                                bundle.putString(
+                                    getString(R.string.descrizione),
+                                    immD.text.toString()
                                 )
-                                bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-                                    decoder.setTargetSampleSize(1) // shrinking by
-                                    decoder.isMutableRequired = true // this resolve the hardware type of bitmap problem
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
+                            } else {
+                                bundle.putString(
+                                    getString(R.string.descrizione),
+                                    getString(R.string.nessuna)
+                                )
                             }
                             //
-                            val stream = ByteArrayOutputStream()
-                            bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                            byteArray = stream.toByteArray()
+                            bundle.putString(getString(R.string.uri), stringUri)
+                            frag.arguments = bundle
+                            val ft = supportFragmentManager.beginTransaction()
+                            ft.replace(R.id.settings_container, frag)
+                            ft.addToBackStack(null)
+                            ft.commit()
                             //
-                            val myImage: ImageView
-                            myImage = findViewById<View>(R.id.imageviewTest) as ImageView
-                            showImage(context, uri, myImage)
+//                            val myImage: ImageView
+//                            myImage = findViewById<View>(R.id.imageviewTest) as ImageView
+//                            showImage(context, uri, myImage)
                         }
                     }
                 }
@@ -497,8 +643,8 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
                         // There are no request codes
                         val resultData = result.data
                         // doSomeOperations();
-                        uri = null
-                        stringUri = null
+                        var uri: Uri? = null
+                        var stringUri: String? = null
                         //
                         val vidD = findViewById<View>(R.id.videoDescription) as EditText
                         //
@@ -514,7 +660,19 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
                             //
                             stringUri = uri.toString()
                             //
-                            val frag = VideosFragment(R.layout.activity_settings_videos)
+                            try {
+                                filePath = copyFileFromSharedToInternalStorageAndGetPath(context, uri!!)
+//                                assert(filePath != null)
+//                                val cut = filePath!!.lastIndexOf('/')
+//                                if (cut != -1) {
+//                                    fileName = filePath!!.substring(cut + 1)
+//                                }
+                                //
+                            } catch (e: URISyntaxException) {
+                                e.printStackTrace()
+                            }
+                            //
+                            val frag = VideosFragment()
                             val bundle = Bundle()
                             //
                             if (vidD.length() > 0) {
@@ -548,8 +706,8 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
                         // There are no request codes
                         val resultData = result.data
                         // doSomeOperations();
-                        uri = null
-                        stringUri = null
+                        var uri: Uri? = null
+//                        stringUri = null
                         //
                         if (resultData != null) {
                             uri = Objects.requireNonNull(resultData).data
@@ -561,15 +719,15 @@ class SettingsMediaActivity : ActivityAbstractClass(), ImagesAdapterInterface,
                                 takeFlags
                             )
                             //
-                            stringUri = uri.toString()
+//                            stringUri = uri.toString()
                             //
                             try {
                                 filePath = copyFileFromSharedToInternalStorageAndGetPath(context, uri!!)
-                                assert(filePath != null)
-                                val cut = filePath!!.lastIndexOf('/')
-                                if (cut != -1) {
-                                    fileName = filePath!!.substring(cut + 1)
-                                }
+//                                assert(filePath != null)
+//                                val cut = filePath!!.lastIndexOf('/')
+//                                if (cut != -1) {
+//                                    fileName = filePath!!.substring(cut + 1)
+//                                }
                                 //
                             } catch (e: URISyntaxException) {
                                 e.printStackTrace()

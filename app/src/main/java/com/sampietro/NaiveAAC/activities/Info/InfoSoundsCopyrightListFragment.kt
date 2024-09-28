@@ -1,11 +1,13 @@
 package com.sampietro.NaiveAAC.activities.Info
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
 import com.sampietro.NaiveAAC.activities.Graphics.SoundsCopyrightAdapter
 import io.realm.Realm
@@ -22,7 +24,7 @@ import io.realm.Sort
  *
  * @see InfoActivity
  */
-class InfoSoundsCopyrightListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
+class InfoSoundsCopyrightListFragment() : FragmentAbstractClassWithoutConstructor() {
     private lateinit var realm: Realm
 
     //
@@ -32,18 +34,24 @@ class InfoSoundsCopyrightListFragment(contentLayoutId: Int) : FragmentAbstractCl
     /**
      * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onViewCreated
+     * @see androidx.fragment.app.Fragment.onCreateView
      *
      * @see Sounds
      *
      * @see SoundsCopyrightAdapter
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_settings_copyright_list, container, false)
         // logic of fragment
-        val myTextView = view.findViewById<View>(R.id.textviewcopyright) as TextView
+        val myTextView = rootView.findViewById<View>(R.id.textviewcopyright) as TextView
         myTextView.text = "COPYRIGHT SUONI"
         // ListView
         // 1) we get a reference to the data structure through the RealmResults class which constitutes
@@ -61,16 +69,18 @@ class InfoSoundsCopyrightListFragment(contentLayoutId: Int) : FragmentAbstractCl
         //
         realm = Realm.getDefaultInstance()
         var results: RealmResults<Sounds>
-        results = realm.where(Sounds::class.java).findAll()
+        results = realm.where(Sounds::class.java).isNotNull("copyright").findAll()
         //
         val mStrings1 = arrayOf(ctext.getString(R.string.copyright))
         val mStrings2 = arrayOf(Sort.ASCENDING)
         results = results.sort(mStrings1, mStrings2)
         //
-        listView = view.findViewById<View>(R.id.listview) as ListView
+        listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
         adapter = SoundsCopyrightAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
+        //
+        return rootView
     }
 }

@@ -10,24 +10,10 @@
         android:id="@+id/soundDescriptionLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="vertical"
-        android:padding="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.069">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -43,7 +29,6 @@
                 android:inputType="text"
                 android:autofillHints="descrizione suono da inserire" />
 
-        </LinearLayout>
     </LinearLayout>
 
     <ImageButton
@@ -60,48 +45,39 @@
             app:layout_constraintTop_toBottomOf="@+id/soundDescriptionLL"
             android:contentDescription="@string/immagine_da_inserire" />
 
-    <LinearLayout
-        android:id="@+id/soundLL"
+    <Button
+        android:id="@+id/buttonsoundsearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:onClick="soundSearch"
+        android:text="cerca suono"
+        app:layout_constraintEnd_toStartOf="@+id/buttonsoundadd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/soundviewTest"/>
+
+    <Button
+        android:id="@+id/buttonsoundadd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:onClick="soundAdd"
+        android:text="aggiungi suono"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonsoundsearch"
+        app:layout_constraintTop_toBottomOf="@+id/soundviewTest"/>
+
+    <Button
+        android:id="@+id/soundslistbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:onClick="soundsList"
+        android:text="@string/mostra_elenco"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/soundviewTest">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <Button
-                android:id="@+id/buttonsoundsearch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:onClick="soundSearch"
-                android:text="cerca suono" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:onClick="soundAdd"
-                android:text="aggiungi suono" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <ListView
-            android:id="@+id/listview"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/soundLL"/>
+        app:layout_constraintTop_toBottomOf="@+id/buttonsoundsearch"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

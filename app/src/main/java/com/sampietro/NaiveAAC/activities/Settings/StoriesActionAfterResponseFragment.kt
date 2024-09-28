@@ -1,10 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import io.realm.Realm
 
@@ -15,11 +17,11 @@ import io.realm.Realm
  *
  *
  * @version     4.0, 09/09/2023
- * @see FragmentAbstractClass
+ * @see FragmentAbstractClassWithoutConstructor
  *
  * @see SettingsStoriesActivity
  */
-class StoriesActionAfterResponseFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
+class StoriesActionAfterResponseFragment() : FragmentAbstractClassWithoutConstructor() {
     private lateinit var realm: Realm
 
     //
@@ -29,16 +31,26 @@ class StoriesActionAfterResponseFragment(contentLayoutId: Int) : FragmentAbstrac
     /**
      * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onViewCreated
+     * @see androidx.fragment.app.Fragment.onCreateView
      *
      * @see Videos
      *
      * @see StoriesVideosSearchAdapter
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(
+            R.layout.activity_settings_stories_action_after_response,
+            container,
+            false
+        )
         // logic of fragment
         realm = Realm.getDefaultInstance()
         // ListView
@@ -56,10 +68,12 @@ class StoriesActionAfterResponseFragment(contentLayoutId: Int) : FragmentAbstrac
         // which will be your View "supplier".
         val results = realm.where(Videos::class.java).findAll()
         //
-        listView = view.findViewById<View>(R.id.listview) as ListView
+        listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
         adapter = StoriesVideosSearchAdapter(ctext, results, listView, "ActionAfterResponse")
         //
         listView.adapter = adapter
+        //
+        return rootView
     }
 }

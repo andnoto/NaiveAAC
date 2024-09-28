@@ -12,7 +12,6 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Account.AccountActivity
@@ -57,7 +56,7 @@ class AskIfAdultActivity : AppCompatActivity() {
             fragmentManager!!.beginTransaction()
                 .add(
                     R.id.game_container,
-                    Fragment(R.layout.activity_checkifadult),
+                    AskIfAdultFragment(),
                     "AskIfAdultFragment"
                 )
                 .commit()
@@ -71,7 +70,7 @@ class AskIfAdultActivity : AppCompatActivity() {
      * @param view view of tapped text
      */
     fun onClickIAmAChild(view: View?) {
-        val frag = AskAParentFragment(R.layout.activity_askaparent)
+        val frag = AskAParentFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.game_container, frag, "AskAParentFragment")
         ft.addToBackStack(null)
@@ -84,7 +83,7 @@ class AskIfAdultActivity : AppCompatActivity() {
      * @param view view of tapped text
      */
     fun onClickIAmAParent(view: View?) {
-        val frag = Fragment(R.layout.activity_checkifadult_verifydateofbirth)
+        val frag = AskIfAdultVerifyDateOfBirthFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.game_container, frag, "VerifyDateOfBirthFragment")
         ft.addToBackStack(null)
@@ -97,7 +96,7 @@ class AskIfAdultActivity : AppCompatActivity() {
      * @param view view of tapped text
      */
     fun onClickAskAParent(view: View?) {
-        val frag = Fragment(R.layout.activity_checkifadult)
+        val frag = AskIfAdultFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.game_container, frag, "AskIfAdultFragment")
         ft.addToBackStack(null)

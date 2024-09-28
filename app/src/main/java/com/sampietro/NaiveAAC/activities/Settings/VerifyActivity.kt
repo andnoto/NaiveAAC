@@ -8,7 +8,6 @@ import android.view.View
 import android.view.Window
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
@@ -72,11 +71,12 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
          */
         context = this
         //
+        sharedPref = getSharedPreferences(
+            getString(R.string.preference_file_key), MODE_PRIVATE
+        )
+        sharedPassword = sharedPref.getString("password", "nessuna password")
+        //
         if (savedInstanceState == null) {
-            sharedPref = getSharedPreferences(
-                getString(R.string.preference_file_key), MODE_PRIVATE
-            )
-            sharedPassword = sharedPref.getString("password", "nessuna password")
             if (sharedPassword == "nessuna password") {
                 fragmentManager = supportFragmentManager
                 fragmentManager!!.beginTransaction()
@@ -87,7 +87,7 @@ class VerifyActivity : AppCompatActivity(), onFragmentEventListenerVerify {
                 fragmentManager!!.beginTransaction()
                     .add(
                         R.id.settings_container,
-                        Fragment(R.layout.activity_settings_verify_password),
+                        VerifyPasswordFragment(),
                         "VerifyPasswordFragment"
                     )
                     .commit()

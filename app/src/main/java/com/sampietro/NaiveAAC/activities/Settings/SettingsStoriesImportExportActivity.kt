@@ -4,14 +4,16 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
+import android.provider.OpenableColumns
 import android.view.View
 import android.widget.EditText
 import android.widget.RadioButton
-import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -19,12 +21,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFile
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorage
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorageAndGetPath
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileZipFromInternalToSharedStorage
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFilesInFolderToRoot
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.extractFolder
@@ -38,10 +39,9 @@ import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Stories.Stories.Companion.exporttoCsv
 import com.sampietro.NaiveAAC.activities.Stories.Stories.Companion.importStoryFromCsvFromInternalStorage
 import com.sampietro.NaiveAAC.activities.Stories.StoriesHelper.renumberAStory
-import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
-import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
 import io.realm.Realm
 import java.io.*
+import java.net.URISyntaxException
 import java.util.*
 
 /**
@@ -55,23 +55,22 @@ import java.util.*
  */
 class SettingsStoriesImportExportActivity : ActivityAbstractClass()
     {
-    var message = "messaggio non formato"
-    var textView: TextView? = null
+//    var message = "messaggio non formato"
+//    var textView: TextView? = null
 
     //
     var fragmentManager: FragmentManager? = null
 
     //
-    private var voiceToBeRecordedInStories: VoiceToBeRecordedInStories? = null
-    private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
-
+    var story: String? = null
     //
     var radiobuttonStoriesImportButtonClicked = false
     var radiobuttonStoriesExportButtonClicked = false
 
     // ActivityResultLauncher
     var exportStorySearchActivityResultLauncher: ActivityResultLauncher<Intent>? = null
-    var storyTreeUri: Uri? = null
+    var importStorySearchActivityResultLauncher: ActivityResultLauncher<Intent>? = null
+//    var storyTreeUri: Uri? = null
 
     /**
      * configurations of settings start screen.
@@ -88,36 +87,67 @@ class SettingsStoriesImportExportActivity : ActivityAbstractClass()
         context = this
         //
         setExportStorySearchActivityResultLauncher()
-        /*
-        Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
-        constructor.
-        The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
-         */
-        // In the Activity#onCreate make the only setItem
-        voiceToBeRecordedInStories = VoiceToBeRecordedInStories()
-        viewModel = ViewModelProvider(this).get(
-            VoiceToBeRecordedInStoriesViewModel::class.java
-        )
-        viewModel.setItem(voiceToBeRecordedInStories!!)
-        voiceToBeRecordedInStories!!.story = getString(R.string.nome_storia)
-        //
-        if (savedInstanceState == null) {
-            fragmentManager = supportFragmentManager
-            fragmentManager!!.beginTransaction()
-                .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
-                .add(
-                    R.id.settings_container,
-                    StoriesImportExportFragment(R.layout.activity_settings_stories_import_export),
-                    "StoriesImportExportFragment"
-                )
-                .commit()
-        }
+        setImportStorySearchActivityResultLauncher()
         // The MainActivity class provides an instance of Realm wherever needed in the application.
         // To use it in the Activity, a reference must be obtained to a Realm object in the onCreate method.
         // The Realm object must be closed in the onDestroy method.
         realm = Realm.getDefaultInstance()
+        //
+        story = getString(R.string.nome_storia)
+        //
+        if (savedInstanceState != null) {
+            // The onSaveInstanceState method is called before an activity may be killed
+            // (for Screen Rotation Handling) so that
+            // when it comes back it can restore its state.
+            story = savedInstanceState.getString("STORY", "")
+        }
+        else
+        {
+            fragmentManager = supportFragmentManager
+            fragmentManager!!.beginTransaction()
+                .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
+                .commit()
+            val frag = StoriesImportExportFragment()
+            val bundle = Bundle()
+            bundle.putString("STORY", story)
+            frag.arguments = bundle
+            val ft = supportFragmentManager.beginTransaction()
+            ft.add(R.id.settings_container, frag, "StoriesImportExportFragment")
+            ft.addToBackStack(null)
+            ft.commitAllowingStateLoss()
+        }
     }
     /**
+     * This method is called before an activity may be killed so that when it comes back some time in the future it can restore its state..
+     *
+     *
+     * it stores the image video or sound file path
+     *
+     * @param savedInstanceState Define potentially saved parameters due to configurations changes.
+     */
+    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        savedInstanceState.putString("STORY", story)
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState)
+    }
+    /**
+     * initiate Fragment transaction.
+     *
+     *
+     *
+     * @see StoriesImportExportFragment
+     */
+    fun fragmentTransactionStart() {
+        val frag = StoriesImportExportFragment()
+        val bundle = Bundle()
+        bundle.putString("STORY", story)
+        frag.arguments = bundle
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag, "StoriesImportExportFragment")
+        ft.addToBackStack(null)
+        ft.commitAllowingStateLoss()
+    }
+     /**
      * Called when the user taps the add button from stories settings.
      *
      * Refer to [stackoverflow](https://stackoverflow.com/questions/65203681/how-to-create-multiple-files-at-once-using-android-storage-access-framework)
@@ -126,12 +156,32 @@ class SettingsStoriesImportExportActivity : ActivityAbstractClass()
      * @param v view of tapped button
      */
     fun storiesImportExport(v: View?) {
-        // Choose a directory using the system's file picker.
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-        // Optionally, specify a URI for the directory that should be opened in
-        // the system file picker when it loads.
-        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.DIRECTORY_DOWNLOADS)
-        exportStorySearchActivityResultLauncher!!.launch(intent)
+        val stieRBImport = findViewById<View>(R.id.radio_import) as RadioButton
+        val stieRBExport = findViewById<View>(R.id.radio_export) as RadioButton
+//        if (radiobuttonStoriesExportButtonClicked) {
+        if (stieRBExport.isChecked()) {
+            // Choose a directory using the system's file picker.
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+            // Optionally, specify a URI for the directory that should be opened in
+            // the system file picker when it loads.
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.DIRECTORY_DOWNLOADS)
+            exportStorySearchActivityResultLauncher!!.launch(intent)
+        }
+//        if (radiobuttonStoriesImportButtonClicked) {
+        if (stieRBImport.isChecked()) {
+            // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
+            // browser.
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            // Filter to only show results that can be "opened", such as a
+            // file (as opposed to a list of contacts or timezones)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            // Filter to show only images, using the image MIME data type.
+            // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
+            // To search for all documents available via installed storage providers,
+            // it would be "*/*".
+            intent.type = "application/zip"
+            importStorySearchActivityResultLauncher!!.launch(intent)
+        }
     }
 
     /**
@@ -170,17 +220,10 @@ class SettingsStoriesImportExportActivity : ActivityAbstractClass()
      */
     fun storiesSearch(view: View?) {
         val textWord1 = findViewById<View>(R.id.storytosearch) as EditText
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-        voiceToBeRecordedInStories!!.story =
+        story =
             textWord1.text.toString().lowercase(Locale.getDefault())
         //
-        val frag = StoriesImportExportFragment(R.layout.activity_settings_stories_import_export)
-        val ft = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.settings_container, frag)
-        ft.addToBackStack(null)
-        ft.commit()
+        fragmentTransactionStart()
     }
 
     /**
@@ -223,30 +266,32 @@ class SettingsStoriesImportExportActivity : ActivityAbstractClass()
                         // There are no request codes
                         val resultData = result.data
                         // doSomeOperations();
-                        storyTreeUri = null
+                        var storyTreeUri: Uri? = null
                         //                            filePath = getString(R.string.non_trovato);
                         if (resultData != null) {
                             storyTreeUri = Objects.requireNonNull(resultData).data
                             val zipFolder = DocumentFile.fromTreeUri(context, storyTreeUri!!)
                             //
-                            if (isStoragePermissionGranted) {
-                                //
-                                // Viewmodel
-                                // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-                                // (maybe it is not necessary to call observe)
-                                viewModel.getSelectedItem()
-                                    .observe((context as LifecycleOwner)) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
-                                        // Perform an action with the latest item data
-                                        voiceToBeRecordedInStories.story =
+//                            if (isStoragePermissionGranted)
+                            if ((isStoragePermissionGranted) || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU))
+                            // if the version code >= TIRAMISU (version 33 = Android 13)
+                            // you don't need to ask for StoragePermission
+                            {
+                                        story =
                                             getString(R.string.nome_storia)
                                         //
                                         realm = Realm.getDefaultInstance()
                                         //
                                         val textWord1 =
                                             findViewById<View>(R.id.storytosearch) as EditText
-                                        if (textWord1.text.toString() != "" && !(radiobuttonStoriesImportButtonClicked && radiobuttonStoriesExportButtonClicked) && !(!radiobuttonStoriesImportButtonClicked && !radiobuttonStoriesExportButtonClicked)
+                                        val stieRBImport = findViewById<View>(R.id.radio_import) as RadioButton
+                                        val stieRBExport = findViewById<View>(R.id.radio_export) as RadioButton
+                                        if (textWord1.text.toString() != "" &&
+//                                            !(radiobuttonStoriesImportButtonClicked && radiobuttonStoriesExportButtonClicked) &&
+//                                            !(!radiobuttonStoriesImportButtonClicked && !radiobuttonStoriesExportButtonClicked)
+                                            !(stieRBImport.isChecked() && stieRBExport.isChecked()) &&
+                                            !(!stieRBImport.isChecked() && !stieRBExport.isChecked())
                                         ) {
-                                            if (radiobuttonStoriesExportButtonClicked) {
                                                 val resultsStories = realm.where(
                                                     Stories::class.java
                                                 )
@@ -487,106 +532,151 @@ class SettingsStoriesImportExportActivity : ActivityAbstractClass()
                                                 } catch (e: IOException) {
                                                     e.printStackTrace()
                                                 }
-                                            }
-                                            if (radiobuttonStoriesImportButtonClicked) {
-                                                // creo le dir della storia
-                                                val rootPath = context.filesDir.absolutePath
-                                                val dirName = textWord1.text.toString()
-                                                    .lowercase(Locale.getDefault())
-                                                val d = File("$rootPath/$dirName")
-                                                if (!d.exists()) {
-                                                    d.mkdirs()
-                                                } else {
-                                                    d.delete()
-                                                    d.mkdirs()
-                                                }
-                                                val dcsv = File("$rootPath/$dirName/csv")
-                                                dcsv.mkdirs()
-                                                val dimages = File("$rootPath/$dirName/images")
-                                                dimages.mkdirs()
-                                                val dvideos = File("$rootPath/$dirName/videos")
-                                                dvideos.mkdirs()
-                                                val dsounds = File("$rootPath/$dirName/sounds")
-                                                dsounds.mkdirs()
-                                                assert(zipFolder != null)
-                                                val documentFileNewFile =
-                                                    zipFolder!!.findFile("$dirName.zip")!!
-                                                val zipFileUri = documentFileNewFile.uri
-                                                try {
-                                                    copyFileFromSharedToInternalStorage(
-                                                        context,
-                                                        zipFileUri,
-                                                        "$dirName.zip"
-                                                    )
-                                                } catch (e: IOException) {
-                                                    e.printStackTrace()
-                                                }
-                                                // unzippo la directory di input
-                                                // errore qui
-                                                try {
-                                                    extractFolder(
-                                                        File(rootPath),
-                                                        File("$rootPath/$dirName.zip")
-                                                    )
-                                                } catch (e: IOException) {
-                                                    e.printStackTrace()
-                                                }
-                                                // creo copia dei file suono
-                                                copyFilesInFolderToRoot(context,"$rootPath/$dirName/sounds")
-                                                // creo copia dei file video
-                                                copyFilesInFolderToRoot(context,"$rootPath/$dirName/videos")
-                                                // creo copia dei file immagini
-                                                copyFilesInFolderToRoot(context,"$rootPath/$dirName/images")
-                                                // creo file csv
-                                                copyFilesInFolderToRoot(context,"$rootPath/$dirName/csv")
-                                                // creo la storia
-                                                Sounds.importFromCsvFromInternalStorage(
-                                                    context,
-                                                    realm
-                                                )
-                                                Videos.importFromCsvFromInternalStorage(
-                                                    context,
-                                                    realm
-                                                )
-                                                importStoryFromCsvFromInternalStorage(
-                                                    context,
-                                                    realm,
-                                                    dirName
-                                                )
-                                                renumberAStory(realm, dirName)
-                                                GameParameters.importFromCsvFromInternalStorage(
-                                                    context,
-                                                    realm
-                                                )
-                                            }
-                                            // clear fields of viewmodel data class
-                                            voiceToBeRecordedInStories.story =
+                                            //
+                                            story =
                                                 textWord1.text.toString().lowercase(
                                                     Locale.getDefault()
                                                 )
-                                            voiceToBeRecordedInStories.phraseNumberInt = 0
-                                            voiceToBeRecordedInStories.wordNumberInt = 0
-                                            voiceToBeRecordedInStories.word = ""
-                                            voiceToBeRecordedInStories.uriType = ""
-                                            voiceToBeRecordedInStories.uri = ""
-                                            voiceToBeRecordedInStories.answerActionType = ""
-                                            voiceToBeRecordedInStories.answerAction = ""
-                                            voiceToBeRecordedInStories.video = ""
-                                            voiceToBeRecordedInStories.sound = ""
-                                            voiceToBeRecordedInStories.soundReplacesTTS = ""
                                         }
-                                        // view the stories import / export settings fragment initializing StoriesImportExportFragment (FragmentTransaction
-                                        // switch between Fragments).
-                                        val ft = supportFragmentManager.beginTransaction()
-                                        //
-                                        val frag = StoriesImportExportFragment(R.layout.activity_settings_stories_import_export)
-                                        //
-                                        ft.replace(R.id.settings_container, frag)
-                                        ft.addToBackStack(null)
-                                        ft.commit()
-                                    }
-                                //
+                                        fragmentTransactionStart()
                             }
+                        }
+                    }
+                }
+            })
+    }
+    /**
+     * Called when the user taps export tables button.
+     *
+     * at the end the activity is notified to view the settings menu.
+     *
+     * @see isStoragePermissionGranted
+     *
+     * @see copyFile
+     *
+     * @see zipFileAtPath
+     *
+     * @see copyFileFromSharedToInternalStorage
+     *
+     * @see extractFolder
+     *
+     * @see copyFilesInFolderToRoot
+     *
+     * @see StoriesImportExportFragment
+     *
+     * @see com.sampietro.NaiveAAC.activities.Graphics.Images
+     *
+     * @see Videos
+     *
+     * @see Sounds
+     *
+     * @see GameParameters
+     *
+     * @see Stories
+     */
+    fun setImportStorySearchActivityResultLauncher() {
+        //
+        // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+        importStorySearchActivityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            object : ActivityResultCallback<ActivityResult?> {
+                override fun onActivityResult(result: ActivityResult?) {
+                    if (result!!.resultCode == RESULT_OK) {
+                        val resultData = result.data
+                        // doSomeOperations();
+                        if (resultData != null) {
+                            val uri = Objects.requireNonNull(resultData).data
+                            //
+                            try {
+                                val filePath =
+                                    copyFileFromSharedToInternalStorageAndGetPath(
+                                        context,
+                                        uri!!
+                                    )
+                            } catch (e: URISyntaxException) {
+                                e.printStackTrace()
+                            }
+                            // The query, because it only applies to a single document, returns only
+                            // one row. There's no need to filter, sort, or select fields,
+                            // because we want all fields for one document.
+                            val cursor: Cursor? = context.contentResolver.query(
+                                uri!!, null, null, null, null, null)
+                            var displayName: String? = null
+                            cursor?.use {
+                                // moveToFirst() returns false if the cursor has 0 rows. Very handy for
+                                // "if there's anything to look at, look at it" conditionals.
+                                if (it.moveToFirst()) {
+                                    // Note it's called "Display Name". This is
+                                    // provider-specific, and might not necessarily be the file name.
+                                    val myCursorColumnIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                                    displayName =
+                                        it.getString(myCursorColumnIndex)
+                                }
+                            }
+                            //
+                            story =
+                                getString(R.string.nome_storia)
+                            //
+                            realm = Realm.getDefaultInstance()
+                            //
+                            // creo le dir della storia
+                            val rootPath = context.filesDir.absolutePath
+                            val dirName = displayName!!.substring(0,
+                                displayName!!.indexOf("."))
+                            val d = File("$rootPath/$dirName")
+                            if (!d.exists()) {
+                                d.mkdirs()
+                            } else {
+                                d.delete()
+                                d.mkdirs()
+                            }
+                            val dcsv = File("$rootPath/$dirName/csv")
+                            dcsv.mkdirs()
+                            val dimages = File("$rootPath/$dirName/images")
+                            dimages.mkdirs()
+                            val dvideos = File("$rootPath/$dirName/videos")
+                            dvideos.mkdirs()
+                            val dsounds = File("$rootPath/$dirName/sounds")
+                            dsounds.mkdirs()
+                            // unzippo la directory di input
+                            try {
+                                extractFolder(
+                                    File(rootPath),
+                                    File("$rootPath/$dirName.zip")
+                                )
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
+                            // creo copia dei file suono
+                            copyFilesInFolderToRoot(context,"$rootPath/$dirName/sounds")
+                            // creo copia dei file video
+                            copyFilesInFolderToRoot(context,"$rootPath/$dirName/videos")
+                            // creo copia dei file immagini
+                            copyFilesInFolderToRoot(context,"$rootPath/$dirName/images")
+                            // creo file csv
+                            copyFilesInFolderToRoot(context,"$rootPath/$dirName/csv")
+                            // creo la storia
+                            Sounds.importFromCsvFromInternalStorage(
+                                context,
+                                realm
+                            )
+                            Videos.importFromCsvFromInternalStorage(
+                                context,
+                                realm
+                            )
+                            importStoryFromCsvFromInternalStorage(
+                                context,
+                                realm,
+                                dirName
+                            )
+                            renumberAStory(realm, dirName)
+                            GameParameters.importFromCsvFromInternalStorage(
+                                context,
+                                realm
+                            )
+                            story =
+                                dirName
+                            fragmentTransactionStart()
                         }
                     }
                 }

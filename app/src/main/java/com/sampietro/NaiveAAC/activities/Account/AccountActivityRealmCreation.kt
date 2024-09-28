@@ -108,7 +108,7 @@ class AccountActivityRealmCreation : AccountActivityAbstractClass() {
                 .add(AccountActionbarFragment(), "AccountActionbarFragment")
                 .add(
                     R.id.settings_container,
-                    AccountFragment(R.layout.activity_settings_account),
+                    AccountFragment(),
                     getString(R.string.account_fragment)
                 )
                 .commit()

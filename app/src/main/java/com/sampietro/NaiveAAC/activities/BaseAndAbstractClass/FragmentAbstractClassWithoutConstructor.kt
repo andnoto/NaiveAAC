@@ -1,6 +1,7 @@
 package com.sampietro.NaiveAAC.activities.BaseAndAbstractClass
 
 import android.content.Context
+import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 
@@ -12,8 +13,9 @@ import androidx.fragment.app.Fragment
  *
  * @version     5.0, 01/04/2024
  */
-abstract class FragmentAbstractClass(@LayoutRes contentLayoutId : Int = 0) : Fragment(contentLayoutId) {
+abstract class FragmentAbstractClassWithoutConstructor() : Fragment() {
     lateinit var ctext: Context
+    lateinit var rootView: View
 
     /**
      * context annotation

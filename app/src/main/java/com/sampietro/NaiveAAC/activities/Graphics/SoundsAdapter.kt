@@ -129,7 +129,10 @@ class SoundsAdapter(private val context: Context, private val sounds: List<Sound
         val position = listview.getPositionForView(v)
         // delete Sounds
         realm = Realm.getDefaultInstance()
-        val results = realm.where(Sounds::class.java).findAll()
+        var results = realm.where(Sounds::class.java).findAll()
+        //
+        results = results.sort("descrizione")
+        //
         realm.beginTransaction()
         val daCancellare = results[position]!!
         daCancellare.deleteFromRealm()

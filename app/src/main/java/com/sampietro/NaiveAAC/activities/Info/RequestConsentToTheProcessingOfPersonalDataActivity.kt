@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.sampietro.NaiveAAC.R
 
@@ -19,7 +18,6 @@ import com.sampietro.NaiveAAC.R
  */
 class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() {
     //
-    var rootViewFragment: View? = null
     lateinit var context: Context
     lateinit var sharedPref: SharedPreferences
 
@@ -44,7 +42,7 @@ class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() 
             fragmentManager!!.beginTransaction()
                 .add(
                     R.id.game_container,
-                    Fragment(R.layout.activity_requestconsenttotheprocessingofpersonaldata),
+                    RequestConsentToTheProcessingOfPersonalDataFragment(),
                     "RequestConsentToTheProcessingOfPersonalDataFragment"
                 )
                 .commit()
@@ -59,7 +57,7 @@ class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() 
      * @param view view of tapped text
      */
     fun onClickInformativa(view: View?) {
-        val frag = Fragment(R.layout.activity_privacy_information)
+        val frag = InformativaFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.game_container, frag, "InformativaFragment")
         ft.addToBackStack(null)
@@ -73,7 +71,7 @@ class RequestConsentToTheProcessingOfPersonalDataActivity : AppCompatActivity() 
      * @param view view of tapped text
      */
     fun onClickTermini(view: View?) {
-        val frag = Fragment(R.layout.activity_eula_information,)
+        val frag = TerminiFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.game_container, frag, "TerminiFragment")
         ft.addToBackStack(null)

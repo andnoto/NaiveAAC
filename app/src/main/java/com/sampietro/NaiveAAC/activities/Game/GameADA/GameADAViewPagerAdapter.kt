@@ -61,7 +61,8 @@ class GameADAViewPagerAdapter
         bundle.putInt(context.getString(R.string.word_to_display_index), position)
         bundle.putString(context.getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
         //
-        fragment = GameADAViewPagerFragment(R.layout.activity_game_ada_viewpager_content)
+//        fragment = GameADAViewPagerFragment(R.layout.activity_game_ada_viewpager_content)
+        fragment = GameADAViewPagerFragment()
         fragment.arguments = bundle
         //
         return fragment

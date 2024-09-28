@@ -27,11 +27,11 @@ import kotlin.properties.Delegates
  *
  *
  * @version     5.0, 01/04/2024
- * @see com.sampietro.simsimtest.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
+ * @see com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
  *
- * @see com.sampietro.simsimtest.activities.Game.Game1.Game1Activity
+ * @see com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity
  *
- * @see com.sampietro.simsimtest.activities.Game.Game2.Game2Activity
+ * @see com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity
  *
  */
 abstract class GameActivityAbstractClass : AppCompatActivity()

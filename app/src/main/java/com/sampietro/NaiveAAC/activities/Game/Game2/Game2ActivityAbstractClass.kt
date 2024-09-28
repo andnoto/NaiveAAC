@@ -8,7 +8,6 @@ import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.splitString
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchId
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.destroyRecognizer
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import io.realm.Realm
@@ -35,20 +34,6 @@ abstract class Game2ActivityAbstractClass : GameActivityAbstractClassWithRecogni
     var toSpeak: String? = null
     var reminderPhraseCounter = 0
 
-    /**
-     * destroy SpeechRecognizer, TTS shutdown
-     *
-     * @see android.app.Activity.onDestroy
-     */
-    override fun onDestroy() {
-        super.onDestroy()
-        destroyRecognizer()
-        // TTS
-        if (tTS1 != null) {
-            tTS1!!.stop()
-            tTS1!!.shutdown()
-        }
-    }
     //
     /**
      * Called on beginning of speech.

@@ -8,10 +8,12 @@ import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromAssetsToInternalStorage
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
 import com.sampietro.NaiveAAC.activities.Stories.Stories
+import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import java.io.File
@@ -381,13 +383,52 @@ class MyApplication : Application() {
                 copyFileFromAssetsToInternalStorage(context,"csv", "toaddversion17-images.csv", "images.csv")
                 copyFileFromAssetsToInternalStorage(context,"csv", "toaddversion17-gameparameters.csv", "gameparameters.csv")
                 copyFileFromAssetsToInternalStorage(context,"csv", "bluetoothdevices.csv", "bluetoothdevices.csv")
+                copyFileFromAssetsToInternalStorage(context,"csv", "listsofnames.csv", "listsofnames.csv")
+                copyFileFromAssetsToInternalStorage(context,"csv", "wordpairs.csv", "wordpairs.csv")
             } catch (e: IOException) {
                 e.printStackTrace()
+            }
+            //
+            val daCancellare = realm.where(
+                ListsOfNames::class.java
+            ).equalTo("fromAssets", "Y").findAll()
+            val daCancellareSize = daCancellare.size
+            if (daCancellareSize != 0) {
+                realm.beginTransaction()
+                daCancellare.deleteAllFromRealm()
+                realm.commitTransaction()
+            }
+            val daCancellarewp = realm.where(
+                WordPairs::class.java
+            ).equalTo("fromAssets", "Y").findAll()
+            val daCancellarewpSize = daCancellarewp.size
+            if (daCancellarewpSize != 0) {
+                realm.beginTransaction()
+                daCancellarewp.deleteAllFromRealm()
+                realm.commitTransaction()
             }
             //
             Images.importFromCsvFromInternalStorage(context, realm, "Append")
             GameParameters.importFromCsvFromInternalStorage(context, realm, "Append")
             BluetoothDevices.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            ListsOfNames.importFromCsvFromInternalStorage(context, realm, "Append")
+            WordPairs.importFromCsvFromInternalStorage(context, realm, "Append")
+            // register the linked lists of names
+            val sharedPref = getSharedPreferences(
+                    getString(R.string.preference_file_key), MODE_PRIVATE
+            )
+            //
+            val sharedLastPlayer =
+                    sharedPref.getString(getString(R.string.preference_LastPlayer), "DEFAULT")
+            realm.beginTransaction()
+            val listsOfNames = realm.createObject(ListsOfNames::class.java)
+            // set the fields here
+            listsOfNames.keyword = getString(R.string.famiglia)
+            listsOfNames.word = sharedLastPlayer
+            listsOfNames.elementActive = "A"
+            listsOfNames.isMenuItem = "N"
+            listsOfNames.fromAssets = ""
+            realm.commitTransaction()
             //
             oldVersionCode++
         }

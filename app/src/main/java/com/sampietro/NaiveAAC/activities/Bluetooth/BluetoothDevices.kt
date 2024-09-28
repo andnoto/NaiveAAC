@@ -118,8 +118,6 @@ open class BluetoothDevices : RealmObject() {
                 realm.commitTransaction()
             }
             //
-            val rootPath = context.filesDir.absolutePath
-            //
             val FILE_NAME = "bluetoothdevices.csv"
             //adding to db
             var br: BufferedReader? = null

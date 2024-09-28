@@ -20,7 +20,7 @@ import java.util.Locale
  *
  * @see Game2Activity
  */
-abstract class Game2FragmentAbstractClass(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId)  {
+abstract class Game2FragmentAbstractClass() : GameFragmentAbstractClass()  {
     lateinit var hearingImageButton: ImageButton
     lateinit var sentenceToAdd: EditText
     //

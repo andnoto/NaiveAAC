@@ -1,13 +1,18 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
+import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.SurfaceView
 import android.view.View
-import android.widget.ListView
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper
 import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.Graphics.ImagesAdapter
-import io.realm.Realm
 
 /**
  * <h1>ImagesFragment</h1>
@@ -18,50 +23,47 @@ import io.realm.Realm
  * @version     5.0, 01/04/2024
  * @see SettingsActivity
  */
-class ImagesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
-    //
-    private lateinit var realm: Realm
-
-    //
-    private lateinit var listView: ListView
-    private var adapter: ImagesAdapter? = null
-
+class ImagesFragment() : FragmentAbstractClassWithoutConstructor() {
     /**
-     * prepares the ui also using a listview
+     * prepares the ui
      *
-     * @see androidx.fragment.app.Fragment.onViewCreated
+     * @see androidx.fragment.app.Fragment.onCreateView
      *
      * @see Images
      *
      * @see ImagesAdapter
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_settings_images, container, false)
         // logic of fragment
-        realm = Realm.getDefaultInstance()
-        // ListView
-        // 1) we get a reference to the data structure through the RealmResults class which constitutes
-        // the query result set and is an iterable collection accessible with Java constructs:
-        // for loop, basic access to position and Iterator.
-        // The approach for realm queries is object-oriented.
-        // The where method will retrieve the objects from the specified class and the result will
-        // be treated with filtrate by other specific methods.
-        // At the end of the selection configuration, the findAll method will be invoked to retrieve
-        // all the corresponding results.
-        // 2) we instantiate an Adapter by assigning it, the collection and the layout related to
-        // each single row
-        // 3) we retrieve the ListView prepared in the layout and assign it the reference to the adapter
-        // which will be your View "supplier".
-        val results = realm.where(
-            Images::class.java
-        ).findAll()
+        val bundle = this.arguments
+        val stringUri: String?
         //
-        listView = view.findViewById<View>(R.id.listview) as ListView
+        val descrizione: String?
         //
-        adapter = ImagesAdapter(ctext, results, listView)
+        if (bundle != null) {
+            //
+            descrizione = bundle.getString("descrizione")
+            val immD = rootView.findViewById<View>(R.id.imageDescription) as EditText
+            immD.setText(descrizione)
+            //
+            stringUri = bundle.getString("URI")
+            if (stringUri != "none") {
+                val uri = Uri.parse(stringUri)
+                //
+                val myImage = rootView.findViewById<View>(R.id.imageviewTest) as ImageView
+                GraphicsAndPrintingHelper.showImage(ctext, uri, myImage)
+            }
+        }
         //
-        listView.adapter = adapter
+        return rootView
     }
 }

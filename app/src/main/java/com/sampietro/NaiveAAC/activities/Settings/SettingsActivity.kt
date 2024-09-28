@@ -5,10 +5,9 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.DocumentsContract
@@ -29,7 +28,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.documentfile.provider.DocumentFile
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.snackbar.Snackbar
@@ -68,7 +66,6 @@ import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
 import io.realm.RealmResults
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.net.URISyntaxException
@@ -152,17 +149,39 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         //
         setExportCsvSearchActivityResultLauncher()
         //
-        if (savedInstanceState == null) {
+        if (savedInstanceState != null) {
+            // The onSaveInstanceState method is called before an activity may be killed
+            // (for Screen Rotation Handling) so that
+            // when it comes back it can restore its state.
+            filePath = savedInstanceState.getString("IMAGE VIDEO OR SOUND FILE PATH")
+        }
+        else
+        {
+            filePath = getString(R.string.non_trovato)
             fragmentManager = supportFragmentManager
             fragmentManager!!.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
-                .add(R.id.settings_container, Fragment(R.layout.activity_settings_menu), "MenuSettingsFragment")
+                .add(R.id.settings_container, MenuSettingsFragment(), "MenuSettingsFragment")
                 .commit()
         }
         // The MainActivity class provides an instance of Realm wherever needed in the application.
         // To use it in the Activity, a reference must be obtained to a Realm object in the onCreate method.
         // The Realm object must be closed in the onDestroy method.
         realm = Realm.getDefaultInstance()
+    }
+    /**
+     * This method is called before an activity may be killed so that when it comes back some time in the future it can restore its state..
+     *
+     *
+     * it stores the image video or sound file path
+     *
+     * @param savedInstanceState Define potentially saved parameters due to configurations changes.
+     */
+    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        //
+        savedInstanceState.putString("IMAGE VIDEO OR SOUND FILE PATH", filePath)
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState)
     }
     /**
      * receive game to set.
@@ -186,7 +205,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     fun submitAccount(view: View?) {
         // view the fragment account initializing AccountFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = AccountFragment(R.layout.activity_settings_account)
+        val frag = AccountFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -314,7 +333,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         }
         // view the fragment settings initializing MenuSettingsFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = Fragment(R.layout.activity_settings_menu)
+        val frag = MenuSettingsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -350,7 +369,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     fun submitChoiseOfGameToSet(view: View?) {
         // view the choise of game to set fragment initializing ChoiseOfGameToSetFragment
         // (FragmentTransaction switch between Fragments).
-        val frag = ChoiseOfGameToSetFragment(R.layout.activity_settings_games_menu)
+        val frag = ChoiseOfGameToSetFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -374,7 +393,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         val ft: FragmentTransaction
         when (textGameToSet) {
             getString(R.string.comunicatore) -> {
-                val phrasesFragment = PhrasesFragment(R.layout.activity_settings_phrases)
+                val phrasesFragment = PhrasesFragment()
                 ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, phrasesFragment)
                 ft.addToBackStack(null)
@@ -468,7 +487,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         realm.commitTransaction()
         // view the menu settings fragment initializing MenuSettingsFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = Fragment(R.layout.activity_settings_menu)
+        val frag = MenuSettingsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -500,7 +519,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     fun submitAdvancedSettings(view: View?) {
         // view the advanced settings initializing AdvancedSettingsFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = Fragment(R.layout.activity_settings_advanced_settings)
+        val frag = AdvancedSettingsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -519,7 +538,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     fun generalSettings(view: View?) {
         // view the general settings initializing GeneralSettingsFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = Fragment(R.layout.activity_settings_general_settings)
+        val frag = GeneralSettingsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -723,7 +742,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             editor.apply()
             // view the advanced settings initializing AdvancedSettingsFragment (FragmentTransaction
             // switch between Fragments).
-            val frag = Fragment(R.layout.activity_settings_advanced_settings)
+            val frag = AdvancedSettingsFragment()
             val ft = supportFragmentManager.beginTransaction()
             ft.replace(R.id.settings_container, frag)
             ft.addToBackStack(null)
@@ -743,7 +762,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     fun bluetoothDevicesSettings(view: View?) {
         // view the Bluetooth Devices settings initializing BluetoothDevicesFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = BluetoothDevicesFragment(R.layout.activity_settings_bluetooth_devices)
+        val frag = BluetoothDevicesFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -829,7 +848,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                 d.cancel()
                 // view the Bluetooth Devices settings initializing BluetoothDevicesFragment
                 // (FragmentTransaction switch between Fragments).
-                val frag = BluetoothDevicesFragment(R.layout.activity_settings_bluetooth_devices)
+                val frag = BluetoothDevicesFragment()
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
                 ft.addToBackStack(null)
@@ -851,7 +870,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     override fun reloadBluetoothDevicesFragment() {
         // view the Bluetooth Devices settings initializing BluetoothDevicesFragment
         // (FragmentTransaction switch between Fragments).
-        val frag = BluetoothDevicesFragment(R.layout.activity_settings_bluetooth_devices)
+        val frag = BluetoothDevicesFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -869,7 +888,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     fun gameParametersSettings(view: View?) {
         // view the game parameters settings initializing GameParametersSettingsFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = GameParametersSettingsFragment(R.layout.activity_settings_game_parameters)
+        val frag = GameParametersSettingsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -913,7 +932,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         // Is the button now checked?
         val checked = (view as RadioButton).isChecked
         when (view.getId()) {
-            R.id.radio_yes -> if (checked) {
+            R.id.radio_usevideoandsound -> if (checked) {
                 //
                 radiobuttonGameParametersUseVideoAndSoundClicked = true
                 radiobuttonGameParametersDoesNotUseVideoAndSoundClicked = false
@@ -945,6 +964,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         val gamI = findViewById<View>(R.id.gameinfo) as EditText
         val gamJC = findViewById<View>(R.id.gamejavaclass) as EditText
         val gamP = findViewById<View>(R.id.gameparameter) as EditText
+        val gamRBActive = findViewById<View>(R.id.radio_active) as RadioButton
+        val gamRBUseVideoAndSound = findViewById<View>(R.id.radio_usevideoandsound) as RadioButton
         if (gamD.length() > 0 && gamI.length() > 0 && gamJC.length() > 0 && gamP.length() > 0 && filePath != null &&
             filePath != getString(R.string.non_trovato)
         ) {
@@ -954,27 +975,46 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             realm.beginTransaction()
             val gp = realm.createObject(GameParameters::class.java)
             gp.gameName = gamD.text.toString()
-            if (radiobuttonGameParametersActiveClicked) gp.gameActive = "A" else gp.gameActive =
-                "N" // default
+            if (gamRBActive.isChecked()) gp.gameActive = "A"
+                else gp.gameActive = "N" // default
             gp.gameInfo = gamI.text.toString()
             gp.gameJavaClass = gamJC.text.toString()
             gp.gameParameter = gamP.text.toString()
-            if (radiobuttonGameParametersUseVideoAndSoundClicked) gp.gameUseVideoAndSound =
-                "Y" else gp.gameUseVideoAndSound = "N" // default
+            if (gamRBUseVideoAndSound.isChecked()) gp.gameUseVideoAndSound = "Y"
+                else gp.gameUseVideoAndSound = "N" // default
             gp.gameIconType = gameIconType
             gp.gameIconPath = filePath
             gp.fromAssets = ""
             realm.commitTransaction()
             // view the game parameters settings initializing GameParametersSettingsFragment (FragmentTransaction
             // switch between Fragments).
-            val frag = GameParametersSettingsFragment(R.layout.activity_settings_game_parameters)
+            val frag = GameParametersSettingsFragment()
             val ft = supportFragmentManager.beginTransaction()
             ft.replace(R.id.settings_container, frag)
             ft.addToBackStack(null)
             ft.commit()
         }
     }
-
+    /**
+     * Called when the user taps the show list button .
+     *
+     * the activity is notified to view the games list.
+     *
+     *
+     * @param view view of tapped button
+     * @see GameParametersSettingsFragment
+     *
+     * @see GameParametersListFragment
+     */
+    fun gameParametersList(view: View?) {
+        // view the videos list fragment initializing GameParametersListFragment (FragmentTransaction
+        // switch between Fragments).
+        val frag = GameParametersListFragment()
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
     /**
      * on callback from GameParametersAdapter to this Activity
      *
@@ -996,7 +1036,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         realm.commitTransaction()
         // view the game parameters settings initializing GameParametersSettingsFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = GameParametersSettingsFragment(R.layout.activity_settings_game_parameters)
+        val frag = GameParametersSettingsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -1021,7 +1061,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         results = realm.where(GameParameters::class.java).findAll()
         results = results.sort(getString(R.string.gamename))
         //
-        val frag = GameParametersSettingsFragment(R.layout.activity_settings_game_parameters)
+        val frag = GameParametersSettingsFragment()
         //
         val bundle = Bundle()
         val daModificare = results[position]!!
@@ -1087,7 +1127,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         checkboxGrammaticalExceptionsChecked = false
         // view the import tables settings initializing DataImportSettingsFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = Fragment(R.layout.activity_settings_data_import)
+        val frag = DataImportSettingsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -1233,38 +1273,38 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                             csvTreeUri = Objects.requireNonNull(resultData).data
                             val inputFolder = DocumentFile.fromTreeUri(context, csvTreeUri!!)
                             //
-                            if (isStoragePermissionGranted) {
+                            if ((isStoragePermissionGranted) || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU))
+                                // if the version code >= TIRAMISU (version 33 = Android 13)
+                                // you don't need to ask for StoragePermission
+                                {
+                                val impRBReplace = findViewById<View>(R.id.radio_replace) as RadioButton
+                                val impCBImages = findViewById<View>(R.id.checkbox_images) as CheckBox
+                                val impCBVideos = findViewById<View>(R.id.checkbox_videos) as CheckBox
+                                val impCBSounds = findViewById<View>(R.id.checkbox_sounds) as CheckBox
+                                val impCBPhrases = findViewById<View>(R.id.checkbox_phrases) as CheckBox
+                                val impCBWordpairs = findViewById<View>(R.id.checkbox_wordpairs) as CheckBox
+                                val impCBListsOfNames = findViewById<View>(R.id.checkbox_listsofnames) as CheckBox
+                                val impCBStories = findViewById<View>(R.id.checkbox_stories) as CheckBox
+                                val impCBGrammaticalExceptions = findViewById<View>(R.id.checkbox_grammaticalexceptions) as CheckBox
+                                val impCBGameParameters = findViewById<View>(R.id.checkbox_gameparameters) as CheckBox
+                                //
                                 var importMode = getString(R.string.append) // default import mode
-                                if (radiobuttonDataImportReplaceClicked) importMode = getString(R.string.replace)
-                                if (checkboxImagesChecked) {
+//                                if (radiobuttonDataImportReplaceClicked) importMode = getString(R.string.replace)
+                                if (impRBReplace.isChecked()) importMode = getString(R.string.replace)
+//                                if (checkboxImagesChecked) {
+                                if (impCBImages.isChecked()) {
                                     assert(inputFolder != null)
                                     //
                                     imagesImportFromZip(inputFolder!!)
                                     //
-//                                    val rootPath = context.filesDir.absolutePath
-//                                    val dirName = "Images"
-//                                    val inputFile = File("$rootPath/$dirName/images.csv")
-//                                    val outputFile = File("$rootPath/images.csv")
-//                                    copyFile(inputFile, outputFile)
-                                    //
-//                                    val documentFileNewFile = inputFolder.findFile("images.csv")!!
-//                                    val csvFileUri = documentFileNewFile.uri
-//                                    try {
-//                                        copyFileFromSharedToInternalStorage(
-//                                            context,
-//                                            csvFileUri,
-//                                            "images.csv"
-//                                        )
-//                                    } catch (e: IOException) {
-//                                        e.printStackTrace()
-//                                    }
                                     Images.importFromCsvFromInternalStorage(
                                         context,
                                         realm,
                                         importMode
                                     )
                                 }
-                                if (checkboxVideosChecked) {
+//                                if (checkboxVideosChecked) {
+                                if (impCBVideos.isChecked()) {
                                     assert(inputFolder != null)
                                     val documentFileNewFile = inputFolder!!.findFile("videos.csv")!!
                                     val csvFileUri = documentFileNewFile.uri
@@ -1283,7 +1323,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                         importMode
                                     )
                                 }
-                                if (checkboxSoundsChecked) {
+//                                if (checkboxSoundsChecked) {
+                                if (impCBSounds.isChecked()) {
                                     assert(inputFolder != null)
                                     val documentFileNewFile = inputFolder!!.findFile("sounds.csv")!!
                                     val csvFileUri = documentFileNewFile.uri
@@ -1302,7 +1343,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                         importMode
                                     )
                                 }
-                                if (checkboxPhrasesChecked) {
+//                                if (checkboxPhrasesChecked) {
+                                if (impCBPhrases.isChecked()) {
                                     assert(inputFolder != null)
                                     val documentFileNewFile =
                                         inputFolder!!.findFile("phrases.csv")!!
@@ -1322,7 +1364,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                         importMode
                                     )
                                 }
-                                if (checkboxWordPairsChecked) {
+//                                if (checkboxWordPairsChecked) {
+                                if (impCBWordpairs.isChecked()) {
                                     assert(inputFolder != null)
                                     val documentFileNewFile =
                                         inputFolder!!.findFile("wordpairs.csv")!!
@@ -1342,7 +1385,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                         importMode
                                     )
                                 }
-                                if (checkboxListsOfNamesChecked) {
+//                                if (checkboxListsOfNamesChecked) {
+                                if (impCBListsOfNames.isChecked()) {
                                     assert(inputFolder != null)
                                     val documentFileNewFile =
                                         inputFolder!!.findFile("listsofnames.csv")!!
@@ -1362,7 +1406,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                         importMode
                                     )
                                 }
-                                if (checkboxStoriesChecked) {
+//                                if (checkboxStoriesChecked) {
+                                if (impCBStories.isChecked()) {
                                     assert(inputFolder != null)
                                     val documentFileNewFile =
                                         inputFolder!!.findFile("stories.csv")!!
@@ -1385,7 +1430,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                         renumberStories(realm)
                                     }
                                 }
-                                if (checkboxGrammaticalExceptionsChecked) {
+//                                if (checkboxGrammaticalExceptionsChecked) {
+                                if (impCBGrammaticalExceptions.isChecked()) {
                                     assert(inputFolder != null)
                                     val documentFileNewFile =
                                         inputFolder!!.findFile("grammaticalexceptions.csv")!!
@@ -1405,7 +1451,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                         importMode
                                     )
                                 }
-                                if (checkboxGameParametersChecked) {
+//                                if (checkboxGameParametersChecked) {
+                                if (impCBGameParameters.isChecked()) {
                                     assert(inputFolder != null)
                                     val documentFileNewFile =
                                         inputFolder!!.findFile("gameparameters.csv")!!
@@ -1432,7 +1479,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                             }
                             when (myLayoutId) {
                                 R.layout.activity_settings_bluetooth_devices -> {
-                                    val frag = BluetoothDevicesFragment(myLayoutId)
+                                    val frag = BluetoothDevicesFragment()
                                     val ft = supportFragmentManager.beginTransaction()
                                     ft.replace(R.id.settings_container, frag)
                                     ft.addToBackStack(null)
@@ -1441,7 +1488,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                 R.layout.activity_settings_advanced_settings -> {
                                     // view the advanced settings initializing AdvancedSettingsFragment (FragmentTransaction
                                     // switch between Fragments).
-                                    val frag = Fragment(myLayoutId)
+                                    val frag = AdvancedSettingsFragment()
                                     val ft = supportFragmentManager.beginTransaction()
                                     ft.replace(R.id.settings_container, frag)
                                     ft.addToBackStack(null)
@@ -1500,7 +1547,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      * answer of [Ismail Osunlana](https://stackoverflow.com/users/11355432/ismail-osunlana)
      *
      * @param view view of tapped button
-     * @see .isStoragePermissionGranted
+     * @see isStoragePermissionGranted
      */
     fun exportTables(view: View?) {
         // Choose a directory using the system's file picker.
@@ -1555,7 +1602,11 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                             csvTreeUri = Objects.requireNonNull(resultData).data
                             val outputFolder = DocumentFile.fromTreeUri(context, csvTreeUri!!)
                             //
-                            if (isStoragePermissionGranted) {
+//                            if (isStoragePermissionGranted)
+                            if ((isStoragePermissionGranted) || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU))
+                            // if the version code >= TIRAMISU (version 33 = Android 13)
+                            // you don't need to ask for StoragePermission
+                            {
                                 Images.exporttoCsv(context, realm)
                                 //
                                 imagesExportToZip(outputFolder!!)
@@ -1615,7 +1666,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                             }
                             // view the fragment settings initializing MenuSettingsFragment (FragmentTransaction
                             // switch between Fragments).
-                            val frag = Fragment(R.layout.activity_settings_menu)
+                            val frag = MenuSettingsFragment()
                             val ft = supportFragmentManager.beginTransaction()
                             ft.replace(R.id.settings_container, frag)
                             ft.addToBackStack(null)
@@ -1672,8 +1723,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         val imagesList: MutableList<String?> = ArrayList()
         imagesList.addAll(imagesSet)
         // creo copia dei file immagini
-//        var finput: File
-//        var foutput: File
         val imagesSize = imagesList.size
         var irrh = 0
         while (irrh < imagesSize) {
@@ -1747,7 +1796,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     fun grammaticalExceptions(view: View?) {
         // view the grammatical exceptions settings initializing GrammaticalExceptionsFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = GrammaticalExceptionsFragment(R.layout.activity_settings_grammatical_exceptions)
+        val frag = GrammaticalExceptionsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -1791,14 +1840,33 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             realm.commitTransaction()
             // view the grammatical exceptions settings initializing GrammaticalExceptionsFragment
             // (FragmentTransaction switch between Fragments).
-            val frag = GrammaticalExceptionsFragment(R.layout.activity_settings_grammatical_exceptions)
+            val frag = GrammaticalExceptionsFragment()
             val ft = supportFragmentManager.beginTransaction()
             ft.replace(R.id.settings_container, frag)
             ft.addToBackStack(null)
             ft.commit()
         }
     }
-
+    /**
+     * Called when the user taps the show list button .
+     *
+     * the activity is notified to view the grammatical exceptions list.
+     *
+     *
+     * @param view view of tapped button
+     * @see GrammaticalExceptionsFragment
+     *
+     * @see GrammaticalExceptionsListFragment
+     */
+    fun grammaticalExceptionsList(view: View?) {
+        // view the grammatical exceptions list fragment initializing GrammaticalExceptionsListFragment (FragmentTransaction
+        // switch between Fragments).
+        val frag = GrammaticalExceptionsListFragment()
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
     /**
      * on callback from GrammaticalExceptionsAdapter to this Activity
      *
@@ -1812,7 +1880,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     override fun reloadGrammaticalExceptionsFragment() {
         // view the grammatical exceptions settings initializing GrammaticalExceptionsFragment
         // (FragmentTransaction switch between Fragments).
-        val frag = GrammaticalExceptionsFragment(R.layout.activity_settings_grammatical_exceptions)
+        val frag = GrammaticalExceptionsFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -1832,7 +1900,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         // view the pictograms to modify settings initializing PictogramsToModifyFragment
         // (FragmentTransaction switch between Fragments).
         val ft: FragmentTransaction
-        val pictogramsToModifyFragment = PictogramsToModifyFragment(R.layout.activity_settings_pictograms_to_modify)
+        val pictogramsToModifyFragment = PictogramsToModifyFragment()
         ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, pictogramsToModifyFragment)
         ft.addToBackStack(null)
@@ -1873,13 +1941,32 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         realm.commitTransaction()
         // view the pictograms to modify settings initializing PictogramsToModifyFragment
         // (FragmentTransaction switch between Fragments).
-        val frag = PictogramsToModifyFragment(R.layout.activity_settings_pictograms_to_modify)
+        val frag = PictogramsToModifyFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
         ft.commit()
     }
-
+    /**
+     * Called when the user taps the show list button .
+     *
+     * the activity is notified to view the pictograms to modify list.
+     *
+     *
+     * @param view view of tapped button
+     * @see PictogramsToModifyFragment
+     *
+     * @see PictogramsToModifyListFragment
+     */
+    fun pictogramsToModifyList(view: View?) {
+        // view the grammatical exceptions list fragment initializing PictogramsToModifyListFragment (FragmentTransaction
+        // switch between Fragments).
+        val frag = PictogramsToModifyListFragment()
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
+    }
     /**
      * on callback from PictogramsToModifyAdapter to this Activity
      *
@@ -1894,7 +1981,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         // view the pictograms to modify settings initializing PictogramsToModifyFragment
         // (FragmentTransaction switch between Fragments).
         val ft: FragmentTransaction
-        val pictogramsToModifyFragment = PictogramsToModifyFragment(R.layout.activity_settings_pictograms_to_modify)
+        val pictogramsToModifyFragment = PictogramsToModifyFragment()
         ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, pictogramsToModifyFragment)
         ft.addToBackStack(null)
@@ -1975,7 +2062,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     @JvmField
     var filePath: String? = null
     //    @JvmField
-    lateinit var byteArray: ByteArray
+//    lateinit var byteArray: ByteArray
     //
     /**
      * setting callbacks to search for images and videos via ACTION_OPEN_DOCUMENT which is
@@ -2025,25 +2112,6 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                 takeFlags
                             )
                             //
-                            var bitmap: Bitmap? = null
-                            //
-                            try {
-                                val source = ImageDecoder.createSource(
-                                    context.contentResolver,
-                                    uri!!
-                                )
-                                bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-                                    decoder.setTargetSampleSize(1) // shrinking by
-                                    decoder.isMutableRequired = true // this resolve the hardware type of bitmap problem
-                                }
-                            } catch (e: Exception) {
-                                e.printStackTrace()
-                            }
-                            //
-                            val stream = ByteArrayOutputStream()
-                            bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                            byteArray = stream.toByteArray()
-                            //
                             val myImage: ImageView
                             myImage = findViewById<View>(R.id.imageviewgameicon) as ImageView
                             showImage(context, uri, myImage)
@@ -2063,6 +2131,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                         // doSomeOperations();
                         uri = null
                         filePath = getString(R.string.non_trovato)
+                        //
+                        val accD = findViewById<View>(R.id.editTextTextAccount) as EditText
                         //
                         if (resultData != null) {
                             uri = Objects.requireNonNull(resultData).data
@@ -2097,29 +2167,33 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                         takeFlags
                                     )
                                     //
-                                    var bitmap: Bitmap? = null
+                                    val stringUri = uri.toString()
                                     //
-                                    try {
-                                        val source = ImageDecoder.createSource(
-                                            context.contentResolver,
-                                            uri!!
+                                    val frag = AccountFragment()
+                                    val bundle = Bundle()
+                                    //
+                                    if (accD.length() > 0) {
+                                        bundle.putString(
+                                            getString(R.string.descrizione),
+                                            accD.text.toString()
                                         )
-                                        bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-                                            decoder.setTargetSampleSize(1) // shrinking by
-                                            decoder.isMutableRequired = true // this resolve the hardware type of bitmap problem
-                                        }
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
+                                    } else {
+                                        bundle.putString(
+                                            getString(R.string.descrizione),
+                                            getString(R.string.nessuna)
+                                        )
                                     }
                                     //
+                                    bundle.putString(getString(R.string.uri), stringUri)
+                                    frag.arguments = bundle
+                                    val ft = supportFragmentManager.beginTransaction()
+                                    ft.replace(R.id.settings_container, frag)
+                                    ft.addToBackStack(null)
+                                    ft.commit()
                                     //
-                                    val stream = ByteArrayOutputStream()
-                                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                                    byteArray = stream.toByteArray()
-                                    //
-                                    val myImage: ImageView
-                                    myImage = findViewById<View>(R.id.imageviewaccounticon) as ImageView
-                                    showImage(context, uri, myImage)
+//                                    val myImage: ImageView
+//                                    myImage = findViewById<View>(R.id.imageviewaccounticon) as ImageView
+//                                    showImage(context, uri, myImage)
                                 }
                             }
                         }

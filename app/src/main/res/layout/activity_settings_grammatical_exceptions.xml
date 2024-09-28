@@ -10,9 +10,8 @@
         android:id="@+id/grammaticalexceptionssettings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="130dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
         android:hint="@string/edit_message"
         android:text="@string/eccezioni_grammaticali"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,8 +21,6 @@
         android:id="@+id/grammaticalexceptions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="8dp"
         android:orientation="vertical"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +33,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -52,15 +48,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text"
-                android:autofillHints="@string/parola_chiave" />
+                android:autofillHints="@string/parola_chiave"
+                android:inputType="text" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -76,8 +71,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text"
-                android:autofillHints="@string/tipo_eccezione" />
+                android:autofillHints="@string/tipo_eccezione"
+                android:inputType="text" />
 
         </LinearLayout>
 
@@ -100,8 +95,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text"
-                android:autofillHints="@string/eccezione_1" />
+                android:autofillHints="@string/eccezione_1"
+                android:inputType="text" />
 
         </LinearLayout>
 
@@ -124,8 +119,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text"
-                android:autofillHints="@string/eccezione_2" />
+                android:autofillHints="@string/eccezione_2"
+                android:inputType="text" />
 
         </LinearLayout>
 
@@ -149,8 +144,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:inputType="text"
-                android:autofillHints="@string/eccezione_3" />
+                android:autofillHints="@string/eccezione_3"
+                android:inputType="text" />
 
         </LinearLayout>
 
@@ -160,20 +155,21 @@
         android:id="@+id/grammaticalexceptionssave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/grammaticalexceptionslistbutton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/grammaticalexceptions"
         android:onClick="GrammaticalExceptionsSave"
         android:text="@string/salva" />
 
-
-    <ListView
-        android:id="@+id/listview"
+    <Button
+        android:id="@+id/grammaticalexceptionslistbutton"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/grammaticalexceptionssave" />
-
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:onClick="grammaticalExceptionsList"
+        android:text="@string/mostra_elenco"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/grammaticalexceptionssave"
+        app:layout_constraintTop_toBottomOf="@+id/grammaticalexceptions"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

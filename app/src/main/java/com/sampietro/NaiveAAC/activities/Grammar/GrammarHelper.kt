@@ -1005,6 +1005,7 @@ object GrammarHelper {
                     listOfWordsCenterToReturn = composesASentenceResultsToReturn.listOfWordsCenter
                     listOfWordsRightToReturn = composesASentenceResultsToReturn.listOfWordsRight
                  }
+                /*
                 if (numberOfWordsChosenToReturn == 3)
                 {
                     // grammar arrangement
@@ -1030,6 +1031,7 @@ object GrammarHelper {
                     listOfWordsRightToReturn.clear()
                     listOfWordsRightToReturn.addAll(composesASentenceResults.listOfWordsRight)
                 }
+                 */
             }
             1 -> {
                 // the second word of the sentence was chosen

@@ -93,7 +93,7 @@ class ChoiseOfGameActivity : GameActivityAbstractClass(), ChoiseOfGameRecyclerVi
         /*
 
         */
-        val frag = ChoiseOfGameFragment(R.layout.activity_game_choise_of_game_mediaplayer)
+        val frag = ChoiseOfGameFragment()
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
             supportFragmentManager.findFragmentByTag(getString(R.string.choise_of_game_fragment)) as ChoiseOfGameFragment?

@@ -2,7 +2,9 @@ package com.sampietro.NaiveAAC.activities.Game.GameParameters
 
 import android.content.Context
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper
+import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.dataProcess
+import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.grabHeader
+import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper.savBak
 import io.realm.Realm
 import io.realm.RealmObject
 import io.realm.RealmResults
@@ -108,9 +110,9 @@ open class GameParameters : RealmObject() {
          *
          * @param context context
          * @param realm realm obtained from the activity by Realm#getDefaultInstance
-         * @see AdvancedSettingsDataImportExportHelper.grabHeader
-         * @see AdvancedSettingsDataImportExportHelper.savBak
-         * @see AdvancedSettingsDataImportExportHelper.dataProcess
+         * @see grabHeader
+         * @see savBak
+         * @see dataProcess
          */
         @JvmStatic
         fun exporttoCsv(context: Context?, realm: Realm) {
@@ -123,10 +125,10 @@ open class GameParameters : RealmObject() {
 
             // Here we need to put in header fields
             var dataP: String?
-            val header = AdvancedSettingsDataImportExportHelper.grabHeader(realm, "GameParameters")
+            val header = grabHeader(realm, "GameParameters")
 
             // We write the header to file
-            AdvancedSettingsDataImportExportHelper.savBak(context!!, header, FILE_NAME)
+            savBak(context!!, header, FILE_NAME)
 
             // Now we write all the data corresponding to the fields grabbed above:
             val count = resultsDB.size
@@ -137,7 +139,7 @@ open class GameParameters : RealmObject() {
                     //
                     dataP = taskitems.toString()
                     // We process the data obtained and add commas and formatting:
-                    dataP = AdvancedSettingsDataImportExportHelper.dataProcess(dataP)
+                    dataP = dataProcess(dataP)
 
                     // Workaround to remove the last comma from final string
                     val total = dataP.length - 1
@@ -146,14 +148,14 @@ open class GameParameters : RealmObject() {
                     // Workaround to remove the last line feed from final row
                     // We write the data to file
                     if (irrh == count - 1) {
-                        AdvancedSettingsDataImportExportHelper.savBak(
+                        savBak(
                             context,
                             dataP,
                             FILE_NAME,
                             true
                         )
                     } else {
-                        AdvancedSettingsDataImportExportHelper.savBak(
+                        savBak(
                             context,
                             dataP,
                             FILE_NAME,
@@ -174,9 +176,9 @@ open class GameParameters : RealmObject() {
          * @param realm realm obtained from the activity by Realm#getDefaultInstance
          * @param resultsDB RealmResults<GameParameters>
          * @param dir file output directory
-         * @see AdvancedSettingsDataImportExportHelper.grabHeader
-         * @see AdvancedSettingsDataImportExportHelper.savBak
-         * @see AdvancedSettingsDataImportExportHelper.dataProcess
+         * @see grabHeader
+         * @see savBak
+         * @see dataProcess
         </GameParameters> */
         @JvmStatic
         fun exporttoCsv(
@@ -192,10 +194,10 @@ open class GameParameters : RealmObject() {
 
             // Here we need to put in header fields
             var dataP: String?
-            val header = AdvancedSettingsDataImportExportHelper.grabHeader(realm!!, "GameParameters")
+            val header = grabHeader(realm!!, "GameParameters")
 
             // We write the header to file
-            AdvancedSettingsDataImportExportHelper.savBak(context, header, FILE_NAME, dir)
+            savBak(context, header, FILE_NAME, dir)
 
             // Now we write all the data corresponding to the fields grabbed above:
             val count = resultsDB.size
@@ -206,7 +208,7 @@ open class GameParameters : RealmObject() {
                     //
                     dataP = taskitems.toString()
                     // We process the data obtained and add commas and formatting:
-                    dataP = AdvancedSettingsDataImportExportHelper.dataProcess(dataP)
+                    dataP = dataProcess(dataP)
 
                     // Workaround to remove the last comma from final string
                     val total = dataP.length - 1
@@ -215,7 +217,7 @@ open class GameParameters : RealmObject() {
                     // Workaround to remove the last line feed from final row
                     // We write the data to file
                     if (irrh == count - 1) {
-                        AdvancedSettingsDataImportExportHelper.savBak(
+                        savBak(
                             context,
                             dataP,
                             FILE_NAME,
@@ -223,7 +225,7 @@ open class GameParameters : RealmObject() {
                             true
                         )
                     } else {
-                        AdvancedSettingsDataImportExportHelper.savBak(
+                        savBak(
                             context,
                             dataP,
                             FILE_NAME,

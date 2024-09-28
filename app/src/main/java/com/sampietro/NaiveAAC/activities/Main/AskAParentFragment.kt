@@ -1,10 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Main
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.displayFileInAssets
 
 /**
@@ -16,18 +18,29 @@ import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.disp
  * @version     5.0, 01/04/2024
  * @see AskIfAdultActivity
  */
-class AskAParentFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
+class AskAParentFragment() : FragmentAbstractClassWithoutConstructor() {
     /**
      * prepares the ui
      *
-     * @see androidx.fragment.app.Fragment.onViewCreated
+     * @see androidx.fragment.app.Fragment.onCreateView
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(
+            R.layout.activity_askaparent,
+            container,
+            false
+        )
         // logic of fragment
-        val myImage = view.findViewById<View>(R.id.askaparentiv) as ImageView
+        val myImage = rootView.findViewById<View>(R.id.askaparentiv) as ImageView
         displayFileInAssets(ctext,"images/genitori.png",myImage)
+        return rootView
     }
 }

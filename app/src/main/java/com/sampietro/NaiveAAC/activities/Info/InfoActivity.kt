@@ -33,7 +33,7 @@ class InfoActivity : InfoActivityAbstractClass() {
             fragmentManager = supportFragmentManager
             fragmentManager.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
-                .add(R.id.settings_container, InfoFragment(R.layout.activity_settings_information), "InfoFragment")
+                .add(R.id.settings_container, InfoFragment(), "InfoFragment")
                 .commit()
         }
     }
@@ -52,7 +52,7 @@ class InfoActivity : InfoActivityAbstractClass() {
     fun imagesCopyright(view: View?) {
         // view the images copyright list  initializing InfoImagesCopyrightListFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = InfoImagesCopyrightListFragment(R.layout.activity_settings_copyright_list)
+        val frag = InfoImagesCopyrightListFragment()
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
@@ -74,7 +74,7 @@ class InfoActivity : InfoActivityAbstractClass() {
     fun soundsCopyright(view: View?) {
         // view the sounds copyright list  initializing InfoSoundsCopyrightListFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = InfoSoundsCopyrightListFragment(R.layout.activity_settings_copyright_list)
+        val frag = InfoSoundsCopyrightListFragment()
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
@@ -96,7 +96,7 @@ class InfoActivity : InfoActivityAbstractClass() {
     fun videosCopyright(view: View?) {
         // view the videos copyright list  initializing InfoVideosCopyrightListFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = InfoVideosCopyrightListFragment(R.layout.activity_settings_copyright_list)
+        val frag = InfoVideosCopyrightListFragment()
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)

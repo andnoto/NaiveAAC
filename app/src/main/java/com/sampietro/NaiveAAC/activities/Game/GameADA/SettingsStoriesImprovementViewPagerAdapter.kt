@@ -54,14 +54,15 @@ class SettingsStoriesImprovementViewPagerAdapter
      */
     override fun createFragment(position: Int): Fragment {
         val bundle = Bundle()
-        val fragment: GameADAViewPagerFragment?
+        val fragment: SettingsStoriesImprovementViewPagerFragment?
         //
         bundle.putString(context.getString(R.string.story_to_display), sharedStory)
         //        bundle.putInt("PHRASE TO DISPLAY INDEX", phraseToDisplayIndex);
         bundle.putInt(context.getString(R.string.word_to_display_index), position)
         bundle.putString(context.getString(R.string.game_use_video_and_sound), gameUseVideoAndSound)
         //
-        fragment = GameADAViewPagerFragment(R.layout.activity_settings_stories_improvement_viewpager_content)
+//        fragment = GameADAViewPagerFragment(R.layout.activity_settings_stories_improvement_viewpager_content)
+        fragment = SettingsStoriesImprovementViewPagerFragment()
         fragment.arguments = bundle
         //
         return fragment

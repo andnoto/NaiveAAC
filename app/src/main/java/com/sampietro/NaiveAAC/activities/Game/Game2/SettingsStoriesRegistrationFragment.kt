@@ -1,17 +1,16 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.annotation.LayoutRes
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStoriesViewModel
 import java.util.Locale
@@ -27,7 +26,7 @@ import java.util.Locale
  *
  * @see Game2Activity
  */
-class SettingsStoriesRegistrationFragment(@LayoutRes contentLayoutId : Int = 0) : Game2FragmentAbstractClass(contentLayoutId) {
+class SettingsStoriesRegistrationFragment() : Game2FragmentAbstractClass() {
     //
     private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
     //
@@ -40,20 +39,27 @@ class SettingsStoriesRegistrationFragment(@LayoutRes contentLayoutId : Int = 0) 
      * Refer to [androidauthority](https://www.androidauthority.com/how-to-build-an-image-gallery-app-718976/)
      * by [Adam Sinicki](https://www.androidauthority.com/author/adamsinicki/)
      *
-     * @see androidx.fragment.app.Fragment.onViewCreated
+     * @see androidx.fragment.app.Fragment.onCreateView
      *
      * @see prepareData
      *
      * @see Game2RecyclerViewAdapter
      */
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
-        hearingImageButton = view.findViewById<View>(R.id.btn_start) as ImageButton
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+   override fun onCreateView(
+       inflater: LayoutInflater,
+       container: ViewGroup?,
+       savedInstanceState: Bundle?
+   ): View {
+       rootView = inflater.inflate(R.layout.activity_settings_stories_registration_recycler_view, container, false)
+       //
+        hearingImageButton = rootView.findViewById<View>(R.id.btn_start) as ImageButton
         hearingImageButton.setImageResource(R.drawable.ic_baseline_hearing_36_red) //set the image programmatically
         //
-        sentenceToAdd = view.findViewById<View>(R.id.sentencetoadd) as EditText
+        sentenceToAdd = rootView.findViewById<View>(R.id.sentencetoadd) as EditText
         //
        /*
         Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
@@ -66,8 +72,8 @@ class SettingsStoriesRegistrationFragment(@LayoutRes contentLayoutId : Int = 0) 
        viewModel.getSelectedItem()
            .observe(viewLifecycleOwner) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                // Perform an action with the latest item data
-               val keywordstorytoadd = view.findViewById<View>(R.id.keywordstorytoadd) as TextView?
-               val phrasenumbertoadd = view.findViewById<View>(R.id.phrasenumbertoadd) as TextView?
+               val keywordstorytoadd = rootView.findViewById<View>(R.id.keywordstorytoadd) as TextView?
+               val phrasenumbertoadd = rootView.findViewById<View>(R.id.phrasenumbertoadd) as TextView?
                if (keywordstorytoadd != null) {
                    keywordstorytoadd.setText(voiceToBeRecordedInStories.story)
                }
@@ -86,8 +92,8 @@ class SettingsStoriesRegistrationFragment(@LayoutRes contentLayoutId : Int = 0) 
         }
         //
         if (sentenceToAdd.text.toString() != "") {
-            val recyclerView1 = view.findViewById<View>(R.id.imagegallery1) as RecyclerView
-            recyclerView1.setHasFixedSize(true)
+            val recyclerView1 = rootView.findViewById<View>(R.id.imagegallery1) as RecyclerView
+//            recyclerView1.setHasFixedSize(true)
             val layoutManager1: RecyclerView.LayoutManager =
                 LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false)
             recyclerView1.layoutManager = layoutManager1
@@ -96,5 +102,7 @@ class SettingsStoriesRegistrationFragment(@LayoutRes contentLayoutId : Int = 0) 
             recyclerView1.adapter = adapter1
             //
         }
+       //
+       return rootView
     }
 }

@@ -13,12 +13,11 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListener
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithListenerWithoutConstructor
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorageAndGetPath
 import com.sampietro.NaiveAAC.activities.Game.Game2.SettingsStoriesRegistrationActivity
 import com.sampietro.NaiveAAC.activities.Game.GameADA.SettingsStoriesImprovementActivity
@@ -44,11 +43,11 @@ import java.util.*
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/communicate)
  *
  * @version     5.0, 01/04/2024
- * @see FragmentAbstractClassWithListener
+ * @see FragmentAbstractClassWithListenerWithoutConstructor
  * @see StoriesListAdapter
  */
 class SettingsStoriesActivity : ActivityAbstractClass(),
-    FragmentAbstractClassWithListener.onBaseFragmentEventListenerSettings,
+    FragmentAbstractClassWithListenerWithoutConstructor.onBaseFragmentEventListenerSettings,
     StoriesListAdapter.StoriesListAdapterInterface,
     ImageSearchArasaacRecyclerViewAdapterInterface {
     //
@@ -89,7 +88,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
             fragmentManager = supportFragmentManager
             fragmentManager!!.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
-                .add(R.id.settings_container, Fragment(R.layout.activity_settings_stories_first), "StoriesFragment")
+                .add(R.id.settings_container, StoriesFirstFragment(), "StoriesFirstFragment")
                 .commit()
         }
         // The MainActivity class provides an instance of Realm wherever needed in the application.
@@ -103,7 +102,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
      * @param v view of tapped button
      */
     fun searchNewStoryGameImage(v: View) {
-        val frag = StoriesGameImageFragment(R.layout.activity_settings_stories_game_image)
+        val frag = StoriesGameImageFragment()
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
@@ -188,7 +187,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
                             voiceToBeRecordedInStories!!.uriType = "S"
                             voiceToBeRecordedInStories!!.uri = filePath
                             //
-                            val frag = StoriesGameImageFragment(R.layout.activity_settings_stories_game_image)
+                            val frag = StoriesGameImageFragment()
                             //
                             val ft = supportFragmentManager.beginTransaction()
                             ft.replace(R.id.settings_container, frag)
@@ -246,7 +245,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
         voiceToBeRecordedInStories!!.story =
             textWord1.text.toString().lowercase(Locale.getDefault())
         //
-        val frag = ImageSearchArasaacFragment(R.layout.activity_settings_stories_arasaac)
+        val frag = ImageSearchArasaacFragment()
         //
         val bundle = Bundle()
         bundle.putString("keywordToSearchArasaac", textWord1.text.toString())
@@ -266,7 +265,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
         val textWord1 = findViewById<View>(R.id.keywordarasaactosearch) as EditText
         // view the image search Arasaac  initializing ImageSearchArasaacFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = ImageSearchArasaacFragment(R.layout.activity_settings_stories_arasaac)
+        val frag = ImageSearchArasaacFragment()
         //
         val bundle = Bundle()
         bundle.putString("keywordToSearchArasaac", textWord1.text.toString())
@@ -294,7 +293,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
                 voiceToBeRecordedInStories.uriType = "A"
                 voiceToBeRecordedInStories.uri = url
                 //
-                val frag = StoriesGameImageFragment(R.layout.activity_settings_stories_game_image)
+                val frag = StoriesGameImageFragment()
                 //
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
@@ -415,7 +414,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
         voiceToBeRecordedInStories!!.phraseNumberInt = 0
         // view the stories list  initializing StoriesListFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = StoriesListFragment(R.layout.activity_settings_stories_list)
+        val frag = StoriesListFragment()
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
@@ -440,7 +439,7 @@ class SettingsStoriesActivity : ActivityAbstractClass(),
         voiceToBeRecordedInStories!!.story =
             textWord1.text.toString().lowercase(Locale.getDefault())
         //
-        val frag = StoriesListFragment(R.layout.activity_settings_stories_list)
+        val frag = StoriesListFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)

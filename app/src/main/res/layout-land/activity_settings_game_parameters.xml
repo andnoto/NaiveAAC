@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
+
+    <LinearLayout
+        android:id="@+id/gameDescriptionLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="@string/game_to_insert" />
+
+        <EditText
+            android:id="@+id/gameDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:inputType="text"
+            android:autofillHints="@string/descrizione_gioco" />
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/radioRG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/gamejavaclassLL"
+        app:layout_constraintTop_toTopOf="parent">
+    <RadioButton android:id="@+id/radio_active"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="ATTIVO"
+        android:onClick="onGameParametersRadioButtonClicked"/>
+    <RadioButton android:id="@+id/radio_not_active"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="NON ATTIVO"
+        android:onClick="onGameParametersRadioButtonClicked"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/gamejavaclassLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/usevideoandsoundRG"
+        app:layout_constraintTop_toBottomOf="@+id/gameDescriptionLL">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="@string/game_java_class" />
+        <EditText
+            android:id="@+id/gamejavaclass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:inputType="text"
+            android:autofillHints="nome classe java" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/gameparameterLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/gamejavaclassLL"
+        app:layout_constraintTop_toBottomOf="@+id/gamejavaclassLL">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="@string/game_parameter" />
+        <EditText
+            android:id="@+id/gameparameter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:inputType="text"
+            android:autofillHints="parametri del gioco" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/titlewritingtypetv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:ems="10"
+        android:hint="@string/edit_message"
+        android:text="usare video e suoni"
+        app:layout_constraintStart_toStartOf="@+id/gameDescriptionLL"
+        app:layout_constraintTop_toBottomOf="@+id/radioRG" />
+
+    <RadioGroup
+        android:id="@+id/usevideoandsoundRG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/gameDescriptionLL"
+        app:layout_constraintTop_toBottomOf="@+id/titlewritingtypetv">
+        <RadioButton android:id="@+id/radio_usevideoandsound"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SI"
+            android:onClick="onGameParametersUseVideoAndSoundClicked"/>
+        <RadioButton android:id="@+id/radio_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="NO"
+            android:onClick="onGameParametersUseVideoAndSoundClicked"/>
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/gameinfoLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/gamejavaclassLL"
+        app:layout_constraintTop_toBottomOf="@+id/gameparameterLL">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="@string/game_info" />
+
+        <EditText
+            android:id="@+id/gameinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:autofillHints="informazioni sul gioco"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <ImageView
+            android:id="@+id/imageviewgameicon"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintStart_toStartOf="@+id/gameDescriptionLL"
+            app:layout_constraintTop_toBottomOf="@+id/usevideoandsoundRG"
+            android:contentDescription="@string/icona_del_gioco" />
+
+    <LinearLayout
+        android:id="@+id/gameLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/gamejavaclassLL"
+        app:layout_constraintTop_toBottomOf="@+id/gameinfoLL">
+        <Button
+            android:id="@+id/soundslistbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:onClick="gameParametersList"
+            android:text="@string/mostra_elenco"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gameLL"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:onClick="gameParametersSave"
+            android:text="@string/salva" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonimagesearchgameparameters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:onClick="imageSearch"
+        android:text="@string/search_image"
+        app:layout_constraintStart_toStartOf="@+id/gamejavaclassLL"
+        app:layout_constraintTop_toBottomOf="@+id/gameLL"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

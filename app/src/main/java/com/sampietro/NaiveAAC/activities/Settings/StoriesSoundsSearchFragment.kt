@@ -1,10 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
 import io.realm.Realm
 
@@ -15,11 +17,11 @@ import io.realm.Realm
  *
  *
  * @version     5.0, 01/04/2024
- * @see FragmentAbstractClass
+ * @see FragmentAbstractClassWithoutConstructor
  *
  * @see SettingsStoriesActivity
  */
-class StoriesSoundsSearchFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
+class StoriesSoundsSearchFragment() : FragmentAbstractClassWithoutConstructor() {
     private lateinit var realm: Realm
 
     //
@@ -29,16 +31,22 @@ class StoriesSoundsSearchFragment(contentLayoutId: Int) : FragmentAbstractClass(
     /**
      * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onViewCreated
+     * @see androidx.fragment.app.Fragment.onCreateView
      *
      * @see Sounds
      *
      * @see StoriesSoundsSearchAdapter
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_settings_stories_sounds, container, false)
         // logic of fragment
         realm = Realm.getDefaultInstance()
         // ListView
@@ -56,10 +64,12 @@ class StoriesSoundsSearchFragment(contentLayoutId: Int) : FragmentAbstractClass(
         // which will be your View "supplier".
         val results = realm.where(Sounds::class.java).findAll()
         //
-        listView = view.findViewById<View>(R.id.listview) as ListView
+        listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
         adapter = StoriesSoundsSearchAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
+        //
+        return rootView
     }
 }

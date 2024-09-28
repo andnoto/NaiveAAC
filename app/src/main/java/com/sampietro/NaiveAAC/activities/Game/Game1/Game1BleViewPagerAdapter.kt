@@ -74,7 +74,7 @@ class Game1BleViewPagerAdapter
                 bundle.putString("RIGHT ARROW", "N")
             }
             //
-            fragment = Game1FirstLevelFragment(R.layout.activity_game_1_viewpager_content)
+            fragment = Game1FirstLevelFragment()
             fragment.arguments = bundle
         }
         assert(fragment != null)

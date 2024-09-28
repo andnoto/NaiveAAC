@@ -123,7 +123,10 @@ class VideosAdapter(private val context: Context, private val videos: List<Video
         val position = listview.getPositionForView(v)
         // delete image
         realm = Realm.getDefaultInstance()
-        val results = realm.where(Videos::class.java).findAll()
+        var results = realm.where(Videos::class.java).findAll()
+        //
+        results = results.sort("descrizione")
+        //
         realm.beginTransaction()
         val daCancellare = results[position]!!
         daCancellare.deleteFromRealm()

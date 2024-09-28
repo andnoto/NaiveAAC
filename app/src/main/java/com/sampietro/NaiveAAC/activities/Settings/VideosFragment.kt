@@ -8,12 +8,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.EditText
-import android.widget.ListView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
-import com.sampietro.NaiveAAC.activities.Graphics.Videos
-import com.sampietro.NaiveAAC.activities.Graphics.VideosAdapter
-import io.realm.Realm
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 
 /**
  * <h1>VideosFragment</h1>
@@ -22,26 +18,18 @@ import io.realm.Realm
  *
  *
  * @version     5.0, 01/04/2024
- * @see FragmentAbstractClass
+ * @see FragmentAbstractClassWithoutConstructor
  *
  * @see SurfaceHolder
  *
  * @see SettingsActivity
  */
-class VideosFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId),
+class VideosFragment() : FragmentAbstractClassWithoutConstructor(),
     SurfaceHolder.Callback
     {
     var activity: Activity? = null
-
-    //
-    private lateinit var realm: Realm
-
     //
     var uri: Uri? = null
-
-    //
-    private lateinit var listView: ListView
-    private var adapter: VideosAdapter? = null
 
     // for videos
     // the fragment implements the SurfaceHolder.Callback interface,
@@ -96,10 +84,16 @@ class VideosFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayout
      *
      * @see com.sampietro.NaiveAAC.activities.Graphics.VideosAdapter
      */
-    override fun onViewCreated(
-        view: View,
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_settings_videos, container, false)
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
         // logic of fragment
         val bundle = this.arguments
         val stringUri: String?
@@ -109,39 +103,19 @@ class VideosFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayout
         if (bundle != null) {
             //
             descrizione = bundle.getString("descrizione")
-            val vidD = view.findViewById<View>(R.id.videoDescription) as EditText
+            val vidD = rootView.findViewById<View>(R.id.videoDescription) as EditText
             vidD.setText(descrizione)
             //
             stringUri = bundle.getString("URI")
             if (stringUri != "none") {
                 uri = Uri.parse(stringUri)
                 //
-                surface = view.findViewById<View>(R.id.surfView) as SurfaceView
+                surface = rootView.findViewById<View>(R.id.surfView) as SurfaceView
                 holder = surface!!.holder
                 holder.addCallback(this)
             }
         }
         //
-        realm = Realm.getDefaultInstance()
-        // ListView
-        // 1) we get a reference to the data structure through the RealmResults class which constitutes
-        // the query result set and is an iterable collection accessible with Java constructs:
-        // for loop, basic access to position and Iterator.
-        // The approach for realm queries is object-oriented.
-        // The where method will retrieve the objects from the specified class and the result will
-        // be treated with filtrate by other specific methods.
-        // At the end of the selection configuration, the findAll method will be invoked to retrieve
-        // all the corresponding results.
-        // 2) we instantiate an Adapter by assigning it, the collection and the layout related to
-        // each single row
-        // 3) we retrieve the ListView prepared in the layout and assign it the reference to the adapter
-        // which will be your View "supplier".
-        val results = realm.where(Videos::class.java).findAll()
-        //
-        listView = view.findViewById<View>(R.id.listview) as ListView
-        //
-        adapter = VideosAdapter(ctext, results, listView)
-        //
-        listView.adapter = adapter
+        return rootView
     }
 }

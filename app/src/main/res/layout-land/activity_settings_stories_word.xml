@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsStoriesWordActivity">
+
+    <View
+        android:id="@+id/background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/azzurro_pastello"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:onClick="onClickGoBackFromWord"
+        android:text="indietro"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:src="@drawable/baseline_arrow_left_36"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/keywordstorytoaddLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/phrasenumbertoaddLL"
+        app:layout_constraintTop_toBottomOf="@+id/btn_back">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="@string/nome_storia" />
+
+        <TextView
+            android:id="@+id/keywordstorytoadd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:autofillHints="@string/nome_storia" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/phrasenumbertoaddLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toEndOf="@+id/keywordstorytoaddLL"
+        app:layout_constraintEnd_toStartOf="@+id/wordnumbertoaddLL"
+        app:layout_constraintTop_toBottomOf="@+id/btn_back">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="@string/numero_frase" />
+
+        <TextView
+            android:id="@+id/phrasenumbertoadd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:autofillHints="@string/numero_frase" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wordnumbertoaddLL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toEndOf="@+id/phrasenumbertoaddLL"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_back">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:text="@string/numero_parola" />
+
+        <TextView
+            android:id="@+id/wordnumbertoadd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:autofillHints="@string/numero_parola" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/newstoryrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/frase_nome_da_aggiungere_alla_storia"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/storytoadd"
+        app:layout_constraintTop_toBottomOf="@+id/keywordstorytoaddLL"/>
+
+    <EditText
+        android:id="@+id/wordtoadd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:autofillHints="@string/frase_nome_da_aggiungere_alla_storia"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/storytoadd"
+        app:layout_constraintTop_toBottomOf="@+id/newstoryrow"/>
+
+    <Button
+        android:id="@+id/storytoadd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:onClick="storyToAdd"
+        android:text="SALVA PAROLA /\n GRUPPO DI PAROLE"
+        app:layout_constraintStart_toEndOf="@+id/newstoryrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/keywordstorytoaddLL"/>
+
+    <FrameLayout
+        android:id="@+id/gameimageFL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/storiesbuttons1"
+        app:layout_constraintTop_toBottomOf="@+id/storytoadd"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/gameimage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="TODO"
+            android:text="@string/inizia" />
+
+        <ImageView
+            android:id="@+id/gameimage2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="TODO"
+            android:text="@string/inizia" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/storiesbuttons1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/gameimageFL"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/storytoadd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0.069">
+
+        <Button
+            android:id="@+id/buttonimagesearchstories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="imageSearch"
+            android:text="cerca\nimmagine" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:onClick="imageSearchArasaac"
+            android:text="cerca\nArasaac" />
+
+        <Button
+            android:id="@+id/buttonvideosearchstories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:onClick="videoSearch"
+            android:text="cerca\nvideo" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:onClick="soundsSearch"
+            android:text="cerca\nsuono" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

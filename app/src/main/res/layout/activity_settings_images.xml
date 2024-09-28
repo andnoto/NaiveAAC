@@ -10,99 +10,68 @@
         android:id="@+id/imageDescriptionLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="vertical"
-        android:padding="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.069">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginRight="5dp"
+            android:text="@string/descrizione_immagine_da_inserire" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="@string/descrizione_immagine_da_inserire" />
+        <EditText
+            android:id="@+id/imageDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:inputType="text"
+            android:autofillHints="@string/descrizione_immagine_da_inserire" />
 
-            <EditText
-                android:id="@+id/imageDescription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:inputType="text"
-                android:autofillHints="@string/descrizione_immagine_da_inserire" />
-
-        </LinearLayout>
     </LinearLayout>
 
     <ImageView
             android:id="@+id/imageviewTest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_marginTop="5dp"
-            android:layout_marginEnd="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageDescriptionLL"
             android:contentDescription="@string/immagine_da_inserire" />
 
-    <LinearLayout
-        android:id="@+id/imageLL"
+    <Button
+        android:id="@+id/buttonimagesearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp"
+        android:layout_marginStart="5dp"
+        android:onClick="imageSearch"
+        android:text="@string/cerca_immagine"
+        app:layout_constraintEnd_toStartOf="@+id/buttonimageadd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageviewTest" />
+
+    <Button
+        android:id="@+id/buttonimageadd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:onClick="imageAdd"
+        android:text="@string/aggiungi_immagine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonimagesearch"
+        app:layout_constraintTop_toBottomOf="@+id/imageviewTest" />
+
+    <Button
+        android:id="@+id/imageslistbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:onClick="imagesList"
+        android:text="@string/mostra_elenco"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageviewTest">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <Button
-                android:id="@+id/buttonimagesearch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:onClick="imageSearch"
-                android:text="@string/cerca_immagine" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:onClick="imageAdd"
-                android:text="@string/aggiungi_immagine" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <ListView
-            android:id="@+id/listview"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageLL"/>
-
-
-
+        app:layout_constraintTop_toBottomOf="@+id/buttonimagesearch"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

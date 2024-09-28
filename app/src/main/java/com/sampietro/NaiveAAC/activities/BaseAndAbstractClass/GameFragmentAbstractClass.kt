@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.sampietro.NaiveAAC.R
 import io.realm.Realm
@@ -31,12 +31,13 @@ import io.realm.Realm
  *
  * @see com.sampietro.NaiveAAC.activities.Game.Game2.Game2Fragment
  */
-abstract class GameFragmentAbstractClass(@LayoutRes contentLayoutId : Int = 0) : Fragment(contentLayoutId) {
+abstract class GameFragmentAbstractClass() : Fragment() {
     lateinit var realm: Realm
 //
     var textView: TextView? = null
 //
     lateinit var ctext: Context
+    lateinit var rootView: View
 //
     lateinit var sharedPref: SharedPreferences
 //

@@ -59,8 +59,8 @@
 
     <ImageView
         android:id="@+id/sendtobluetoothimage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
         android:contentDescription="spedisce la frase appena composta"
         app:backgroundTint="@color/azzurro_pastello"
         app:layout_constraintStart_toEndOf="@+id/listenagainbutton"

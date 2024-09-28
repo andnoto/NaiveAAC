@@ -1,9 +1,10 @@
 package com.sampietro.NaiveAAC.activities.Game.Game1
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
-import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
@@ -28,7 +29,7 @@ import java.util.Locale
  *
  * @see Game1Activity
  */
-class Game1SecondLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
+class Game1SecondLevelFragment() : GameFragmentAbstractClass() {
     lateinit var hearingImageButton: ImageButton
 
     //
@@ -69,16 +70,22 @@ class Game1SecondLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragm
      *
      * @see Game1RecyclerViewAdapter3
      */
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
 //        rootView = inflater.inflate(R.layout.activity_game_1, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_game_1, container, false)
         //
-        hearingImageButton = view.findViewById<View>(R.id.btn_start) as ImageButton
+        hearingImageButton = rootView.findViewById<View>(R.id.btn_start) as ImageButton
         //
-        listenAgainButton = view.findViewById<View>(R.id.listenagainbutton) as ImageButton
-        continueGameButton = view.findViewById<View>(R.id.continuegamebutton) as ImageButton
+        listenAgainButton = rootView.findViewById<View>(R.id.listenagainbutton) as ImageButton
+        continueGameButton = rootView.findViewById<View>(R.id.continuegamebutton) as ImageButton
         hearingImageButton.setImageResource(R.drawable.ic_baseline_hearing_36_red)
         //
         val bundle = this.arguments
@@ -107,24 +114,24 @@ class Game1SecondLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragm
             continueGameButton.visibility = View.INVISIBLE
         }
         //
-        val recyclerView1 = view.findViewById<View>(R.id.imagegallery1) as RecyclerView
-        recyclerView1.setHasFixedSize(true)
+        val recyclerView1 = rootView.findViewById<View>(R.id.imagegallery1) as RecyclerView
+//        recyclerView1.setHasFixedSize(true)
         val layoutManager1: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView1.layoutManager = layoutManager1
         val createLists1 = prepareData(leftColumnMenuPhraseNumber )
         val adapter1 = Game1RecyclerViewAdapter1(ctext, createLists1)
         recyclerView1.adapter = adapter1
         //
-        val recyclerView2 = view.findViewById<View>(R.id.imagegallery2) as RecyclerView
-        recyclerView2.setHasFixedSize(true)
+        val recyclerView2 = rootView.findViewById<View>(R.id.imagegallery2) as RecyclerView
+//        recyclerView2.setHasFixedSize(true)
         val layoutManager2: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView2.layoutManager = layoutManager2
         val createLists2 = prepareData(middleColumnMenuPhraseNumber )
         val adapter2 = Game1RecyclerViewAdapter2(ctext, createLists2)
         recyclerView2.adapter = adapter2
         //
-        val recyclerView3 = view.findViewById<View>(R.id.imagegallery3) as RecyclerView
-        recyclerView3.setHasFixedSize(true)
+        val recyclerView3 = rootView.findViewById<View>(R.id.imagegallery3) as RecyclerView
+//        recyclerView3.setHasFixedSize(true)
         val layoutManager3: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView3.layoutManager = layoutManager3
         val createLists3 = prepareData(rightColumnMenuPhraseNumber )
@@ -132,7 +139,7 @@ class Game1SecondLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragm
         recyclerView3.adapter = adapter3
         //
 //        listener.receiveResultGameFragment(rootView)
-//        return rootView
+        return rootView
     }
 
     /**

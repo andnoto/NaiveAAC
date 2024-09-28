@@ -5,9 +5,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Bundle
 import android.view.ContextThemeWrapper
@@ -17,7 +15,6 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ImageView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -35,7 +32,6 @@ import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
-import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.showImage
 import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.Graphics.Sounds
 import com.sampietro.NaiveAAC.activities.Graphics.Videos
@@ -45,7 +41,6 @@ import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.history.History
 import io.realm.Realm
-import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.net.URISyntaxException
 import java.util.Objects
@@ -95,13 +90,21 @@ class AccountActivity : AccountActivityAbstractClass() {
         //
         setActivityResultLauncher()
         //
-        if (savedInstanceState == null) {
+        if (savedInstanceState != null) {
+            // The onSaveInstanceState method is called before an activity may be killed
+            // (for Screen Rotation Handling) so that
+            // when it comes back it can restore its state.
+            filePath = savedInstanceState.getString("IMAGE VIDEO OR SOUND FILE PATH")
+        }
+        else
+        {
+            filePath = getString(R.string.non_trovato)
             fragmentManager = supportFragmentManager
             fragmentManager!!.beginTransaction()
                 .add(AccountActionbarFragment(), "AccountActionbarFragment")
                 .add(
                     R.id.settings_container,
-                    AccountFragment(R.layout.activity_settings_account),
+                    AccountFragment(),
                     getString(R.string.account_fragment)
                 )
                 .commit()
@@ -148,6 +151,20 @@ class AccountActivity : AccountActivityAbstractClass() {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }
+    }
+    /**
+     * This method is called before an activity may be killed so that when it comes back some time in the future it can restore its state..
+     *
+     *
+     * it stores the limage video or sound file path
+     *
+     * @param savedInstanceState Define potentially saved parameters due to configurations changes.
+     */
+    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        //
+        savedInstanceState.putString("IMAGE VIDEO OR SOUND FILE PATH", filePath)
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState)
     }
     /**
      * Called when the user taps the enter password button.
@@ -366,7 +383,7 @@ class AccountActivity : AccountActivityAbstractClass() {
     //
     @JvmField
     var filePath: String? = null
-    lateinit var byteArray: ByteArray
+//    lateinit var byteArray: ByteArray
     //
     /**
      * setting callbacks to search for images and videos via ACTION_OPEN_DOCUMENT which is
@@ -395,6 +412,8 @@ class AccountActivity : AccountActivityAbstractClass() {
                         // doSomeOperations();
                         uri = null
                         filePath = getString(R.string.non_trovato)
+                        //
+                        val accD = findViewById<View>(R.id.editTextTextAccount) as EditText
                         //
                         if (resultData != null) {
                             uri = Objects.requireNonNull(resultData).data
@@ -429,29 +448,53 @@ class AccountActivity : AccountActivityAbstractClass() {
                                         takeFlags
                                     )
                                     //
-                                    var bitmap: Bitmap? = null
+//                                    var bitmap: Bitmap? = null
                                     //
-                                    try {
-                                        val source = ImageDecoder.createSource(
-                                            context.contentResolver,
-                                            uri!!
+//                                    try {
+//                                        val source = ImageDecoder.createSource(
+//                                            context.contentResolver,
+//                                            uri!!
+//                                        )
+//                                        bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+//                                            decoder.setTargetSampleSize(1) // shrinking by
+//                                            decoder.isMutableRequired = true // this resolve the hardware type of bitmap problem
+//                                        }
+//                                    } catch (e: Exception) {
+//                                        e.printStackTrace()
+//                                    }
+                                    //
+                                    //
+//                                    val stream = ByteArrayOutputStream()
+//                                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
+//                                    byteArray = stream.toByteArray()
+                                    //
+                                    val stringUri = uri.toString()
+                                    //
+                                    val frag = AccountFragment()
+                                    val bundle = Bundle()
+                                    //
+                                    if (accD.length() > 0) {
+                                        bundle.putString(
+                                            getString(R.string.descrizione),
+                                            accD.text.toString()
                                         )
-                                        bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-                                            decoder.setTargetSampleSize(1) // shrinking by
-                                            decoder.isMutableRequired = true // this resolve the hardware type of bitmap problem
-                                        }
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
+                                    } else {
+                                        bundle.putString(
+                                            getString(R.string.descrizione),
+                                            getString(R.string.nessuna)
+                                        )
                                     }
                                     //
+                                    bundle.putString(getString(R.string.uri), stringUri)
+                                    frag.arguments = bundle
+                                    val ft = supportFragmentManager.beginTransaction()
+                                    ft.replace(R.id.settings_container, frag)
+                                    ft.addToBackStack(null)
+                                    ft.commit()
                                     //
-                                    val stream = ByteArrayOutputStream()
-                                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                                    byteArray = stream.toByteArray()
-                                    //
-                                    val myImage: ImageView
-                                    myImage = findViewById<View>(R.id.imageviewaccounticon) as ImageView
-                                    showImage(context, uri, myImage)
+//                                    val myImage: ImageView
+//                                    myImage = findViewById<View>(R.id.imageviewaccounticon) as ImageView
+//                                    showImage(context, uri, myImage)
                                 }
                             }
                         }

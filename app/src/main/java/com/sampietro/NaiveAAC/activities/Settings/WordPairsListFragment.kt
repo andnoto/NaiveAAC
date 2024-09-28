@@ -1,10 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairsAdapter
 import io.realm.Realm
@@ -17,11 +19,11 @@ import io.realm.Sort
  *
  *
  * @version     5.0, 01/04/2024
- * @see FragmentAbstractClass
+ * @see FragmentAbstractClassWithoutConstructor
  *
  * @see SettingsActivity
  */
-class WordPairsListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
+class WordPairsListFragment() : FragmentAbstractClassWithoutConstructor() {
     private lateinit var realm: Realm
 
     //
@@ -31,16 +33,22 @@ class WordPairsListFragment(contentLayoutId: Int) : FragmentAbstractClass(conten
     /**
      * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onViewCreated
+     * @see androidx.fragment.app.Fragment.onCreateView
      *
      * @see WordPairs
      *
      * @see WordPairsAdapter
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_settings_wordpairs_list, container, false)
         // logic of fragment
         realm = Realm.getDefaultInstance()
         // ListView
@@ -62,10 +70,12 @@ class WordPairsListFragment(contentLayoutId: Int) : FragmentAbstractClass(conten
         val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
         results = results.sort(mStrings1, mStrings2)
         //
-        listView = view.findViewById<View>(R.id.listview) as ListView
+        listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
         adapter = WordPairsAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
+        //
+        return rootView
     }
 }

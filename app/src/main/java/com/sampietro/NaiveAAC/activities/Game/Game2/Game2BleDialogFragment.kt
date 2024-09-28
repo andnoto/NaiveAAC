@@ -126,7 +126,7 @@ class Game2BleDialogFragment: DialogFragment()  {
         //
         //
         val recyclerView1 = rootView.findViewById<View>(R.id.dialog_imagegallery) as RecyclerView
-        recyclerView1.setHasFixedSize(true)
+//        recyclerView1.setHasFixedSize(true)
         val layoutManager1: RecyclerView.LayoutManager =
             LinearLayoutManager(ctext, LinearLayoutManager.HORIZONTAL, false)
         recyclerView1.layoutManager = layoutManager1

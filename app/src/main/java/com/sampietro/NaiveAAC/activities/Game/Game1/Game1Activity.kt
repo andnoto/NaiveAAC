@@ -54,7 +54,7 @@ import java.util.*
  * By [Rajdeep Singh](https://www.raywenderlich.com/u/rajdeep1008)
  *
  * @version     5.0, 01/04/2024
- * @see GameActivityAbstractClass
+ * @see GameActivityAbstractClassWithRecognizerCallback
  *
  * @see Game1RecyclerViewAdapterInterface
  *
@@ -164,7 +164,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                     //
                     rightColumnAwardType = onCreateSavedInstanceState!!.getString(
                         getString(R.string.award_type),
-                        getString(R.string.nessuno)
+                        getString(R.string.non_trovato)
                     )
                     rightColumnUriPremiumVideo = onCreateSavedInstanceState!!.getString(
                         getString(R.string.uri_premium_video),
@@ -424,7 +424,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
      * Called on result of speech.
      *
      * @param eText string result from SpeechRecognizerManagement
-     * @see com.sampietro.simsimtest.activities.VoiceRecognition.RecognizerCallback
+     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
      */
     override fun onResult(eText: String?) {
         checkAnswer(eText!!)
@@ -437,7 +437,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
      * @param editText string message from SpeechRecognizerManagement
      * @see fragmentTransactionStart
      *
-     * @see com.sampietro.simsimtest.activities.VoiceRecognition.RecognizerCallback
+     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
      */
     override fun onEndOfSpeech(editText: String?) {
         fragmentTransactionStart()
@@ -447,7 +447,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
      * Called on error from SpeechRecognizerManagement.
      *
      * @param errorCode int error code from SpeechRecognizerManagement
-     * @see com.sampietro.simsimtest.activities.VoiceRecognition.RecognizerCallback
+     * @see com.sampietro.NaiveAAC.activities.VoiceRecognition.RecognizerCallback
      *
      * @see fragmentTransactionStart
      */
@@ -586,7 +586,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
      * prepare fragment transaction:
      * record History
      *
-     * @see GameHelper.historyRegistration
+     * @see historyRegistration
      */
     fun prepareTheFragmentTransaction() {
         //
@@ -633,7 +633,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
      * @see Game1SecondLevelFragment
      */
     fun fragmentTransactionStart() {
-        val frag = Game1SecondLevelFragment(R.layout.activity_game_1)
+        val frag = Game1SecondLevelFragment()
         val bundle = Bundle()
         bundle.putString(getString(R.string.left_column_content), leftColumnContent)
         bundle.putString(getString(R.string.middle_column_content), middleColumnContent)
@@ -1114,7 +1114,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
      *
      *
      * @param eTextResultOfSpeech string result from SpeechRecognizerManagement
-     * @see GrammarHelper.thereIsACorrespondenceWithAnAllowedMarginOfError
+     * @see thereIsACorrespondenceWithAnAllowedMarginOfError
      *
      * @see uploadAVideoAsAReward
      *

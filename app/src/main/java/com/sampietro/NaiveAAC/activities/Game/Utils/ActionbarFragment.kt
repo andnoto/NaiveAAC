@@ -13,7 +13,6 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
-import com.sampietro.NaiveAAC.activities.Game.Game2.Game2Activity
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2BleActivity
 import com.sampietro.NaiveAAC.activities.Info.EulaActivity
 import com.sampietro.NaiveAAC.activities.Info.InfoActivity
@@ -30,7 +29,7 @@ import java.io.IOException
  *
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/appbar)
  *
- * @version     4.0, 09/09/2023
+ * @version     5.0, 01/04/2024
  * @see Fragment
  *
  * @see com.sampietro.NaiveAAC.activities.Game.Game1.Game1Activity
@@ -86,6 +85,7 @@ class ActionbarFragment : Fragment() {
                 */
                 val intent = Intent(activity, SettingsActivity::class.java)
                 startActivity(intent)
+                requireActivity().finish()
                 true
             }
             R.id.MENU_MANUAL -> {
@@ -115,6 +115,7 @@ class ActionbarFragment : Fragment() {
                 } catch (e: ActivityNotFoundException) {
                     alertDialogNeedsSomePDFApp()
                 }
+                requireActivity().finish()
                 true
             }
             R.id.MENU_HOME -> {
@@ -123,6 +124,7 @@ class ActionbarFragment : Fragment() {
                 */
                 val intent2 = Intent(activity, ChoiseOfGameActivity::class.java)
                 startActivity(intent2)
+                requireActivity().finish()
                 true
             }
             R.id.MENU_COMUNICATORE -> {
@@ -131,6 +133,7 @@ class ActionbarFragment : Fragment() {
                 */
                 val intent3 = Intent(activity, Game2BleActivity::class.java)
                 startActivity(intent3)
+                requireActivity().finish()
                 true
             }
             R.id.MENU_INFO -> {
@@ -139,6 +142,7 @@ class ActionbarFragment : Fragment() {
                 */
                 val intent4 = Intent(activity, InfoActivity::class.java)
                 startActivity(intent4)
+                requireActivity().finish()
                 true
             }
             R.id.MENU_EULA -> {
@@ -147,6 +151,7 @@ class ActionbarFragment : Fragment() {
                 */
                 val intent5 = Intent(activity, EulaActivity::class.java)
                 startActivity(intent5)
+                requireActivity().finish()
                 true
             }
             R.id.MENU_PRIVACY -> {
@@ -155,6 +160,7 @@ class ActionbarFragment : Fragment() {
                 */
                 val intent6 = Intent(activity, PrivacyActivity::class.java)
                 startActivity(intent6)
+                requireActivity().finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)

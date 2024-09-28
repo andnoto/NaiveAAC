@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -51,7 +50,7 @@ class RequestConsentFirebaseActivity : AppCompatActivity() {
             fragmentManager.beginTransaction()
                 .add(
                     R.id.game_container,
-                    Fragment(R.layout.activity_requestconsentfirebase),
+                    RequestConsentFirebaseFragment(),
                     "RequestConsentFirebaseFragment"
                 )
                 .commit()

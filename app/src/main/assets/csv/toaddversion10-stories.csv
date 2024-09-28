@@ -18,7 +18,6 @@ educazionestradale,3,3,13,devono attraversare,A,https://api.arasaac.org/api/pict
 educazionestradale,3,4,14,la strada,A,https://api.arasaac.org/api/pictograms/2302?download=false,null,null,,,,
 educazionestradale,4,0,0,la strada è senza strisce pedonali,,,,,,,N,Y
 educazionestradale,4,1,15,la strada è senza strisce pedonali,A,https://api.arasaac.org/api/pictograms/3430?download=false,null,null,,,,
-educazionestradale,4,999,0,fermare,A,https://api.arasaac.org/api/pictograms/7196?download=false,null,null,,,,
 educazionestradale,4,9999,0,strada senza strisce pedonali,A,https://api.arasaac.org/api/pictograms/3430?download=false,null,null,,,,
 educazionestradale,5,0,0,il bambino si deve fermare,,,,,,,N,Y
 educazionestradale,5,1,16,il bambino si deve fermare,A,https://api.arasaac.org/api/pictograms/7195?download=false,null,null,null,null,null,
@@ -34,12 +33,10 @@ educazionestradale,7,1,22,il bambino,A,https://api.arasaac.org/api/pictograms/71
 educazionestradale,7,2,23,guarda a sinistra e a destra,A,https://api.arasaac.org/api/pictograms/37101?download=false,null,null,,,,
 educazionestradale,7,3,24,e vede,A,https://api.arasaac.org/api/pictograms/2474?download=false,null,null,,,,
 educazionestradale,7,4,25,delle macchine,A,https://api.arasaac.org/api/pictograms/2339?download=false,null,null,,,,
-educazionestradale,7,999,0,fermare,A,https://api.arasaac.org/api/pictograms/21888?download=false,,,,,N,Y
 educazionestradale,8,0,0,il bambino si deve fermare,,,,,,,N,Y
 educazionestradale,8,1,26,il bambino si deve fermare,A,https://api.arasaac.org/api/pictograms/7195?download=false,null,null,,,,
 educazionestradale,9,0,0,se non ci sono macchine,,,,,,,N,Y
 educazionestradale,9,1,27,se non ci sono macchine,A,https://api.arasaac.org/api/pictograms/2339?download=false,null,null,,,,
-educazionestradale,9,999,0,attraversare,A,https://api.arasaac.org/api/pictograms/21888?download=false,,,,,N,Y
 educazionestradale,10,0,0,il bambino attraversa sulle strisce pedonali,,,,,,,N,Y
 educazionestradale,10,1,28,il bambino attraversa sulle strisce pedonali,A,https://api.arasaac.org/api/pictograms/5976?download=false,null,null,,,,
 educazionestradale,11,0,0,il bambino cammina e arriva ad un semaforo rosso,,,,,,,N,Y

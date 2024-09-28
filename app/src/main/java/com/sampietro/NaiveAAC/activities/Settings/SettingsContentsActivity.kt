@@ -4,16 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.ActivityAbstractClass
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter.ListsOfNamesAdapterInterface
-import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNames
-import com.sampietro.NaiveAAC.activities.Grammar.VoiceToBeRecordedInListsOfNamesViewModel
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
@@ -31,8 +27,8 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
     /*
     used for viewmodel
      */
-    private var voiceToBeRecordedInListsOfNames: VoiceToBeRecordedInListsOfNames? = null
-    private lateinit var viewModel: VoiceToBeRecordedInListsOfNamesViewModel
+//    private var voiceToBeRecordedInListsOfNames: VoiceToBeRecordedInListsOfNames? = null
+//    private lateinit var viewModel: VoiceToBeRecordedInListsOfNamesViewModel
     /*
 
      */
@@ -56,18 +52,18 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
         The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
         */
         // In the Activity#onCreate make the only setItem
-        voiceToBeRecordedInListsOfNames = VoiceToBeRecordedInListsOfNames()
-        viewModel = ViewModelProvider(this).get(
-            VoiceToBeRecordedInListsOfNamesViewModel::class.java
-        )
-        viewModel.setItem(voiceToBeRecordedInListsOfNames!!)
-        clearFieldsOfViewmodelDataClass()
+//        voiceToBeRecordedInListsOfNames = VoiceToBeRecordedInListsOfNames()
+//        viewModel = ViewModelProvider(this).get(
+//            VoiceToBeRecordedInListsOfNamesViewModel::class.java
+//        )
+//        viewModel.setItem(voiceToBeRecordedInListsOfNames!!)
+//        clearFieldsOfViewmodelDataClass()
         //
         if (savedInstanceState == null) {
             fragmentManager = supportFragmentManager
             fragmentManager.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
-                .add(R.id.settings_container, Fragment(R.layout.activity_settings_contents_menu), "ContentsFragment")
+                .add(R.id.settings_container, ContentsFragment(), "ContentsFragment")
                 .commit()
         }
         // The MainActivity class provides an instance of Realm wherever needed in the application.
@@ -87,7 +83,7 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
     fun submitListsOfNames(view: View?) {
         // view the lists of names settings fragment initializing ListsOfNamesFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = ListsOfNamesFragment(R.layout.activity_settings_lists_of_names)
+        val frag = ListsOfNamesFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)
@@ -109,8 +105,8 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel.getSelectedItem()
-            .observe(this) { voiceToBeRecordedInListsOfNames: VoiceToBeRecordedInListsOfNames ->
+//        viewModel.getSelectedItem()
+//            .observe(this) { voiceToBeRecordedInListsOfNames: VoiceToBeRecordedInListsOfNames ->
                 // Perform an action with the latest item data
                 val textWord1 = findViewById<View>(R.id.keywordtoadd) as EditText
                 val textWord2 = findViewById<View>(R.id.nametoadd) as EditText
@@ -142,32 +138,51 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
                 listsOfNames.word = textWord2.text.toString()
                 listsOfNames.elementActive = textWord3.text.toString()
                 listsOfNames.isMenuItem = textWord4.text.toString()
-                listsOfNames.fromAssets = voiceToBeRecordedInListsOfNames.fromAssets
+                listsOfNames.fromAssets = ""
                 realm.commitTransaction()
                 //
-                clearFieldsOfViewmodelDataClass()
+//                clearFieldsOfViewmodelDataClass()
                 // view the lists of names settings initializing ListsOfNamesFragment (FragmentTransaction
                 // switch between Fragments).
-                val frag = ListsOfNamesFragment(R.layout.activity_settings_lists_of_names)
+                val frag = ListsOfNamesFragment()
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
                 ft.addToBackStack(null)
                 ft.commit()
-            }
+//            }
+    }
+    /**
+    * Called when the user taps the show list button .
+    *
+    * the activity is notified to view the list of names list.
+    *
+    *
+    * @param view view of tapped button
+    * @see ListsOfNamesFragment
+    *
+    * @see ListsOfNamesListFragment
+    */
+    fun listsOfNamesList(view: View?) {
+            // view the list of names list fragment initializing ListsOfNamesListFragment (FragmentTransaction
+            // switch between Fragments).
+            val frag = ListsOfNamesListFragment()
+            val ft = supportFragmentManager.beginTransaction()
+            ft.replace(R.id.settings_container, frag)
+            ft.addToBackStack(null)
+            ft.commit()
     }
     /**
      * clear fields of viewmodel data class
      *
      *
-     * @see VoiceToBeRecordedInListsOfNames
      */
-    fun clearFieldsOfViewmodelDataClass() {
-        voiceToBeRecordedInListsOfNames!!.keyword = ""
-        voiceToBeRecordedInListsOfNames!!.word = ""
-        voiceToBeRecordedInListsOfNames!!.elementActive = ""
-        voiceToBeRecordedInListsOfNames!!.isMenuItem = ""
-        voiceToBeRecordedInListsOfNames!!.fromAssets = ""
-    }
+//    fun clearFieldsOfViewmodelDataClass() {
+//        voiceToBeRecordedInListsOfNames!!.keyword = ""
+//        voiceToBeRecordedInListsOfNames!!.word = ""
+//        voiceToBeRecordedInListsOfNames!!.elementActive = ""
+//        voiceToBeRecordedInListsOfNames!!.isMenuItem = ""
+//        voiceToBeRecordedInListsOfNames!!.fromAssets = ""
+//    }
     override fun reloadListOfNamesFragmentForDeletion(position: Int) {
         var results: RealmResults<ListsOfNames>
         results = realm.where(ListsOfNames::class.java).findAll()
@@ -187,8 +202,8 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel.getSelectedItem()
-            .observe(this) { voiceToBeRecordedInListsOfNames: VoiceToBeRecordedInListsOfNames ->
+//        viewModel.getSelectedItem()
+//            .observe(this) { voiceToBeRecordedInListsOfNames: VoiceToBeRecordedInListsOfNames ->
                 realm = Realm.getDefaultInstance()
                 var results: RealmResults<ListsOfNames>
                 results = realm.where(ListsOfNames::class.java).findAll()
@@ -197,17 +212,28 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
                 val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
                 val daInserire = results[position]!!
-                voiceToBeRecordedInListsOfNames.keyword = daInserire.keyword
-                reloadListOfNamesFragment()
-            }
+//                voiceToBeRecordedInListsOfNames.keyword = daInserire.keyword
+        //
+        val frag = ListsOfNamesFragment()
+        val bundle = Bundle()
+        bundle.putString("KEYWORD", daInserire.keyword)
+        bundle.putString("WORD", "")
+        bundle.putString("ELEMENT ACTIVE", "")
+        bundle.putString("IS MENU ITEM", "")
+        frag.arguments = bundle
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
+//            }
     }
 
     override fun reloadListOfNamesFragmentForEditing(position: Int) {
         // Viewmodel
         // In the activity, sometimes it is called observe, other times it is limited to performing set directly
         // (maybe it is not necessary to call observe)
-        viewModel.getSelectedItem()
-            .observe(this) { voiceToBeRecordedInListsOfNames: VoiceToBeRecordedInListsOfNames ->
+//        viewModel.getSelectedItem()
+//            .observe(this) { voiceToBeRecordedInListsOfNames: VoiceToBeRecordedInListsOfNames ->
                 realm = Realm.getDefaultInstance()
                 var results: RealmResults<ListsOfNames>
                 results = realm.where(ListsOfNames::class.java).findAll()
@@ -216,14 +242,24 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
                 val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
                 val daModificare = results[position]!!
-                voiceToBeRecordedInListsOfNames.keyword = daModificare.keyword
-                voiceToBeRecordedInListsOfNames.word = daModificare.word
-                voiceToBeRecordedInListsOfNames.elementActive = daModificare.elementActive
-                voiceToBeRecordedInListsOfNames.isMenuItem = daModificare.isMenuItem
-                voiceToBeRecordedInListsOfNames.fromAssets = daModificare.fromAssets
+//                voiceToBeRecordedInListsOfNames.keyword = daModificare.keyword
+//                voiceToBeRecordedInListsOfNames.word = daModificare.word
+//                voiceToBeRecordedInListsOfNames.elementActive = daModificare.elementActive
+//                voiceToBeRecordedInListsOfNames.isMenuItem = daModificare.isMenuItem
+//                voiceToBeRecordedInListsOfNames.fromAssets = daModificare.fromAssets
                 //
-                reloadListOfNamesFragment()
-            }
+        val frag = ListsOfNamesFragment()
+        val bundle = Bundle()
+        bundle.putString("KEYWORD", daModificare.keyword)
+        bundle.putString("WORD", daModificare.word)
+        bundle.putString("ELEMENT ACTIVE", daModificare.elementActive)
+        bundle.putString("IS MENU ITEM", daModificare.isMenuItem)
+        frag.arguments = bundle
+        val ft = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.settings_container, frag)
+        ft.addToBackStack(null)
+        ft.commit()
+//            }
     }
     /**
      * on callback from ListOfNamesAdapter to this Activity
@@ -236,7 +272,7 @@ class SettingsContentsActivity : ActivityAbstractClass(), ListsOfNamesAdapterInt
     fun reloadListOfNamesFragment() {
         // view the lists of names settings initializing ListsOfNamesFragment (FragmentTransaction
         // switch between Fragments).
-        val frag = ListsOfNamesFragment(R.layout.activity_settings_lists_of_names)
+        val frag = ListsOfNamesFragment()
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
         ft.addToBackStack(null)

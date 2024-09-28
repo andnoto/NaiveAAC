@@ -10,7 +10,7 @@ package com.sampietro.NaiveAAC.activities.Stories
  *
  * @version     4.0, 09/09/2023
  */
-class VoiceToBeRecordedInStories {
+open class VoiceToBeRecordedInStories {
     /**
      * key that identifies the story.
      */

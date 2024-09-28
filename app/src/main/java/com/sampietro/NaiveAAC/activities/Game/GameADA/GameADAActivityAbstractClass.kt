@@ -333,7 +333,7 @@ abstract class GameADAActivityAbstractClass : GameActivityAbstractClassWithRecog
         val mywindow = getWindow()
         setToFullScreen(mywindow)
         //
-        val frag = GameADAFragment(R.layout.activity_game_ada_recycler_view)
+        val frag = GameADAFragment()
         val bundle = Bundle()
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         bundle.putInt(getString(R.string.word_to_display_index), wordToDisplayIndex)

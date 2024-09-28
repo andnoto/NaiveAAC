@@ -1,7 +1,7 @@
 <resources>
     <string name="abilita_stampa">Abilita stampa</string>
     <string name="aggiungi">AGGIUNGI</string>
-    <string name="aggiungi_immagine">aggiungi immagine</string>
+    <string name="aggiungi_immagine">aggiungi\nimmagine</string>
     <string name="aggiungi_video">aggiungi video</string>
     <string name="attenzione">Attenzione!</string>
     <string name="avanti">Avanti</string>
@@ -9,7 +9,7 @@
     <string name="cancella_immagine">cancella immagine</string>
     <string name="cancella_la_frase">cancella la frase</string>
     <string name="casuale">Casuale</string>
-    <string name="cerca_immagine">cerca immagine</string>
+    <string name="cerca_immagine">cerca\nimmagine</string>
     <string name="cerca_l_immagine_dell_utente">cerca l\'immagine dell\'utente</string>
     <string name="cerca_video">cerca video</string>
     <string name="copyright_information">"\n\nCredits:\nAutore dei pittogrammi: Sergio Palao Origine: ARASAAC (http://arasaac.org) Licenza: CC (BY-NC-SA) Proprietà: Governo di Aragona.\nVerb-data - Una raccolta di verbi e coniugazioni in Formato JSON da utilizzare in un'applicazione mobile. Origine: https://github.com/ian-hamlin/verb-data Licenza: CC (BY-SA).\nGioco pop Balloon - Pop Balloon è un semplice gioco Android. Origine: https://github.com/Vukan-Markovic/Pop_Balloon Licenza: Licenza MIT.\nImmagine utilizzata per il logo dell'app. Origine: https://commons.wikimedia.org/wiki/Category:Swings#/media/File:Myles_Tan_2016-04-16_(Unsplash).jpg"</string>

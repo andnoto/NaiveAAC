@@ -18,8 +18,9 @@ import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.lookForTheAnswerT
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.setToFullScreen
 import com.sampietro.NaiveAAC.activities.Settings.VerifyActivity
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.AndroidPermission
-import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement
+import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.destroyRecognizer
 import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.prepareSpeechRecognizer
+import com.sampietro.NaiveAAC.activities.VoiceRecognition.SpeechRecognizerManagement.startSpeech
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import io.realm.Realm
 import java.util.Locale
@@ -106,9 +107,11 @@ class Game2Activity : Game2ActivityAbstractClass() {
                     Toast.makeText(context.applicationContext, status, Toast.LENGTH_SHORT).show()
                 }
             }
+            //
+            fragmentTransactionStart("")
         }
         //
-        fragmentTransactionStart("")
+//        fragmentTransactionStart("")
     }
     /**
      * set to full screen
@@ -119,6 +122,20 @@ class Game2Activity : Game2ActivityAbstractClass() {
         super.onResume()
         mywindow = getWindow()
         setToFullScreen(mywindow)
+    }
+    /**
+     * destroy SpeechRecognizer, TTS shutdown
+     *
+     * @see android.app.Activity.onDestroy
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        destroyRecognizer()
+        // TTS
+        if (tTS1 != null) {
+            tTS1!!.stop()
+            tTS1!!.shutdown()
+        }
     }
     /**
      * Called when the user taps the home button.
@@ -157,7 +174,7 @@ class Game2Activity : Game2ActivityAbstractClass() {
      * @see SpeechRecognizerManagement.startSpeech
      */
     fun startSpeechGame2(v: View?) {
-        SpeechRecognizerManagement.startSpeech()
+        startSpeech()
         //
         val frag = GameFragmentHear()
         val ft = supportFragmentManager.beginTransaction()
@@ -222,7 +239,7 @@ class Game2Activity : Game2ActivityAbstractClass() {
      * @see Game2Fragment
      */
     fun fragmentTransactionStart(eText: String?) {
-        val frag = Game2Fragment(R.layout.activity_game_2)
+        val frag = Game2Fragment()
         val bundle = Bundle()
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         bundle.putString(getString(R.string.etext), eText)

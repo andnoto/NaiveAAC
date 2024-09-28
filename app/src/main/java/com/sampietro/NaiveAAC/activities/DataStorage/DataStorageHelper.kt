@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
@@ -12,6 +13,7 @@ import android.provider.OpenableColumns
 import androidx.appcompat.app.AppCompatActivity
 import androidx.documentfile.provider.DocumentFile
 import com.sampietro.NaiveAAC.R
+import dalvik.system.ZipPathValidator
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -275,6 +277,15 @@ object DataStorageHelper {
     @Throws(ZipException::class, IOException::class)
     @JvmStatic
     fun extractFolder(destination: File, zipFile: File): Boolean {
+        /*
+        If the app targets Android U or above, zip file entry names containing ".."
+        or starting with "/" passed here will throw a ZipException. For more details,
+        see dalvik.system.ZipPathValidator.
+        Existing validation could be set to a default one by calling clearCallback().
+         */
+        if (Build.VERSION.SDK_INT >= 34) {
+            ZipPathValidator.clearCallback()
+        }
         val BUFFER = 8192
         //This can throw ZipException if file is not valid zip archive
         val zip = ZipFile(zipFile)

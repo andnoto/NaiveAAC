@@ -238,7 +238,7 @@ class SettingsStoriesImprovementActivity : GameADAActivityAbstractClass(),
      */
     override fun fragmentTransactionStart() {
         //
-        val frag = GameADAFragment(R.layout.activity_settings_stories_improvement)
+        val frag = SettingsStoriesImprovementFragment()
         val bundle = Bundle()
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         bundle.putInt(getString(R.string.word_to_display_index), wordToDisplayIndex)
@@ -248,7 +248,7 @@ class SettingsStoriesImprovementActivity : GameADAActivityAbstractClass(),
         frag.arguments = bundle
         val ft = supportFragmentManager.beginTransaction()
         val fragmentgotinstance =
-            supportFragmentManager.findFragmentByTag(getString(R.string.gamefragmentgameada)) as GameADAFragment?
+            supportFragmentManager.findFragmentByTag("SettingsStoriesImprovementFragment") as SettingsStoriesImprovementFragment?
         val prizefragmentgotinstance =
             supportFragmentManager.findFragmentByTag(getString(R.string.prize_fragment)) as PrizeFragment?
         val youtubeprizefragmentgotinstance =
@@ -256,9 +256,9 @@ class SettingsStoriesImprovementActivity : GameADAActivityAbstractClass(),
         val hearfragmentgotinstance =
             supportFragmentManager.findFragmentByTag(getString(R.string.gamefragmentgame1hear)) as GameFragmentHear?
         if (fragmentgotinstance != null || prizefragmentgotinstance != null || youtubeprizefragmentgotinstance != null || hearfragmentgotinstance != null) {
-            ft.replace(R.id.settings_container, frag, getString(R.string.gamefragmentgameada))
+            ft.replace(R.id.settings_container, frag, "SettingsStoriesImprovementFragment")
         } else {
-            ft.add(R.id.settings_container, frag, getString(R.string.gamefragmentgameada))
+            ft.add(R.id.settings_container, frag, "SettingsStoriesImprovementFragment")
         }
         ft.addToBackStack(null)
         ft.commit()
@@ -620,7 +620,7 @@ class SettingsStoriesImprovementActivity : GameADAActivityAbstractClass(),
             realm.commitTransaction()
         }
         //
-        val frag = StoriesActionAfterResponseFragment(R.layout.activity_settings_stories_action_after_response)
+        val frag = StoriesActionAfterResponseFragment()
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)

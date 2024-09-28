@@ -1,12 +1,14 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Stories.Stories
 import com.sampietro.NaiveAAC.activities.Stories.StoriesListAdapter
 import com.sampietro.NaiveAAC.activities.Stories.VoiceToBeRecordedInStories
@@ -24,11 +26,11 @@ import java.util.*
  * Refer to [developer.android.com](https://developer.android.com/guide/fragments/communicate)
  *
  * @version     5.0, 01/04/2024
- * @see FragmentAbstractClass
+ * @see FragmentAbstractClassWithoutConstructor
  *
  * @see SettingsStoriesActivity
  */
-class StoriesListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
+class StoriesListFragment() : FragmentAbstractClassWithoutConstructor() {
     private lateinit var realm: Realm
 
     //
@@ -43,16 +45,22 @@ class StoriesListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentL
     /**
      * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onViewCreated
+     * @see androidx.fragment.app.Fragment.onCreateView
      *
      * @see Stories
      *
      * @see StoriesListAdapter
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_settings_stories_list, container, false)
         // logic of fragment
         // ListView
         // 1) we get a reference to the data structure through the RealmResults class which constitutes
@@ -68,7 +76,7 @@ class StoriesListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentL
         // 3) we retrieve the ListView prepared in the layout and assign it the reference to the adapter
         // which will be your View "supplier".
         //
-        storyToSearch = view.findViewById<View>(R.id.keywordstorytosearch) as TextView
+        storyToSearch = rootView.findViewById<View>(R.id.keywordstorytosearch) as TextView
         /*
         Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
         constructor.
@@ -106,11 +114,13 @@ class StoriesListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentL
                 val mStrings2 = arrayOf(Sort.ASCENDING)
                 results = results.sort(mStrings1, mStrings2)
                 //
-                listView = view.findViewById<View>(R.id.listview) as ListView
+                listView = rootView.findViewById<View>(R.id.listview) as ListView
                 //
                 adapter = StoriesListAdapter(ctext, results, listView!!)
                 //
                 listView!!.adapter = adapter
             }
+        //
+        return rootView
     }
 }

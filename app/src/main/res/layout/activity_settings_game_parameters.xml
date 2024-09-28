@@ -110,7 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <RadioButton android:id="@+id/radio_yes"
+            <RadioButton android:id="@+id/radio_usevideoandsound"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -189,12 +189,15 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/listview"
+    <Button
+        android:id="@+id/soundslistbutton"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:onClick="gameParametersList"
+        android:text="@string/mostra_elenco"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gameLL" />
+        app:layout_constraintTop_toBottomOf="@+id/gameLL"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

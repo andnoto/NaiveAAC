@@ -3,10 +3,11 @@ package com.sampietro.NaiveAAC.activities.Game.Game1
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
-import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
@@ -36,7 +37,7 @@ import java.util.Locale
  *
  * @see Game1BleActivity
  */
-class Game1BleSecondLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
+class Game1BleSecondLevelFragment() : GameFragmentAbstractClass() {
     lateinit var listenAgainButton: ImageButton
     lateinit var continueGameButton: ImageButton
 //
@@ -107,16 +108,23 @@ class Game1BleSecondLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFr
      *
      * @see Game1RecyclerViewAdapter3
      */
-    override fun onViewCreated(
-        view: View,
-        savedInstanceState: Bundle?
-    ) {
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
 //        rootView = inflater.inflate(R.layout.activity_game_1_ble, container, false)
         //
-        listenAgainButton = view.findViewById<View>(R.id.listenagainbutton) as ImageButton
-        continueGameButton = view.findViewById<View>(R.id.continuegamebutton) as ImageButton
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        rootView =
+            inflater.inflate(R.layout.activity_game_1_ble, container, false)
+        listenAgainButton = rootView.findViewById<View>(R.id.listenagainbutton) as ImageButton
+        continueGameButton = rootView.findViewById<View>(R.id.continuegamebutton) as ImageButton
         //
-        sendToBlueToothImage = view.findViewById<View>(R.id.sendtobluetoothimage) as ImageView
+        sendToBlueToothImage = rootView.findViewById<View>(R.id.sendtobluetoothimage) as ImageView
         //
         val bundle = this.arguments
         //
@@ -159,35 +167,35 @@ class Game1BleSecondLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFr
             {
                 val image: ResponseImageSearch?
                 image = imageSearch(ctext, realm, deviceEnabledUserName)
-                addImage(image!!.uriType, image.uriToSearch, sendToBlueToothImage, 150, 150)
+                addImage(image!!.uriType, image.uriToSearch, sendToBlueToothImage, 125, 125)
             }
             else {
                 val assetsUrl = "file:///android_asset/" + "images/puntointerrogativo.png"
-                addImageUsingPicasso(assetsUrl, sendToBlueToothImage, 150, 150)
+                addImageUsingPicasso(assetsUrl, sendToBlueToothImage, 125, 125)
             }
         }
          else {
             sendToBlueToothImage.visibility = View.INVISIBLE
         }
         //
-        val recyclerView1 = view.findViewById<View>(R.id.imagegallery1) as RecyclerView
-        recyclerView1.setHasFixedSize(true)
+        val recyclerView1 = rootView.findViewById<View>(R.id.imagegallery1) as RecyclerView
+//        recyclerView1.setHasFixedSize(true)
         val layoutManager1: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView1.layoutManager = layoutManager1
         val createLists1 = prepareData(leftColumnMenuPhraseNumber )
         val adapter1 = Game1RecyclerViewAdapter1(ctext, createLists1)
         recyclerView1.adapter = adapter1
         //
-        val recyclerView2 = view.findViewById<View>(R.id.imagegallery2) as RecyclerView
-        recyclerView2.setHasFixedSize(true)
+        val recyclerView2 = rootView.findViewById<View>(R.id.imagegallery2) as RecyclerView
+//        recyclerView2.setHasFixedSize(true)
         val layoutManager2: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView2.layoutManager = layoutManager2
         val createLists2 = prepareData(middleColumnMenuPhraseNumber )
         val adapter2 = Game1RecyclerViewAdapter2(ctext, createLists2)
         recyclerView2.adapter = adapter2
         //
-        val recyclerView3 = view.findViewById<View>(R.id.imagegallery3) as RecyclerView
-        recyclerView3.setHasFixedSize(true)
+        val recyclerView3 = rootView.findViewById<View>(R.id.imagegallery3) as RecyclerView
+//        recyclerView3.setHasFixedSize(true)
         val layoutManager3: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView3.layoutManager = layoutManager3
         val createLists3 = prepareData(rightColumnMenuPhraseNumber )
@@ -195,7 +203,7 @@ class Game1BleSecondLevelFragment(@LayoutRes contentLayoutId : Int = 0) : GameFr
         recyclerView3.adapter = adapter3
         //
 //        listener.receiveResultGameFragment(rootView)
-//        return rootView
+        return rootView
     }
 
     /**

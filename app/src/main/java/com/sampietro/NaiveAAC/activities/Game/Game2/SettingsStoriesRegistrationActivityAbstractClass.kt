@@ -111,7 +111,7 @@ abstract class SettingsStoriesRegistrationActivityAbstractClass : Game2ActivityA
      * @see SettingsStoriesRegistrationFragment
      */
     open fun fragmentTransactionStart(eText: String?) {
-        val frag = SettingsStoriesRegistrationFragment(R.layout.activity_settings_stories_registration_recycler_view)
+        val frag = SettingsStoriesRegistrationFragment()
         val bundle = Bundle()
         bundle.putInt(getString(R.string.last_phrase_number), sharedLastPhraseNumber)
         bundle.putString(getString(R.string.etext), eText)

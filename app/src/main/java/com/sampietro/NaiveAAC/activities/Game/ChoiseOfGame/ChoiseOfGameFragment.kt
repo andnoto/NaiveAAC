@@ -1,7 +1,9 @@
 package com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sampietro.NaiveAAC.R
@@ -21,7 +23,7 @@ import java.util.Locale
  *
  * @see ChoiseOfGameActivity
  */
-class ChoiseOfGameFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentAbstractClass(contentLayoutId) {
+class ChoiseOfGameFragment() : GameFragmentAbstractClass() {
     private var row1debugGameName = arrayOfNulls<String>(48)
     private var row1debugGameIconType = arrayOfNulls<String>(48)
     private var row1debugGameIconPath = arrayOfNulls<String>(48)
@@ -45,14 +47,23 @@ class ChoiseOfGameFragment(@LayoutRes contentLayoutId : Int = 0) : GameFragmentA
      *
      * @see initRecyclerView
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView =
+            inflater.inflate(R.layout.activity_game_choise_of_game_mediaplayer, container, false)
         //
-        recyclerView = view.findViewById<View>(R.id.recycler_view) as ChoiseOfGameRecyclerView
+        recyclerView = rootView.findViewById<View>(R.id.recycler_view) as ChoiseOfGameRecyclerView
         recyclerView!!.setHasFixedSize(true)
         initRecyclerView()
+        //
+        return rootView
     }
 
     /**

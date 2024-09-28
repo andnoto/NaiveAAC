@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsActivity">
+
+    <TextView
+        android:id="@+id/grammaticalexceptionssettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:hint="@string/edit_message"
+        android:text="@string/eccezioni_grammaticali"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/grammaticalexceptionskeywordTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/parola_chiave"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/grammaticalexceptionskeyword"
+        app:layout_constraintTop_toBottomOf="@+id/grammaticalexceptionssettings"/>
+
+    <EditText
+        android:id="@+id/grammaticalexceptionskeyword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:autofillHints="@string/parola_chiave"
+        android:inputType="text"
+        app:layout_constraintStart_toEndOf="@+id/grammaticalexceptionskeywordTV"
+        app:layout_constraintEnd_toStartOf="@+id/exceptiontypeTV"
+        app:layout_constraintTop_toBottomOf="@+id/grammaticalexceptionssettings"/>
+
+    <TextView
+        android:id="@+id/exceptiontypeTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/tipo_eccezione"
+        app:layout_constraintStart_toEndOf="@+id/grammaticalexceptionskeyword"
+        app:layout_constraintEnd_toStartOf="@+id/exceptiontype"
+        app:layout_constraintTop_toBottomOf="@+id/grammaticalexceptionssettings"/>
+
+    <EditText
+        android:id="@+id/exceptiontype"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:autofillHints="@string/tipo_eccezione"
+        android:inputType="text"
+        app:layout_constraintStart_toEndOf="@+id/exceptiontypeTV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/grammaticalexceptionssettings"/>
+
+    <LinearLayout
+        android:id="@+id/grammaticalexceptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/grammaticalexceptionssettings"
+        app:layout_constraintVertical_bias="0.069">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="@string/eccezione_1" />
+
+            <EditText
+                android:id="@+id/exception1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:autofillHints="@string/eccezione_1"
+                android:inputType="text" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="@string/eccezione_2" />
+
+            <EditText
+                android:id="@+id/exception2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:autofillHints="@string/eccezione_2"
+                android:inputType="text" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="@string/eccezione_3" />
+
+            <EditText
+                android:id="@+id/exception3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:autofillHints="@string/eccezione_3"
+                android:inputType="text" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/grammaticalexceptionssave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/grammaticalexceptionslistbutton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/grammaticalexceptions"
+        android:onClick="GrammaticalExceptionsSave"
+        android:text="@string/salva" />
+
+    <Button
+        android:id="@+id/grammaticalexceptionslistbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:onClick="grammaticalExceptionsList"
+        android:text="@string/mostra_elenco"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/grammaticalexceptionssave"
+        app:layout_constraintTop_toBottomOf="@+id/grammaticalexceptions"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

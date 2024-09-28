@@ -80,30 +80,19 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:paddingStart="10dp"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginLeft="10dp"
+            android:text="@string/preposizione_seconda_parola_complemento" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:text="@string/preposizione_seconda_parola_complemento" />
-
-            <EditText
-                android:id="@+id/complement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:inputType="text"
-                android:autofillHints="@string/preposizione_seconda_parola_complemento" />
-
-        </LinearLayout>
+        <EditText
+            android:id="@+id/complement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:inputType="text"
+            android:autofillHints="@string/preposizione_seconda_parola_complemento" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="130dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="5dp"
         android:ems="10"
         android:text="@string/lista_di_nomi"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/listofnamesname">
@@ -95,7 +94,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listofnameselementactive">
@@ -119,19 +117,20 @@
         android:id="@+id/nameaddtolist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/listsofnameslistbutton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listofnamesismenuitem"
         android:onClick="nameAddToList"
         android:text="@string/aggiungi" />
 
-    <ListView
-            android:id="@+id/listview"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameaddtolist"/>
-
+    <Button
+        android:id="@+id/listsofnameslistbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="listsOfNamesList"
+        android:text="@string/mostra_elenco"
+        app:layout_constraintStart_toEndOf="@+id/nameaddtolist"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listofnamesismenuitem"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

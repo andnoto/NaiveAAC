@@ -6,22 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.sampietro.NaiveAAC.activities.Settings.SettingsMediaActivity">
 
-    <LinearLayout
-        android:id="@+id/videoDescriptionLL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="vertical"
-        android:padding="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.069">
-
         <LinearLayout
+            android:id="@+id/videoDescriptionLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -45,60 +31,49 @@
                 android:autofillHints="@string/descrizione_video_da_inserire" />
 
         </LinearLayout>
-    </LinearLayout>
+
     <SurfaceView
         android:id="@+id/surfView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/videoDescriptionLL" />
 
-    <LinearLayout
-        android:id="@+id/videoLL"
+    <Button
+        android:id="@+id/videosearchbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="5dp"
+        android:layout_marginStart="5dp"
+        android:onClick="videoSearch"
+        android:text="@string/cerca_video"
+        app:layout_constraintEnd_toStartOf="@+id/videoaddbutton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/surfView" />
+
+    <Button
+        android:id="@+id/videoaddbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:onClick="videoAdd"
+        android:text="@string/aggiungi_video"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/videosearchbutton"
+        app:layout_constraintTop_toBottomOf="@+id/surfView" />
+
+    <Button
+        android:id="@+id/videolistbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:onClick="videosList"
+        android:text="@string/mostra_elenco"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/surfView">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-
-                android:onClick="videoSearch"
-                android:text="@string/cerca_video" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-
-                android:onClick="videoAdd"
-                android:text="@string/aggiungi_video" />
-        </LinearLayout>
-    </LinearLayout>
-    <ListView
-            android:id="@+id/listview"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/videoLL"/>
+        app:layout_constraintTop_toBottomOf="@+id/videosearchbutton"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

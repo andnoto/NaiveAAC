@@ -1,7 +1,6 @@
 package com.sampietro.NaiveAAC.activities.Info
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.Utils.ActionbarFragment
 import com.sampietro.NaiveAAC.activities.Info.Utils.InfoActivityAbstractClass
@@ -31,7 +30,7 @@ class PrivacyActivity : InfoActivityAbstractClass() {
             fragmentManager = supportFragmentManager
             fragmentManager.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
-                .add(R.id.settings_container, Fragment(R.layout.activity_privacy_information), "PrivacyFragment")
+                .add(R.id.settings_container, PrivacyFragment(), "PrivacyFragment")
                 .commit()
         }
     } //

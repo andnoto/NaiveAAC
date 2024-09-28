@@ -8,16 +8,17 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 
 /**
- * <h1>FragmentAbstractClassWithListener</h1>
+ * <h1>FragmentAbstractClassWithListenerWithoutConstructor</h1>
  *
- * **FragmentAbstractClassWithListener**
+ * **FragmentAbstractClassWithListenerWithoutConstructor**
  * class containing common methods that is extended by Settings Fragment
  *
  * @version     5.0, 01/04/2024
  */
-abstract class FragmentAbstractClassWithListener(@LayoutRes contentLayoutId : Int = 0) : Fragment(contentLayoutId) {
+abstract class FragmentAbstractClassWithListenerWithoutConstructor() : Fragment() {
 //
     lateinit var ctext: Context
+    lateinit var rootView: View
 
     /**
      * <h1>onFragmentEventListenerSettings</h1>

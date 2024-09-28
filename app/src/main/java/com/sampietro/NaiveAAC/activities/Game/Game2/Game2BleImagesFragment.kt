@@ -1,10 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Game.Game2
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.Graphics.ImagesAdapter
 import io.realm.Realm
@@ -18,7 +20,7 @@ import io.realm.Realm
  * @version     5.0, 01/04/2024
  * @see Game2BleActivity
  */
-class Game2BleImagesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
+class Game2BleImagesFragment() : FragmentAbstractClassWithoutConstructor() {
     //
     private lateinit var realm: Realm
 
@@ -35,10 +37,16 @@ class Game2BleImagesFragment(contentLayoutId: Int) : FragmentAbstractClass(conte
      *
      * @see ImagesAdapter
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_settings_stories_images_videos, container, false)
         // logic of fragment
         realm = Realm.getDefaultInstance()
         // ListView
@@ -58,10 +66,12 @@ class Game2BleImagesFragment(contentLayoutId: Int) : FragmentAbstractClass(conte
             Images::class.java
         ).findAll()
         //
-        listView = view.findViewById<View>(R.id.listview) as ListView
+        listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
         adapter = Game2BleImagesSearchAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
+        //
+        return rootView
     }
 }

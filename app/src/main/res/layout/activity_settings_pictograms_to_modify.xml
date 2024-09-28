@@ -11,8 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="130dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
+        android:layout_marginTop="5dp"
         android:hint="@string/edit_message"
         android:text="@string/pittogrammi_da_modificare"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +35,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -60,7 +58,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -84,7 +81,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -108,7 +104,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -135,20 +130,21 @@
         android:id="@+id/pictogramstomodifysave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/pictogramstomodifylistbutton"
         app:layout_constraintTop_toBottomOf="@+id/pictogramstomodify"
         android:onClick="pictogramsToModifySave"
         android:text="@string/salva" />
 
-
-    <ListView
-        android:id="@+id/listview"
+    <Button
+        android:id="@+id/pictogramstomodifylistbutton"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pictogramstomodifysave" />
-
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:onClick="pictogramsToModifyList"
+        android:text="@string/mostra_elenco"
+        app:layout_constraintStart_toEndOf="@+id/pictogramstomodifysave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pictogramstomodify"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -100,7 +100,45 @@ open class SettingsStoriesRegistrationActivity : SettingsStoriesRegistrationActi
             sharedPref.getInt(getString(R.string.preference_last_phrase_number), 1)
         }
         //
-        fragmentTransactionStart("")
+        // Check whether we're recreating a previously destroyed instance
+        if (savedInstanceState != null) {
+            // The onSaveInstanceState method is called before an activity may be killed
+            // (for Screen Rotation Handling) so that
+            // when it comes back it can restore its state.
+            voiceToBeRecordedInStories!!.story = savedInstanceState.getString(getString(R.string.story))
+            voiceToBeRecordedInStories!!.phraseNumberInt = savedInstanceState.getInt(getString(R.string.phrase_number))
+        } else {
+            fragmentTransactionStart("")
+        }
+    }
+    /**
+     * destroy SpeechRecognizer, TTS shutdown
+     *
+     * @see android.app.Activity.onDestroy
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        SpeechRecognizerManagement.destroyRecognizer()
+        // TTS
+        if (tTS1 != null) {
+            tTS1!!.stop()
+            tTS1!!.shutdown()
+        }
+    }
+    /**
+     * This method is called before an activity may be killed so that when it comes back some time in the future it can restore its state..
+     *
+     *
+     * it stores the last phrase number
+     *
+     * @param savedInstanceState Define potentially saved parameters due to configurations changes.
+     */
+    public override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        //
+        savedInstanceState.putString(getString(R.string.story), voiceToBeRecordedInStories!!.story)
+        savedInstanceState.putInt(getString(R.string.phrase_number), voiceToBeRecordedInStories!!.phraseNumberInt)
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState)
     }
     /**
      * Called when the user taps the back button.

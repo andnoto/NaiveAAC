@@ -1,10 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Info
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Graphics.Images
 import com.sampietro.NaiveAAC.activities.Graphics.ImagesCopyrightAdapter
 import io.realm.Realm
@@ -21,7 +23,7 @@ import io.realm.Sort
  *
  * @see InfoActivity
  */
-class InfoImagesCopyrightListFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
+class InfoImagesCopyrightListFragment() : FragmentAbstractClassWithoutConstructor() {
     private lateinit var realm: Realm
 
     //
@@ -37,10 +39,16 @@ class InfoImagesCopyrightListFragment(contentLayoutId: Int) : FragmentAbstractCl
      *
      * @see ImagesCopyrightAdapter
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_settings_copyright_list, container, false)
         // logic of fragment
         // ListView
         // 1) we get a reference to the data structure through the RealmResults class which constitutes
@@ -58,16 +66,18 @@ class InfoImagesCopyrightListFragment(contentLayoutId: Int) : FragmentAbstractCl
         //
         realm = Realm.getDefaultInstance()
         var results: RealmResults<Images>
-        results = realm.where(Images::class.java).findAll()
+        results = realm.where(Images::class.java).isNotNull("copyright").findAll()
         //
         val mStrings1 = arrayOf(ctext.getString(R.string.copyright))
         val mStrings2 = arrayOf(Sort.ASCENDING)
         results = results.sort(mStrings1, mStrings2)
         //
-        listView = view.findViewById<View>(R.id.listview) as ListView
+        listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
         adapter = ImagesCopyrightAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
+        //
+        return rootView
     }
 }

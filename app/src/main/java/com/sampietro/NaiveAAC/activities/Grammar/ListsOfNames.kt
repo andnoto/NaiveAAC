@@ -126,8 +126,6 @@ open class ListsOfNames : RealmObject() {
                 realm.commitTransaction()
             }
             //
-            val rootPath = context.filesDir.absolutePath
-            //
             val FILE_NAME = "listsofnames.csv"
             //adding to db
             var br: BufferedReader? = null

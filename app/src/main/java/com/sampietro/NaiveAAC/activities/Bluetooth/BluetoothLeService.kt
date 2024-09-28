@@ -322,7 +322,7 @@ class BluetoothLeService : Service() {
         // and as soon the existing connection is broken, GATT server will start advertising
         override fun onConnectionStateChange(deviceConnected: BluetoothDevice , status:Int , newState: Int ) {
         super.onConnectionStateChange(deviceConnected, status, newState)
-            deviceEnabledUserName = searchForDeviceUser(deviceConnected)!!
+            deviceEnabledUserName = searchForDeviceUser(deviceConnected)
             // if the user of the device has not been found, the connection will not be made
             if (deviceEnabledUserName != "non trovato")
             {
@@ -350,7 +350,7 @@ class BluetoothLeService : Service() {
     }
     // TTS
     var tTS1: TextToSpeech? = null
-    var toSpeak: String? = null
+//    var toSpeak: String? = null
     @SuppressLint("MissingPermission")
     fun notifyMessage()  {
         if (messageToNotify != "I'M DISCONNECTING")
@@ -502,8 +502,9 @@ class BluetoothLeService : Service() {
     }
 //
     private var mScanning = false
-    var devicesArrayList: ArrayList<BluetoothDevice> = ArrayList()
-    private lateinit var deviceAddressFound: String
+    val devicesArrayList: MutableList<BluetoothDevice> = mutableListOf()
+//    var devicesArrayList: ArrayList<BluetoothDevice> = ArrayList()
+//    private lateinit var deviceAddressFound: String
     /**
      * step 11 (3 sc) Bluetooth scan
      * Refer to [bignerdranch.com](https://bignerdranch.com/blog/bluetooth-low-energy-on-android-part-1/
@@ -550,13 +551,16 @@ class BluetoothLeService : Service() {
          */
         @SuppressLint("MissingPermission")
         override fun onScanResult(callbackType: Int, result: ScanResult) {
-            val device: BluetoothDevice = result.getDevice()
-            // ...do whatever you want with this found device
-            if (!devicesArrayList.contains(device)) {
-                devicesArrayList.add(device)
-                deviceAddressFound = device.address!!
-                connect(deviceAddressFound)
-            }
+            if (callbackType != ScanSettings.CALLBACK_TYPE_MATCH_LOST)
+                {
+                    val device: BluetoothDevice = result.getDevice()
+                    // ...do whatever you want with this found device
+                    if (!devicesArrayList.contains(device)) {
+                        devicesArrayList.add(device)
+                        val deviceAddressFound = device.address!!
+                        connect(deviceAddressFound)
+                    }
+                }
         }
         override fun onBatchScanResults(results: List<ScanResult?>?) {
             // Ignore for now
@@ -594,7 +598,7 @@ class BluetoothLeService : Service() {
                 {
                     device = adapter.getRemoteDevice(address)
                     // search for image of the device user to send any notifications
-                    deviceEnabledUserName = searchForDeviceUser(device)!!
+                    deviceEnabledUserName = searchForDeviceUser(device!!)
                     // connect to the GATT server on the device
                     /*
                     step 17
@@ -607,7 +611,7 @@ class BluetoothLeService : Service() {
                     // if the user of the device has not been found, the connection will not be made
                     if (deviceEnabledUserName != "non trovato")
                     {
-                        bluetoothGatt = device.connectGatt(this, false, bluetoothGattCallback, TRANSPORT_LE)
+                        bluetoothGatt = device!!.connectGatt(this, false, bluetoothGattCallback, TRANSPORT_LE)
                         return true
                     }
                     else
@@ -627,12 +631,12 @@ class BluetoothLeService : Service() {
         }
     }
     //
-    private var connectionState = STATE_DISCONNECTED
-    private lateinit var device: BluetoothDevice
-    private var service: BluetoothGattService? = null
-    private lateinit var characteristic: BluetoothGattCharacteristic
+//    private var connectionState = STATE_DISCONNECTED
+    private var device: BluetoothDevice? = null
+//    private var service: BluetoothGattService? = null
+    private var characteristic: BluetoothGattCharacteristic? = null
     private var mConnected: Boolean = false
-    private var mInitialized: Boolean = false
+//    private var mInitialized: Boolean = false
     //
     var messageFromDeviceConnected = "nessun messaggio"
     /*
@@ -685,7 +689,7 @@ class BluetoothLeService : Service() {
                 gatt!!.discoverServices()
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 // disconnected from the GATT Server
-                connectionState = STATE_DISCONNECTED
+//                connectionState = STATE_DISCONNECTED
                 broadcastUpdate(ACTION_GATT_DISCONNECTED)
                 mConnected = false
                 gatt!!.close()
@@ -740,7 +744,7 @@ class BluetoothLeService : Service() {
                 if (gatt != null) {
                     device = gatt.device
                     // search for image of the device user to send any notifications
-                    deviceEnabledUserName = searchForDeviceUser(device)!!
+                    deviceEnabledUserName = searchForDeviceUser(device!!)
                     // if the user of the device has not been found, the connection will not be made
                     if (deviceEnabledUserName == "non trovato")
                     {
@@ -749,9 +753,9 @@ class BluetoothLeService : Service() {
                     }
                 }
                 if (gatt != null) {
-                    service = gatt.getService(SERVICE_UUID)
+                    val service = gatt.getService(SERVICE_UUID)
                     if (service != null) {
-                        characteristic = service!!.getCharacteristic(CHARACTERISTIC_UUID)
+                        characteristic = service.getCharacteristic(CHARACTERISTIC_UUID)
                         /*
                         Now that we have found our Characteristic, we need to set the write type and
                         enable notifications.
@@ -760,7 +764,7 @@ class BluetoothLeService : Service() {
                         or notify us when there is a change.
                         Make sure to set this to false when disconnecting from the GATT server.
                          */
-                        characteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                        characteristic!!.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                         // enable notifications once we’ve discovered services
                         gatt.services.find { it.uuid == SERVICE_UUID }
                             ?.characteristics?.find { it.uuid == CHARACTERISTIC_MESSAGE_FROM_GATT_SERVER_UUID }
@@ -885,10 +889,10 @@ class BluetoothLeService : Service() {
         ) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 //
-                connectionState = STATE_CONNECTED
+//                connectionState = STATE_CONNECTED
                 broadcastUpdate(ACTION_GATT_CONNECTED)
                 mConnected = true
-                mInitialized = true
+//                mInitialized = true
                 //
             }
             else {
@@ -925,7 +929,7 @@ class BluetoothLeService : Service() {
      */
     @SuppressLint("MissingPermission")
     fun getDeviceEnabledName(): String? {
-        return device.name
+        return device?.name
     }
     /**
      * @return string device enabled name
@@ -949,6 +953,13 @@ class BluetoothLeService : Service() {
         bluetoothGatt!!.disconnect()
         bluetoothGatt = null
     }
+    // Disconnects all established connections from Gatt Server
+//    @SuppressLint("MissingPermission")
+//    fun disconnectFromGattServer() {
+//        devicesArrayList.forEach { device ->
+//            mGattServer!!.cancelConnection(device)
+//        }
+//    }
     /*
     step 23
     One important step when dealing with Bluetooth connections is to close the connection when you are finished with it.
@@ -965,6 +976,9 @@ class BluetoothLeService : Service() {
         bluetoothGatt?.let { gatt ->
             gatt.close()
             bluetoothGatt = null
+        }
+        if (mGattServer != null) {
+            mGattServer!!.close()
         }
         // TTS
         if (tTS1 != null) {
@@ -1046,7 +1060,8 @@ class BluetoothLeService : Service() {
     @SuppressLint("MissingPermission")
     fun sendMessageFromClient(message: String) {
         // Before doing anything, make sure we are connected and our Characteristic is initialized.
-        if (!mConnected || !mInitialized) {
+//        if (!mConnected || !mInitialized) {
+        if (!mConnected) {
             return
         }
         // n order to send the data we must first convert our String to byte[].
@@ -1058,9 +1073,9 @@ class BluetoothLeService : Service() {
         }
         // Now set the value on the Characteristic and our message will be sent!
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            bluetoothGatt!!.writeCharacteristic(characteristic, messageBytes, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT )
+            bluetoothGatt!!.writeCharacteristic(characteristic!!, messageBytes, BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT )
             } else {
-            characteristic.value = messageBytes
+            characteristic!!.value = messageBytes
             bluetoothGatt!!.writeCharacteristic(characteristic)
         }
     }
@@ -1088,7 +1103,7 @@ class BluetoothLeService : Service() {
      * used for notification
      */
     var deviceEnabledUserName = "non trovato"
-    fun searchForDeviceUser(bluetoothDeviceToCheck: BluetoothDevice): String? {
+    fun searchForDeviceUser(bluetoothDeviceToCheck: BluetoothDevice): String {
         var deviceEnabledName : String? = "non trovato"
         if (getDeviceEnabledName(bluetoothDeviceToCheck) != null)
         { deviceEnabledName = getDeviceEnabledName(bluetoothDeviceToCheck) }
@@ -1108,12 +1123,12 @@ class BluetoothLeService : Service() {
             }
             else
             {
-                return null
+                return "non trovato"
             }
         }
         else
         {
-            return null
+            return "non trovato"
         }
     }
     /**
@@ -1162,13 +1177,48 @@ class BluetoothLeService : Service() {
         if (bluetoothGatt != null)
         {
             // Ignore updates for other devices
-            if (device.getAddress().equals(bluetoothGatt!!.getDevice().getAddress()))
+            if (device!!.getAddress().equals(bluetoothGatt!!.getDevice().getAddress()))
                 bluetoothGatt!!.discoverServices()
         }
     }
+    /*
+    **
+    *
+    * @param profile int GATT or GATT_SERVER
+    * @return List<BluetoothDevice>
+    */
+//    @SuppressLint("MissingPermission")
+//    fun devicesConnected(profile: Int): List<BluetoothDevice> {
+//        val bleManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
+//        val bluetoothConnectedDevicesList = bleManager.getConnectedDevices(profile)
+//        return bluetoothConnectedDevicesList
+//    }
+    /**
+     * clear the service variables
+     *
+     */
+    fun clearServiceVariables() {
+        messagesStack.clear()
+        messageToNotify = "nessun messaggio"
+        messageFromGattServer = "nessun messaggio"
+        mBluetoothLeAdvertiser = null
+        //
+        mScanning = false
+        devicesArrayList.clear()
+        device = null
+        characteristic = null
+        mConnected = false
+        messageFromDeviceConnected = "nessun messaggio"
+        //
+        activityIsPaused = false
+        clientActivity = null
+        //
+        deviceEnabledUserName = "non trovato"
+        bitmap1 = null
+    }
     companion object {
-        // Stops scanning after 30 seconds.
-        private const val SCAN_PERIOD: Long = 30000
+        // Stops scanning after 60 seconds.
+        private const val SCAN_PERIOD: Long = 60000
 
         const val ACTION_GATT_SERVER_CONNECTED =
             "com.example.androiddocumentationbluetoothble.ACTION_GATT_SERVER_CONNECTED"

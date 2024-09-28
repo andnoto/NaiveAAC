@@ -715,22 +715,22 @@ class Game1BleActivity : GameActivityAbstractClass(),
 
     @SuppressLint("MissingPermission")
     var enableBtResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_CANCELED) {
-            finish()
+        if (result.resultCode == RESULT_OK) {
+            /*
+            step 3 -> BluetoothLeService
+            A client binds to a service by calling bindService().
+            When it does, it must provide an implementation of ServiceConnection, which monitors
+            the connection with the service.
+            The return value of bindService() indicates whether the requested service exists and
+            whether the client is permitted access to it.
+            */
+            val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
+            bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
         }
         else
-            if (result.resultCode == RESULT_OK) {
-                /*
-                step 3 -> BluetoothLeService
-                A client binds to a service by calling bindService().
-                When it does, it must provide an implementation of ServiceConnection, which monitors
-                the connection with the service.
-                The return value of bindService() indicates whether the requested service exists and
-                whether the client is permitted access to it.
-                */
-                val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
-                bindService(gattServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE)
-            }
+        {
+            finish()
+        }
     }
     /*
     BluetootLeService -> step 18 -> BluetootLeService
@@ -786,6 +786,8 @@ class Game1BleActivity : GameActivityAbstractClass(),
                     messageFromGattServer = bluetoothService!!.getMessageFromGatt()
                     if (messageFromGattServer == "I'M DISCONNECTING")
                     {
+                        mConnected = false
+                        disableTransmitToDisconnectedBluetooth()
                     }
                     else
                     {
@@ -836,7 +838,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
         {
             if (bluetoothService != null)
             {
-                bluetoothService!!.sendMessageFromServer("I'M DISCONNECTING")
+//                bluetoothService!!.sendMessageFromServer("I'M DISCONNECTING")
                 bluetoothService!!.stopAdvertising()
             }
         }
@@ -844,7 +846,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
         {
             if (bluetoothService != null)
             {
-                bluetoothService!!.sendMessageFromClient("I'M DISCONNECTING")
+//                bluetoothService!!.sendMessageFromClient("I'M DISCONNECTING")
                 bluetoothService!!.stopScanner()
             }
         }
@@ -855,6 +857,12 @@ class Game1BleActivity : GameActivityAbstractClass(),
         //
         unregisterReceiver(gattUpdateReceiver)
         unregisterReceiver(bondStateReceiver)
+        //
+        val Game2BleDialogFragmentgotinstance =
+            supportFragmentManager.findFragmentByTag("GAME_DIALOG") as Game2BleDialogFragment?
+        if (Game2BleDialogFragmentgotinstance != null) {
+            dialog!!.dismiss()
+        }
     }
     /**
      * destroy SpeechRecognizer, TTS shutdown and more
@@ -866,7 +874,8 @@ class Game1BleActivity : GameActivityAbstractClass(),
         super.onDestroy()
         if (preference_BluetoothMode == "Server")
         {
-            bluetoothService!!.stopServer()
+            bluetoothService!!.sendMessageFromServer("I'M DISCONNECTING")
+//            bluetoothService!!.stopServer()
         }
         else
         {
@@ -880,7 +889,6 @@ class Game1BleActivity : GameActivityAbstractClass(),
         // Unregister page change callback
         mViewPager.unregisterOnPageChangeCallback(callbackViewPager2)
     }
-
     /**
      * This method is called before an activity may be killed so that when it comes back some time in the future it can restore its state..
      *
@@ -1027,6 +1035,25 @@ class Game1BleActivity : GameActivityAbstractClass(),
     fun disableTransmitToDisconnectedBluetooth() {
         deviceEnabledName = "non trovato"
         bluetoothStatus!!.deviceEnabledUserName = "non trovato"
+        //
+        bluetoothService!!.clearServiceVariables()
+        if (preference_BluetoothMode == "Server")
+        {
+            /*
+            BluetootLeService -> step 7 -> BluetootLeService
+            */
+            bluetoothService!!.startAdvertising()
+        }
+        else
+        {
+            bluetoothService!!.disconnect()
+            /*
+            step 10 -> BluetootLeService
+            */
+            // perform device scanning
+            bluetoothService!!.scan()
+        }
+        bluetoothService!!.activityInActiveState("Game1BleActivity")
         //
         displaySecondLevelMenu()
     }
@@ -1286,7 +1313,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
      * @see Game1BleSecondLevelFragment
      */
     fun fragmentTransactionStart() {
-        val frag = Game1BleSecondLevelFragment(R.layout.activity_game_1_ble)
+        val frag = Game1BleSecondLevelFragment()
         val bundle = Bundle()
         bundle.putString(getString(R.string.left_column_content), leftColumnContent)
         bundle.putString(getString(R.string.middle_column_content), middleColumnContent)

@@ -1,10 +1,12 @@
 package com.sampietro.NaiveAAC.activities.Settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ListView
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClass
+import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevicesAdapter
 import io.realm.Realm
@@ -19,7 +21,7 @@ import io.realm.Realm
  *
  * @see SettingsActivity
  */
-class BluetoothDevicesFragment(contentLayoutId: Int) : FragmentAbstractClass(contentLayoutId) {
+class BluetoothDevicesFragment() : FragmentAbstractClassWithoutConstructor() {
     //
     private lateinit var realm: Realm
 
@@ -30,14 +32,20 @@ class BluetoothDevicesFragment(contentLayoutId: Int) : FragmentAbstractClass(con
     /**
      * prepares the ui also using a listview
      *
-     * @see androidx.fragment.app.Fragment.onViewCreated
+     * @see androidx.fragment.app.Fragment.onCreateView
      *
      * @see BluetoothDevicesAdapter
      */
-    override fun onViewCreated(
-        view: View,
+//    override fun onViewCreated(
+//        view: View,
+//        savedInstanceState: Bundle?
+//    ) {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ) {
+    ): View {
+        rootView = inflater.inflate(R.layout.activity_settings_bluetooth_devices, container, false)
         // logic of fragment
         realm = Realm.getDefaultInstance()
         // ListView
@@ -57,10 +65,12 @@ class BluetoothDevicesFragment(contentLayoutId: Int) : FragmentAbstractClass(con
             BluetoothDevices::class.java
         ).findAll()
         //
-        listView = view.findViewById<View>(R.id.listview) as ListView
+        listView = rootView.findViewById<View>(R.id.listview) as ListView
         //
         adapter = BluetoothDevicesAdapter(ctext, results, listView)
         //
         listView.adapter = adapter
+        //
+        return rootView
     }
 }
