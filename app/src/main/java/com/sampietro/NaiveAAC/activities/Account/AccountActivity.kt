@@ -331,6 +331,8 @@ class AccountActivity : AccountActivityAbstractClass() {
             listsOfNames.elementActive = "A"
             listsOfNames.isMenuItem = "N"
             listsOfNames.fromAssets = ""
+            listsOfNames.uriType = "S"
+            listsOfNames.uri = filePath
             realm.commitTransaction()
             // register the password
             registerPassword(textPassword)

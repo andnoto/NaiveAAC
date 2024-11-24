@@ -10,6 +10,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
+import io.realm.Realm
 
 /**
  * <h1>Game1RecyclerViewAdapter1</h1>
@@ -24,6 +26,7 @@ import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addI
  */
 class Game1RecyclerViewAdapter1(
     private val context: Context, //
+    private val realm: Realm,
     private val galleryList: ArrayList<Game1ArrayList>
 ) : RecyclerView.Adapter<Game1RecyclerViewAdapter1.ViewHolder>() {
     var listener: Game1RecyclerViewAdapterInterface? = null
@@ -88,6 +91,17 @@ class Game1RecyclerViewAdapter1(
             galleryList[i].url, viewHolder.img,
             200,200
         )
+        // search for question mark
+        val titleContainsQuestionMark = galleryList[i].image_title!!.contains("?")
+        if (titleContainsQuestionMark) {
+            // INTERNAL MEMORY IMAGE SEARCH
+            val uriToSearch =
+                searchUri(context, realm, "?")
+            viewHolder.img3.scaleType = ImageView.ScaleType.CENTER_CROP
+            addImage("S", uriToSearch, viewHolder.img3,
+                200,200)
+            viewHolder.img3.visibility = View.VISIBLE
+        }
         //
         viewHolder.img.setOnClickListener { view -> listener!!.onItemClick(view, i) }
     }
@@ -111,12 +125,14 @@ class Game1RecyclerViewAdapter1(
         internal val title: TextView
         internal val img: ImageView
         internal val img2: ImageView
+        internal val img3: ImageView
 
         init {
             //
             title = view.findViewById<View>(R.id.title) as TextView
             img = view.findViewById<View>(R.id.img1) as ImageView
             img2 = view.findViewById<View>(R.id.img1_2) as ImageView
+            img3 = view.findViewById<View>(R.id.img1_3) as ImageView
         }
     }
 }

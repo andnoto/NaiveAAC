@@ -106,15 +106,16 @@ class SettingsStoriesImportExportActivity : ActivityAbstractClass()
             fragmentManager = supportFragmentManager
             fragmentManager!!.beginTransaction()
                 .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
+                .add(R.id.settings_container, StoriesImportExportFragment(), "StoriesImportExportFragment")
                 .commit()
-            val frag = StoriesImportExportFragment()
-            val bundle = Bundle()
-            bundle.putString("STORY", story)
-            frag.arguments = bundle
-            val ft = supportFragmentManager.beginTransaction()
-            ft.add(R.id.settings_container, frag, "StoriesImportExportFragment")
-            ft.addToBackStack(null)
-            ft.commitAllowingStateLoss()
+//            val frag = StoriesImportExportFragment()
+//            val bundle = Bundle()
+//            bundle.putString("STORY", story)
+//            frag.arguments = bundle
+//            val ft = supportFragmentManager.beginTransaction()
+//            ft.add(R.id.settings_container, frag, "StoriesImportExportFragment")
+//            ft.addToBackStack(null)
+//            ft.commitAllowingStateLoss()
         }
     }
     /**

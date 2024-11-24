@@ -72,36 +72,35 @@ class StoriesImportExportFragment() : FragmentAbstractClassWithoutConstructor() 
         //
         realm = Realm.getDefaultInstance()
         //
+        var results: RealmResults<Stories>
+        //
         val bundle = this.arguments
         if (bundle != null) {
-            //
             val story = bundle.getString("STORY")
             storyToSearch!!.setText(story)
             //
-            var results: RealmResults<Stories>
-            //
-            results = if (story == getString(R.string.nome_storia)) {
-                realm.where(Stories::class.java).findAll()
-            } else {
-                realm.where(Stories::class.java)
+            results = realm.where(Stories::class.java)
                     .equalTo(
                         "story",
                         story!!.lowercase(Locale.getDefault())
                     )
                     .findAll()
-            }
-            //
-            val mStrings1 = arrayOf("story", "phraseNumberInt", "wordNumberInt")
-            val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
-            results = results.sort(mStrings1, mStrings2)
-            //
-            listView =
-                rootView.findViewById<View>(R.id.import_export_stories_listview) as ListView
-            //
-            adapter = StoriesImportExportAdapter(ctext, results, listView)
-            //
-            listView!!.adapter = adapter
         }
+        else
+        {
+            storyToSearch!!.setText(getString(R.string.nome_storia))
+            results = realm.where(Stories::class.java).findAll()
+        }
+        val mStrings1 = arrayOf("story", "phraseNumberInt", "wordNumberInt")
+        val mStrings2 = arrayOf(Sort.ASCENDING, Sort.ASCENDING, Sort.ASCENDING)
+        results = results.sort(mStrings1, mStrings2)
+        //
+        listView =
+            rootView.findViewById<View>(R.id.import_export_stories_listview) as ListView
+        //
+        adapter = StoriesImportExportAdapter(ctext, results, listView)
+        //
+        listView!!.adapter = adapter
         //
         return rootView
     }

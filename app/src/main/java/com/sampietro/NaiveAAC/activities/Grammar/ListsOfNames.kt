@@ -6,6 +6,7 @@ import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImpo
 import io.realm.Realm
 import io.realm.RealmObject
 import java.io.BufferedReader
+import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStreamReader
@@ -44,6 +45,23 @@ open class ListsOfNames : RealmObject() {
      * contains Y if the object was imported from assets.
      */
     var fromAssets: String? = null
+    /**
+     * represent the type of image associated with the `word`.
+     *
+     *
+     * uritype = S then , if it exists, uri refers to storage
+     *
+     *
+     * uritype = A then , if it exists, uri refers to a url of arasaac
+     *
+     *
+     * if neither the arasaac url nor the file path are indicated, the image is associated using PictogramsAll
+     */
+    var uriType: String? = null
+    /**
+     * contains the file path or a url of arasaac  (originally contained the uri).
+     */
+    var uri: String? = null
     //
     companion object {
         //
@@ -126,6 +144,8 @@ open class ListsOfNames : RealmObject() {
                 realm.commitTransaction()
             }
             //
+            val rootPath = context.filesDir.absolutePath
+            //
             val FILE_NAME = "listsofnames.csv"
             //adding to db
             var br: BufferedReader? = null
@@ -164,28 +184,61 @@ open class ListsOfNames : RealmObject() {
                             line!!.split(cvsSplitBy.toRegex()).dropLastWhile { it.isEmpty() }
                                 .toTypedArray()
                         // checks
-                        if (oneWord[0] != null && oneWord[1] != null && oneWord[2] != null
-                            && oneWord[3] != null && oneWord[4] != null) {
-                            if (oneWord[0]!!.length > 0 && oneWord[1]!!.length > 0 &&
-                                (oneWord[2] == context.getString(R.string.character_a)
-                                        || oneWord[2] == context.getString(R.string.character_n))
-                                &&
-                                    (oneWord[3] == "F" || oneWord[3] == "S"
-                                        || oneWord[3] == context.getString(R.string.character_n))
-                            ) {
-                                //
-                                realm.beginTransaction()
-                                val listsOfNames = realm.createObject(
-                                    ListsOfNames::class.java
-                                )
-                                // set the fields here
-                                listsOfNames.keyword = oneWord[0]
-                                listsOfNames.word = oneWord[1]
-                                listsOfNames.elementActive = oneWord[2]
-                                listsOfNames.isMenuItem = oneWord[3]
-                                //
-                                listsOfNames.fromAssets = oneWord[4]
-                                realm.commitTransaction()
+                        // check if the description already exists in the table
+                        if (oneWord[0] != null && oneWord[1] != null && oneWord[3] != null) {
+                            val descriptionAlreadyExists =
+                                realm.where(ListsOfNames::class.java)
+                                    .equalTo("keyword", oneWord[0])
+                                    .equalTo("word", oneWord[1])
+                                    .equalTo("isMenuItem", oneWord[3])
+                                    .findAll()
+                            val count = descriptionAlreadyExists.size
+                            if (count == 0) {
+                                var f: File? = null
+                                var uri: String? = null
+                                if (oneWord[6] != null) {
+                                    if (oneWord[5] == context.getString(R.string.character_s)) {
+                                        // replace with root of data directory
+                                        val fileName = oneWord[6]!!
+                                            .substring(oneWord[6]!!.lastIndexOf("/") + 1)
+                                        uri = "$rootPath/$fileName"
+                                        //
+                                        f = File(uri)
+                                    } else {
+                                        uri = oneWord[6]
+                                    }
+                                }
+                                if (oneWord[0] != null && oneWord[1] != null && oneWord[2] != null
+                                    && oneWord[3] != null && oneWord[4] != null
+                                    && oneWord[5] != null && oneWord[6] != null) {
+                                    if (oneWord[0]!!.length > 0 && oneWord[1]!!.length > 0 &&
+                                        (oneWord[2] == context.getString(R.string.character_a)
+                                                || oneWord[2] == context.getString(R.string.character_n))
+                                        &&
+                                        (oneWord[3] == "F" || oneWord[3] == "S"
+                                                || oneWord[3] == context.getString(R.string.character_n))
+                                        &&
+                                        (oneWord[5] != context.getString(R.string.character_s)
+                                                || oneWord[5] == context.getString(R.string.character_s) && f!!.exists())
+                                    ) {
+                                        //
+                                        realm.beginTransaction()
+                                        val listsOfNames = realm.createObject(
+                                            ListsOfNames::class.java
+                                        )
+                                        // set the fields here
+                                        listsOfNames.keyword = oneWord[0]
+                                        listsOfNames.word = oneWord[1]
+                                        listsOfNames.elementActive = oneWord[2]
+                                        listsOfNames.isMenuItem = oneWord[3]
+                                        //
+                                        listsOfNames.fromAssets = oneWord[4]
+                                        //
+                                        listsOfNames.uriType = oneWord[5]
+                                        listsOfNames.uri = uri
+                                        realm.commitTransaction()
+                                    }
+                                }
                             }
                         }
                     }

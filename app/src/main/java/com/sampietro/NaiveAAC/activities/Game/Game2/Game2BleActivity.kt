@@ -2,6 +2,7 @@ package com.sampietro.NaiveAAC.activities.Game.Game2
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
@@ -18,8 +19,11 @@ import android.os.Bundle
 import android.os.IBinder
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -154,7 +158,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      */
     lateinit var btAdapter: BluetoothAdapter
     var mConnected : Boolean = false
-//    var deviceEnabledUserName : String? = "non trovato"
     var deviceEnabledName : String? = "non trovato"
     var messageFromGattServer = "nessun messaggio"
     var dialog: Game2BleDialogFragment? = null
@@ -163,20 +166,14 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     //
     var preference_BluetoothMode: String? = null
     //
-//    private var bluetoothStatus: BluetoothStatus? = null
-//    private lateinit var viewModel: Game2ViewModel
-    //
     lateinit var galleryList: ArrayList<GameADAArrayList>
     //
     private var game2ViewModelItem: Game2ViewModelItem? = null
-//    private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
     //
-//    var phraseToDisplay = 0
-//    var wordToDisplay = 0
     var wordToDisplayInTheStory = 0
     //
     var updateMode:String? = null
-    var theNewWordsMustBeInsertedBeforeThese: String? = ""
+//    var theNewWordsMustBeInsertedBeforeThese: String? = ""
     /**
      *
      */
@@ -197,23 +194,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_2_ble)
         //
-//        AndroidPermission.checkPermission(this)
-        //
         SpeechRecognizerManagement.prepareSpeechRecognizer(this)
-        //
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                .add(ActionbarFragment(), getString(R.string.actionbar_fragment)).commit()
-//        }
-        //
-        /*
-        Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
-        constructor.
-        The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
-        */
-        // In the Activity#onCreate make the only setItem
-//        bluetoothStatus = BluetoothStatus()
-//        voiceToBeRecordedInStories = VoiceToBeRecordedInStories()
         //
         realm = Realm.getDefaultInstance()
         //
@@ -262,10 +243,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
 //        }
         //
         game2ViewModelItem = Game2ViewModelItem()
-//        viewModel = ViewModelProvider(this).get(
-//            Game2ViewModel::class.java
-//        )
-//        viewModel.setItem(game2ViewModelItem!!)
         game2ViewModelItem!!.story = "Image exchange via Bluetooth"
         game2ViewModelItem!!.phraseNumberInt = 1
         clearFieldsOfViewmodelDataClass()
@@ -289,7 +266,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
             //
             wordToDisplayInTheStory = savedInstanceState.getInt("WORD TO DISPLAY IN THE STORY", 0)
             updateMode = savedInstanceState.getString("UPDATE MODE", "")
-            theNewWordsMustBeInsertedBeforeThese = savedInstanceState.getString("THE NEW WORDS MUST BE INSERTED BEFORE THESE", "")
         }
         else
         {
@@ -717,16 +693,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 BluetoothLeService.ACTION_GATT_SERVER_CONNECTED -> {
-                    mConnected = true
-                    // if MultipleAdvertisement is not supported the device name is not available
-                    if (bluetoothService!!.getDeviceEnabledName() != null)
-                    { deviceEnabledName = bluetoothService!!.getDeviceEnabledName() }
-                    else
-                    { deviceEnabledName = "manca device name" }
-                    //
-                    enableTransmitToConnectedBluetooth()
-                    val deviceenabledusername = findViewById<View>(R.id.deviceenabledusername) as TextView
-                    deviceenabledusername.setText(game2ViewModelItem!!.deviceEnabledUserName)
                 }
                 BluetoothLeService.ACTION_GATT_SERVER_DISCONNECTED -> {
                     mConnected = false
@@ -758,8 +724,26 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                     {
                     }
                     else
+                    // use comma as separator
                     {
-                        dialogFragmentShow()
+                        val csvSplitBy = getString(R.string.character_comma)
+                        val oneWord: Array<String?> =
+                            messageFromGattServer.split(csvSplitBy.toRegex()).toTypedArray()
+                        val oneWordSize = oneWord.size
+                        if (oneWordSize == 2 && oneWord[0] == "BLUETOOTH DEVICE NAME")
+                        {
+                            mConnected = true
+                            // if MultipleAdvertisement is not supported the device name is not available
+                            deviceEnabledName = oneWord[1]
+                            //
+                            enableTransmitToConnectedBluetooth()
+                            val deviceenabledusername = findViewById<View>(R.id.deviceenabledusername) as TextView
+                            deviceenabledusername.setText(game2ViewModelItem!!.deviceEnabledUserName)
+                        }
+                        else
+                        {
+                            dialogFragmentShow()
+                        }
                     }
                 }
                 BluetoothLeService.MESSAGE_FROM_GATT -> {
@@ -818,7 +802,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         {
             if (bluetoothService != null)
             {
-//                bluetoothService!!.sendMessageFromServer("I'M DISCONNECTING")
                 bluetoothService!!.stopAdvertising()
             }
         }
@@ -826,7 +809,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         {
             if (bluetoothService != null)
             {
-//                bluetoothService!!.sendMessageFromClient("I'M DISCONNECTING")
                 bluetoothService!!.stopScanner()
             }
         }
@@ -867,7 +849,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         //
         savedInstanceState.putInt("WORD TO DISPLAY IN THE STORY", wordToDisplayInTheStory)
         savedInstanceState.putString("UPDATE MODE", updateMode)
-        savedInstanceState.putString("THE NEW WORDS MUST BE INSERTED BEFORE THESE", theNewWordsMustBeInsertedBeforeThese)
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState)
     }
@@ -880,9 +861,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     override fun onDestroy() {
         if (preference_BluetoothMode != "Client")
         {
-//            bluetoothService!!.disconnectFromGattServer()
             bluetoothService!!.sendMessageFromServer("I'M DISCONNECTING")
-//            bluetoothService!!.stopServer()
         }
         else
         {
@@ -902,6 +881,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      *
      * @see BluetoothLeService.sendMessage
      */
+    /*
     @SuppressLint("MissingPermission")
     fun sendMessage() {
         var messageToSend = ""
@@ -915,24 +895,31 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                 irrh++
             }
         }
-        if (preference_BluetoothMode != "Client")
+        if (messageToSend.length - 1 <= 512)
         {
-            // Delete last character in String
-            bluetoothService!!.sendMessageFromServer(messageToSend.substring(0, messageToSend.length - 1))
+            if (preference_BluetoothMode != "Client")
+                {
+                // Delete last character in String
+                bluetoothService!!.sendMessageFromServer(messageToSend.substring(0, messageToSend.length - 1))
+                }
+                else
+                {
+                // Delete last character in String
+                bluetoothService!!.sendMessageFromClient(messageToSend.substring(0, messageToSend.length - 1))
+                }
         }
         else
         {
-            // Delete last character in String
-            bluetoothService!!.sendMessageFromClient(messageToSend.substring(0, messageToSend.length - 1))
+            messageExceedsMaximumLength()
         }
     }
+     */
     /**
      * enable transmit to connected Bluetooth .
      *
      */
     @SuppressLint("MissingPermission")
     fun enableTransmitToConnectedBluetooth() {
-//        bluetoothStatus!!.deviceEnabledUserName = "non trovato"
         game2ViewModelItem!!.deviceEnabledUserName = "non trovato"
         val results = realm.where(
             BluetoothDevices::class.java
@@ -941,7 +928,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         if (count != 0) {
             val result = results[0]
             if (result != null) {
-//                bluetoothStatus!!.deviceEnabledUserName = result.deviceUserName!!
                 game2ViewModelItem!!.deviceEnabledUserName = result.deviceUserName!!
             }
         }
@@ -953,7 +939,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
     @SuppressLint("MissingPermission")
     fun disableTransmitToDisconnectedBluetooth() {
         deviceEnabledName = "non trovato"
-//        bluetoothStatus!!.deviceEnabledUserName = "non trovato"
         game2ViewModelItem!!.deviceEnabledUserName = "non trovato"
         //
         bluetoothService!!.clearServiceVariables()
@@ -989,7 +974,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      * @see Game2BleDialogFragment
      */
     fun dialogFragmentShow() {
-//        dialog = Game2BleDialogFragment.newInstance(deviceEnabledUserName!!, messageFromGattServer )
         dialog = Game2BleDialogFragment.newInstance(game2ViewModelItem!!.deviceEnabledUserName!!, messageFromGattServer )
         dialog!!.show(supportFragmentManager, "GAME_DIALOG")
     }
@@ -1006,7 +990,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                 tTS1 = TextToSpeech(context) { status ->
                     if (status != TextToSpeech.ERROR) {
                         tTS1!!.speak(
-//                            bluetoothStatus!!.deviceEnabledUserName,
                             game2ViewModelItem!!.deviceEnabledUserName,
                             TextToSpeech.QUEUE_FLUSH,
                             null,
@@ -1199,7 +1182,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      * @see SettingsStoriesImprovementViewPagerFragment
      */
     fun gameADAViewPagerFragmentTransactionStart(position: Int) {
-//        val frag = GameADAViewPagerFragment(R.layout.activity_settings_stories_improvement_viewpager_content)
         val frag = SettingsStoriesImprovementViewPagerFragment()
         val bundle = Bundle()
         bundle.putString(context.getString(R.string.story_to_display), game2ViewModelItem!!.story)
@@ -1255,28 +1237,11 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                 game2ViewModelItem!!.sound = daModificare[0]!!.sound
                 game2ViewModelItem!!.soundReplacesTTS = daModificare[0]!!.soundReplacesTTS
                 game2ViewModelItem!!.fromAssets = daModificare[0]!!.fromAssets
-                theNewWordsMustBeInsertedBeforeThese = game2ViewModelItem!!.word
-            }
-        }
-        else
-        {
-            val daInserirePrimaDi = realm.where(Stories::class.java)
-                .equalTo(
-                    getString(R.string.story),
-                    game2ViewModelItem!!.story
-                )
-                .equalTo(getString(R.string.phrasenumberint), game2ViewModelItem!!.phraseNumberInt)
-                .equalTo(getString(R.string.wordnumberint), game2ViewModelItem!!.wordNumberInt)
-                .findAll()
-            val daInserirePrimaDiSize = daInserirePrimaDi.size
-            if (daInserirePrimaDiSize > 0) {
-                theNewWordsMustBeInsertedBeforeThese = daInserirePrimaDi[0]!!.word
             }
         }
         //
         val frag = Game2BleStoriesFragment()
         val bundle = Bundle()
-//        bundle.putString(context.getString(R.string.game_use_video_and_sound), "Y")
         bundle.putString("STORY", game2ViewModelItem!!.story)
         bundle.putInt("PHRASE NUMBER", game2ViewModelItem!!.phraseNumberInt)
         bundle.putInt("WORD NUMBER", game2ViewModelItem!!.wordNumberInt)
@@ -1386,19 +1351,79 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      *
      * @param view view of tapped picture
      *
-     * @see sendMessage
+     * @see BluetoothLeService.sendMessage
      * @see fragmentTransactionStart
      */
     fun sendSentenceButton(view: View?) {
         // send message
         if (deviceEnabledName != "non trovato")
-        { sendMessage() }
+        {
+//            sendMessage()
+            var messageToSend = ""
+            val count = galleryList.size
+            if (count != 0) {
+                var irrh = 0
+                while (irrh < count) {
+                    val firstMessageToSend = messageToSend
+                    messageToSend =
+                        firstMessageToSend + galleryList[irrh].image_title!! + "," + galleryList[irrh].urlType + "," + galleryList[irrh].url + ","
+                    irrh++
+                }
+            }
+            if (messageToSend.length - 1 <= 512)
+            {
+                if (preference_BluetoothMode != "Client")
+                {
+                    // Delete last character in String
+                    bluetoothService!!.sendMessageFromServer(messageToSend.substring(0, messageToSend.length - 1))
+                }
+                else
+                {
+                    // Delete last character in String
+                    bluetoothService!!.sendMessageFromClient(messageToSend.substring(0, messageToSend.length - 1))
+                }
+                fragmentTransactionStart("")
+            }
+            else
+            {
+                messageExceedsMaximumLength()
+            }
+        }
         else
         {
         scanRequestBluetoothDevices()
         }
         //
-        fragmentTransactionStart("")
+//        fragmentTransactionStart("")
+    }
+    /**
+     * Called when the message exceeds the maximum length
+     *
+     */
+    fun messageExceedsMaximumLength() {
+        //
+        val d = Dialog(this)
+        // Setting dialogview
+        val window = d.window
+        val wlp = window!!.attributes
+        wlp.gravity = Gravity.BOTTOM
+        wlp.flags = wlp.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv()
+        window.attributes = wlp
+        //
+        d.setTitle("il messaggio eccede  la lunghezza massima\\ndi 512 caratteri")
+        d.setCancelable(false)
+        d.setContentView(R.layout.activity_game_2_ble_dialog_message_exceeds_max_length)
+        //
+        val cancelDialogButton =
+            d.findViewById<ImageButton>(R.id.cancelDialogButton)
+        //
+        cancelDialogButton.requestFocus()
+        //
+        cancelDialogButton.setOnClickListener {
+            d.cancel()
+        }
+        //
+        d.show()
     }
     /**
      * Called when the user taps remove sentence button.
@@ -1577,23 +1602,41 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         if (daCancellareSize > 0) {
             // find words to delete
             val wordsToDelete = daCancellare[0]!!.word
-            //
-            val value0 = 0
-            val daModificare =
+            /*
+            if the next word / group of words exists I insert the word / group of words relating to
+            the image to be deleted at the beginning of this
+            otherwise if the previous word / group of words exists I insert the word group of words
+            relating to the image to be deleted at the end of this
+             */
+            var daModificare =
                 realm.where(Stories::class.java)
                     .equalTo(getString(R.string.story), game2ViewModelItem!!.story)
                     .equalTo(getString(R.string.phrasenumberint), phraseToDisplay)
-                    .equalTo(getString(R.string.wordnumberint), value0)
+                    .equalTo(getString(R.string.wordnumberint), wordToDisplay + 1)
                     .findFirst()
             //
             if(daModificare != null) {
                 val wordsToChange = daModificare.word
-                val beforeTheWordsToBeDeleted = wordsToChange!!.substringBefore(wordsToDelete!!)
-                val afterTheWordsToBeDeleted =  wordsToChange.substringAfter(wordsToDelete)
                 realm.beginTransaction()
-                daModificare.word = "$beforeTheWordsToBeDeleted $afterTheWordsToBeDeleted"
+                daModificare.word = "$wordsToDelete $wordsToChange"
                 realm.insertOrUpdate(daModificare)
                 realm.commitTransaction()
+            }
+            else
+            {
+                daModificare =
+                    realm.where(Stories::class.java)
+                        .equalTo(getString(R.string.story), game2ViewModelItem!!.story)
+                        .equalTo(getString(R.string.phrasenumberint), phraseToDisplay)
+                        .equalTo(getString(R.string.wordnumberint), wordToDisplay -1)
+                        .findFirst()
+                if(daModificare != null) {
+                    val wordsToChange = daModificare.word
+                    realm.beginTransaction()
+                    daModificare.word = "$wordsToChange $wordsToDelete"
+                    realm.insertOrUpdate(daModificare)
+                    realm.commitTransaction()
+                }
             }
             // delete
             realm.beginTransaction()
@@ -1606,6 +1649,38 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                 phraseToDisplay
             )
             renumberAStory(realm, game2ViewModelItem!!.story)
+            //
+            val value0 = 0
+            //
+            var newPhrase:String = ""
+            val newResultsStories = realm.where(Stories::class.java)
+                .equalTo(
+                    getString(R.string.story),
+                    game2ViewModelItem!!.story,
+                )
+                .equalTo(getString(R.string.phrasenumberint), phraseToDisplay)
+                .notEqualTo(getString(R.string.wordnumberint), value0)
+                .findAll()
+            val newStoriesSize = newResultsStories.size
+            var irrh = 0
+            while (irrh < newStoriesSize) {
+                val newResultStories = newResultsStories[irrh]!!
+                newPhrase = newPhrase + " " + newResultStories.word
+                irrh++
+            }
+            //
+            daModificare =
+                realm.where(Stories::class.java)
+                    .equalTo(getString(R.string.story), game2ViewModelItem!!.story,)
+                    .equalTo(getString(R.string.phrasenumberint), phraseToDisplay)
+                    .equalTo(getString(R.string.wordnumberint), value0)
+                    .findFirst()
+            if(daModificare != null) {
+                realm.beginTransaction()
+                daModificare.word = newPhrase
+                realm.insertOrUpdate(daModificare)
+                realm.commitTransaction()
+            }
         }
         //
         gameADAFragmentTransactionStart()
@@ -1649,21 +1724,24 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
         ft.commit()
     }
     override fun reloadFragmentFromImageSearch(imageKey: String?) {
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-//        viewModel.getSelectedItem()
-//            .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 game2ViewModelItem!!.uriType = "I"
                 game2ViewModelItem!!.uri = imageKey
                 //
                 val frag = Game2BleStoriesFragment()
+                val bundle = Bundle()
+                bundle.putString("STORY", game2ViewModelItem!!.story)
+                bundle.putInt("PHRASE NUMBER", game2ViewModelItem!!.phraseNumberInt)
+                bundle.putInt("WORD NUMBER", game2ViewModelItem!!.wordNumberInt)
+                bundle.putString("WORD", game2ViewModelItem!!.word)
+                bundle.putString("URI TYPE", game2ViewModelItem!!.uriType)
+                bundle.putString("URI", game2ViewModelItem!!.uri)
+                //
+                frag.arguments = bundle
                 //
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
                 ft.addToBackStack(null)
                 ft.commit()
-//            }
     }
     /**
      * receives calls from fragment listeners.
@@ -1740,22 +1818,24 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      * @param url string whit the url of the image Arasaac
      */
     override fun onItemClick(view: View?, word: String?, url: String?) {
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-//        viewModel.getSelectedItem()
-//            .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
-                // Perform an action with the latest item data
                 game2ViewModelItem!!.uriType = "A"
                 game2ViewModelItem!!.uri = url
                 //
                 val frag = Game2BleStoriesFragment()
+                val bundle = Bundle()
+                bundle.putString("STORY", game2ViewModelItem!!.story)
+                bundle.putInt("PHRASE NUMBER", game2ViewModelItem!!.phraseNumberInt)
+                bundle.putInt("WORD NUMBER", game2ViewModelItem!!.wordNumberInt)
+                bundle.putString("WORD", game2ViewModelItem!!.word)
+                bundle.putString("URI TYPE", game2ViewModelItem!!.uriType)
+                bundle.putString("URI", game2ViewModelItem!!.uri)
+                //
+                frag.arguments = bundle
                 //
                 val ft = supportFragmentManager.beginTransaction()
                 ft.replace(R.id.settings_container, frag)
                 ft.addToBackStack(null)
                 ft.commit()
-//            }
     }
     /**
      * Called when the user taps the add button .
@@ -1768,11 +1848,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
      * @see Stories
      */
     fun storyToAdd(v: View?) {
-        // Viewmodel
-        // In the activity, sometimes it is called observe, other times it is limited to performing set directly
-        // (maybe it is not necessary to call observe)
-//        viewModel.getSelectedItem()
-//            .observe(this) { voiceToBeRecordedInStories: VoiceToBeRecordedInStories ->
                 // Perform an action with the latest item data
                 game2ViewModelItem!!.story = getString(R.string.nome_storia)
                 game2ViewModelItem!!.phraseNumberInt = 0
@@ -1784,7 +1859,7 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                 val textWord3 = findViewById<View>(R.id.wordnumbertoadd) as TextView
                 val textWord4 = findViewById<View>(R.id.wordtoadd) as EditText
                 if (textWord1.text.toString() != "" && textWord2.text.toString() != ""
-                ) //                  && (voiceToBeRecordedInStories.getUriType() != null) && (voiceToBeRecordedInStories.getUri() != null))
+                )
                 {
                     if (textWord3.text.toString() == "0"
                         || (textWord3.text.toString() != "0"
@@ -1916,6 +1991,25 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                         )
                         //
                         val value0 = 0
+                        //
+                        var newPhrase:String = ""
+                        val newResultsStories = realm.where(Stories::class.java)
+                            .equalTo(
+                                getString(R.string.story),
+                                textWord1.text.toString()
+                            )
+                            .equalTo(getString(R.string.phrasenumberint), textWord2.text.toString().toInt())
+                            .notEqualTo(getString(R.string.wordnumberint), value0)
+                            .findAll()
+                        val newStoriesSize = newResultsStories.size
+                        var irrh = 0
+                        while (irrh < newStoriesSize) {
+                            val newResultStories = newResultsStories[irrh]!!
+                            newPhrase = newPhrase + " " + newResultStories.word
+                            irrh++
+                        }
+                        //
+//                        val value0 = 0
                         val daModificare =
                             realm.where(Stories::class.java)
                                 .equalTo(getString(R.string.story), textWord1.text.toString())
@@ -1923,37 +2017,10 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                                 .equalTo(getString(R.string.wordnumberint), value0)
                                 .findFirst()
                         if(daModificare != null) {
-                            val wordsToChange = daModificare.word
-                            val wordsToBeInserted = textWord4.text.toString()
-                            if (theNewWordsMustBeInsertedBeforeThese!! == "")
-                            {
-                                // the new words are at the end of the sentence
-                                realm.beginTransaction()
-                                daModificare.word = "$wordsToChange $wordsToBeInserted"
-                                realm.insertOrUpdate(daModificare)
-                                realm.commitTransaction()
-                            }
-                            else
-                            {
-                                val beforeTheWordsToBeInserted = wordsToChange!!.substringBefore(
-                                    theNewWordsMustBeInsertedBeforeThese!!
-                                )
-
-                                val afterTheWordsToBeInserted =  wordsToChange.substringAfter(
-                                    theNewWordsMustBeInsertedBeforeThese!!
-                                )
-                                realm.beginTransaction()
-                                if (updateMode == getString(R.string.modify))
-                                {
-                                    daModificare.word = "$beforeTheWordsToBeInserted $wordsToBeInserted $afterTheWordsToBeInserted"
-                                }
-                                else
-                                {
-                                    daModificare.word = "$beforeTheWordsToBeInserted $wordsToBeInserted $theNewWordsMustBeInsertedBeforeThese $afterTheWordsToBeInserted"
-                                }
-                                realm.insertOrUpdate(daModificare)
-                                realm.commitTransaction()
-                            }
+                            realm.beginTransaction()
+                            daModificare.word = newPhrase
+                            realm.insertOrUpdate(daModificare)
+                            realm.commitTransaction()
                         }
                         // clear fields of viewmodel data class
                         game2ViewModelItem!!.story =
@@ -1971,7 +2038,6 @@ class Game2BleActivity : SettingsStoriesRegistrationActivityAbstractClass(),
                     renumberAStory(realm, game2ViewModelItem!!.story)
                     gameADAFragmentTransactionStart()
                 }
-//            }
     }
 
     /**

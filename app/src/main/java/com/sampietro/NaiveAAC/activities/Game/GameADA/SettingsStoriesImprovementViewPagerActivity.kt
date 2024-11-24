@@ -295,24 +295,46 @@ class SettingsStoriesImprovementViewPagerActivity : GameADAViewPagerActivityAbst
         if (daCancellareSize > 0) {
             // find words to delete
             val wordsToDelete = daCancellare[0]!!.word
-            //
-            val value0 = 0
-            val daModificare =
+            /*
+            if the next word / group of words exists I insert the word / group of words relating to
+            the image to be deleted at the beginning of this
+            otherwise if the previous word / group of words exists I insert the word group of words
+            relating to the image to be deleted at the end of this
+             */
+//            val value0 = 0
+            var daModificare =
                 realm.where(Stories::class.java)
                     .equalTo(getString(R.string.story), sharedStory)
                     .equalTo(getString(R.string.phrasenumberint), phraseToDisplay)
-                    .equalTo(getString(R.string.wordnumberint), value0)
+                    .equalTo(getString(R.string.wordnumberint), wordToDisplay + 1)
                     .findFirst()
             //
             if(daModificare != null) {
                 val wordsToChange = daModificare.word
-                val beforeTheWordsToBeDeleted = wordsToChange!!.substringBefore(wordsToDelete!!)
-                val afterTheWordsToBeDeleted =  wordsToChange.substringAfter(wordsToDelete)
+//                val beforeTheWordsToBeDeleted = wordsToChange!!.substringBefore(wordsToDelete!!)
+//                val afterTheWordsToBeDeleted =  wordsToChange.substringAfter(wordsToDelete)
                 realm.beginTransaction()
-                daModificare.word = "$beforeTheWordsToBeDeleted $afterTheWordsToBeDeleted"
+//                daModificare.word = "$beforeTheWordsToBeDeleted $afterTheWordsToBeDeleted"
+                daModificare.word = "$wordsToDelete $wordsToChange"
                 realm.insertOrUpdate(daModificare)
                 realm.commitTransaction()
-            }
+                }
+                else
+                {
+                daModificare =
+                realm.where(Stories::class.java)
+                    .equalTo(getString(R.string.story), sharedStory)
+                    .equalTo(getString(R.string.phrasenumberint), phraseToDisplay)
+                    .equalTo(getString(R.string.wordnumberint), wordToDisplay -1)
+                    .findFirst()
+                if(daModificare != null) {
+                    val wordsToChange = daModificare.word
+                    realm.beginTransaction()
+                    daModificare.word = "$wordsToChange $wordsToDelete"
+                    realm.insertOrUpdate(daModificare)
+                    realm.commitTransaction()
+                    }
+                }
             // delete
             realm.beginTransaction()
             daCancellare.deleteAllFromRealm()
@@ -324,6 +346,38 @@ class SettingsStoriesImprovementViewPagerActivity : GameADAViewPagerActivityAbst
                 phraseToDisplay
             )
             renumberAStory(realm, sharedStory)
+            //
+            val value0 = 0
+            //
+            var newPhrase:String = ""
+            val newResultsStories = realm.where(Stories::class.java)
+                .equalTo(
+                    getString(R.string.story),
+                    sharedStory
+                )
+                .equalTo(getString(R.string.phrasenumberint), phraseToDisplay)
+                .notEqualTo(getString(R.string.wordnumberint), value0)
+                .findAll()
+            val newStoriesSize = newResultsStories.size
+            var irrh = 0
+            while (irrh < newStoriesSize) {
+                val newResultStories = newResultsStories[irrh]!!
+                newPhrase = newPhrase + " " + newResultStories.word
+                irrh++
+            }
+            //
+            daModificare =
+                realm.where(Stories::class.java)
+                    .equalTo(getString(R.string.story), sharedStory)
+                    .equalTo(getString(R.string.phrasenumberint), phraseToDisplay)
+                    .equalTo(getString(R.string.wordnumberint), value0)
+                    .findFirst()
+            if(daModificare != null) {
+                realm.beginTransaction()
+                daModificare.word = newPhrase
+                realm.insertOrUpdate(daModificare)
+                realm.commitTransaction()
+            }
         }
         //
         val intent: Intent?

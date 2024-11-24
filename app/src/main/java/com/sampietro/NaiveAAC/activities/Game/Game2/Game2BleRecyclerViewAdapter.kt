@@ -12,10 +12,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAArrayList
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
 import io.realm.Realm
+import java.util.Locale
 
 /**
  * <h1>Game2BleRecyclerViewAdapter1</h1>
@@ -105,6 +107,31 @@ class Game2BleRecyclerViewAdapter(
             galleryList[i].url, viewHolder.img,
             150,150
         )
+        // search for negation adverbs
+        viewHolder.img2.visibility = View.INVISIBLE
+        val negationAdverbImageToSearchFor = GrammarHelper.searchNegationAdverb(
+            context,
+            galleryList[i].image_title!!.lowercase(Locale.getDefault()), realm
+        )
+        if (negationAdverbImageToSearchFor != context.getString(R.string.non_trovato)) {
+            // INTERNAL MEMORY IMAGE SEARCH
+            val uriToSearch = searchUri(context, realm, negationAdverbImageToSearchFor)
+            viewHolder.img2.scaleType = ImageView.ScaleType.CENTER_CROP
+            addImage("S", uriToSearch, viewHolder.img2,
+                150,150)
+            viewHolder.img2.visibility = View.VISIBLE
+        }
+        // search for question mark
+        val titleContainsQuestionMark = galleryList[i].image_title!!.contains("?")
+        if (titleContainsQuestionMark) {
+            // INTERNAL MEMORY IMAGE SEARCH
+            val uriToSearch =
+                searchUri(context, realm, "?")
+            viewHolder.img2.scaleType = ImageView.ScaleType.CENTER_CROP
+            addImage("S", uriToSearch, viewHolder.img2,
+                150,150)
+            viewHolder.img2.visibility = View.VISIBLE
+        }
         //
         viewHolder.img.setOnClickListener {
             // TTS
@@ -146,11 +173,13 @@ class Game2BleRecyclerViewAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
         val img: ImageView
+        internal val img2: ImageView
 
         init {
             //
             title = view.findViewById<View>(R.id.title) as TextView
             img = view.findViewById<View>(R.id.img1) as ImageView
+            img2 = view.findViewById<View>(R.id.img1_2) as ImageView
         }
     }
 

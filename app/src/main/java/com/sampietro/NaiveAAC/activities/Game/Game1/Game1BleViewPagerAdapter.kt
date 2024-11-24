@@ -62,6 +62,8 @@ class Game1BleViewPagerAdapter
             wordToSearchSecondLevelMenu = result.keyword
             //
             bundle.putString("WORD TO SEARCH SECOND LEVEL MENU", wordToSearchSecondLevelMenu)
+            bundle.putString("WORD TO SEARCH SECOND LEVEL MENU-URI TYPE", result.uriType)
+            bundle.putString("WORD TO SEARCH SECOND LEVEL MENU-URI", result.uri)
             //
             if (position != 0) {
                 bundle.putString("LEFT ARROW", "Y")

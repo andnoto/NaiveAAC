@@ -183,10 +183,25 @@ class SettingsWordPairsActivity : ActivityAbstractClass(), WordPairsAdapterInter
         val textWord5 = findViewById<View>(R.id.uripremiumvideo) as TextView
         val textWord6 = findViewById<View>(R.id.linkyoutube) as EditText
         // check if the images of word1 and word 2 exist
-        val image1: ResponseImageSearch?
-        val image2: ResponseImageSearch?
+        var image1: ResponseImageSearch?
+        var image2: ResponseImageSearch?
+        // search in ListOfNames
+//        image1 = searchUriInListsOfNames(context, realm, textWord1.text.toString())
+//        if (image1 == null)
+//        {
+        // search in the internal memory or on Arasaac
         image1 = imageSearch(context, realm, textWord1.text.toString())
+//        }
+        // search in ListOfNames
+//        image2 = searchUriInListsOfNames(context, realm, textWord2.text.toString())
+//        if (image2 == null)
+//        {
+        // search in the internal memory or on Arasaac
         image2 = imageSearch(context, realm, textWord2.text.toString())
+//        }
+        //
+//        image1 = imageSearch(context, realm, textWord1.text.toString())
+//        image2 = imageSearch(context, realm, textWord2.text.toString())
         if (image1 != null && image2 != null) {
             // cancello il vecchio item
             val resultsWordPairs = realm.where(WordPairs::class.java)
@@ -213,19 +228,24 @@ class SettingsWordPairsActivity : ActivityAbstractClass(), WordPairsAdapterInter
             wordPairs.word2 = textWord2.text.toString()
             wordPairs.complement = textWord3.text.toString()
             wordPairs.awardType = textWord4.text.toString()
-             if (textWord4.text.toString() == getString(R.string.character_v) && textWord5.text.toString() == getString(
+            wordPairs.uriPremiumVideo = ""
+             if (textWord4.text.toString() == getString(R.string.character_v))
+             {
+                 if (textWord5.text.toString() == getString(
                     R.string.nessun_video
-                )
-            ) {
-                wordPairs.uriPremiumVideo = getString(R.string.prize)
-            } else {
-                // if textword4 = Y -> uripremiumvideo = linkyoutube otherwise see below
-                if (textWord4.text.toString() == getString(R.string.character_y)) {
-                    wordPairs.uriPremiumVideo = textWord6.text.toString()
-                } else {
-                    wordPairs.uriPremiumVideo = textWord5.text.toString()
-                }
-            }
+                )) {
+                    wordPairs.uriPremiumVideo = getString(R.string.prize)
+                    } else {
+                     wordPairs.uriPremiumVideo = textWord5.text.toString()
+                 }
+             }
+             else
+             {
+                 // if textword4 = Y -> uripremiumvideo = linkyoutube otherwise see below
+                 if (textWord4.text.toString() == getString(R.string.character_y)) {
+                     wordPairs.uriPremiumVideo = textWord6.text.toString()
+                 }
+             }
             wordPairs.fromAssets = ""
             realm.commitTransaction()
             // if textword4 = V and textword5 different from no video record video on realm

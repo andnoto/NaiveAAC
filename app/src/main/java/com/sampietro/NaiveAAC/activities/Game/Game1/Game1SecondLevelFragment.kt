@@ -31,6 +31,7 @@ import java.util.Locale
  */
 class Game1SecondLevelFragment() : GameFragmentAbstractClass() {
     lateinit var hearingImageButton: ImageButton
+    lateinit var startWriteButton: ImageButton
 
     //
     lateinit var listenAgainButton: ImageButton
@@ -70,11 +71,6 @@ class Game1SecondLevelFragment() : GameFragmentAbstractClass() {
      *
      * @see Game1RecyclerViewAdapter3
      */
-//    override fun onViewCreated(
-//        view: View,
-//        savedInstanceState: Bundle?
-//    ) {
-//        rootView = inflater.inflate(R.layout.activity_game_1, container, false)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -83,6 +79,7 @@ class Game1SecondLevelFragment() : GameFragmentAbstractClass() {
         rootView = inflater.inflate(R.layout.activity_game_1, container, false)
         //
         hearingImageButton = rootView.findViewById<View>(R.id.btn_start) as ImageButton
+        startWriteButton = rootView.findViewById<View>(R.id.btn_mode_edit) as ImageButton
         //
         listenAgainButton = rootView.findViewById<View>(R.id.listenagainbutton) as ImageButton
         continueGameButton = rootView.findViewById<View>(R.id.continuegamebutton) as ImageButton
@@ -106,39 +103,37 @@ class Game1SecondLevelFragment() : GameFragmentAbstractClass() {
         //
         if (theSentenceIsCompleted) {
             hearingImageButton.visibility = View.VISIBLE
+            startWriteButton.visibility = View.VISIBLE
             listenAgainButton.visibility = View.VISIBLE
             continueGameButton.visibility = View.VISIBLE
         } else {
             hearingImageButton.visibility = View.INVISIBLE
+            startWriteButton.visibility = View.INVISIBLE
             listenAgainButton.visibility = View.INVISIBLE
             continueGameButton.visibility = View.INVISIBLE
         }
         //
         val recyclerView1 = rootView.findViewById<View>(R.id.imagegallery1) as RecyclerView
-//        recyclerView1.setHasFixedSize(true)
         val layoutManager1: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView1.layoutManager = layoutManager1
         val createLists1 = prepareData(leftColumnMenuPhraseNumber )
-        val adapter1 = Game1RecyclerViewAdapter1(ctext, createLists1)
+        val adapter1 = Game1RecyclerViewAdapter1(ctext, realm, createLists1)
         recyclerView1.adapter = adapter1
         //
         val recyclerView2 = rootView.findViewById<View>(R.id.imagegallery2) as RecyclerView
-//        recyclerView2.setHasFixedSize(true)
         val layoutManager2: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView2.layoutManager = layoutManager2
         val createLists2 = prepareData(middleColumnMenuPhraseNumber )
-        val adapter2 = Game1RecyclerViewAdapter2(ctext, createLists2)
+        val adapter2 = Game1RecyclerViewAdapter2(ctext, realm, createLists2)
         recyclerView2.adapter = adapter2
         //
         val recyclerView3 = rootView.findViewById<View>(R.id.imagegallery3) as RecyclerView
-//        recyclerView3.setHasFixedSize(true)
         val layoutManager3: RecyclerView.LayoutManager = LinearLayoutManager(ctext)
         recyclerView3.layoutManager = layoutManager3
         val createLists3 = prepareData(rightColumnMenuPhraseNumber )
-        val adapter3 = Game1RecyclerViewAdapter3(ctext, createLists3)
+        val adapter3 = Game1RecyclerViewAdapter3(ctext, realm, createLists3)
         recyclerView3.adapter = adapter3
         //
-//        listener.receiveResultGameFragment(rootView)
         return rootView
     }
 

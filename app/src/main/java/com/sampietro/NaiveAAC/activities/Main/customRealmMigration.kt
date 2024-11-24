@@ -78,13 +78,13 @@ class customRealmMigration : RealmMigration {
                 .addField("fromAssets", String::class.java)
                 .transform { obj ->
                     obj["copyright"] = " "
-                    obj["fromAssets"] = " "
+                    obj["fromAssets"] = "Y"
                 }
                 .addIndex("descrizione")
             val videosSchema = schema["Videos"]!!
             videosSchema
                 .addField("fromAssets", String::class.java)
-                .transform { obj -> obj["fromAssets"] = " " }
+                .transform { obj -> obj["fromAssets"] = "Y" }
                 .addIndex("descrizione")
             val storiesSchema = schema["Stories"]!!
             storiesSchema
@@ -97,7 +97,7 @@ class customRealmMigration : RealmMigration {
                     obj["video"] = " "
                     obj["sound"] = " "
                     obj["soundReplacesTTS"] = "N"
-                    obj["fromAssets"] = " "
+                    obj["fromAssets"] = "Y"
                     obj["wordNumberIntInTheStory"] = 0
                 }
             val historySchema = schema["History"]!!
@@ -116,24 +116,24 @@ class customRealmMigration : RealmMigration {
                 .addField("fromAssets", String::class.java)
                 .transform { obj ->
                     obj["gameUseVideoAndSound"] = "Y"
-                    obj["fromAssets"] = " "
+                    obj["fromAssets"] = "Y"
                 }
             val grammaticalExceptionsSchema = schema["GrammaticalExceptions"]!!
             grammaticalExceptionsSchema
                 .addField("fromAssets", String::class.java)
-                .transform { obj -> obj["fromAssets"] = " " }
+                .transform { obj -> obj["fromAssets"] = "Y" }
             val listsOfNamesSchema = schema["ListsOfNames"]!!
             listsOfNamesSchema
                 .addField("fromAssets", String::class.java)
-                .transform { obj -> obj["fromAssets"] = " " }
+                .transform { obj -> obj["fromAssets"] = "Y" }
             val phrasesSchema = schema["Phrases"]!!
             phrasesSchema
                 .addField("fromAssets", String::class.java)
-                .transform { obj -> obj["fromAssets"] = " " }
+                .transform { obj -> obj["fromAssets"] = "Y" }
             val wordPairsSchema = schema["WordPairs"]!!
             wordPairsSchema
                 .addField("fromAssets", String::class.java)
-                .transform { obj -> obj["fromAssets"] = " " }
+                .transform { obj -> obj["fromAssets"] = "Y" }
             oldVersion++
         }
         //
@@ -162,6 +162,19 @@ class customRealmMigration : RealmMigration {
             val wordPairsSchema = schema["WordPairs"]!!
             wordPairsSchema
                 .removeField("isMenuItem")
+            oldVersion++
+        }
+        //
+        if (oldVersion == 7L) {
+            // Migrate from v7 to v8
+            val listsOfNamesSchema = schema["ListsOfNames"]!!
+            listsOfNamesSchema
+                .addField("uriType", String::class.java)
+                .addField("uri", String::class.java)
+                .transform { obj ->
+                    obj["uriType"] = " "
+                    obj["uri"] = " "
+                }
             oldVersion++
         }
         //

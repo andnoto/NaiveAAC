@@ -5,10 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.FragmentAbstractClassWithoutConstructor
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter
+import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
+import io.realm.Realm
 
 /**
  * <h1>ListsOfNamesFragment</h1>
@@ -20,13 +24,7 @@ import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNamesAdapter
  * @see SettingsActivity
  */
 class ListsOfNamesFragment() : FragmentAbstractClassWithoutConstructor() {
-    /*
-    used for viewmodel
-    */
-//    private lateinit var viewModel: VoiceToBeRecordedInListsOfNamesViewModel
-    /*
-
-     */
+    lateinit var realm: Realm
     /**
      * prepares the ui also using a listview
      *
@@ -36,10 +34,6 @@ class ListsOfNamesFragment() : FragmentAbstractClassWithoutConstructor() {
      *
      * @see ListsOfNamesAdapter
      */
-//    override fun onViewCreated(
-//        view: View,
-//        savedInstanceState: Bundle?
-//    ) {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,22 +45,10 @@ class ListsOfNamesFragment() : FragmentAbstractClassWithoutConstructor() {
         val nametoadd = rootView.findViewById<View>(R.id.nametoadd) as EditText
         val elementactivetoadd = rootView.findViewById<View>(R.id.elementactive) as EditText
         val ismenuitemtoadd = rootView.findViewById<View>(R.id.ismenuitem) as EditText
-        /*
-        Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
-         constructor.
-        The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
-         */
-//        viewModel = ViewModelProvider(requireActivity()).get(
-//            VoiceToBeRecordedInListsOfNamesViewModel::class.java
-//        )
-//        viewModel.getSelectedItem()
-//            .observe(viewLifecycleOwner) { voiceToBeRecordedInListsOfNames: VoiceToBeRecordedInListsOfNames ->
-                // Perform an action with the latest item data
-//                keywordtoadd.setText(voiceToBeRecordedInListsOfNames.keyword)
-//                nametoadd.setText(voiceToBeRecordedInListsOfNames.word)
-//                elementactivetoadd.setText(voiceToBeRecordedInListsOfNames.elementActive)
-//                ismenuitemtoadd.setText(voiceToBeRecordedInListsOfNames.isMenuItem)
-//            }
+        val gameimage = rootView.findViewById<View>(R.id.gameimage) as ImageView
+        //
+        realm = Realm.getDefaultInstance()
+        //
         val bundle = this.arguments
         if (bundle != null) {
             //
@@ -81,6 +63,26 @@ class ListsOfNamesFragment() : FragmentAbstractClassWithoutConstructor() {
             //
             val isMenuItem = bundle.getString("IS MENU ITEM")
             ismenuitemtoadd.setText(isMenuItem)
+            //
+            var uriType = bundle.getString("URI TYPE")
+            var uri = bundle.getString("URI")
+            //
+            if (uriType != "")
+            {   if (uriType == "I") {
+                val imageUrl = ImageSearchHelper.searchUri(
+                    ctext,
+                    realm,
+                    uri
+                )
+                uriType = "S"
+                uri = imageUrl
+            }
+                GraphicsAndPrintingHelper.addImage(
+                    uriType,
+                    uri, gameimage,
+                    100, 100
+                )
+            }
         }
         //
         return rootView

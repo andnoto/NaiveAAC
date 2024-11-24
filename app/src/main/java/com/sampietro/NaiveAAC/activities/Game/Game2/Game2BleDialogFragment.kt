@@ -19,6 +19,7 @@ import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addI
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import io.realm.Realm
+import java.io.File
 import java.util.ArrayList
 import java.util.Locale
 
@@ -66,6 +67,9 @@ class Game2BleDialogFragment: DialogFragment()  {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //
+        val rootPath = ctext.filesDir.absolutePath
+        //
         deviceEnabledUserName = arguments?.getString("DEVICE ENABLED USER NAME") ?: throw IllegalStateException("No DEVICE ENABLED USER NAME provided")
         messageFromGattServer = arguments?.getString("MESSAGE FROM GATT SERVER") ?: throw IllegalStateException("No MESSAGE FROM GATT SERVER provided")
         // use comma as separator
@@ -76,17 +80,49 @@ class Game2BleDialogFragment: DialogFragment()  {
         //
         var irrh = 0
         while (irrh < oneWordSize) {
-            if (oneWord[irrh] == " ")
-                break
+            if (oneWord[irrh] == " " || oneWord[irrh] == getString(R.string.io)
+                || oneWord[irrh] == getString(R.string.nessuno))
+            {
+                irrh = irrh+3
+                continue
+            }
             val createList = GameADAArrayList()
-            if (oneWord[irrh] == getString(R.string.io))
-            { oneWord[irrh] = " " }
-            if (oneWord[irrh] != getString(R.string.nessuno) && oneWord[irrh] != " " && preference_TitleWritingType == getString(R.string.uppercase))
+            if (preference_TitleWritingType == getString(R.string.uppercase))
             { createList.image_title = oneWord[irrh]!!.uppercase(Locale.getDefault()) }
             else { createList.image_title = oneWord[irrh]!!.lowercase(Locale.getDefault()) }
-            createList.image_title = oneWord[irrh]
+//            createList.image_title = oneWord[irrh]
             createList.urlType = oneWord[irrh+1]
-            createList.url = oneWord[irrh+2]
+            if (createList.urlType == ctext.getString(R.string.character_s)) {
+                // replace with root of data directory
+                val fileName = oneWord[irrh+2]!!
+                    .substring(oneWord[irrh+2]!!.lastIndexOf("/") + 1)
+                createList.url = "$rootPath/$fileName"
+                //
+                val f = File(createList.url)
+                if (!f.exists())
+                {
+                    // image search
+                    var image: ResponseImageSearch? = null
+                    // search in ListOfNames
+//                    image = searchUriInListsOfNames(
+//                        ctext,
+//                        realm,
+//                        createList.image_title!!
+//                    )
+//                    if (image == null)
+//                    {
+                    // search in the internal memory or on Arasaac
+                    image = imageSearch(ctext, realm, oneWord[irrh])
+//                    }
+                    if (image != null) {
+                        createList.urlType = image.uriType
+                        createList.url = image.uriToSearch
+                    }
+                }
+            } else {
+                createList.url = oneWord[irrh+2]
+            }
+//            createList.url = oneWord[irrh+2]
             theimage.add(createList)
             irrh = irrh+3
         }

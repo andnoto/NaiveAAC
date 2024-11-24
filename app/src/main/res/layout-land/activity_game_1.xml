@@ -44,6 +44,19 @@
         android:text="@string/inizia"
         android:contentDescription="@string/inizia_il_discorso"
         app:layout_constraintStart_toEndOf="@+id/imagegalleryLL"
+        app:layout_constraintEnd_toStartOf="@+id/btn_mode_edit"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/btn_mode_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:onClick="startWriteGame1"
+        android:src="@drawable/ic_baseline_mode_edit_36"
+        android:text="scrivi"
+        android:contentDescription="inizia scrittura"
+        app:layout_constraintStart_toEndOf="@+id/btn_start"
         app:layout_constraintEnd_toStartOf="@+id/listenagainbutton"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -55,7 +68,7 @@
         android:onClick="listenAgainButton"
         android:src="@drawable/ic_baseline_play_arrow_36"
         app:backgroundTint="@color/azzurro_pastello"
-        app:layout_constraintStart_toEndOf="@+id/btn_start"
+        app:layout_constraintStart_toEndOf="@+id/btn_mode_edit"
         app:layout_constraintEnd_toStartOf="@+id/continuegamebutton"
         app:layout_constraintTop_toTopOf="parent"  />
 

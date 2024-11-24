@@ -4,6 +4,7 @@ import android.content.Context
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Arasaac.PictogramsAll
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb
+import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import io.realm.Realm
 
 /**
@@ -20,8 +21,9 @@ object ImageSearchHelper {
     /**
      * search for the image corresponding to a word in the following way :
      * 1) if it is conjugation search for infinity
-     * 2) search the images of the words first in the internal menory
-     * 3) if the image is not in the internal memory search the images on Arasaac
+     * 2) search the images of the words first in the internal memory
+     * 3) if the image is not in the internal memory search the images listsOfNames
+     * 4) if the image is neither in the internal memory nor on listsOfNames search the images on Arasaac
      *
      * @param context context
      * @param realm realm
@@ -52,13 +54,26 @@ object ImageSearchHelper {
         val uriToSearch = searchUri(context, realm, wordToSearch)
         if (uriToSearch != context.getString(R.string.non_trovata)) {
             return ResponseImageSearch(wordToSearch!!, "S", uriToSearch)
-        } else  // if the image is not in the internal memory search the images on Arasaac
+        }
+        else
         {
-            idToSearch = searchId(context, realm, wordToSearch)
-            if (idToSearch != context.getString(R.string.non_trovata)) {
-                val url =
-                    REMOTE_ADDR_PICTOGRAM + idToSearch + "?download=false"
-                return ResponseImageSearch(wordToSearch!!, "A", url)
+            // if the image is not in the internal memory search the images listsOfNames
+            // image search
+            var image: ResponseImageSearch? = null
+            // search in ListOfNames
+            image = searchUriInListsOfNames(context, realm, wordToSearch!!)
+            if (image != null) {
+                return image
+            }
+            else
+            {
+                // if the image is neither in the internal memory nor on listsOfNames search the images on Arasaac
+                idToSearch = searchId(context, realm, wordToSearch)
+                if (idToSearch != context.getString(R.string.non_trovata)) {
+                    val url =
+                        REMOTE_ADDR_PICTOGRAM + idToSearch + "?download=false"
+                    return ResponseImageSearch(wordToSearch, "A", url)
+                }
             }
         }
         return null
@@ -91,7 +106,36 @@ object ImageSearchHelper {
         }
         return uriToSearchRealm
     }
-
+    /**
+     * search for the image file path corresponding to a word
+     *
+     * @param context context
+     * @param realm realm
+     * @param k string with corresponding word
+     * @return ResponseImageSearch
+     * @see ListsOfNames
+     */
+    @JvmStatic
+    fun searchUriInListsOfNames(context: Context,
+                  realm: Realm,
+                  k: String): ResponseImageSearch? {
+        val results = realm.where(
+            ListsOfNames::class.java
+        )
+            .equalTo("word", k)
+            .equalTo("elementActive", "A")
+//            .notEqualTo("isMenuItem", "F").and().notEqualTo("isMenuItem", "S")
+            .findAll()
+        val count = results.size
+        if (count != 0) {
+            val result = results[0]
+            if (result != null) {
+                if (result.uriType!! == "A" || result.uriType!! == "S")
+                    { return ResponseImageSearch(k, result.uriType!!, result.uri!!) }
+            }
+        }
+        return null
+    }
     /**
      * search for the image url id corresponding to a word
      *

@@ -1,12 +1,18 @@
 package com.sampietro.NaiveAAC.activities.Game.Game1
 
+import android.app.Activity
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.speech.tts.TextToSpeech
+import android.text.InputType
+import android.view.Gravity
 import android.view.View
 import android.view.Window
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
@@ -22,6 +28,7 @@ import com.sampietro.NaiveAAC.activities.Game.Utils.PrizeFragment.onFragmentEven
 import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.YoutubePrizeFragment.onFragmentEventListenerYoutubePrize
 import com.sampietro.NaiveAAC.activities.Grammar.ComposesASentenceResults
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.COMPOSITION_SUCCESS
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.composesASentence
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.thereIsACorrespondenceWithAnAllowedMarginOfError
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
@@ -98,6 +105,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
     var middleColumnContentVerbInTheInfinitiveForm: String? = null
 
     //
+    var outcomeOfSentenceComposition = COMPOSITION_SUCCESS
     var numberOfWordsChosen = 0
 
     //
@@ -387,7 +395,77 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
         ft.addToBackStack(null)
         ft.commitAllowingStateLoss()
     }
-
+    /**
+     * Called when the user taps the start write button.
+     * Refer to [stackoverflow](https://stackoverflow.com/questions/9467026/changing-position-of-the-dialog-on-screen-android)
+     * answer of [Aleks G](https://stackoverflow.com/users/717214/aleks-g)
+     * Refer to [stackoverflow](https://stackoverflow.com/questions/8991522/how-can-i-set-the-focus-and-display-the-keyboard-on-my-edittext-programmatical)
+     * answer of [ungalcrys](https://stackoverflow.com/users/443427/ungalcrys)
+     *
+     *
+     * @param v view of tapped button
+     */
+    fun startWriteGame1(v: View?) {
+//        val correspondingWord = searchAnswer()
+//        val correspondingWordIsNumeric = GameADAActivity.isNumeric(correspondingWord)
+        //
+        val d = Dialog(this)
+        // Setting dialogview
+        val window = d.window
+        val wlp = window!!.attributes
+        wlp.gravity = Gravity.BOTTOM
+        wlp.flags = wlp.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv()
+        window.attributes = wlp
+        //
+//        d.setTitle("inserisci la risposta o la richiesta")
+        d.setCancelable(false)
+        d.setContentView(R.layout.activity_game_ada_write_dialog)
+        //
+        val submitResponseOrRequestButton =
+            d.findViewById<ImageButton>(R.id.submitResponseOrRequestButton)
+        val cancelTheAnswerOrRequestButton =
+            d.findViewById<ImageButton>(R.id.cancelTheAnswerOrRequestButton)
+        val responseOrRequest = d.findViewById<View>(R.id.responseOrRequest) as EditText
+//        if (correspondingWordIsNumeric) {
+//            responseOrRequest.inputType = InputType.TYPE_CLASS_NUMBER
+//        } else {
+            responseOrRequest.inputType = InputType.TYPE_CLASS_TEXT
+//        }
+        responseOrRequest.setHint("")
+        //
+        responseOrRequest.requestFocus()
+        val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(d.findViewById<View>(R.id.responseOrRequest),
+            InputMethodManager.SHOW_IMPLICIT
+        )
+        imm.hideSoftInputFromWindow(d.findViewById<View>(R.id.responseOrRequest).getWindowToken(),
+            InputMethodManager.HIDE_IMPLICIT_ONLY
+        )
+        //
+        submitResponseOrRequestButton.setOnClickListener { //
+            var eText = responseOrRequest.text.toString()
+            eText = eText.lowercase(Locale.getDefault())
+            //
+            imm.hideSoftInputFromWindow(responseOrRequest.windowToken, 0)
+            //
+            d.cancel()
+            //
+            mywindow = getWindow()
+            setToFullScreen(mywindow)
+            //
+            checkAnswer(eText)
+        }
+        cancelTheAnswerOrRequestButton.setOnClickListener { //
+            imm.hideSoftInputFromWindow(responseOrRequest.windowToken, 0)
+            //
+            d.cancel()
+            //
+            mywindow = getWindow()
+            setToFullScreen(mywindow)
+        }
+        //
+        d.show()
+    }
     /**
      * Called when the user taps the listen again button.
      *
@@ -404,8 +482,8 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
     fun listenAgainButton(v: View?) {
         readingOfTheText()
         // Time to launch the another activity
-        val TIME_OUT = 4000
-        Handler(Looper.getMainLooper()).postDelayed({ startSpeechGame1(null) }, TIME_OUT.toLong())
+//        val TIME_OUT = 4000
+//        Handler(Looper.getMainLooper()).postDelayed({ startSpeechGame1(null) }, TIME_OUT.toLong())
     }
 
     /**
@@ -518,6 +596,7 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
      * @see fragmentTransactionStart
      */
     fun displaySecondLevelMenu() {
+        outcomeOfSentenceComposition = COMPOSITION_SUCCESS
         numberOfWordsChosen = 0
         leftColumnContent = getString(R.string.nessuno)
         middleColumnContent = getString(R.string.nessuno)
@@ -552,35 +631,44 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
             sharedLastPlayer!!
         )
         //
-        numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
-        leftColumnContent = composesASentenceResults.leftColumnContent
-        middleColumnContent = composesASentenceResults.middleColumnContent
-        rightColumnContent = composesASentenceResults.rightColumnContent
-        listOfWordsLeft.clear()
-        listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
-        listOfWordsCenter.clear()
-        listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
-        listOfWordsRight.clear()
-        listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
-        //
-        if (numberOfWordsChosen == 3)
+        if (composesASentenceResults.outcomeOfSentenceComposition == COMPOSITION_SUCCESS)
         {
-            // sentence text reading and search award
-            sentenceReadingOfTheTextAndStartSpeech()
+            numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
+            leftColumnContent = composesASentenceResults.leftColumnContent
+            middleColumnContent = composesASentenceResults.middleColumnContent
+            rightColumnContent = composesASentenceResults.rightColumnContent
+            listOfWordsLeft.clear()
+            listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
+            listOfWordsCenter.clear()
+            listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
+            listOfWordsRight.clear()
+            listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
             //
-            rightColumnAwardType = getString(R.string.nessuno)
-            if (middleColumnContent != getString(R.string.nessuno)
-                && rightColumnContent != getString(R.string.nessuno))
+            if (numberOfWordsChosen == 3)
+            {
+                // sentence text reading and search award
+                sentenceReadingOfTheTextAndStartSpeech()
+                //
+                rightColumnAwardType = getString(R.string.nessuno)
+                if (middleColumnContent != getString(R.string.nessuno)
+                    && rightColumnContent != getString(R.string.nessuno))
                 {
-                rightColumnAwardType = searchAwardType(context, listOfWordsCenter[0], listOfWordsRight[0], realm )
-                if (rightColumnAwardType != getString(R.string.nessuno))
+                    rightColumnAwardType = searchAwardType(context, listOfWordsCenter[0], listOfWordsRight[0], realm )
+                    if (rightColumnAwardType != getString(R.string.nessuno))
                     {
                         rightColumnUriPremiumVideo = searchUriPremiumVideo(context, listOfWordsCenter[0], listOfWordsRight[0], realm )
                     }
                 }
+            }
+            prepareTheFragmentTransaction()
+            fragmentTransactionStart()
         }
-        prepareTheFragmentTransaction()
-        fragmentTransactionStart()
+        else
+        {
+            Toast.makeText(context,
+            "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                Toast.LENGTH_SHORT).show()
+        }
     }
     /**
      * prepare fragment transaction:
@@ -696,9 +784,11 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
     override fun onItemClick(view: View?, i: Int) {
         when (numberOfWordsChosen) {
             0 -> {
-                val chosenWordCenter = listOfWordsCenter[i]
-                listOfWordsCenter.clear()
-                listOfWordsCenter.add(chosenWordCenter)
+//                val chosenWordCenter = listOfWordsCenter[i]
+//                listOfWordsCenter.clear()
+//                listOfWordsCenter.add(chosenWordCenter)
+                val newListOfWordsCenter = arrayListOf<String>()
+                newListOfWordsCenter.add(listOfWordsCenter[i])
                 val composesASentenceResults: ComposesASentenceResults =
                     composesASentence(
                         context,
@@ -709,11 +799,18 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                         middleColumnContent!!,
                         rightColumnContent!!,
                         listOfWordsLeft,
-                        listOfWordsCenter,
+                        newListOfWordsCenter,
                         listOfWordsRight,
                         sharedLastPlayer!!
                     )
                 //
+                if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                {
+                    Toast.makeText(context,
+                        "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                        Toast.LENGTH_SHORT).show()
+                    return
+                }
                 numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                 leftColumnContent = composesASentenceResults.leftColumnContent
                 middleColumnContent = composesASentenceResults.middleColumnContent
@@ -773,9 +870,11 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                 // proposing in the right column the choices compatible with the choice (it should be a verb)
                 when (view!!.id) {
                     R.id.img1 -> {
-                        val chosenWordLeft = listOfWordsLeft[i]
-                        listOfWordsLeft.clear()
-                        listOfWordsLeft.add(chosenWordLeft)
+//                        val chosenWordLeft = listOfWordsLeft[i]
+//                        listOfWordsLeft.clear()
+//                        listOfWordsLeft.add(chosenWordLeft)
+                        val newListOfWordsLeft = arrayListOf<String>()
+                        newListOfWordsLeft.add(listOfWordsLeft[i])
                         val composesASentenceResults: ComposesASentenceResults =
                             composesASentence(
                                 context,
@@ -785,12 +884,19 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                                 leftColumnContent!!,
                                 middleColumnContent!!,
                                 rightColumnContent!!,
-                                listOfWordsLeft,
+                                newListOfWordsLeft,
                                 listOfWordsCenter,
                                 listOfWordsRight,
                                 sharedLastPlayer!!
                             )
                         //
+                        if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                        {
+                            Toast.makeText(context,
+                                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                                Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                         leftColumnContent = composesASentenceResults.leftColumnContent
                         middleColumnContent = composesASentenceResults.middleColumnContent
@@ -803,9 +909,11 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                         listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
                     }
                     R.id.img2 -> {
-                        val chosenWordCenter = listOfWordsCenter[i]
-                        listOfWordsCenter.clear()
-                        listOfWordsCenter.add(chosenWordCenter)
+//                        val chosenWordCenter = listOfWordsCenter[i]
+//                        listOfWordsCenter.clear()
+//                        listOfWordsCenter.add(chosenWordCenter)
+                        val newListOfWordsCenter = arrayListOf<String>()
+                        newListOfWordsCenter.add(listOfWordsCenter[i])
                         val composesASentenceResults: ComposesASentenceResults =
                             composesASentence(
                                 context,
@@ -816,11 +924,18 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                                 middleColumnContent!!,
                                 rightColumnContent!!,
                                 listOfWordsLeft,
-                                listOfWordsCenter,
+                                newListOfWordsCenter,
                                 listOfWordsRight,
                                 sharedLastPlayer!!
                             )
                         //
+                        if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                        {
+                            Toast.makeText(context,
+                                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                                Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                         leftColumnContent = composesASentenceResults.leftColumnContent
                         middleColumnContent = composesASentenceResults.middleColumnContent
@@ -833,9 +948,11 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                         listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
                     }
                     R.id.img3 -> {
-                        val chosenWordRight = listOfWordsRight[i]
-                        listOfWordsRight.clear()
-                        listOfWordsRight.add(chosenWordRight)
+//                        val chosenWordRight = listOfWordsRight[i]
+//                        listOfWordsRight.clear()
+//                        listOfWordsRight.add(chosenWordRight)
+                        val newListOfWordsRight = arrayListOf<String>()
+                        newListOfWordsRight.add(listOfWordsRight[i])
                         val composesASentenceResults: ComposesASentenceResults =
                             composesASentence(
                                 context,
@@ -847,10 +964,17 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                                 rightColumnContent!!,
                                 listOfWordsLeft,
                                 listOfWordsCenter,
-                                listOfWordsRight,
+                                newListOfWordsRight,
                                 sharedLastPlayer!!
                             )
                         //
+                        if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                        {
+                            Toast.makeText(context,
+                                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                                Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                         leftColumnContent = composesASentenceResults.leftColumnContent
                         middleColumnContent = composesASentenceResults.middleColumnContent
@@ -894,9 +1018,11 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                 // (if it has not already been made)
                 when (view!!.id) {
                     R.id.img1 -> {
-                        val chosenWordLeft = listOfWordsLeft[i]
-                        listOfWordsLeft.clear()
-                        listOfWordsLeft.add(chosenWordLeft)
+//                        val chosenWordLeft = listOfWordsLeft[i]
+//                        listOfWordsLeft.clear()
+//                        listOfWordsLeft.add(chosenWordLeft)
+                        val newListOfWordsLeft = arrayListOf<String>()
+                        newListOfWordsLeft.add(listOfWordsLeft[i])
                         val composesASentenceResults: ComposesASentenceResults =
                             composesASentence(
                                 context,
@@ -906,12 +1032,19 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                                 leftColumnContent!!,
                                 middleColumnContent!!,
                                 rightColumnContent!!,
-                                listOfWordsLeft,
+                                newListOfWordsLeft,
                                 listOfWordsCenter,
                                 listOfWordsRight,
                                 sharedLastPlayer!!
                             )
                         //
+                        if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                        {
+                            Toast.makeText(context,
+                                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                                Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                         leftColumnContent = composesASentenceResults.leftColumnContent
                         middleColumnContent = composesASentenceResults.middleColumnContent
@@ -926,9 +1059,11 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                     R.id.img2 -> {
                     }
                     R.id.img3 -> {
-                        val chosenWordRight = listOfWordsRight[i]
-                        listOfWordsRight.clear()
-                        listOfWordsRight.add(chosenWordRight)
+//                        val chosenWordRight = listOfWordsRight[i]
+//                        listOfWordsRight.clear()
+//                        listOfWordsRight.add(chosenWordRight)
+                        val newListOfWordsRight = arrayListOf<String>()
+                        newListOfWordsRight.add(listOfWordsRight[i])
                         val composesASentenceResults: ComposesASentenceResults =
                             composesASentence(
                                 context,
@@ -940,10 +1075,17 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
                                 rightColumnContent!!,
                                 listOfWordsLeft,
                                 listOfWordsCenter,
-                                listOfWordsRight,
+                                newListOfWordsRight,
                                 sharedLastPlayer!!
                             )
                         //
+                        if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                        {
+                            Toast.makeText(context,
+                                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                                Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                         leftColumnContent = composesASentenceResults.leftColumnContent
                         middleColumnContent = composesASentenceResults.middleColumnContent
@@ -1102,8 +1244,8 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
             // text reading
             readingOfTheText()
             //
-            val TIME_OUT = 2000
-            Handler(Looper.getMainLooper()).postDelayed({ startSpeechGame1(null) }, TIME_OUT.toLong())
+//            val TIME_OUT = 2000
+//            Handler(Looper.getMainLooper()).postDelayed({ startSpeechGame1(null) }, TIME_OUT.toLong())
     }
 
     /**
@@ -1144,17 +1286,34 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
             if (rightColumnAwardType == null || rightColumnAwardType == getString(R.string.nessuno)) {
                 // charge the activity balloon as a reward
                 // a simple balloon game
-                val intent = Intent(applicationContext, BalloonGameplayActivity::class.java)
+//                val intent = Intent(applicationContext, BalloonGameplayActivity::class.java)
                 // ad uso futuro
-                intent.putExtra(EXTRA_MESSAGE_BALLOON, getString(R.string.pensieri_e_parole))
-                startActivity(intent)
+//                intent.putExtra(EXTRA_MESSAGE_BALLOON, getString(R.string.pensieri_e_parole))
+//                startActivity(intent)
+                finishAffinity()
             } else {
                 when (rightColumnAwardType) {
                     "V" ->                         // upload a video as a reward
                         uploadAVideoAsAReward()
                     "Y" ->                         // upload a Youtube video as a reward
                         uploadAYoutubeVideoAsAReward()
-                    else -> {
+                    "B" ->                         // charge the activity balloon as a reward
+                                                    // a simple balloon game
+                    {
+                        // charge the activity balloon as a reward
+                        // a simple balloon game
+                        val intent = Intent(applicationContext, BalloonGameplayActivity::class.java)
+                        // ad uso futuro
+                        intent.putExtra(
+                            EXTRA_MESSAGE_BALLOON,
+                            getString(R.string.pensieri_e_parole)
+                        )
+                        startActivity(intent)
+                    }
+                    "F" ->                         // ends the app (and the user can play their favorite game)
+                        finishAffinity()
+                    else ->
+                    {
                         // charge the activity balloon as a reward
                         // a simple balloon game
                         val intent = Intent(applicationContext, BalloonGameplayActivity::class.java)

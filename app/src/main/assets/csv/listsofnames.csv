@@ -1,155 +1,186 @@
 keyword,word,elementActive,isMenuItem,fromAssets
-desideri,desideri,A,F,Y
-emozioni,emozioni,A,F,Y
-famiglia,famiglia,A,F,Y
-giochi,giochi,A,F,Y
-cibo,cibo,A,F,Y
-animali,animali,A,F,Y
-desideri,volere,A,S,Y
-emozioni,essere,A,S,Y
-numeri-1-5,uno,A,N,Y
-numeri-1-5,due,A,N,Y
-numeri-1-5,tre,A,N,Y
-numeri-1-5,quattro,A,N,Y
-numeri-1-5,cinque,A,N,Y
-numeri-1-10,uno,A,N,Y
-numeri-1-10,due,A,N,Y
-numeri-1-10,tre,A,N,Y
-numeri-1-10,quattro,A,N,Y
-numeri-1-10,cinque,A,N,Y
-numeri-1-10,sei,A,N,Y
-numeri-1-10,sette,A,N,Y
-numeri-1-10,otto,A,N,Y
-numeri-1-10,nove,A,N,Y
-numeri-1-10,dieci,A,N,Y
-particorpo,testa,A,N,Y
-particorpo,capelli,A,N,Y
-particorpo,occhio,A,N,Y
-particorpo,orecchio,A,N,Y
-particorpo,naso,A,N,Y
-particorpo,bocca,A,N,Y
-particorpo,collo,A,N,Y
-particorpo,braccio,A,N,Y
-particorpo,mano,A,N,Y
-particorpo,gamba,A,N,Y
-particorpo,piede,A,N,Y
-particorpo,dito,A,N,Y
-animali,topo,A,S,Y
-animali,gatto,A,S,Y
-animali,cane,A,S,Y
-animali,giraffa,A,S,Y
-animali,elefante,A,S,Y
-animali,leone,A,S,Y
-animali,uccello,A,S,Y
-animali,anatra,A,S,Y
-animali,gallina,A,S,Y
-animali,tacchino,A,S,Y
-animali,cigno,A,S,Y
-animali,piccione,A,S,Y
-animali,pesce,A,S,Y
-animali,tartaruga,A,S,Y
-animali,asino,A,S,Y
-animali,pecora,A,S,Y
-animali,cavallo,A,S,Y
-animali,capra,A,S,Y
-animali,ape,A,S,Y
-animali,formica,A,S,Y
-animali,rana,A,S,Y
-cibo,frittata,A,S,Y
-cibo,pane,A,S,Y
-cibo,grissini,A,S,Y
-cibo,biscotto,A,S,Y
-cibo,succo,A,S,Y
-cibo,spaghetti,A,S,Y
-cibo,minestra,A,S,Y
-cibo,formaggio,A,S,Y
-cibo,carne,A,S,Y
-cibo,polpetta,A,S,Y
-cibo,bistecca,A,S,Y
-cibo,pomodoro,A,S,Y
-cibo,piselli,A,S,Y
-cibo,carota,A,S,Y
-cibo,zucchina,A,S,Y
-cibo,banana,A,S,Y
-cibo,fragola,A,S,Y
-cibo,mela,A,S,Y
-cibo,gelato,A,S,Y
-cibo,cioccolato,A,S,Y
-vestiti,pigiama,A,N,Y
-vestiti,cappello,A,N,Y
-vestiti,sciarpa,A,N,Y
-vestiti,maglietta,A,N,Y
-vestiti,maglione,A,N,Y
-vestiti,giubbotto,A,N,Y
-vestiti,guanti,A,N,Y
-vestiti,pantaloni,A,N,Y
-vestiti,mutande,A,N,Y
-vestiti,calze,A,N,Y
-vestiti,scarpe,A,N,Y
-giochi,palla,A,S,Y
-giochi,tablet,A,S,Y
-giochi,macchine,A,S,Y
-giochi,puzzle,A,S,Y
-giochi,correre,A,S,Y
-giochi,saltare,A,S,Y
-giochi,parco,A,S,Y
-famiglia,io,A,S,Y
-famiglia,papà,A,S,Y
-famiglia,mamma,A,S,Y
-famiglia,nonno,A,S,Y
-famiglia,nonna,A,S,Y
-famiglia,zio,A,S,Y
-animali,topo,A,N,Y
-animali,gatto,A,N,Y
-animali,cane,A,N,Y
-animali,giraffa,A,N,Y
-animali,elefante,A,N,Y
-animali,leone,A,N,Y
-animali,uccello,A,N,Y
-animali,anatra,A,N,Y
-animali,gallina,A,N,Y
-animali,tacchino,A,N,Y
-animali,cigno,A,N,Y
-animali,piccione,A,N,Y
-animali,pesce,A,N,Y
-animali,tartaruga,A,N,Y
-animali,asino,A,N,Y
-animali,pecora,A,N,Y
-animali,cavallo,A,N,Y
-animali,capra,A,N,Y
-animali,ape,A,N,Y
-animali,formica,A,N,Y
-animali,rana,A,N,Y
-cibo,frittata,A,N,Y
-cibo,pane,A,N,Y
-cibo,grissini,A,N,Y
-cibo,biscotto,A,N,Y
-cibo,succo,A,N,Y
-cibo,spaghetti,A,N,Y
-cibo,minestra,A,N,Y
-cibo,formaggio,A,N,Y
-cibo,carne,A,N,Y
-cibo,polpetta,A,N,Y
-cibo,bistecca,A,N,Y
-cibo,pomodoro,A,N,Y
-cibo,piselli,A,N,Y
-cibo,carota,A,N,Y
-cibo,zucchina,A,N,Y
-cibo,banana,A,N,Y
-cibo,fragola,A,N,Y
-cibo,mela,A,N,Y
-cibo,gelato,A,N,Y
-cibo,cioccolato,A,N,Y
-giochi,palla,A,N,Y
-giochi,tablet,A,N,Y
-giochi,macchine,A,N,Y
-giochi,puzzle,A,N,Y
-giochi,correre,A,N,Y
-giochi,saltare,A,N,Y
-giochi,parco,A,N,Y
-famiglia,io,A,N,Y
-famiglia,papà,A,N,Y
-famiglia,mamma,A,N,Y
-famiglia,nonno,A,N,Y
-famiglia,nonna,A,N,Y
-famiglia,zio,A,N,Y
+ciao,ciao,A,F,Y,A,https://api.arasaac.org/api/pictograms/6522?download=false
+desideri,desideri,A,F,Y, ,
+si,si,A,F,Y,A,https://api.arasaac.org/api/pictograms/5397?download=false
+no,no,A,F,Y,A,https://api.arasaac.org/api/pictograms/31859?download=false
+emozioni,emozioni,A,F,Y, ,
+famiglia,famiglia,A,F,Y, , 
+giochi,giochi,A,F,Y, , 
+cibo e bevande,cibo e bevande,A,F,Y,A,https://api.arasaac.org/api/pictograms/32602?download=false
+animali,animali,N,F,Y, ,
+desideri,volere,A,S,Y, , 
+emozioni,essere,A,S,Y, ,
+numeri-1-5,uno,A,N,Y, ,
+numeri-1-5,due,A,N,Y, , 
+numeri-1-5,tre,A,N,Y, , 
+numeri-1-5,quattro,A,N,Y, , 
+numeri-1-5,cinque,A,N,Y, , 
+numeri-1-10,uno,A,N,Y, , 
+numeri-1-10,due,A,N,Y, , 
+numeri-1-10,tre,A,N,Y, , 
+numeri-1-10,quattro,A,N,Y, , 
+numeri-1-10,cinque,A,N,Y, , 
+numeri-1-10,sei,A,N,Y, , 
+numeri-1-10,sette,A,N,Y, , 
+numeri-1-10,otto,A,N,Y, , 
+numeri-1-10,nove,A,N,Y, , 
+numeri-1-10,dieci,A,N,Y, , 
+particorpo,testa,A,N,Y, , 
+particorpo,capelli,A,N,Y, , 
+particorpo,occhio,A,N,Y, , 
+particorpo,orecchio,A,N,Y, , 
+particorpo,naso,A,N,Y, , 
+particorpo,bocca,A,N,Y, , 
+particorpo,collo,A,N,Y, , 
+particorpo,braccio,A,N,Y, , 
+particorpo,mano,A,N,Y, , 
+particorpo,gamba,A,N,Y, , 
+particorpo,piede,A,N,Y, , 
+particorpo,dito,A,N,Y, , 
+animali,topo,A,S,Y, , 
+animali,gatto,A,S,Y, , 
+animali,cane,A,S,Y, , 
+animali,giraffa,A,S,Y, , 
+animali,elefante,A,S,Y, , 
+animali,leone,A,S,Y, , 
+animali,uccello,A,S,Y, , 
+animali,anatra,A,S,Y, , 
+animali,gallina,A,S,Y, , 
+animali,tacchino,A,S,Y, , 
+animali,cigno,A,S,Y, , 
+animali,piccione,A,S,Y, , 
+animali,pesce,A,S,Y, , 
+animali,tartaruga,A,S,Y, , 
+animali,asino,A,S,Y, , 
+animali,pecora,A,S,Y, , 
+animali,cavallo,A,S,Y, , 
+animali,capra,A,S,Y, , 
+animali,ape,A,S,Y, , 
+animali,formica,A,S,Y, , 
+animali,rana,A,S,Y, , 
+cibo e bevande,frittata,A,S,Y, ,
+cibo e bevande,pane,A,S,Y, ,
+cibo e bevande,grissini,A,S,Y, ,
+cibo e bevande,biscotto,A,S,Y, ,
+cibo e bevande,succo,A,S,Y, ,
+cibo e bevande,spaghetti,A,S,Y, ,
+cibo e bevande,minestra,A,S,Y, ,
+cibo e bevande,formaggio,A,S,Y, ,
+cibo e bevande,carne,A,S,Y, ,
+cibo e bevande,polpetta,A,S,Y, ,
+cibo e bevande,bistecca,A,S,Y, ,
+cibo e bevande,pomodoro,A,S,Y, ,
+cibo e bevande,piselli,A,S,Y, ,
+cibo e bevande,carota,A,S,Y, ,
+cibo e bevande,zucchina,A,S,Y, ,
+cibo e bevande,banana,A,S,Y, ,
+cibo e bevande,fragola,A,S,Y, ,
+cibo e bevande,mela,A,S,Y, ,
+cibo e bevande,gelato,A,S,Y, ,
+cibo e bevande,cioccolato,A,S,Y, ,
+cibo e bevande,acqua,A,S,Y, ,
+cibo e bevande,succo,A,S,Y, ,
+vestiti,pigiama,A,N,Y, , 
+vestiti,cappello,A,N,Y, , 
+vestiti,sciarpa,A,N,Y, , 
+vestiti,maglietta,A,N,Y, , 
+vestiti,maglione,A,N,Y, , 
+vestiti,giubbotto,A,N,Y, , 
+vestiti,guanti,A,N,Y, , 
+vestiti,pantaloni,A,N,Y, , 
+vestiti,mutande,A,N,Y, , 
+vestiti,calze,A,N,Y, , 
+vestiti,scarpe,A,N,Y, , 
+giochi,palla,A,S,Y, , 
+giochi,tablet,A,S,Y, , 
+giochi,macchine,A,S,Y, , 
+giochi,puzzle,A,S,Y, , 
+giochi,correre,A,S,Y, , 
+giochi,saltare,A,S,Y, , 
+giochi,parco,A,S,Y, , 
+famiglia,io,A,S,Y, , 
+famiglia,papà,A,S,Y, , 
+famiglia,mamma,A,S,Y, , 
+famiglia,nonno,A,S,Y, , 
+famiglia,nonna,A,S,Y, , 
+famiglia,zio,A,S,Y, , 
+animali,topo,A,N,Y, , 
+animali,gatto,A,N,Y, , 
+animali,cane,A,N,Y, , 
+animali,giraffa,A,N,Y, , 
+animali,elefante,A,N,Y, , 
+animali,leone,A,N,Y, , 
+animali,uccello,A,N,Y, , 
+animali,anatra,A,N,Y, , 
+animali,gallina,A,N,Y, , 
+animali,tacchino,A,N,Y, , 
+animali,cigno,A,N,Y, , 
+animali,piccione,A,N,Y, , 
+animali,pesce,A,N,Y, , 
+animali,tartaruga,A,N,Y, , 
+animali,asino,A,N,Y, , 
+animali,pecora,A,N,Y, , 
+animali,cavallo,A,N,Y, , 
+animali,capra,A,N,Y, , 
+animali,ape,A,N,Y, , 
+animali,formica,A,N,Y, , 
+animali,rana,A,N,Y, , 
+cibo,frittata,A,N,Y, , 
+cibo,pane,A,N,Y, , 
+cibo,grissini,A,N,Y, , 
+cibo,biscotto,A,N,Y, , 
+cibo,succo,A,N,Y, , 
+cibo,spaghetti,A,N,Y, , 
+cibo,minestra,A,N,Y, , 
+cibo,formaggio,A,N,Y, , 
+cibo,carne,A,N,Y, , 
+cibo,polpetta,A,N,Y, , 
+cibo,bistecca,A,N,Y, , 
+cibo,pomodoro,A,N,Y, , 
+cibo,piselli,A,N,Y, , 
+cibo,carota,A,N,Y, , 
+cibo,zucchina,A,N,Y, , 
+cibo,banana,A,N,Y, , 
+cibo,fragola,A,N,Y, , 
+cibo,mela,A,N,Y, , 
+cibo,gelato,A,N,Y, , 
+cibo,cioccolato,A,N,Y, , 
+giochi,palla,A,N,Y, , 
+giochi,tablet,A,N,Y, , 
+giochi,macchine,A,N,Y, , 
+giochi,puzzle,A,N,Y, , 
+giochi,correre,A,N,Y, , 
+giochi,saltare,A,N,Y, , 
+giochi,parco,A,N,Y, , 
+famiglia,io,A,N,Y, , 
+famiglia,papà,A,N,Y, , 
+famiglia,mamma,A,N,Y, , 
+famiglia,nonno,A,N,Y, , 
+famiglia,nonna,A,N,Y, , 
+famiglia,zio,A,N,Y, ,
+ciao,ciao,A,S,Y,A,https://api.arasaac.org/api/pictograms/6009?download=false
+ciao,evviva,A,S,Y,A,https://api.arasaac.org/api/pictograms/26615?download=false
+desideri,potere,A,S,Y,A,https://api.arasaac.org/api/pictograms/35949?download=false
+desideri,dovere,A,S,Y,A,https://api.arasaac.org/api/pictograms/37160?download=false
+arasaac,ancora,A,N,Y,A,https://api.arasaac.org/api/pictograms/32753?download=false
+si,si,A,S,Y,A,https://api.arasaac.org/api/pictograms/5397?download=false
+si,ancora,A,S,Y,A,https://api.arasaac.org/api/pictograms/32753?download=false
+no,no,A,S,Y,A,https://api.arasaac.org/api/pictograms/31859?download=false
+no,basta,A,S,Y,A,https://api.arasaac.org/api/pictograms/28429?download=false
+no,aspetta,A,S,Y,A,https://api.arasaac.org/api/pictograms/7196?download=false
+emozioni,felice?,A,N,Y,A,https://api.arasaac.org/api/pictograms/35547?download=false
+emozioni,arrabbiato?,A,N,Y,A,https://api.arasaac.org/api/pictograms/35539?download=false
+emozioni,triste?,A,N,Y,A,https://api.arasaac.org/api/pictograms/35545?download=false
+emozioni,fa male,A,S,Y,A,https://api.arasaac.org/api/pictograms/30620?download=false
+fa male,testa,A,N,Y, ,
+fa male,occhio,A,N,Y, ,
+fa male,orecchio,A,N,Y, ,
+fa male,naso,A,N,Y, ,
+fa male,bocca,A,N,Y, ,
+fa male,collo,A,N,Y, ,
+fa male,braccio,A,N,Y, ,
+fa male,mano,A,N,Y, ,
+fa male,dito,A,N,Y, ,
+fa male,gamba,A,N,Y, ,
+fa male,piede,A,N,Y, ,
+arasaac,male,A,N,Y,A,https://api.arasaac.org/api/pictograms/30620?download=false

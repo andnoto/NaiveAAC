@@ -10,10 +10,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameFragmentAbstractClass
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.addImage
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
@@ -119,16 +117,15 @@ class Game1FirstLevelFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val rootView = inflater.inflate(R.layout.activity_game_1_viewpager_content, container, false)
-//    override fun onViewCreated(
-//        view: View,
-//        savedInstanceState: Bundle?
-//    ) {
-//        rootView = inflater.inflate(R.layout.activity_game_1_viewpager_content, container, false)
         //
         val bundle = this.arguments
         if (bundle != null) {
             wordToSearchSecondLevelMenu =
                 bundle.getString(getString(R.string.word_to_search_second_level_menu))
+            var uriType =
+                bundle.getString("WORD TO SEARCH SECOND LEVEL MENU-URI TYPE")
+            var uri =
+                bundle.getString("WORD TO SEARCH SECOND LEVEL MENU-URI")
             leftArrow = bundle.getString(getString(R.string.left_arrow))
             rightArrow = bundle.getString(getString(R.string.right_arrow))
             //
@@ -137,13 +134,24 @@ class Game1FirstLevelFragment() : Fragment() {
             textFirstLevelMenuView.text =
                 wordToSearchSecondLevelMenu!!.uppercase(Locale.getDefault())
             // ricerca immagine
-            val image: ResponseImageSearch?
-            image = imageSearch(ctext, realm, wordToSearchSecondLevelMenu)
+            if (uriType != "A" && uriType != "S")
+            {
+                val image: ResponseImageSearch?
+                image = imageSearch(ctext, realm, wordToSearchSecondLevelMenu)
+                if (image != null)
+                {
+                    uriType = image.uriType
+                    uri = image.uriToSearch
+                }
+            }
+//            val image: ResponseImageSearch?
+//            image = imageSearch(ctext, realm, wordToSearchSecondLevelMenu)
             val imageFirstLevelMenuView = rootView.findViewById<ImageView>(R.id.imagefirstlevelmenu)
             imageFirstLevelMenuView.contentDescription = wordToSearchSecondLevelMenu!!.uppercase(
                 Locale.getDefault()
             )
-            addImage(image!!.uriType, image.uriToSearch, imageFirstLevelMenuView, 200, 200)
+//            addImage(image!!.uriType, image.uriToSearch, imageFirstLevelMenuView, 200, 200)
+            addImage(uriType, uri, imageFirstLevelMenuView, 200, 200)
             // arrows
             val leftArrowFirstLevelMenu =
                 rootView.findViewById<ImageView>(R.id.leftarrowfirstlevelmenu)
@@ -153,7 +161,6 @@ class Game1FirstLevelFragment() : Fragment() {
             if (rightArrow == "N") rightArrowFirstLevelMenu.visibility = View.INVISIBLE
         }
         //
-//        listener.receiveResultGameFragment(rootView)
         return rootView
     } //
     /**

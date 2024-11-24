@@ -2,7 +2,7 @@ package com.sampietro.NaiveAAC.activities.WordPairs
 
 import android.content.Context
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.Settings.Utils.AdvancedSettingsDataImportExportHelper
 import io.realm.Realm
@@ -48,6 +48,8 @@ open class WordPairs : RealmObject() {
      * if spoken matches the sentence the player will receive a prize
      * awardType = V : premium video of the Game1
      * awardType = Y : premium Youtube video of the Game1.
+     * awardType = B : charge the activity balloon as a reward a simple balloon game.
+     * awardType = F : ends the app (and the user can play their favorite game).
      * if awardtype is empty the award is a simple balloon popping game
      */
     var awardType: String? = null
@@ -189,9 +191,29 @@ open class WordPairs : RealmObject() {
                         // register excluding lines with words that do not correspond to images
                         if (oneWord[0] != null && oneWord[1] != null) {
                             var image1: ResponseImageSearch?
+//                            image1 = searchUriInListsOfNames(
+//                                context,
+//                                realm,
+//                                oneWord[0]!!
+//                            )
+//                            if (image1 == null)
+//                            {
+                            // search in the internal memory or on Arasaac
+                            image1 = imageSearch(context, realm, oneWord[0])
+//                            }
                             var image2: ResponseImageSearch?
-                            image1 = ImageSearchHelper.imageSearch(context, realm, oneWord[0])
-                            image2 = ImageSearchHelper.imageSearch(context, realm, oneWord[1])
+//                            image2 = searchUriInListsOfNames(
+//                                context,
+//                                realm,
+//                                oneWord[1]!!
+//                            )
+//                            if (image2 == null)
+//                            {
+                            // search in the internal memory or on Arasaac
+                            image2 = imageSearch(context, realm, oneWord[1])
+//                            }
+//                            image1 = ImageSearchHelper.imageSearch(context, realm, oneWord[0])
+//                            image2 = ImageSearchHelper.imageSearch(context, realm, oneWord[1])
                             if (image1 != null && image2 != null && oneWord[2] != null && oneWord[3] != null && oneWord[4] != null && oneWord[5] != null) {
                                 //
                                 realm.beginTransaction()

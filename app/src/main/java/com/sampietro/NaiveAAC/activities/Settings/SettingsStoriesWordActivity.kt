@@ -54,7 +54,7 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
     private var game2ViewModelItem: Game2ViewModelItem? = null
     //
     var updateMode:String? = null
-    var theNewWordsMustBeInsertedBeforeThese: String? = ""
+//    var theNewWordsMustBeInsertedBeforeThese: String? = ""
     /**
      * configurations of settings start screen.
      *
@@ -111,7 +111,7 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
             game2ViewModelItem!!.soundReplacesTTS = savedInstanceState.getString("SOUND REPLACE TTS", "")
             //
             updateMode = savedInstanceState.getString("UPDATE MODE", "")
-            theNewWordsMustBeInsertedBeforeThese = savedInstanceState.getString("THE NEW WORDS MUST BE INSERTED BEFORE THESE", "")
+//            theNewWordsMustBeInsertedBeforeThese = savedInstanceState.getString("THE NEW WORDS MUST BE INSERTED BEFORE THESE", "")
         }
         else
         {
@@ -142,24 +142,24 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
                         game2ViewModelItem!!.sound = daModificare[0]!!.sound
                         game2ViewModelItem!!.soundReplacesTTS = daModificare[0]!!.soundReplacesTTS
                         game2ViewModelItem!!.fromAssets = daModificare[0]!!.fromAssets
-                        theNewWordsMustBeInsertedBeforeThese = game2ViewModelItem!!.word
+//                        theNewWordsMustBeInsertedBeforeThese = game2ViewModelItem!!.word
                     }
                 }
-                else
-                {
-                    val daInserirePrimaDi = realm.where(Stories::class.java)
-                        .equalTo(
-                            getString(R.string.story),
-                            game2ViewModelItem!!.story
-                        )
-                        .equalTo(getString(R.string.phrasenumberint), game2ViewModelItem!!.phraseNumberInt)
-                        .equalTo(getString(R.string.wordnumberint), game2ViewModelItem!!.wordNumberInt)
-                        .findAll()
-                    val daInserirePrimaDiSize = daInserirePrimaDi.size
-                    if (daInserirePrimaDiSize > 0) {
-                        theNewWordsMustBeInsertedBeforeThese = daInserirePrimaDi[0]!!.word
-                    }
-                }
+//                else
+//                {
+//                    val daInserirePrimaDi = realm.where(Stories::class.java)
+//                        .equalTo(
+//                            getString(R.string.story),
+//                            game2ViewModelItem!!.story
+//                        )
+//                        .equalTo(getString(R.string.phrasenumberint), game2ViewModelItem!!.phraseNumberInt)
+//                        .equalTo(getString(R.string.wordnumberint), game2ViewModelItem!!.wordNumberInt)
+//                        .findAll()
+//                    val daInserirePrimaDiSize = daInserirePrimaDi.size
+//                    if (daInserirePrimaDiSize > 0) {
+//                        theNewWordsMustBeInsertedBeforeThese = daInserirePrimaDi[0]!!.word
+//                    }
+//                }
                 fragmentManager = supportFragmentManager
                 fragmentManager!!.beginTransaction()
                     .add(ActionbarFragment(), getString(R.string.actionbar_fragment))
@@ -193,7 +193,7 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
         savedInstanceState.putString("SOUND REPLACE TTS", game2ViewModelItem!!.soundReplacesTTS)
         //
         savedInstanceState.putString("UPDATE MODE", updateMode)
-        savedInstanceState.putString("THE NEW WORDS MUST BE INSERTED BEFORE THESE", theNewWordsMustBeInsertedBeforeThese)
+//        savedInstanceState.putString("THE NEW WORDS MUST BE INSERTED BEFORE THESE", theNewWordsMustBeInsertedBeforeThese)
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState)
     }
@@ -825,12 +825,38 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
                         )
                         //
                         val value0 = 0
+                        //
+                        var newPhrase:String = ""
+                        val newResultsStories = realm.where(Stories::class.java)
+                            .equalTo(
+                                getString(R.string.story),
+                                textWord1.text.toString().lowercase(Locale.getDefault())
+                            )
+                            .equalTo(getString(R.string.phrasenumberint), textWord2.text.toString().toInt())
+                            .notEqualTo(getString(R.string.wordnumberint), value0)
+                            .findAll()
+                        val newStoriesSize = newResultsStories.size
+                        var irrh = 0
+                        while (irrh < newStoriesSize) {
+                            val newResultStories = newResultsStories[irrh]!!
+                            newPhrase = newPhrase + " " + newResultStories.word
+                            irrh++
+                        }
+                        //
+//                        val value0 = 0
                         val daModificare =
                             realm.where(Stories::class.java)
                                 .equalTo(getString(R.string.story), textWord1.text.toString().lowercase(Locale.getDefault()))
                                 .equalTo(getString(R.string.phrasenumberint), textWord2.text.toString().toInt())
                                 .equalTo(getString(R.string.wordnumberint), value0)
                                 .findFirst()
+                        if(daModificare != null) {
+                            realm.beginTransaction()
+                            daModificare.word = newPhrase
+                            realm.insertOrUpdate(daModificare)
+                            realm.commitTransaction()
+                        }
+                        /*
                         if(daModificare != null) {
                             val wordsToChange = daModificare.word
                             val wordsToBeInserted = textWord4.text.toString()
@@ -864,6 +890,7 @@ class SettingsStoriesWordActivity : ActivityAbstractClass(),
                                 realm.commitTransaction()
                             }
                         }
+                         */
                         // clear fields of viewmodel data class
                         game2ViewModelItem!!.story =
                             textWord1.text.toString().lowercase(Locale.getDefault())
