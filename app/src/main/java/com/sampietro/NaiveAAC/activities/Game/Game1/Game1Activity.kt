@@ -1286,11 +1286,11 @@ class Game1Activity : GameActivityAbstractClassWithRecognizerCallback(), Game1Re
             if (rightColumnAwardType == null || rightColumnAwardType == getString(R.string.nessuno)) {
                 // charge the activity balloon as a reward
                 // a simple balloon game
-                val intent = Intent(applicationContext, BalloonGameplayActivity::class.java)
+//                val intent = Intent(applicationContext, BalloonGameplayActivity::class.java)
                 // ad uso futuro
-                intent.putExtra(EXTRA_MESSAGE_BALLOON, getString(R.string.pensieri_e_parole))
-                startActivity(intent)
-//                finishAffinity()
+//                intent.putExtra(EXTRA_MESSAGE_BALLOON, getString(R.string.pensieri_e_parole))
+//                startActivity(intent)
+                finishAffinity()
             } else {
                 when (rightColumnAwardType) {
                     "V" ->                         // upload a video as a reward

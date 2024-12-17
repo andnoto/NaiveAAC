@@ -391,26 +391,65 @@ class MyApplication : Application() {
             val imagesSize = resultsImages.size
             val resultsImagesList = realm.copyFromRealm(resultsImages)
             // clear the table
-//            val daCancellareImages = realm.where(
-//                Images::class.java
-//            ).findAll()
-//            realm.beginTransaction()
-//            daCancellareImages.deleteAllFromRealm()
-//            realm.commitTransaction()
+            val daCancellareImages = realm.where(
+                Images::class.java
+            ).findAll()
+            realm.beginTransaction()
+            daCancellareImages.deleteAllFromRealm()
+            realm.commitTransaction()
             //
-//           try {
-//                copyFileFromAssetsToInternalStorage(
-//                    context,
-//                    getString(R.string.images),
-//                    "pecs.png",
-//                    "pecs.png"
-//                )
+            var irrh = 0
+            while (irrh < imagesSize) {
+                val resultImages = resultsImagesList[irrh]!!
+                realm.beginTransaction()
+                realm.copyToRealm(resultImages)
+                realm.commitTransaction()
+                irrh++
+            }
+            //
+            try {
+                copyFileFromAssetsToInternalStorage(
+                    context,
+                    getString(R.string.images),
+                    "pecs.png",
+                    "pecs.png"
+                )
+//                copyFileFromAssetsToInternalStorage(context,"csv", "toaddversion17-images.csv", "images.csv")
+//                copyFileFromAssetsToInternalStorage(context,"csv", "toaddversion17-gameparameters.csv", "gameparameters.csv")
+//                copyFileFromAssetsToInternalStorage(context,"csv", "toaddversion17-grammaticalexceptions.csv", "grammaticalexceptions.csv")
+//                copyFileFromAssetsToInternalStorage(context,"csv", "bluetoothdevices.csv", "bluetoothdevices.csv")
+//                copyFileFromAssetsToInternalStorage(context,"csv", "listsofnames.csv", "listsofnames.csv")
+//                copyFileFromAssetsToInternalStorage(context,"csv", "wordpairs.csv", "wordpairs.csv")
                 prepareTheSimsimDirectory(context)
-//            } catch (e: IOException) {
-//                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            //
+//            val daCancellare = realm.where(
+//                ListsOfNames::class.java
+//            ).equalTo("fromAssets", "Y").findAll()
+//            val daCancellareSize = daCancellare.size
+//            if (daCancellareSize != 0) {
+//                realm.beginTransaction()
+//                daCancellare.deleteAllFromRealm()
+//                realm.commitTransaction()
+//            }
+//            val daCancellarewp = realm.where(
+//                WordPairs::class.java
+//            ).equalTo("fromAssets", "Y").findAll()
+//            val daCancellarewpSize = daCancellarewp.size
+//            if (daCancellarewpSize != 0) {
+//                realm.beginTransaction()
+//                daCancellarewp.deleteAllFromRealm()
+//                realm.commitTransaction()
 //            }
             //
-            Images.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+            Images.importFromCsvFromInternalStorage(context, realm, "Append")
+//            GameParameters.importFromCsvFromInternalStorage(context, realm, "Append")
+//            GrammaticalExceptions.importFromCsvFromInternalStorage(context, realm, "Append")
+//            BluetoothDevices.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
+//            ListsOfNames.importFromCsvFromInternalStorage(context, realm, "Append")
+//            WordPairs.importFromCsvFromInternalStorage(context, realm, "Append")
             //
             Sounds.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             Videos.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
@@ -422,15 +461,36 @@ class MyApplication : Application() {
             Phrases.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             Stories.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
             WordPairs.importFromCsvFromInternalStorage(context, realm, getString(R.string.replace))
-            // recupera immagini relative ad "io" e a nome utente
-            var irrh = 0
-            while (irrh < imagesSize) {
-                val resultImages = resultsImagesList[irrh]!!
-                realm.beginTransaction()
-                realm.copyToRealm(resultImages)
-                realm.commitTransaction()
-                irrh++
-            }
+            // register the game parameters new item
+            // cancello il vecchio item
+//            val resultsGameParameters = realm.where(GameParameters::class.java)
+//                .equalTo(
+//                    "gameName",
+//                    "Scambio Immagini tramite Bluetooth"
+//                )
+//                .findAll()
+//            val resultsGameParametersSize = resultsGameParameters.size
+            //
+//            if (resultsGameParametersSize > 0) {
+//                realm.beginTransaction()
+//                resultsGameParameters.deleteAllFromRealm()
+//                realm.commitTransaction()
+//            }
+            // Note that the realm object was generated with the createObject method
+            // and not with the new operator.
+            // The modification operations will be performed within a Transaction.
+//            realm.beginTransaction()
+//            val gp = realm.createObject(GameParameters::class.java)
+//            gp.gameName = "Scambio Immagini tramite Bluetooth"
+//            gp.gameActive = "A"
+//            gp.gameInfo = "Picture Exchange Communication System"
+//            gp.gameJavaClass = "PECS"
+//            gp.gameParameter = ""
+//            gp.gameUseVideoAndSound = "Y"
+//            gp.gameIconType = "AS"
+//            gp.gameIconPath = "images/pecs.png"
+//            gp.fromAssets = "Y"
+//            realm.commitTransaction()
             // register the linked lists of names
             realm.beginTransaction()
             val listsOfNames = realm.createObject(ListsOfNames::class.java)

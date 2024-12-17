@@ -654,11 +654,5 @@ object DataStorageHelper {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        //
-        copyAssets(context,"images")
-        copyAssets(context,"sounds")
-        copyAssets(context,"videos")
-        copyAssets(context,"pdf")
-        //
     }
 }
