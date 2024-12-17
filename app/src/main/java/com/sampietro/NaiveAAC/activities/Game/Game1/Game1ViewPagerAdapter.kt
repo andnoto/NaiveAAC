@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
 import io.realm.Realm
@@ -63,6 +62,8 @@ class Game1ViewPagerAdapter
             wordToSearchSecondLevelMenu = result.keyword
             //
             bundle.putString("WORD TO SEARCH SECOND LEVEL MENU", wordToSearchSecondLevelMenu)
+            bundle.putString("WORD TO SEARCH SECOND LEVEL MENU-URI TYPE", result.uriType)
+            bundle.putString("WORD TO SEARCH SECOND LEVEL MENU-URI", result.uri)
             //
             if (position != 0) {
                 bundle.putString("LEFT ARROW", "Y")

@@ -631,4 +631,34 @@ object DataStorageHelper {
         }
         return null
     }
+    /**
+     * copy the csv files with initial settings and content such as images, videos and others from assets.
+     *
+     * @see copyFileFromAssetsToInternalStorage
+     *
+     * @see copyAssets
+     */
+    fun prepareTheSimsimDirectory(context: Context) {
+        try {
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"bluetoothdevices.csv","bluetoothdevices.csv" )
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"gameparameters.csv","gameparameters.csv")
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"grammaticalexceptions.csv","grammaticalexceptions.csv")
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"images.csv","images.csv")
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"listsofnames.csv","listsofnames.csv")
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"phrases.csv","phrases.csv")
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"pictogramsalltomodify.csv","pictogramsalltomodify.csv")
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"sounds.csv","sounds.csv")
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"stories.csv","stories.csv")
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"videos.csv","videos.csv")
+            copyFileFromAssetsToInternalStorage(context, context.getString(R.string.csv),"wordpairs.csv","wordpairs.csv")
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        //
+        copyAssets(context,"images")
+        copyAssets(context,"sounds")
+        copyAssets(context,"videos")
+        copyAssets(context,"pdf")
+        //
+    }
 }

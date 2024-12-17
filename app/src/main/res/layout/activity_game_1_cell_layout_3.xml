@@ -19,16 +19,28 @@
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="invisible"/>
 
-    <ImageView
-        android:id="@+id/img3"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/game_1_media_container"
         android:foreground="@drawable/image_border"
         android:layout_marginTop="32dp"
         android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+        <ImageView
+            android:id="@+id/img3"
+            android:adjustViewBounds="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/img3_3"
+            android:adjustViewBounds="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/title"
@@ -37,7 +49,7 @@
         android:layout_gravity="center"
         android:textColor="#000"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/img3"
-        app:layout_constraintTop_toBottomOf="@+id/img3" />
+        app:layout_constraintStart_toStartOf="@+id/game_1_media_container"
+        app:layout_constraintTop_toBottomOf="@+id/game_1_media_container" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

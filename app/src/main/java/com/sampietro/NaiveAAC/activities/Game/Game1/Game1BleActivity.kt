@@ -36,6 +36,7 @@ import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Game.Game2.Game2BleDialogFragment
 import com.sampietro.NaiveAAC.activities.Game.Utils.GameHelper.historyRegistration
 import com.sampietro.NaiveAAC.activities.Grammar.ComposesASentenceResults
+import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.COMPOSITION_SUCCESS
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.composesASentence
 import com.sampietro.NaiveAAC.activities.Grammar.ListsOfNames
 import com.sampietro.NaiveAAC.activities.Graphics.GraphicsAndPrintingHelper.printImage
@@ -112,7 +113,6 @@ class Game1BleActivity : GameActivityAbstractClass(),
                 }
                 if (preference_BluetoothMode == "Server")
                 {
-                    // mode = GATT server
                     /*
                     BluetootLeService -> step 7 -> BluetootLeService
                     */
@@ -121,7 +121,6 @@ class Game1BleActivity : GameActivityAbstractClass(),
                 }
                 else
                 {
-                    // mode = GATT client
                     /*
                     step 10 -> BluetootLeService
                      */
@@ -140,7 +139,6 @@ class Game1BleActivity : GameActivityAbstractClass(),
      */
     lateinit var btAdapter: BluetoothAdapter
     var mConnected : Boolean = false
-//    var deviceEnabledUserName : String? = "non trovato"
     var deviceEnabledName : String? = "non trovato"
     var messageFromGattServer = "nessun messaggio"
     /**
@@ -176,6 +174,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
     //
     var dialog: Game2BleDialogFragment? = null
     //
+    var outcomeOfSentenceComposition = COMPOSITION_SUCCESS
     var numberOfWordsChosen = 0
     //
     var sharedLastPlayer: String? = null
@@ -745,14 +744,6 @@ class Game1BleActivity : GameActivityAbstractClass(),
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 BluetoothLeService.ACTION_GATT_SERVER_CONNECTED -> {
-                    mConnected = true
-                    // if MultipleAdvertisement is not supported the device name is not available
-                    if (bluetoothService!!.getDeviceEnabledName() != null)
-                    { deviceEnabledName = bluetoothService!!.getDeviceEnabledName() }
-                    else
-                    { deviceEnabledName = "manca device name" }
-                    //
-                    enableTransmitToConnectedBluetooth()
                 }
                 BluetoothLeService.ACTION_GATT_SERVER_DISCONNECTED -> {
                     mConnected = false
@@ -778,8 +769,24 @@ class Game1BleActivity : GameActivityAbstractClass(),
                     {
                     }
                     else
+                    // use comma as separator
                     {
+                        val csvSplitBy = getString(R.string.character_comma)
+                        val oneWord: Array<String?> =
+                            messageFromGattServer.split(csvSplitBy.toRegex()).toTypedArray()
+                        val oneWordSize = oneWord.size
+                        if (oneWordSize == 2 && oneWord[0] == "BLUETOOTH DEVICE NAME")
+                        {
+                            mConnected = true
+                            // if MultipleAdvertisement is not supported the device name is not available
+                            deviceEnabledName = oneWord[1]
+                            //
+                            enableTransmitToConnectedBluetooth()
+                        }
+                        else
+                        {
                         dialogFragmentShow()
+                        }
                     }
                 }
                 BluetoothLeService.MESSAGE_FROM_GATT -> {
@@ -838,7 +845,6 @@ class Game1BleActivity : GameActivityAbstractClass(),
         {
             if (bluetoothService != null)
             {
-//                bluetoothService!!.sendMessageFromServer("I'M DISCONNECTING")
                 bluetoothService!!.stopAdvertising()
             }
         }
@@ -846,7 +852,6 @@ class Game1BleActivity : GameActivityAbstractClass(),
         {
             if (bluetoothService != null)
             {
-//                bluetoothService!!.sendMessageFromClient("I'M DISCONNECTING")
                 bluetoothService!!.stopScanner()
             }
         }
@@ -875,7 +880,6 @@ class Game1BleActivity : GameActivityAbstractClass(),
         if (preference_BluetoothMode == "Server")
         {
             bluetoothService!!.sendMessageFromServer("I'M DISCONNECTING")
-//            bluetoothService!!.stopServer()
         }
         else
         {
@@ -965,21 +969,30 @@ class Game1BleActivity : GameActivityAbstractClass(),
         var rightColumnMessageToSend: String = ""
         if (leftColumnContent != getString(R.string.nessuno))
             {
-                val image: ResponseImageSearch?
-                image = imageSearch(this, realm, leftColumnContentWord)
-                leftColumnMessageToSend = leftColumnContent + "," + image!!.uriType + "," + image.uriToSearch + ","
+                var image: ResponseImageSearch?
+                // search in the internal memory or on Arasaac
+                image = imageSearch(context, realm, leftColumnContentWord)
+                if (image != null) {
+                    leftColumnMessageToSend = leftColumnContent + "," + image.uriType + "," + image.uriToSearch + ","
+                }
             }
         if (middleColumnContent != getString(R.string.nessuno))
             {
-                val image: ResponseImageSearch?
-                image = imageSearch(this, realm, middleColumnContentWord)
-                middleColumnMessageToSend = middleColumnContent + "," + image!!.uriType + "," + image.uriToSearch + ","
+                var image: ResponseImageSearch?
+                // search in the internal memory or on Arasaac
+                image = imageSearch(context, realm, middleColumnContentWord)
+                if (image != null) {
+                    middleColumnMessageToSend = middleColumnContent + "," + image.uriType + "," + image.uriToSearch + ","
+                }
             }
         if (rightColumnContent != getString(R.string.nessuno))
             {
-                val image: ResponseImageSearch?
-                image = imageSearch(this, realm, rightColumnContentWord)
-                rightColumnMessageToSend = rightColumnContent + "," + image!!.uriType + "," + image.uriToSearch + ","
+                var image: ResponseImageSearch?
+                // search in the internal memory or on Arasaac
+                image = imageSearch(context, realm, rightColumnContentWord)
+                if (image != null) {
+                    rightColumnMessageToSend = rightColumnContent + "," + image.uriType + "," + image.uriToSearch + ","
+                }
             }
         messageToSend = leftColumnMessageToSend + middleColumnMessageToSend + rightColumnMessageToSend
         if (preference_BluetoothMode == "Server")
@@ -1064,7 +1077,10 @@ class Game1BleActivity : GameActivityAbstractClass(),
      * @see BluetoothLeService.scan
      */
     override fun scanRequestBluetoothDevicesFromGame1BleSecondLevelFragment() {
-        bluetoothService!!.scan()
+        if (bluetoothService != null)
+        {
+            bluetoothService!!.scan()
+        }
     }
     /**
      * Show Game2BleDialogFragment .
@@ -1207,6 +1223,7 @@ class Game1BleActivity : GameActivityAbstractClass(),
      * @see fragmentTransactionStart
      */
     fun displaySecondLevelMenu() {
+        outcomeOfSentenceComposition = COMPOSITION_SUCCESS
         numberOfWordsChosen = 0
         leftColumnContent = getString(R.string.nessuno)
         middleColumnContent = getString(R.string.nessuno)
@@ -1241,27 +1258,36 @@ class Game1BleActivity : GameActivityAbstractClass(),
             sharedLastPlayer!!
         )
         //
-        numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
-        leftColumnContent = composesASentenceResults.leftColumnContent
-        middleColumnContent = composesASentenceResults.middleColumnContent
-        rightColumnContent = composesASentenceResults.rightColumnContent
-        listOfWordsLeft.clear()
-        listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
-        listOfWordsCenter.clear()
-        listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
-        listOfWordsRight.clear()
-        listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
-        //
-        if (numberOfWordsChosen == 3)
+        if (composesASentenceResults.outcomeOfSentenceComposition == COMPOSITION_SUCCESS)
+        {
+            numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
+            leftColumnContent = composesASentenceResults.leftColumnContent
+            middleColumnContent = composesASentenceResults.middleColumnContent
+            rightColumnContent = composesASentenceResults.rightColumnContent
+            listOfWordsLeft.clear()
+            listOfWordsLeft.addAll(composesASentenceResults.listOfWordsLeft)
+            listOfWordsCenter.clear()
+            listOfWordsCenter.addAll(composesASentenceResults.listOfWordsCenter)
+            listOfWordsRight.clear()
+            listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
+            //
+            if (numberOfWordsChosen == 3)
             {
-            // sentence completion check, grammar arrangement and text reading
-            sentenceReadingOfTheText()
-            // send message
-            if (deviceEnabledName != "non trovato")
+                // sentence completion check, grammar arrangement and text reading
+                sentenceReadingOfTheText()
+                // send message
+                if (deviceEnabledName != "non trovato")
                 { sendMessage() }
             }
-        prepareTheFragmentTransaction()
-        fragmentTransactionStart()
+            prepareTheFragmentTransaction()
+            fragmentTransactionStart()
+        }
+        else
+        {
+            Toast.makeText(context,
+                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                Toast.LENGTH_SHORT).show()
+        }
     }
     /**
      * prepare fragment transaction:
@@ -1379,9 +1405,11 @@ class Game1BleActivity : GameActivityAbstractClass(),
     override fun onItemClick(view: View?, i: Int) {
         when (numberOfWordsChosen) {
             0 -> {
-                val chosenWordCenter = listOfWordsCenter[i]
-                listOfWordsCenter.clear()
-                listOfWordsCenter.add(chosenWordCenter)
+//                val chosenWordCenter = listOfWordsCenter[i]
+//                listOfWordsCenter.clear()
+//                listOfWordsCenter.add(chosenWordCenter)
+                val newListOfWordsCenter = arrayListOf<String>()
+                newListOfWordsCenter.add(listOfWordsCenter[i])
                 val composesASentenceResults: ComposesASentenceResults = composesASentence (
                     context,
                     realm,
@@ -1391,11 +1419,18 @@ class Game1BleActivity : GameActivityAbstractClass(),
                     middleColumnContent!!,
                     rightColumnContent!!,
                     listOfWordsLeft,
-                    listOfWordsCenter,
+                    newListOfWordsCenter,
                     listOfWordsRight,
                     sharedLastPlayer!!
                 )
                 //
+                if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                {
+                    Toast.makeText(context,
+                        "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                        Toast.LENGTH_SHORT).show()
+                    return
+                }
                 numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                 leftColumnContent = composesASentenceResults.leftColumnContent
                 middleColumnContent = composesASentenceResults.middleColumnContent
@@ -1447,9 +1482,11 @@ class Game1BleActivity : GameActivityAbstractClass(),
                 // proposing in the right column the choices compatible with the choice (it should be a verb)
                 when (view!!.id) {
                     R.id.img1 -> {
-                        val chosenWordLeft = listOfWordsLeft[i]
-                        listOfWordsLeft.clear()
-                        listOfWordsLeft.add(chosenWordLeft)
+//                        val chosenWordLeft = listOfWordsLeft[i]
+//                        listOfWordsLeft.clear()
+//                        listOfWordsLeft.add(chosenWordLeft)
+                        val newListOfWordsLeft = arrayListOf<String>()
+                        newListOfWordsLeft.add(listOfWordsLeft[i])
                         val composesASentenceResults: ComposesASentenceResults = composesASentence (
                             context,
                             realm,
@@ -1458,12 +1495,19 @@ class Game1BleActivity : GameActivityAbstractClass(),
                             leftColumnContent!!,
                             middleColumnContent!!,
                             rightColumnContent!!,
-                            listOfWordsLeft,
+                            newListOfWordsLeft,
                             listOfWordsCenter,
                             listOfWordsRight,
                             sharedLastPlayer!!
                         )
                         //
+                        if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                        {
+                            Toast.makeText(context,
+                                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                                Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                         leftColumnContent = composesASentenceResults.leftColumnContent
                         middleColumnContent = composesASentenceResults.middleColumnContent
@@ -1476,9 +1520,11 @@ class Game1BleActivity : GameActivityAbstractClass(),
                         listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
                     }
                     R.id.img2 -> {
-                        val chosenWordCenter = listOfWordsCenter[i]
-                        listOfWordsCenter.clear()
-                        listOfWordsCenter.add(chosenWordCenter)
+//                        val chosenWordCenter = listOfWordsCenter[i]
+//                        listOfWordsCenter.clear()
+//                        listOfWordsCenter.add(chosenWordCenter)
+                        val newListOfWordsCenter = arrayListOf<String>()
+                        newListOfWordsCenter.add(listOfWordsCenter[i])
                         val composesASentenceResults: ComposesASentenceResults = composesASentence (
                             context,
                             realm,
@@ -1488,11 +1534,18 @@ class Game1BleActivity : GameActivityAbstractClass(),
                             middleColumnContent!!,
                             rightColumnContent!!,
                             listOfWordsLeft,
-                            listOfWordsCenter,
+                            newListOfWordsCenter,
                             listOfWordsRight,
                             sharedLastPlayer!!
                         )
                         //
+                        if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                        {
+                            Toast.makeText(context,
+                                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                                Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                         leftColumnContent = composesASentenceResults.leftColumnContent
                         middleColumnContent = composesASentenceResults.middleColumnContent
@@ -1505,9 +1558,11 @@ class Game1BleActivity : GameActivityAbstractClass(),
                         listOfWordsRight.addAll(composesASentenceResults.listOfWordsRight)
                     }
                     R.id.img3 -> {
-                        val chosenWordRight = listOfWordsRight[i]
-                        listOfWordsRight.clear()
-                        listOfWordsRight.add(chosenWordRight)
+//                        val chosenWordRight = listOfWordsRight[i]
+//                        listOfWordsRight.clear()
+//                        listOfWordsRight.add(chosenWordRight)
+                        val newListOfWordsRight = arrayListOf<String>()
+                        newListOfWordsRight.add(listOfWordsRight[i])
                         val composesASentenceResults: ComposesASentenceResults = composesASentence (
                             context,
                             realm,
@@ -1518,10 +1573,17 @@ class Game1BleActivity : GameActivityAbstractClass(),
                             rightColumnContent!!,
                             listOfWordsLeft,
                             listOfWordsCenter,
-                            listOfWordsRight,
+                            newListOfWordsRight,
                             sharedLastPlayer!!
                         )
                         //
+                        if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                        {
+                            Toast.makeText(context,
+                                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                                Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                         leftColumnContent = composesASentenceResults.leftColumnContent
                         middleColumnContent = composesASentenceResults.middleColumnContent
@@ -1557,9 +1619,11 @@ class Game1BleActivity : GameActivityAbstractClass(),
                 // (if it has not already been made)
                 when (view!!.id) {
                     R.id.img1 -> {
-                        val chosenWordLeft = listOfWordsLeft[i]
-                        listOfWordsLeft.clear()
-                        listOfWordsLeft.add(chosenWordLeft)
+//                        val chosenWordLeft = listOfWordsLeft[i]
+//                        listOfWordsLeft.clear()
+//                        listOfWordsLeft.add(chosenWordLeft)
+                        val newListOfWordsLeft = arrayListOf<String>()
+                        newListOfWordsLeft.add(listOfWordsLeft[i])
                         val composesASentenceResults: ComposesASentenceResults = composesASentence (
                             context,
                             realm,
@@ -1568,12 +1632,19 @@ class Game1BleActivity : GameActivityAbstractClass(),
                             leftColumnContent!!,
                             middleColumnContent!!,
                             rightColumnContent!!,
-                            listOfWordsLeft,
+                            newListOfWordsLeft,
                             listOfWordsCenter,
                             listOfWordsRight,
                             sharedLastPlayer!!
                         )
                         //
+                        if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                        {
+                            Toast.makeText(context,
+                                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                                Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                         leftColumnContent = composesASentenceResults.leftColumnContent
                         middleColumnContent = composesASentenceResults.middleColumnContent
@@ -1588,9 +1659,11 @@ class Game1BleActivity : GameActivityAbstractClass(),
                     R.id.img2 -> {
                     }
                     R.id.img3 -> {
-                        val chosenWordRight = listOfWordsRight[i]
-                        listOfWordsRight.clear()
-                        listOfWordsRight.add(chosenWordRight)
+//                        val chosenWordRight = listOfWordsRight[i]
+//                        listOfWordsRight.clear()
+//                        listOfWordsRight.add(chosenWordRight)
+                        val newListOfWordsRight = arrayListOf<String>()
+                        newListOfWordsRight.add(listOfWordsRight[i])
                         val composesASentenceResults: ComposesASentenceResults = composesASentence (
                             context,
                             realm,
@@ -1601,10 +1674,17 @@ class Game1BleActivity : GameActivityAbstractClass(),
                             rightColumnContent!!,
                             listOfWordsLeft,
                             listOfWordsCenter,
-                            listOfWordsRight,
+                            newListOfWordsRight,
                             sharedLastPlayer!!
                         )
                         //
+                        if (composesASentenceResults.outcomeOfSentenceComposition != COMPOSITION_SUCCESS)
+                        {
+                            Toast.makeText(context,
+                                "in genere una frase con soggetto uguale al complemento oggetto non ha significato",
+                                Toast.LENGTH_SHORT).show()
+                            return
+                        }
                         numberOfWordsChosen = composesASentenceResults.numberOfWordsChosen
                         leftColumnContent = composesASentenceResults.leftColumnContent
                         middleColumnContent = composesASentenceResults.middleColumnContent

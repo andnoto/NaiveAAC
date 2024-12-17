@@ -145,7 +145,6 @@ vedere,uccello, , , ,Y
 vedere,anatra, , , ,Y
 vedere,gallina, , , ,Y
 vedere,cigno, , , ,Y
-vedere,anatra, , , ,Y
 vedere,piccione, , , ,Y
 vedere,pesce, , , ,Y
 vedere,tartaruga, , , ,Y
@@ -182,8 +181,56 @@ volere,vedere la TV, , , ,Y
 volere,dormire, , , ,Y
 volere,fare pipì, , , ,Y
 volere,fare la cacca, , , ,Y
-io,volere, , , ,Y
 essere,felice, , , ,Y
 essere,arrabbiato, , , ,Y
 essere,triste, , , ,Y
 io,essere, , , ,Y
+ciao,mamma, , , ,Y
+ciao,papà, , , ,Y
+evviva,mamma, , , ,Y
+evviva,papà, , , ,Y
+potere,mangiare, , , ,Y
+potere,bere, , , ,Y
+potere,giocare, , , ,Y
+potere,correre, , , ,Y
+potere,vedere la TV, , , ,Y
+potere,dormire, , , ,Y
+potere,fare pipì, , , ,Y
+potere,fare la cacca, , , ,Y
+dovere,mangiare, , , ,Y
+dovere,bere, , , ,Y
+dovere,giocare, , , ,Y
+dovere,correre, , , ,Y
+dovere,vedere la TV, , , ,Y
+dovere,dormire, , , ,Y
+dovere,fare pipì, , , ,Y
+dovere,fare la cacca, , , ,Y
+mangiare,ancora, , , ,Y
+bere,ancora, , , ,Y
+giocare,ancora, , , ,Y
+correre,ancora, , , ,Y
+vedere la TV,ancora, , , ,Y
+dormire,ancora, , , ,Y
+fare pipì,ancora, , , ,Y
+fare la cacca,ancora, , , ,Y
+essere,felice?, , , ,Y
+essere,arrabbiato?, , , ,Y
+essere,triste?, , , ,Y
+testa,fare, , , ,Y
+occhio,fare, , , ,Y
+orecchio,fare, , , ,Y
+naso,fare, , , ,Y
+bocca,fare, , , ,Y
+collo,fare, , , ,Y
+braccio,fare, , , ,Y
+mano,fare, , , ,Y
+dito,fare, , , ,Y
+gamba,fare, , , ,Y
+piede,fare, , , ,Y
+fare,male, , , ,Y
+papà,aiutare,,,,Y
+mamma,aiutare,,,,Y
+papà,aspettare,,,,Y
+mamma,aspettare,,,,Y
+arrivare,papà,,,,Y
+arrivare,mamma,,,,Y

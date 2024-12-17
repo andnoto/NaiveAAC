@@ -1,4 +1,0 @@
-story,phraseNumberInt,wordNumberInt,wordNumberIntInTheStory,word,uriType,uri,answerActionType,answerAction,video,sound,soundReplacesTTS,fromAssets
-devi mangiare,1,0,0,se non mangi cadi per terra,null,null,null,null,,,N,Y
-devi mangiare,1,1,1,se non mangi,A,https://api.arasaac.org/api/pictograms/2349?download=false,null,null,,,N,Y
-devi mangiare,1,2,2,cadi per terra,A,https://api.arasaac.org/api/pictograms/4582?download=false,null,null,,,N,Y

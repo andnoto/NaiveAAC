@@ -124,12 +124,12 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     var checkboxGrammaticalExceptionsChecked = false
     var checkboxGameParametersChecked = false
     //
-    var myLayoutId = R.layout.activity_settings_advanced_settings
+//    var myLayoutId = R.layout.activity_settings_advanced_settings
     /**
      * configurations of settings start screen.
      *
      * @param savedInstanceState Define potentially saved parameters due to configurations changes.
-     * @see .setActivityResultLauncher
+     * @see setActivityResultLauncher
      *
      * @see ActionbarFragment
      *
@@ -324,6 +324,8 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             listsOfNames.elementActive = "A"
             listsOfNames.isMenuItem = "N"
             listsOfNames.fromAssets = ""
+            listsOfNames.uriType = "S"
+            listsOfNames.uri = filePath
             realm.commitTransaction()
             // register the password
             if (textPassword == null)   { textPassword = "nessuna password" }
@@ -833,16 +835,16 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                 //
                 d.cancel()
                 //
-                checkboxImagesChecked = true
-                checkboxVideosChecked = false
-                checkboxSoundsChecked = false
-                checkboxPhrasesChecked = false
-                checkboxWordPairsChecked = false
-                checkboxListsOfNamesChecked = false
-                checkboxStoriesChecked = false
-                checkboxGrammaticalExceptionsChecked = false
-                radiobuttonDataImportAppendClicked = true
-                settingsDataImportSave(submitResponseOrRequestButton)
+//                checkboxImagesChecked = true
+//                checkboxVideosChecked = false
+//                checkboxSoundsChecked = false
+//                checkboxPhrasesChecked = false
+//                checkboxWordPairsChecked = false
+//                checkboxListsOfNamesChecked = false
+//                checkboxStoriesChecked = false
+//                checkboxGrammaticalExceptionsChecked = false
+//                radiobuttonDataImportAppendClicked = true
+                settingsBluetoothDevicesImagesImport()
             }
             cancelTheAnswerOrRequestButton.setOnClickListener { //
                 d.cancel()
@@ -969,6 +971,20 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         if (gamD.length() > 0 && gamI.length() > 0 && gamJC.length() > 0 && gamP.length() > 0 && filePath != null &&
             filePath != getString(R.string.non_trovato)
         ) {
+            // cancello il vecchio item
+            val resultsGameParameters = realm.where(GameParameters::class.java)
+                .equalTo(
+                    "gameName",
+                    gamD.text.toString()
+                )
+                .findAll()
+            val resultsGameParametersSize = resultsGameParameters.size
+            //
+            if (resultsGameParametersSize > 0) {
+                realm.beginTransaction()
+                resultsGameParameters.deleteAllFromRealm()
+                realm.commitTransaction()
+            }
             // Note that the realm object was generated with the createObject method
             // and not with the new operator.
             // The modification operations will be performed within a Transaction.
@@ -1098,9 +1114,9 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         }
         frag.arguments = bundle
         // delete
-        realm.beginTransaction()
-        daModificare.deleteFromRealm()
-        realm.commitTransaction()
+//        realm.beginTransaction()
+//        daModificare.deleteFromRealm()
+//        realm.commitTransaction()
         //
         val ft = supportFragmentManager.beginTransaction()
         ft.replace(R.id.settings_container, frag)
@@ -1207,14 +1223,14 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
      */
     fun settingsDataImportSave(view: View?) {
         //
-        when (view!!.id) {
-            R.id.importImagesButton -> {
-                myLayoutId = R.layout.activity_settings_bluetooth_devices
-            }
-            R.id.importSaveButton -> {
-                myLayoutId = R.layout.activity_settings_advanced_settings
-            }
-        }
+//        when (view!!.id) {
+//            R.id.importImagesButton -> {
+//                myLayoutId = R.layout.activity_settings_bluetooth_devices
+//            }
+//            R.id.importSaveButton -> {
+//                myLayoutId = R.layout.activity_settings_advanced_settings
+//            }
+//        }
         // Choose a directory using the system's file picker.
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
         // Optionally, specify a URI for the directory that should be opened in
@@ -1222,7 +1238,25 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.DIRECTORY_DOWNLOADS)
         csvSearchActivityResultLauncher!!.launch(intent)
     }
-    //
+    /**
+     * Called when the user taps the import images button from the Bluetooth Devices settings.
+     *
+     *
+     * Refer to [stackoverflow](https://stackoverflow.com/questions/65203681/how-to-create-multiple-files-at-once-using-android-storage-access-framework)
+     * answer of [Ismail Osunlana](https://stackoverflow.com/users/11355432/ismail-osunlana)
+     *
+     * @param view view of tapped button
+     * @see isStoragePermissionGranted
+     *
+     */
+    fun settingsBluetoothDevicesImagesImport() {
+        // Choose a directory using the system's file picker.
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+        // Optionally, specify a URI for the directory that should be opened in
+        // the system file picker when it loads.
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Environment.DIRECTORY_DOWNLOADS)
+        imageSearchBluetoothActivityResultLauncher!!.launch(intent)
+    }
     /**
      * setting callbacks to search for csv via ACTION_OPEN_DOCUMENT which is
      * the intent to choose a file via the system's file browser
@@ -1477,15 +1511,15 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                 // the shared preferences should be set to the latest phrasenumber
                                 // of imported history
                             }
-                            when (myLayoutId) {
-                                R.layout.activity_settings_bluetooth_devices -> {
-                                    val frag = BluetoothDevicesFragment()
-                                    val ft = supportFragmentManager.beginTransaction()
-                                    ft.replace(R.id.settings_container, frag)
-                                    ft.addToBackStack(null)
-                                    ft.commit()
-                                }
-                                R.layout.activity_settings_advanced_settings -> {
+//                            when (myLayoutId) {
+//                                R.layout.activity_settings_bluetooth_devices -> {
+//                                    val frag = BluetoothDevicesFragment()
+//                                    val ft = supportFragmentManager.beginTransaction()
+//                                    ft.replace(R.id.settings_container, frag)
+//                                    ft.addToBackStack(null)
+//                                    ft.commit()
+//                                }
+//                                R.layout.activity_settings_advanced_settings -> {
                                     // view the advanced settings initializing AdvancedSettingsFragment (FragmentTransaction
                                     // switch between Fragments).
                                     val frag = AdvancedSettingsFragment()
@@ -1493,13 +1527,57 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                     ft.replace(R.id.settings_container, frag)
                                     ft.addToBackStack(null)
                                     ft.commit()
-                                }
-                            }
+//                                }
+//                            }
                         }
                     }
                 }
             })
-
+        // You can do the assignment inside onAttach or onCreate, i.e, before the activity is displayed
+        imageSearchBluetoothActivityResultLauncher = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(),
+            object : ActivityResultCallback<ActivityResult?> {
+                override fun onActivityResult(result: ActivityResult?) {
+                    if (result!!.resultCode == RESULT_OK) {
+                        // There are no request codes
+                        val resultData = result.data
+                        // doSomeOperations();
+                        csvTreeUri = null
+                        if (resultData != null) {
+                            csvTreeUri = Objects.requireNonNull(resultData).data
+                            val inputFolder = DocumentFile.fromTreeUri(context, csvTreeUri!!)
+                            //
+                            if ((isStoragePermissionGranted) || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU))
+                            // if the version code >= TIRAMISU (version 33 = Android 13)
+                            // you don't need to ask for StoragePermission
+                            {
+                                assert(inputFolder != null)
+                                //
+                                imagesImportFromZip(inputFolder!!)
+                                //
+                                Images.importFromCsvFromInternalStorage(
+                                    context,
+                                    realm,
+                                    getString(R.string.append)
+                                )
+                                //
+                                listsOfNamesImportFromZip(inputFolder)
+                                //
+                                ListsOfNames.importFromCsvFromInternalStorage(
+                                    context,
+                                    realm,
+                                    getString(R.string.append)
+                                )
+                            }
+                            val frag = BluetoothDevicesFragment()
+                            val ft = supportFragmentManager.beginTransaction()
+                            ft.replace(R.id.settings_container, frag)
+                            ft.addToBackStack(null)
+                            ft.commit()
+                        }
+                    }
+                }
+            })
         //
     }
     //
@@ -1539,7 +1617,43 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
         // creo copia dei file immagini
         copyFilesInFolderToRoot(context, "$rootPath/$dirName")
     }
-
+    //
+    fun listsOfNamesImportFromZip(inputFolder: DocumentFile) {
+        // creo le dir della storia
+        val rootPath = context.filesDir.absolutePath
+        val dirName = "NaiveAAClistsofnames"
+        val d = File("$rootPath/$dirName")
+        if (!d.exists()) {
+            d.mkdirs()
+        } else {
+            d.delete()
+            d.mkdirs()
+        }
+        assert(inputFolder != null)
+        val documentFileNewFile =
+            inputFolder.findFile("$dirName.zip")!!
+        val zipFileUri = documentFileNewFile.uri
+        try {
+            copyFileFromSharedToInternalStorage(
+                context,
+                zipFileUri,
+                "$dirName.zip"
+            )
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        // unzippo la directory di input
+        try {
+            extractFolder(
+                File(rootPath),
+                File("$rootPath/$dirName.zip")
+            )
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        // creo copia dei file immagini
+        copyFilesInFolderToRoot(context, "$rootPath/$dirName")
+    }
     /**
      * Called when the user taps export tables button from the advanced settings menu.
      *
@@ -1616,17 +1730,19 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
                                 Phrases.exporttoCsv(context, realm)
                                 WordPairs.exporttoCsv(context, realm)
                                 ListsOfNames.exporttoCsv(context, realm)
+                                //
+                                listsOfNamesExportToZip(outputFolder)
+                                //
                                 Stories.exporttoCsv(context, realm)
                                 History.exporttoCsv(context, realm)
                                 PictogramsAllToModify.exporttoCsv(context, realm)
                                 GameParameters.exporttoCsv(context, realm)
                                 GrammaticalExceptions.exporttoCsv(context, realm)
-                                assert(outputFolder != null)
                                 //
                                 try {
                                     copyFileFromInternalToSharedStorage(
                                         context,
-                                        outputFolder!!,
+                                        outputFolder,
                                         "images.csv"
                                     )
                                     copyFileFromInternalToSharedStorage(context,outputFolder, "videos.csv")
@@ -1759,6 +1875,88 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
             e.printStackTrace()
         }
 
+    }
+    //
+    fun listsOfNamesExportToZip(outputFolder: DocumentFile) {
+        // immagini
+        // creo le dir delle immagini
+        val rootPath = context.filesDir.absolutePath
+        val dirName = "NaiveAAClistsofnames"
+        val d = File("$rootPath/$dirName")
+        if (!d.exists()) {
+            d.mkdirs()
+        } else {
+            d.delete()
+            d.mkdirs()
+        }
+        // creo copia del file listsofnames.csv
+        var finput: File
+        var foutput: File
+        finput = File("$rootPath/listsofnames.csv")
+        foutput = File(
+            "$rootPath/NaiveAAClistsofnames/" + "listsofnames.csv"
+        )
+        try {
+            copyFile(finput, foutput)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        // creo un set (in modo da non ammettere duplicati) con i media file utilizzati
+        val listsOfNamesSet = HashSet<String?>()
+        val resultsListsOfNames = realm.where(
+            ListsOfNames::class.java
+        ).findAll()
+        //
+        val count = resultsListsOfNames.size
+        if (count != 0) {
+            var irrh = 0
+            while (irrh < count) {
+                if (resultsListsOfNames[irrh]!!.uriType == "S")
+                { listsOfNamesSet.add(
+                    resultsListsOfNames[irrh]!!.uri
+                )
+                }
+                irrh++
+            }
+        }
+        // trasformo il set ottenuto in una list contenente i path dei media file utilizzati
+        val imagesList: MutableList<String?> = ArrayList()
+        imagesList.addAll(listsOfNamesSet)
+        // creo copia dei file immagini
+        val imagesSize = imagesList.size
+        var irrh = 0
+        while (irrh < imagesSize) {
+            finput = File(imagesList[irrh]!!)
+            foutput = File(
+                "$rootPath/NaiveAAClistsofnames/" + imagesList[irrh]!!
+                    .substring(
+                        imagesList[irrh]!!.lastIndexOf(
+                            "/"
+                        ) + 1
+                    )
+            )
+            try {
+                copyFile(finput, foutput)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            irrh++
+        }
+        // zippo la directory di output
+        zipFileAtPath(
+            "$rootPath/$dirName",
+            "$rootPath/$dirName.zip"
+        )
+        // copio il file zip sulla shared storage
+        try {
+            copyFileZipFromInternalToSharedStorage(
+                context,
+                outputFolder,
+                "$dirName.zip"
+            )
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
     //permission is automatically granted on sdk<23 upon installation
     /**
@@ -2050,6 +2248,7 @@ class SettingsActivity : AccountActivityAbstractClass(), onFragmentEventListener
     var imageSearchAccountActivityResultLauncher: ActivityResultLauncher<Intent>? = null
     @JvmField
     var csvSearchActivityResultLauncher: ActivityResultLauncher<Intent>? = null
+    var imageSearchBluetoothActivityResultLauncher: ActivityResultLauncher<Intent>? = null
     @JvmField
     var exportCsvSearchActivityResultLauncher: ActivityResultLauncher<Intent>? = null
     @JvmField

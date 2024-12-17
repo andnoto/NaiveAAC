@@ -11,6 +11,7 @@ package com.sampietro.NaiveAAC.activities.Grammar
  * @version     5.0, 01/04/2024
  */
 class ComposesASentenceResults(
+    var outcomeOfSentenceComposition: Int,
     var numberOfWordsChosen: Int,
     var leftColumnContent: String,
     var middleColumnContent: String,

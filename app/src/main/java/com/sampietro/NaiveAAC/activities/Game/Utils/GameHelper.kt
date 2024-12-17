@@ -3,7 +3,7 @@ package com.sampietro.NaiveAAC.activities.Game.Utils
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import com.sampietro.NaiveAAC.R
-import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.Phrases.Phrases
 import com.sampietro.NaiveAAC.activities.WordPairs.WordPairs
@@ -167,11 +167,21 @@ object GameHelper {
             resultWordPairs = resultsWordPairsList!![i]
             // image search
             var image: ResponseImageSearch? = null
+            // search in ListOfNames
+//            image = if (word1ToBeRecordedInHistory) {
+//                searchUriInListsOfNames(context, realm!!, resultWordPairs.word1!!)
+//            } else {
+//                searchUriInListsOfNames(context, realm!!, resultWordPairs.word2!!)
+//            }
+//            if (image == null)
+//                {
+            // search in the internal memory or on Arasaac
             image = if (word1ToBeRecordedInHistory) {
-                ImageSearchHelper.imageSearch(context, realm!!, resultWordPairs.word1)
+                imageSearch(context, realm!!, resultWordPairs.word1)
             } else {
-                ImageSearchHelper.imageSearch(context, realm!!, resultWordPairs.word2)
+                imageSearch(context, realm!!, resultWordPairs.word2)
             }
+//                }
             if (image != null) {
                 voiceToBeRecordedInHistory = if (word1ToBeRecordedInHistory) {
                     VoiceToBeRecordedInHistory(
@@ -254,19 +264,27 @@ object GameHelper {
         while (i < listOfWordsSize) {
             // image search
             var image: ResponseImageSearch? = null
-            image = ImageSearchHelper.imageSearch(context, realm!!, listOfWords!![i])
-            var textToRecord: String
-            if (content != context.getString(R.string.nessuno))
-            { textToRecord = content }
-            else
-            { textToRecord = listOfWords[i] }
-            voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
-                        sharedLastSession,
-                        sharedLastPhraseNumber, currentTime,
-                        i + 1, " ", textToRecord,
-                        " ", image!!.uriType, image.uriToSearch
-                    )
-            toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
+            // search in ListOfNames
+//            image = searchUriInListsOfNames(context, realm!!, listOfWords!![i])
+//            if (image == null)
+//                {
+                // search in the internal memory or on Arasaac
+            image = imageSearch(context, realm!!, listOfWords!![i])
+//                 }
+            if (image != null) {
+                var textToRecord: String
+                if (content != context.getString(R.string.nessuno))
+                { textToRecord = content }
+                else
+                { textToRecord = listOfWords[i] }
+                voiceToBeRecordedInHistory = VoiceToBeRecordedInHistory(
+                    sharedLastSession,
+                    sharedLastPhraseNumber, currentTime,
+                    i + 1, " ", textToRecord,
+                    " ", image.uriType, image.uriToSearch
+                )
+                toBeRecordedInHistory.add(voiceToBeRecordedInHistory)
+            }
             //
             i++
         }

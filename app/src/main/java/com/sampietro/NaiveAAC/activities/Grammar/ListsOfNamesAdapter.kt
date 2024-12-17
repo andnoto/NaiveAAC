@@ -104,7 +104,7 @@ class ListsOfNamesAdapter(private val context: Context, private val listsOfNames
         val l = getItem(position) as ListsOfNames
         val txt = v1.findViewById<View>(R.id.imageDescriptionRow) as TextView
         //
-        txt.text = l.keyword + " " + l.word
+        txt.text = l.keyword + " " + l.word + " " + l.elementActive + "-" + l.isMenuItem
         //
         val imgbtn = v1.findViewById<View>(R.id.btn_delete_image) as ImageButton
         imgbtn.setOnClickListener(clickListenerDeleteListOfNames)

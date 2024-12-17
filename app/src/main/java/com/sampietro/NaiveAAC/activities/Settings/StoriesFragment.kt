@@ -27,23 +27,12 @@ import java.util.*
  * @see SettingsActivity
  */
 class StoriesFragment() : FragmentAbstractClassWithoutConstructor() {
-    //
-//    private lateinit var viewModel: VoiceToBeRecordedInStoriesViewModel
-//    private lateinit var viewModel: Game2ViewModel
-    //
     lateinit var realm: Realm
-    //
-//    var deviceEnabledUserName: String? = ""
-
     /**
      * prepares the ui
      *
      * @see androidx.fragment.app.Fragment.onCreateView
      */
-//    override fun onViewCreated(
-//        view: View,
-//        savedInstanceState: Bundle?
-//    ) {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,26 +47,7 @@ class StoriesFragment() : FragmentAbstractClassWithoutConstructor() {
         val gameimage = rootView.findViewById<View>(R.id.gameimage) as ImageView
         //
         realm = Realm.getDefaultInstance()
-        /*
-        Both your fragment and its host activity can retrieve a shared instance of a ViewModel with activity scope by passing the activity into the ViewModelProvider
-        constructor.
-        The ViewModelProvider handles instantiating the ViewModel or retrieving it if it already exists. Both components can observe and modify this data
-         */
-//        viewModel = ViewModelProvider(requireActivity()).get(
-//            Game2ViewModel::class.java
-//        )
-//        viewModel.getSelectedItem()
-//            .observe(viewLifecycleOwner) { game2ViewModelItem: Game2ViewModelItem ->
-                // Perform an action with the latest item data
-//                keywordstorytoadd.setText(game2ViewModelItem.story)
-//                phrasenumbertoadd.setText(String.format(Locale.getDefault(), "%d",game2ViewModelItem.phraseNumberInt))
-//                wordnumbertoadd.setText(String.format(Locale.getDefault(), "%d",game2ViewModelItem.wordNumberInt))
-//                wordtoadd.setText(game2ViewModelItem.word)
-//                if (game2ViewModelItem.uriType != "")
-//                {   var uriType = game2ViewModelItem.uriType
-//                    var uri = game2ViewModelItem.uri
-//                    if (uriType == "I") {
-//            }
+        //
         val bundle = this.arguments
         if (bundle != null) {
             //

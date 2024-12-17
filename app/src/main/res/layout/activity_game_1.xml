@@ -30,6 +30,15 @@
         android:text="@string/inizia"
         android:contentDescription="@string/inizia_il_discorso" />
 
+    <ImageButton
+        android:id="@+id/btn_mode_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/azzurro_pastello"
+        android:onClick="startWriteGame1"
+        android:src="@drawable/ic_baseline_mode_edit_36"
+        android:text="scrivi"
+        android:contentDescription="inizia scrittura"/>
 
     <ImageButton
         android:id="@+id/listenagainbutton"

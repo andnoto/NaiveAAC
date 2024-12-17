@@ -113,6 +113,17 @@ class SettingsStoriesImprovementRecyclerViewAdapter(
                 100,100)
             viewHolder.img2.visibility = View.VISIBLE
         }
+        // search for question mark
+        val titleContainsQuestionMark = galleryList[i].image_title!!.contains("?")
+        if (titleContainsQuestionMark) {
+            // INTERNAL MEMORY IMAGE SEARCH
+            val uriToSearch =
+                searchUri(context, realm, "?")
+            viewHolder.img2.scaleType = ImageView.ScaleType.CENTER_CROP
+            addImage("S", uriToSearch, viewHolder.img2,
+                100,100)
+            viewHolder.img2.visibility = View.VISIBLE
+        }
         //
         viewHolder.media_container.setOnClickListener { view ->
             listener.onItemClick(

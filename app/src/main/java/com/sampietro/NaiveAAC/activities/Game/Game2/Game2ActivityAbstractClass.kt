@@ -4,10 +4,11 @@ import android.speech.tts.TextToSpeech
 import com.sampietro.NaiveAAC.R
 import com.sampietro.NaiveAAC.activities.BaseAndAbstractClass.GameActivityAbstractClassWithRecognizerCallback
 import com.sampietro.NaiveAAC.activities.Game.GameADA.GameADAArrayList
-import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.searchVerb
 import com.sampietro.NaiveAAC.activities.Grammar.GrammarHelper.splitString
+import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.imageSearch
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchId
 import com.sampietro.NaiveAAC.activities.Graphics.ImageSearchHelper.searchUri
+import com.sampietro.NaiveAAC.activities.Graphics.ResponseImageSearch
 import com.sampietro.NaiveAAC.activities.history.ToBeRecordedInHistoryImpl
 import com.sampietro.NaiveAAC.activities.history.VoiceToBeRecordedInHistory
 import io.realm.Realm
@@ -72,7 +73,9 @@ abstract class Game2ActivityAbstractClass : GameActivityAbstractClassWithRecogni
     //    public ToBeRecordedInHistory<VoiceToBeRecordedInHistory> gettoBeRecordedInHistory(Realm realm, String eText)
     fun gettoBeRecordedInHistory(realm: Realm, eText: String?): ToBeRecordedInHistoryImpl {
         // decomposes EditText
-        val arrWords = splitString(eText!!)
+        val arrWordsToFilter = splitString(eText!!)
+        // filter the array
+        val arrWords = arrWordsToFilter.filter { s -> s != "" }
         // initializes the list of items to be registered on History
         val toBeRecordedInHistory: ToBeRecordedInHistoryImpl
         toBeRecordedInHistory = ToBeRecordedInHistoryImpl()
@@ -111,28 +114,41 @@ abstract class Game2ActivityAbstractClass : GameActivityAbstractClassWithRecogni
             createList.sound = ""
             createList.soundReplacesTTS = ""
             createList.soundAssociatedWithThePhraseReplacesTheOtherSounds = ""
+            // image search
+            var image: ResponseImageSearch? = null
+            // search in ListOfNames
+//            image = searchUriInListsOfNames(context, realm, arrWords[i])
+//            if (image == null)
+//            {
+                // search in the internal memory or on Arasaac
+            image = imageSearch(context, realm, arrWords[i])
+//            }
+            if (image != null) {
+                createList.urlType = image.uriType
+                createList.url = image.uriToSearch
+            }
             //
             // INTERNAL MEMORY IMAGE SEARCH
-            val uriToSearch = searchUri(context, realm, arrWords[i])
-            if (uriToSearch != getString(R.string.non_trovata)) {
-                createList.urlType = "S"
-                createList.url = uriToSearch
-            } else {
+//            val uriToSearch = searchUri(context, realm, arrWords[i])
+//            if (uriToSearch != getString(R.string.non_trovata)) {
+//                createList.urlType = "S"
+//                createList.url = uriToSearch
+//            } else {
                 // SEARCH VERBS WITH REALM
-                val verbToSearch = searchVerb(context, arrWords[i], realm)
-                var idToSearch: String
-                idToSearch = if (verbToSearch != getString(R.string.non_trovato)) {
-                    searchId(context, realm, verbToSearch)
-                } else {
-                    searchId(context, realm,arrWords[i])
-                }
+//                val verbToSearch = searchVerb(context, arrWords[i], realm)
+//                var idToSearch: String
+//                idToSearch = if (verbToSearch != getString(R.string.non_trovato)) {
+//                    searchId(context, realm, verbToSearch)
+//                } else {
+//                    searchId(context, realm,arrWords[i])
+//                }
                 // IMAGE SEARCH ON ARASAAC
-                if (idToSearch != getString(R.string.non_trovata)) {
-                    val url = REMOTE_ADDR_PICTOGRAM + idToSearch + getString(R.string.download_false)
-                    createList.urlType = "A"
-                    createList.url = url
-                }
-            }
+//                if (idToSearch != getString(R.string.non_trovata)) {
+//                    val url = REMOTE_ADDR_PICTOGRAM + idToSearch + getString(R.string.download_false)
+//                    createList.urlType = "A"
+//                    createList.url = url
+//                }
+//            }
             //
             galleryList.add(createList)
         }

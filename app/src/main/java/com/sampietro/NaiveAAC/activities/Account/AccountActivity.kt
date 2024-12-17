@@ -28,6 +28,7 @@ import com.sampietro.NaiveAAC.activities.Bluetooth.BluetoothDevices
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyAssets
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromAssetsToInternalStorage
 import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.copyFileFromSharedToInternalStorageAndGetPath
+import com.sampietro.NaiveAAC.activities.DataStorage.DataStorageHelper.prepareTheSimsimDirectory
 import com.sampietro.NaiveAAC.activities.Game.ChoiseOfGame.ChoiseOfGameActivity
 import com.sampietro.NaiveAAC.activities.Game.GameParameters.GameParameters
 import com.sampietro.NaiveAAC.activities.Grammar.GrammaticalExceptions
@@ -247,7 +248,7 @@ class AccountActivity : AccountActivityAbstractClass() {
      */
     fun saveAccount(view: View?) {
             // naiveaac dir registration and csv copy from assets to dir naiveaac
-            prepareTheSimsimDirectory()
+            prepareTheSimsimDirectory(context)
             //
             val daCancellare = realm.where(
                 History::class.java
@@ -331,6 +332,8 @@ class AccountActivity : AccountActivityAbstractClass() {
             listsOfNames.elementActive = "A"
             listsOfNames.isMenuItem = "N"
             listsOfNames.fromAssets = ""
+            listsOfNames.uriType = "S"
+            listsOfNames.uri = filePath
             realm.commitTransaction()
             // register the password
             registerPassword(textPassword)
@@ -352,6 +355,7 @@ class AccountActivity : AccountActivityAbstractClass() {
      *
      * @see copyAssets
      */
+    /*
     fun prepareTheSimsimDirectory() {
         try {
             copyFileFromAssetsToInternalStorage(context, getString(R.string.csv),"bluetoothdevices.csv","bluetoothdevices.csv" )
@@ -375,6 +379,7 @@ class AccountActivity : AccountActivityAbstractClass() {
         copyAssets(context,"pdf")
         //
     }
+    */
     // ActivityResultLauncher
     var imageSearchAccountActivityResultLauncher: ActivityResultLauncher<Intent>? = null
     //

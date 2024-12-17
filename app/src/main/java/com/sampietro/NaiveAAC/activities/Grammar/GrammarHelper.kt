@@ -680,7 +680,38 @@ object GrammarHelper {
         }
         return complementToSearchRealm
     }
-
+    /**
+     * it returns if it is a greeting
+     *
+     * @param context context
+     * @param k string containing the infinitive
+     * @param realm realm
+     * @return string with if it is a greeting
+     * @see GrammaticalExceptions
+     */
+    @JvmStatic
+    fun searchGreetings(context: Context,
+                              k: String?,
+                              realm: Realm): String {
+        var greetingToSearchRealm = context.getString(R.string.non_trovato)
+        //
+        val results = realm.where(
+            GrammaticalExceptions::class.java
+        )
+            .beginGroup()
+            .equalTo(context.getString(R.string.keyword), k)
+            .equalTo(context.getString(R.string.exceptiontype), "They are greetings")
+            .endGroup()
+            .findAll()
+        val count = results.size
+        if (count != 0) {
+            val result = results[0]
+            if (result != null) {
+                greetingToSearchRealm = result.exceptionType!!
+            }
+        }
+        return greetingToSearchRealm
+    }
     /**
      * in game2 it creates a response phrase to the input received via speech recognizer
      *
@@ -953,6 +984,7 @@ object GrammarHelper {
         listOfWordsRight: ArrayList<String>,
         sharedLastPlayer: String
     ): ComposesASentenceResults {
+        var outcomeOfSentenceCompositionToReturn = COMPOSITION_SUCCESS
         var numberOfWordsChosenToReturn: Int
         var leftColumnContentToReturn: String
         var middleColumnContentToReturn: String
@@ -1005,44 +1037,21 @@ object GrammarHelper {
                     listOfWordsCenterToReturn = composesASentenceResultsToReturn.listOfWordsCenter
                     listOfWordsRightToReturn = composesASentenceResultsToReturn.listOfWordsRight
                  }
-                /*
-                if (numberOfWordsChosenToReturn == 3)
-                {
-                    // grammar arrangement
-                    val composesASentenceResults: ComposesASentenceResults = grammaticalArrangement (
-                        context,
-                        realm,
-                        numberOfWordsChosenToReturn,
-                        leftColumnContentToReturn,
-                        middleColumnContentToReturn,
-                        rightColumnContentToReturn,
-                        listOfWordsLeftToReturn as ArrayList<String>,
-                        listOfWordsCenterToReturn as ArrayList<String>,
-                        listOfWordsRightToReturn as ArrayList<String>,
-                        sharedLastPlayer
-                    )
-                    leftColumnContentToReturn = composesASentenceResults.leftColumnContent
-                    middleColumnContentToReturn = composesASentenceResults.middleColumnContent
-                    rightColumnContentToReturn = composesASentenceResults.rightColumnContent
-                    listOfWordsLeftToReturn.clear()
-                    listOfWordsLeftToReturn.addAll(composesASentenceResults.listOfWordsLeft)
-                    listOfWordsCenterToReturn.clear()
-                    listOfWordsCenterToReturn.addAll(composesASentenceResults.listOfWordsCenter)
-                    listOfWordsRightToReturn.clear()
-                    listOfWordsRightToReturn.addAll(composesASentenceResults.listOfWordsRight)
-                }
-                 */
             }
             1 -> {
                 // the second word of the sentence was chosen
-                // 1) if the chosen word (central) is a verb (type = 3 verbs)
+                // 1) if the chosen word (central) is a verb (type = 3 verbs) or a greeting
                 // 1a) if the chosen word is on the left, I register the choice and keep the options
                 // list in the recycler view on the right
                 // 1b) if the chosen word is in the center the choice is not allowed
                 // (because it has already been chosen) i keep both option lists in the recycler views
                 // both on the right and on the left
-                // 1c) if the word chosen is on the right i register the choice and
+                // 1c) if the word chosen is not a verb and is on the right i register the choice and
                 // keep the options list in the recycler view on the left
+                // 1d) if the word chosen is a verb and is on the right i register the choice,
+                // moving the central column to the left and the right column (that of the choice)
+                // to the center and proposing in the right column the choices compatible
+                // with the choice (it cannot be a verb)
                 // 2) if the chosen (middle) word is not a verb
                 // 2a) if the chosen word is on the left, i register the choice,
                 // moving the central column to the right and the left column (that of the choice)
@@ -1055,16 +1064,24 @@ object GrammarHelper {
                 // column to the left and the right column (that of the choice) to the center and
                 // proposing in the right column the choices compatible with the choice (it should be a verb)
                 val middleColumnContentType = searchType(context, listOfWordsCenterToReturn[0], realm)
+                val middleColumnContentServileVerb = searchServileVerbs(context, listOfWordsCenterToReturn[0], realm)
+                val middleColumnContentIsAGreeting = searchGreetings(context, listOfWordsCenterToReturn[0], realm)
                 // type = 3 verbs
-                // 1) if the chosen word (central) is a verb (type = 3 verbs)
+                // 1) if the chosen word (central) is a verb (type = 3 verbs) or a greeting
                 // 1a) if the chosen word is on the left, I register the choice and keep the options
                 // list in the recycler view on the right
                 // 1b) if the chosen word is in the center the choice is not allowed
                 // (because it has already been chosen) i keep both option lists in the recycler views
                 // both on the right and on the left
-                // 1c) if the word chosen is on the right i register the choice and
+                // 1c) if the word chosen is not a verb and is on the right i register the choice and
                 // keep the options list in the recycler view on the left
-                if (middleColumnContentType == "3") {
+                // 1d) if the word chosen is a verb and is on the right i register the choice,
+                // moving the central column to the left and the right column (that of the choice)
+                // to the center and proposing in the right column the choices compatible
+                // with the choice (it cannot be a verb)
+                if (middleColumnContentType == "3"
+//                            && middleColumnContentServileVerb != context.getString(R.string.is_a_servile_verb))
+                    || middleColumnContentIsAGreeting == "They are greetings") {
                     // 1a) if the chosen word is on the left, I register the choice and keep the options
                     // list in the recycler view on the right
                     if (chosenColumn == "left" && leftColumnContentToReturn == context.getString(R.string.nessuno)) {
@@ -1087,28 +1104,135 @@ object GrammarHelper {
                             leftColumnContentToReturn = listOfWordsLeftToReturn[0]
                             numberOfWordsChosenToReturn++
                         }
-                    }
-                    // 1c) if the word chosen is on the right i register the choice and
-                    // keep the options list in the recycler view on the left
-                    if (chosenColumn == "right" && rightColumnContentToReturn == context.getString(R.string.nessuno)) {
-                        var previouslySearchedClassName = context.getString(R.string.nessuno)
-                        while (listOfWordsRightToReturn.size == 1
-                            && checksWhetherWordRepresentsAClass(context, listOfWordsRightToReturn[0] ,realm))
-                        {
-                            // if it is the name of a class I look for the list of its members
-                            // to avoid an infinite loop I exit the loop if the previously searched class name
-                            // is the same as the current class name to search for
-                            if (previouslySearchedClassName != listOfWordsRightToReturn[0])
-                            {
-                                previouslySearchedClassName = listOfWordsRightToReturn[0]
-                                val listOfMembers = listOfMembers(context, listOfWordsRightToReturn[0] ,realm)
-                                listOfWordsRightToReturn = listOfMembers
-                            }
-                            else { break }
-                        }
-                        if (listOfWordsRightToReturn.size == 1) {
-                            rightColumnContentToReturn = listOfWordsRightToReturn[0]
+                        if (listOfWordsRightToReturn.size == 0) {
                             numberOfWordsChosenToReturn++
+                        }
+                    }
+                    if (chosenColumn == "right" && rightColumnContentToReturn == context.getString(R.string.nessuno)) {
+                        val rightColumnContentType = searchType(context, listOfWordsRightToReturn[0], realm)
+                        // type = 3 verbs
+                        if (rightColumnContentType != "3")
+                        // old 1c) if the word chosen is on the right i register the choice and
+                        // keep the options list in the recycler view on the left
+                        // 1c) if the word chosen is not a verb and is on the right i register the choice and
+                        // keep the options list in the recycler view on the left
+                        {
+                            var previouslySearchedClassName = context.getString(R.string.nessuno)
+                            while (listOfWordsRightToReturn.size == 1
+                                && checksWhetherWordRepresentsAClass(context, listOfWordsRightToReturn[0] ,realm))
+                            {
+                                // if it is the name of a class I look for the list of its members
+                                // to avoid an infinite loop I exit the loop if the previously searched class name
+                                // is the same as the current class name to search for
+                                if (previouslySearchedClassName != listOfWordsRightToReturn[0])
+                                {
+                                    previouslySearchedClassName = listOfWordsRightToReturn[0]
+                                    val listOfMembers = listOfMembers(context, listOfWordsRightToReturn[0] ,realm)
+                                    listOfWordsRightToReturn = listOfMembers
+                                }
+                                else { break }
+                            }
+                            if (listOfWordsRightToReturn.size == 1) {
+                                rightColumnContentToReturn = listOfWordsRightToReturn[0]
+                                numberOfWordsChosenToReturn++
+                            }
+                            if (listOfWordsLeftToReturn.size == 0) {
+                                numberOfWordsChosenToReturn++
+                            }
+                        }
+                        else
+                        {
+                            // 1d) as in 2c, if the word chosen is a verb and is on the right i register the choice,
+                            // moving the central column to the left and the right column (that of the choice)
+                            // to the center and proposing in the right column the choices compatible
+                            // with the choice (it cannot be a verb)
+                            var previouslySearchedClassName = context.getString(R.string.nessuno)
+                            while (listOfWordsRightToReturn.size == 1
+                                && checksWhetherWordRepresentsAClass(context, listOfWordsRightToReturn[0] ,realm))
+                            {
+                                // if it is the name of a class I look for the list of its members
+                                // to avoid an infinite loop I exit the loop if the previously searched class name
+                                // is the same as the current class name to search for
+                                if (previouslySearchedClassName != listOfWordsRightToReturn[0])
+                                {
+                                    previouslySearchedClassName = listOfWordsRightToReturn[0]
+                                    val listOfMembers = listOfMembers(context, listOfWordsRightToReturn[0] ,realm)
+                                    listOfWordsRightToReturn = listOfMembers
+                                }
+                                else { break }
+                            }
+                            if (listOfWordsRightToReturn.size == 1) {
+                                listOfWordsLeftToReturn.clear()
+                                listOfWordsLeftToReturn.addAll(listOfWordsCenterToReturn)
+                                leftColumnContentToReturn = middleColumnContentToReturn
+                                listOfWordsCenterToReturn.clear()
+                                listOfWordsCenterToReturn.add(listOfWordsRightToReturn[0])
+                                middleColumnContentToReturn = listOfWordsCenterToReturn[0]
+                                listOfWordsRightToReturn.clear()
+                                numberOfWordsChosenToReturn++
+                                //
+                                val resultsWordPairsRight = realm.where(WordPairs::class.java)
+                                    .beginGroup()
+                                    .equalTo(context.getString(R.string.word1), listOfWordsCenterToReturn[0])
+                                    .endGroup()
+                                    .findAll()
+                                var resultsWordPairsRightSize = resultsWordPairsRight!!.size
+                                val resultsWordPairsRightList: MutableList<WordPairs>?
+                                if (resultsWordPairsRightSize != 0) {
+                                    // convert RealmResults<Model> to ArrayList<Model>
+                                    val resultsWordPairsList =
+                                        GetResultsWordPairsList.getResultsWordPairsList(
+                                            realm,
+                                            resultsWordPairsRight
+                                        )
+                                    // does not consider wordpairs with pairs of nouns or pairs of verbs
+                                    // (accepts two verbs only if the first is an auxiliary verb or a servile verb)
+                                    // (leaves only noun-verb pairs or vice versa verb-noun
+                                    // or verb-verb if the first is an auxiliary verb or a servile verb)
+                                    resultsWordPairsRightList =
+                                        refineSearchWordPairs(context, realm, resultsWordPairsList)
+                                    resultsWordPairsRightSize = resultsWordPairsRightList.size
+                                    if (resultsWordPairsRightSize != 0) {
+                                        listOfWordsRightToReturn.clear()
+                                        var resultsWordPairsIndex = 0
+                                        while (resultsWordPairsRightSize > resultsWordPairsIndex) {
+                                            listOfWordsRightToReturn.add(resultsWordPairsRightList[resultsWordPairsIndex].word2!!)
+                                            resultsWordPairsIndex++
+                                        }
+                                        //
+                                        previouslySearchedClassName = context.getString(R.string.nessuno)
+                                        while (listOfWordsRightToReturn.size == 1
+                                            && checksWhetherWordRepresentsAClass(context, listOfWordsRightToReturn[0] ,realm))
+                                        {
+                                            // if it is the name of a class I look for the list of its members
+                                            // to avoid an infinite loop I exit the loop if the previously searched class name
+                                            // is the same as the current class name to search for
+                                            if (previouslySearchedClassName != listOfWordsRightToReturn[0])
+                                            {
+                                                previouslySearchedClassName = listOfWordsRightToReturn[0]
+                                                val listOfMembers = listOfMembers(context, listOfWordsRightToReturn[0] ,realm)
+                                                listOfWordsRightToReturn = listOfMembers
+                                            }
+                                            else { break }
+                                        }
+                                        if (listOfWordsRightToReturn.size == 1) {
+                                            rightColumnContentToReturn = listOfWordsRightToReturn[0]
+                                            numberOfWordsChosenToReturn++
+                                            // sentence completion check, grammar arrangement and text reading
+                                        }
+                                        //
+                                    } else
+                                    {
+                                        numberOfWordsChosenToReturn++
+                                        // sentence completion check, grammar arrangement and text reading
+                                    }
+                                }
+                                else
+                                {
+                                    numberOfWordsChosenToReturn++
+                                    // sentence completion check, grammar arrangement and text reading
+                                }
+                            }
                         }
                     }
                     // 1b) if the chosen word is in the center the choice is not allowed
@@ -1384,6 +1508,7 @@ object GrammarHelper {
                 listOfWordsRightToReturn as ArrayList<String>,
                 sharedLastPlayer
             )
+            outcomeOfSentenceCompositionToReturn = composesASentenceResults.outcomeOfSentenceComposition
             numberOfWordsChosenToReturn = composesASentenceResults.numberOfWordsChosen
             leftColumnContentToReturn = composesASentenceResults.leftColumnContent
             middleColumnContentToReturn = composesASentenceResults.middleColumnContent
@@ -1395,7 +1520,9 @@ object GrammarHelper {
             listOfWordsRightToReturn.clear()
             listOfWordsRightToReturn.addAll(composesASentenceResults.listOfWordsRight)
         }
-        return ComposesASentenceResults(numberOfWordsChosenToReturn,
+        return ComposesASentenceResults(
+            outcomeOfSentenceCompositionToReturn,
+            numberOfWordsChosenToReturn,
             leftColumnContentToReturn, middleColumnContentToReturn, rightColumnContentToReturn,
             listOfWordsLeftToReturn as ArrayList<String>,
             listOfWordsCenterToReturn as ArrayList<String>,
@@ -1535,26 +1662,30 @@ object GrammarHelper {
             }
         }
         // if you have only one possible choice (in the recycler views on the right and left)
-        // and this is a verb (if the first word chosen is not a verb, the proposed choices
-        // can only be verbs)
-        // 1a) if the verb only possible choice is on the left, register the choice
+        // and this is a verb or a greeting (if the first word chosen is not a verb or a greeting, the proposed choices
+        // can only be verbs or greetings)
+        // 1a) if the verb or greeting only possible choice is on the left, register the choice
         // by moving the central column to the right and the left column in the center
-        // and proposing in the left column the choices compatible with the verb
-        // 1b) if the verb only possible choice is on the right, register the choice
+        // and proposing in the left column the choices compatible with the verb or greeting
+        // 1b) if the verb or greeting only possible choice is on the right, register the choice
         // moving the middle column to the left and the right column in the center
-        // and proposing in the right column the choices compatible with the verb
+        // and proposing in the right column the choices compatible with the verb or greeting
         // 1c) if I have only one possible choice verb both on the left and on the right,
         // I propose the choice both in the column on the right and in the one on the left
-        // 2) if the first word chosen (the middle one) is a verb, check if I have only one
+        // 2) if the first word chosen (the middle one) is a verb or a greeting, check if I have only one
         // possible choice in the recycler views on the right and left
         // in this case I register the choice
         val middleColumnContentType = searchType(context, listOfWordsCenter[0], realm)
+        val middleColumnContentServileVerb = searchServileVerbs(context, listOfWordsCenter[0], realm)
+        val middleColumnContentIsAGreeting = searchGreetings(context, listOfWordsCenter[0], realm)
         // type = 3 verbs
-        if (middleColumnContentType != "3") {
+        if ((middleColumnContentType != "3" && middleColumnContentIsAGreeting != "They are greetings")
+                ||  (middleColumnContentServileVerb == context.getString(R.string.is_a_servile_verb)))
+            {
             if (resultsWordPairsLeftSize == 1 && resultsWordPairsRightSize == 0) {
-                // 1a) if the verb only possible choice is on the left, register the choice
+                // 1a) if the verb or greeting only possible choice is on the left, register the choice
                 // by moving the central column to the right and the left column in the center
-                // and proposing in the left column the choices compatible with the verb
+                // and proposing in the left column the choices compatible with the verb or greeting
                 listOfWordsRightToReturn.clear()
                 listOfWordsRightToReturn.addAll(listOfWordsCenterToReturn)
                 rightColumnContentToReturn = middleColumnContentToReturn
@@ -1562,6 +1693,7 @@ object GrammarHelper {
                 listOfWordsCenterToReturn.add(resultsWordPairsLeftList!![0].word1!!)
                 middleColumnContentToReturn = listOfWordsCenterToReturn[0]
                 //
+                listOfWordsLeftToReturn.clear()
                 resultsWordPairsLeft = realm.where(WordPairs::class.java)
                     .beginGroup()
                     .equalTo(context.getString(R.string.word2), listOfWordsCenterToReturn[0])
@@ -1580,7 +1712,7 @@ object GrammarHelper {
                     resultsWordPairsLeftSize = resultsWordPairsLeftList.size
                     //
                     if (resultsWordPairsLeftSize != 0) {
-                        listOfWordsLeftToReturn.clear()
+//                        listOfWordsLeftToReturn.clear()
                         var resultsWordPairsIndex = 0
                         while (resultsWordPairsLeftSize > resultsWordPairsIndex) {
                             listOfWordsLeftToReturn.add(resultsWordPairsLeftList[resultsWordPairsIndex].word1!!)
@@ -1621,9 +1753,9 @@ object GrammarHelper {
                 numberOfWordsChosenToReturn++
             }
             if (resultsWordPairsLeftSize == 0 && resultsWordPairsRightSize == 1) {
-                // 1b) if the verb only possible choice is on the right, register the choice
+                // 1b) if the verb or greeting only possible choice is on the right, register the choice
                 // moving the middle column to the left and the right column in the center
-                // and proposing in the right column the choices compatible with the verb
+                // and proposing in the right column the choices compatible with the verb or greeting
                 listOfWordsLeftToReturn.clear()
                 listOfWordsLeftToReturn.addAll(listOfWordsCenterToReturn)
                 leftColumnContentToReturn = middleColumnContentToReturn
@@ -1631,9 +1763,11 @@ object GrammarHelper {
                 listOfWordsCenterToReturn.add(resultsWordPairsRightList!![0].word2!!)
                 middleColumnContentToReturn = listOfWordsCenterToReturn[0]
                 //
+                listOfWordsRightToReturn.clear()
                 val resultsWordPairsRight = realm.where(WordPairs::class.java)
                     .beginGroup()
-                    .equalTo(context.getString(R.string.word1), resultsWordPairsRightList[0].word2!!)
+//                    .equalTo(context.getString(R.string.word1), resultsWordPairsRightList[0].word2!!)
+                    .equalTo(context.getString(R.string.word1), listOfWordsCenterToReturn[0])
                     .endGroup()
                     .findAll()
                 resultsWordPairsRightSize = resultsWordPairsRight!!.size
@@ -1651,7 +1785,7 @@ object GrammarHelper {
                     resultsWordPairsRightSize = resultsWordPairsRightList.size
                     //
                     if (resultsWordPairsRightSize != 0) {
-                        listOfWordsRightToReturn.clear()
+//                        listOfWordsRightToReturn.clear()
                         var resultsWordPairsIndex = 0
                         while (resultsWordPairsRightSize > resultsWordPairsIndex) {
                             listOfWordsRightToReturn.add(resultsWordPairsRightList[resultsWordPairsIndex].word2!!)
@@ -1711,12 +1845,18 @@ object GrammarHelper {
                 }
             }
         } else {
-            // 2) if the first word chosen (the middle one) is a verb, check if I have only one
-            // possible choice in the recycler views on the right and left
-            // in this case I register the choice
+            // 2) if the first word chosen (the middle one) is a verb or a greeting , check if I have only one
+            // or zero possible choice in the recycler views on the right and left
+            // in case I have only one possible choice in the recycler views on the right and left I register the choice
             middleColumnContentToReturn = listOfWordsCenterToReturn[0]
+            if (resultsWordPairsLeftSize == 0) {
+                numberOfWordsChosenToReturn++
+            }
             if (resultsWordPairsLeftSize == 1) {
                 leftColumnContentToReturn = listOfWordsLeftToReturn[0]
+                numberOfWordsChosenToReturn++
+            }
+            if (resultsWordPairsRightSize == 0) {
                 numberOfWordsChosenToReturn++
             }
             if (resultsWordPairsRightSize == 1) {
@@ -1726,15 +1866,22 @@ object GrammarHelper {
         }
         // if you do not have possible choices neither on the recycler view on the right
         // nor on that one on the left, the sentence is completed with a single word
-        if (resultsWordPairsLeftSize == 0 && resultsWordPairsRightSize == 0) {
+//        if (resultsWordPairsLeftSize == 0 && resultsWordPairsRightSize == 0) {
+//            middleColumnContentToReturn = listOfWordsCenterToReturn[0]
+//            listOfWordsLeftToReturn.clear()
+//            numberOfWordsChosenToReturn++
+//            listOfWordsRightToReturn.clear()
+//            numberOfWordsChosenToReturn++
+//            // sentence completion check, grammar arrangement and text reading
+//        }
+        if (listOfWordsLeftToReturn.size == 0 && listOfWordsRightToReturn.size == 0) {
             middleColumnContentToReturn = listOfWordsCenterToReturn[0]
-            listOfWordsLeftToReturn.clear()
             numberOfWordsChosenToReturn++
-            listOfWordsRightToReturn.clear()
             numberOfWordsChosenToReturn++
             // sentence completion check, grammar arrangement and text reading
         }
-        return ComposesASentenceResults(numberOfWordsChosenToReturn,
+        return ComposesASentenceResults(COMPOSITION_SUCCESS,
+                                        numberOfWordsChosenToReturn,
                                         leftColumnContentToReturn,
                                         middleColumnContentToReturn,
                                         rightColumnContentToReturn,
@@ -1764,6 +1911,7 @@ object GrammarHelper {
         // or verb-verb if the first is an auxiliary verb or a servile verb)
         var auxiliaryVerb: String
         var servileVerb: String
+        var greetings: String
         //
         var i = 0
         var resultsWordPairsSize = resultsWordPairsList!!.size
@@ -1776,12 +1924,23 @@ object GrammarHelper {
             servileVerb = searchServileVerbs(context, resultsWordPairsList[i].word1, realm)
             if (word1Type == "3" && word2Type == "3"
                 && auxiliaryVerb != context.getString(R.string.is_an_auxiliary_verb) && servileVerb != context.getString(R.string.is_a_servile_verb)
-                || word1Type != "3" && word2Type != "3"
+//                || word1Type != "3" && word2Type != "3"
             ) {
                 resultsWordPairsList.removeAt(i)
                 resultsWordPairsSize--
-            } else {
-                i++
+                continue
+            }
+            greetings = searchGreetings(context, resultsWordPairsList[i].word1, realm)
+            if (word1Type != "3" && word2Type != "3"
+                && greetings != "They are greetings"
+            )
+            {
+            resultsWordPairsList.removeAt(i)
+            resultsWordPairsSize--
+            }
+            else
+            {
+            i++
             }
         }
         return resultsWordPairsList
@@ -1848,7 +2007,17 @@ object GrammarHelper {
         val leftColumnContentIsAServileVerb =
             searchServileVerbs(context, leftColumnContentToReturn, realm)
         if (leftColumnContentIsAServileVerb == context.getString(R.string.is_a_servile_verb)) {
-            formToSearchRealm = context.getString(R.string.s1)
+            // search for question mark
+            if (leftColumnContentToReturn.contains("?")
+                || middleColumnContentToReturn.contains("?")
+                || rightColumnContentToReturn.contains("?"))
+                {
+                formToSearchRealm = "s2"
+                }
+                else
+                {
+                formToSearchRealm = context.getString(R.string.s1)
+                }
             val conjugationOfTheVerb =
                 searchVerb(context, leftColumnContentToReturn, formToSearchRealm, realm)
             leftColumnContentToReturn = conjugationOfTheVerb
@@ -1867,82 +2036,96 @@ object GrammarHelper {
                 leftColumnContentToReturn = articleToSearch + leftColumnContentToReturn
             }
         }
-        // verb group verb
-        if (leftColumnContentIsAServileVerb != context.getString(R.string.is_a_servile_verb)) {
-            if (!(leftColumnContentToReturn == context.getString(R.string.nessuno)
-                        && rightColumnContentToReturn == context.getString(R.string.nessuno))) {
-                formToSearchRealm = if (leftColumnContentToReturn == context.getString(R.string.io)) {
-                    context.getString(R.string.s1)
-                } else {
-                    if (leftColumnContentToReturn == context.getString(R.string.la_famiglia)
-                        || leftColumnContentToReturn == context.getString(R.string.nessuno)) {
-                        context.getString(R.string.p1)
+        val middleColumnContentIsAGreeting = searchGreetings(context, middleColumnContentToReturn, realm)
+        if (middleColumnContentIsAGreeting != "They are greetings") {
+            // verb group verb
+            if (leftColumnContentIsAServileVerb != context.getString(R.string.is_a_servile_verb)) {
+                if (!(leftColumnContentToReturn == context.getString(R.string.nessuno)
+                            && rightColumnContentToReturn == context.getString(R.string.nessuno))) {
+                    formToSearchRealm = if (leftColumnContentToReturn == context.getString(R.string.io)) {
+                        context.getString(R.string.s1)
                     } else {
-                        if (pluralToSearchRealm != context.getString(R.string.character_y)) {
-                            context.getString(R.string.s3)
+                        if (leftColumnContentToReturn == context.getString(R.string.la_famiglia)
+                            || leftColumnContentToReturn == context.getString(R.string.nessuno)) {
+                            context.getString(R.string.p1)
                         } else {
-                            context.getString(R.string.p3)
+                            if (pluralToSearchRealm != context.getString(R.string.character_y)) {
+                                context.getString(R.string.s3)
+                            } else {
+                                context.getString(R.string.p3)
+                            }
                         }
                     }
+                    middleColumnContentVerbInTheInfinitiveForm = middleColumnContentToReturn
+                    val conjugationOfTheVerb =
+                        searchVerb(context, middleColumnContentToReturn, formToSearchRealm, realm)
+                    middleColumnContentToReturn = conjugationOfTheVerb
                 }
+            } else {
                 middleColumnContentVerbInTheInfinitiveForm = middleColumnContentToReturn
-                val conjugationOfTheVerb =
-                    searchVerb(context, middleColumnContentToReturn, formToSearchRealm, realm)
-                middleColumnContentToReturn = conjugationOfTheVerb
             }
-        } else {
-            middleColumnContentVerbInTheInfinitiveForm = middleColumnContentToReturn
-        }
-        // verbal group direct object
-        if (rightColumnContentToReturn != sharedLastPlayer
-            && rightColumnContentToReturn != context.getString(R.string.io)
-            && rightColumnContentToReturn != context.getString(R.string.nessuno)
-        ) {
-            // ricerca complementi
-            val complement = searchComplement(context, realm,
-                middleColumnContentVerbInTheInfinitiveForm!!, rightColumnContentToReturn)
-//            val resultsWordPairs = realm.where(WordPairs::class.java)
-//                .beginGroup()
-//                .equalTo(context.getString(R.string.word1), middleColumnContentVerbInTheInfinitiveForm)
-//                .equalTo(context.getString(R.string.word2), rightColumnContentToReturn)
-//                .endGroup()
-//                .findAll()
-//            val resultsWordPairsSize = resultsWordPairs.size
-//            if (resultsWordPairsSize != 0) {
-//                val resultWordPairs = resultsWordPairs[0]!!
-//                val rightColumnComplement = resultWordPairs.complement
-//                if (rightColumnComplement != " " && rightColumnComplement != "") {
-            if (complement != "non trovato") {
-                middleColumnContentToReturn = "$middleColumnContentToReturn $complement"
+            // verbal group direct object
+            if (rightColumnContentToReturn != sharedLastPlayer
+                && rightColumnContentToReturn != context.getString(R.string.io)
+                && rightColumnContentToReturn != context.getString(R.string.nessuno)
+            ) {
+                // ricerca complementi
+                val complement = searchComplement(context, realm,
+                    middleColumnContentVerbInTheInfinitiveForm!!, rightColumnContentToReturn)
+//                if (complement != "non trovato") {
+//                    middleColumnContentToReturn = "$middleColumnContentToReturn $complement"
+//                }
+                //
+                // adds the corresponding article
+                // search if plural
+                // if gender male / female
+                verbOfMovement = searchVerbsOfMovement(
+                    context,
+                    middleColumnContentVerbInTheInfinitiveForm,
+                    realm
+                )
+                pluralToSearchRealm = searchPlural(context, rightColumnContentToReturn, realm)
+                genderToSearchRealm = searchGender(context,
+                    rightColumnContentToReturn, realm)
+                val articleToSearch = searchArticle(
+                    context,
+                    rightColumnContentToReturn,
+                    genderToSearchRealm, pluralToSearchRealm, verbOfMovement, realm
+                )
+                rightColumnContentToReturn = articleToSearch + rightColumnContentToReturn
+                if (complement != "non trovato") {
+                    rightColumnContentToReturn = "$complement $rightColumnContentToReturn"
                 }
-            //
-            // adds the corresponding article
-            // search if plural
-            // if gender male / female
-            verbOfMovement = searchVerbsOfMovement(
-                context,
-                middleColumnContentVerbInTheInfinitiveForm,
-                realm
-            )
-            pluralToSearchRealm = searchPlural(context, rightColumnContentToReturn, realm)
-            genderToSearchRealm = searchGender(context,
-                rightColumnContentToReturn, realm)
-            val articleToSearch = searchArticle(
-                context,
-                rightColumnContentToReturn,
-                genderToSearchRealm, pluralToSearchRealm, verbOfMovement, realm
-            )
-            rightColumnContentToReturn = articleToSearch + rightColumnContentToReturn
 //            }
+            }
         }
-        return ComposesASentenceResults(numberOfWordsChosenToReturn,
-            leftColumnContentToReturn,
-            middleColumnContentToReturn,
-            rightColumnContentToReturn,
-            listOfWordsLeftToReturn as ArrayList<String>,
-            listOfWordsCenterToReturn as ArrayList<String>,
-            listOfWordsRightToReturn as ArrayList<String>
-        )
+        // generally a sentence with the subject equal to the direct object has no meaning
+        if (leftColumnContent == rightColumnContent && leftColumnContent != context.getString(R.string.nessuno))
+        {
+            return ComposesASentenceResults(
+                COMPOSITION_FAILURE,
+                numberOfWordsChosenToReturn,
+                leftColumnContentToReturn,
+                middleColumnContentToReturn,
+                rightColumnContentToReturn,
+                listOfWordsLeftToReturn as ArrayList<String>,
+                listOfWordsCenterToReturn as ArrayList<String>,
+                listOfWordsRightToReturn as ArrayList<String>
+            )
+        }
+        else
+        {
+            return ComposesASentenceResults(
+                COMPOSITION_SUCCESS,
+                numberOfWordsChosenToReturn,
+                leftColumnContentToReturn,
+                middleColumnContentToReturn,
+                rightColumnContentToReturn,
+                listOfWordsLeftToReturn as ArrayList<String>,
+                listOfWordsCenterToReturn as ArrayList<String>,
+                listOfWordsRightToReturn as ArrayList<String>
+            )
+        }
     }
     @JvmStatic
     fun searchComplement(
@@ -1978,4 +2161,6 @@ object GrammarHelper {
         }
         return "non trovato"
     }
+    const val COMPOSITION_SUCCESS = 0
+    const val COMPOSITION_FAILURE = 1
 }
